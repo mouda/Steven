@@ -1,0 +1,11 @@
+
+
+TODO
+
+
+1. make sure all the figure work correctly.....done; except for the simultion time issue in kmeans simulation
+2. confirm all the io parameters ...TODO
+3. build a new directory to aggregate all the working folder ...on the progress
+4. add all the binary files into the execution path ...discard
+5. let the time stamp file into the sub-folder....TODO
+6. Porting the progect to Torque cluster...done 
