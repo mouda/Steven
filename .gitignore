@@ -1,5 +1,3 @@
-commonLibrary/*.o
-commonLibrary/*.a
-ULSA4b3_DC/*.o
+*.o
 *.txt
 *.out
