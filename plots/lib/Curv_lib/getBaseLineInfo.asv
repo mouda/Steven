@@ -1,0 +1,7 @@
+function [ output_args ] = getBaseLineInfo( input_args )
+%GETBASELINEINFO Summary of this function goes here
+%   Detailed explanation goes here
+totalEnergy = 
+
+end
+

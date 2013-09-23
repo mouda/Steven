@@ -1,0 +1,19 @@
+function [ FidMatrix Resorsx headx] = parseDataToFidMatrix( input_args )
+data=dlmread(input_args);
+head = data(:,2);
+Resors = data(:,14);
+[HV HI]=sort(head);
+headx=unique(HV);
+[RV RI]=sort(Resors);
+Resorx=unique(Resors);    
+
+for i =1:length(headx)
+    target=headx(i);
+    arr=find(data(:,2)==target);
+    for j=1:length(Resorx)
+        Rtarget=Resors(j)
+        Rarr=find(data(arr,14)==15 
+
+    end
+end
+

@@ -39,7 +39,7 @@ bestMaClusterStru	ULSA4b3_DC.h	/^  bool** bestMaClusterStru;$/;"	m	class:ULSA4b3
 bestTrafficReductionRatio	ULSA4b3_DC.h	/^  double bestTrafficReductionRatio;$/;"	m	class:ULSA4b3_DC
 bestUpperLayerResource	ULSA4b3_DC.h	/^  double bestUpperLayerResource;$/;"	m	class:ULSA4b3_DC
 cSystem	ULSA4b3_DC.h	/^  ULCS1b*  cSystem;   \/\/ system cluseter structure$/;"	m	class:ULSA4b3_DC
-calculateMatrics_minResors	ULSA4b3_DC.cpp	/^void ULSA4b3_DC::calculateMatrics_minResors()\/\/Calculate next performance matircs$/;"	f	class:ULSA4b3_DC
+calculateMatrics_minResors	ULSA4b3_DC.cpp	/^void ULSA4b3_DC::calculateMatrics_minResors()$/;"	f	class:ULSA4b3_DC
 checkBestClusterStructure_DataCentric	ULSA4b3_DC.cpp	/^bool ULSA4b3_DC::checkBestClusterStructure_DataCentric(int inputRound)$/;"	f	class:ULSA4b3_DC
 compRatio	ULSA4b3_DC.h	/^  double compRatio;$/;"	m	class:ULSA4b3_DC
 compareDis	ULSA4b3_DC.h	/^    compareDis(const ULSA4b3_DC& sa) : mySA(sa) {} \/\/ constructor$/;"	f	struct:ULSA4b3_DC::compareDis

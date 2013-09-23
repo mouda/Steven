@@ -1,0 +1,46 @@
+clear all;
+?
+
+
+for exp = 40:30:280
+    radius = 100;
+    for runTime = 1:10
+        x = zeros(1, exp);
+        y = zeros(1, exp);
+        for i=1:exp
+            x(i) = radius;
+            y(i) = radius;
+            while (x(i)^2+y(i)^2 > radius^2) 
+                x(i) = rand() * 2*radius - radius;
+                y(i) = rand() * 2*radius - radius;
+            end
+        end
+        
+        figure;
+        hold on;
+        grid on;
+        plot(x,y,'MarkerFaceColor',[0.7 0.7 0.7],'MarkerEdgeColor',[0.7 0.7 0.7],...
+                  'MarkerSize',4,...
+                  'Marker','o',...
+                  'LineStyle','none');
+        axis equal;
+        circle(radius, 0, 0, 'k', 10000);
+        xlabel({'x-axis (m)'});
+        ylabel({'y-axis (m)'});
+        xlim([-100 100]);
+        ylim([-100 100]);
+        set(gca,'XTick', -radius:20:radius,...
+                'YTick', -radius:20:radius);
+
+        folderName = sprintf('map_uniform_N%d_D', exp);
+        if(~exist(folderName, 'file'))
+            mkdir(folderName);
+        end
+        fid = fopen(sprintf('%s/mapFile_uniform_exp_%d_%d.txt', folderName, exp, runTime), 'wt');
+        fprintf(fid, '%d\n', exp);
+        fprintf(fid,'%f\t%f\n',[x; y]);
+        fclose(fid);
+    end
+
+    close all;
+end

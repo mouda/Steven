@@ -11,10 +11,10 @@
 #include<cassert>
 
 using namespace std;
-#include "ULSA4b3_DC.h"
-ULSA4b3_DC::ULSA4b3_DC() {};
+#include "ULSA_DC_Estimate.h"
+ULSA_DC_Estimate::ULSA_DC_Estimate() {};
 
-ULSA4b3_DC::ULSA4b3_DC( FILE *fileReadCursor, int inputTotalNodes, 
+ULSA_DC_Estimate::ULSA_DC_Estimate( FILE *fileReadCursor, int inputTotalNodes, 
     int inputMaxChNum,
     int inputSAFac, 
     int inOutputControl, 
@@ -161,12 +161,12 @@ ULSA4b3_DC::ULSA4b3_DC( FILE *fileReadCursor, int inputTotalNodes,
     }
 
 }
-ULSA4b3_DC::~ULSA4b3_DC()
+ULSA_DC_Estimate::~ULSA_DC_Estimate()
 {
     if(!terminated)releaseMemory();
 }
 
-void ULSA4b3_DC::releaseMemory()
+void ULSA_DC_Estimate::releaseMemory()
 {
 
     //release distanceOf2Nodes
@@ -209,7 +209,7 @@ void ULSA4b3_DC::releaseMemory()
 // @Purpose: Read Topology File and Calculate Gij,distanceOf2Nodes
 // @Called: by main
 //-------------------------------------------------------------------//
-bool ULSA4b3_DC::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)
+bool ULSA_DC_Estimate::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)
 {
     powerMax = inPowerMaxWatt;
     quantizationBits = inQuantizationBits;
@@ -228,7 +228,7 @@ bool ULSA4b3_DC::setSystem(float inPowerMaxWatt, int inQuantizationBits,double i
     Flag: "kemans",..,
     and set the initial interference list for each node
 */
-bool ULSA4b3_DC::setInitialStucture(char* iniFlag)
+bool ULSA_DC_Estimate::setInitialStucture(char* iniFlag)
 {
     iniDone=false;
     bool normalFlag = true;
@@ -255,7 +255,7 @@ bool ULSA4b3_DC::setInitialStucture(char* iniFlag)
     @Purpose: Set the initial clustering stucture by kmeans algorithm
 
 */
-bool ULSA4b3_DC::setIniStruKmeans()
+bool ULSA_DC_Estimate::setIniStruKmeans()
 {
     int retryTimes = 0;
     float tempHeadX [maxChNum];
@@ -396,7 +396,7 @@ bool ULSA4b3_DC::setIniStruKmeans()
 }
 
 
-bool ULSA4b3_DC::setIniHeadLimited()
+bool ULSA_DC_Estimate::setIniHeadLimited()
 {
     double sortGib[totalNodes];
     for(int i=0; i<totalNodes; i++) {
@@ -446,7 +446,7 @@ bool ULSA4b3_DC::setIniHeadLimited()
 
 
 
-void ULSA4b3_DC::writeStruSingleRound(int round)
+void ULSA_DC_Estimate::writeStruSingleRound(int round)
 {
     FILE *fid;
     char str[50];
@@ -492,24 +492,24 @@ void ULSA4b3_DC::writeStruSingleRound(int round)
 }
 
 
-void ULSA4b3_DC::writePayoffEachRound_MinResors(int round)
+void ULSA_DC_Estimate::writePayoffEachRound_MinResors(int round)
 {
-    char str[]="ULSA4b3_DCEachR.txt";
+    char str[]="ULSA_DC_EstimateEachR.txt";
     FILE* fid = fopen(str,"a");
     fprintf(fid,"%f %f %f %f %f %d\n", curJEntropy/wholeSystemEntopy,static_cast<double>(curSupNum)/static_cast<double>(totalNodes), curPayoff, cur1st_ms, cur2nd_ms,  round);
     fclose(fid);
 
 }
 
-void ULSA4b3_DC::writePayoffEachRound_MinResors_withHead(int round,int head)
+void ULSA_DC_Estimate::writePayoffEachRound_MinResors_withHead(int round,int head)
 {
-    char str[]="ULSA4b3_DCEachR.txt";
+    char str[]="ULSA_DC_EstimateEachR.txt";
     FILE* fid = fopen(str,"a");
     fprintf(fid,"%f %f %f %f %f %d %d\n", curJEntropy/wholeSystemEntopy,static_cast<double>(curSupNum)/static_cast<double>(totalNodes), curPayoff, cur1st_ms, cur2nd_ms,  round, head);
     fclose(fid);
 
 }
-void ULSA4b3_DC::do1sttierPowerControlforNext_DataCentric() {
+void ULSA_DC_Estimate::do1sttierPowerControlforNext_DataCentric() {
 // debug_CheckSizeCorrect();
 // cout<<endl;
     //cout<<"Next1sttier PowerControl"<<endl;
@@ -526,7 +526,7 @@ void ULSA4b3_DC::do1sttierPowerControlforNext_DataCentric() {
 
 }
 
-void ULSA4b3_DC::do1sttierPowerControlforBest_DataCentric() {
+void ULSA_DC_Estimate::do1sttierPowerControlforBest_DataCentric() {
     //debug_CheckSizeCorrect();
 
     for(unsigned int i=0; i<vecHeadNameBest.size(); i++) {
@@ -542,7 +542,7 @@ void ULSA4b3_DC::do1sttierPowerControlforBest_DataCentric() {
                                            rateibMax,Gib,vecHeadNameBest);
 }
 
-void ULSA4b3_DC::do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, double &temp1stMs) {
+void ULSA_DC_Estimate::do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, double &temp1stMs) {
     for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
         double  groupRedundancy = matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[i]);
         double  clusterInfo=cSystem->vecClusterSize[i]*indEntropy +  groupRedundancy;
@@ -554,7 +554,7 @@ void ULSA4b3_DC::do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, 
 
 }
 
-void ULSA4b3_DC::do1sttierPowerMaxforBest_DataCentric() {
+void ULSA_DC_Estimate::do1sttierPowerMaxforBest_DataCentric() {
 
     double power1st=powerMax;
     list <list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
@@ -570,7 +570,7 @@ void ULSA4b3_DC::do1sttierPowerMaxforBest_DataCentric() {
 
 
 
-void ULSA4b3_DC::debug_CheckSizeCorrect() {
+void ULSA_DC_Estimate::debug_CheckSizeCorrect() {
     for (unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
         int tempSize = 0;
         for(int j=0; j<totalNodes; j++) {
@@ -582,7 +582,7 @@ void ULSA4b3_DC::debug_CheckSizeCorrect() {
 
 
 
-void ULSA4b3_DC::computeBestTRR_DataCentric()
+void ULSA_DC_Estimate::computeBestTRR_DataCentric()
 {
     best2ndTierTraffic = 0;
     best1stTierTraffic = 0;
@@ -606,7 +606,7 @@ void ULSA4b3_DC::computeBestTRR_DataCentric()
 }
 
 
-void ULSA4b3_DC::computeUpperResourceNoCodingNoPowerControl()
+void ULSA_DC_Estimate::computeUpperResourceNoCodingNoPowerControl()
 {
     bestUpperLayerResource=0;
     double tempDataLoad[maxChNum];
@@ -642,7 +642,7 @@ void ULSA4b3_DC::computeUpperResourceNoCodingNoPowerControl()
     fclose(fid);
 }
 
-void ULSA4b3_DC::computeBestAvgInterference()
+void ULSA_DC_Estimate::computeBestAvgInterference()
 {
     list<list <int> >::iterator itl = listCluMemBest->begin();
     for(int i=0; i<maxChNum; i++,itl++) //For each CH we will see there member 1-by-1
@@ -690,7 +690,7 @@ void ULSA4b3_DC::computeBestAvgInterference()
 
 }
 
-void ULSA4b3_DC::computeBestAvgPower()
+void ULSA_DC_Estimate::computeBestAvgPower()
 {
     bestAvgPowerOFAllNodes=0;
     list<list<int> >::iterator it1=listCluMemBest->begin();
@@ -709,7 +709,7 @@ void ULSA4b3_DC::computeBestAvgPower()
 }
 
 
-double ULSA4b3_DC::returnComprRatio()
+double ULSA_DC_Estimate::returnComprRatio()
 {
 
     bool tempAry2[totalNodes];
@@ -721,7 +721,7 @@ double ULSA4b3_DC::returnComprRatio()
     return compressRatio;
 }
 
-bool ULSA4b3_DC::startCool()
+bool ULSA_DC_Estimate::startCool()
 {
     begin = clock();
     matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
@@ -738,7 +738,7 @@ bool ULSA4b3_DC::startCool()
     consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
                                      nextNodePower,cSystem->listCluMember );
 
-    ULSAOutputToolSet<class ULSA4b3_DC> resultShow;
+    ULSAOutputToolSet<class ULSA_DC_Estimate> resultShow;
     flagAnsFound =false;
     //-----------------------------//
     //Initialize performance matrix//
@@ -856,7 +856,7 @@ bool ULSA4b3_DC::startCool()
     Movement Function
     use in setInitialStructure
 */
-void ULSA4b3_DC::addMemberSAIni(int inputHeadIndex, int inputMemberName)
+void ULSA_DC_Estimate::addMemberSAIni(int inputHeadIndex, int inputMemberName)
 {
     cSystem->addMemberCs(inputHeadIndex,inputMemberName,iniDone);
     nodes[inputMemberName].ptrHead = cSystem->returnHeadPtr(inputHeadIndex);
@@ -864,7 +864,7 @@ void ULSA4b3_DC::addMemberSAIni(int inputHeadIndex, int inputMemberName)
 }
 
 //This function only used one time every SA
-void ULSA4b3_DC::do1sttierPowerControlforCur_DataCentric() {
+void ULSA_DC_Estimate::do1sttierPowerControlforCur_DataCentric() {
 // debug_CheckSizeCorrect();
 //  cout<<endl;
 //  cout<<"Cur1sttier PowerControl"<<endl;
@@ -882,7 +882,7 @@ void ULSA4b3_DC::do1sttierPowerControlforCur_DataCentric() {
 /*
     do one step movement add/discard/
 */
-void ULSA4b3_DC::coolOnce_minResors()
+void ULSA_DC_Estimate::coolOnce_minResors()
 {
     int probAdd = ((curSupNum<(totalNodes)) ?2000 :0);
     int probDiscard = ((curSupNum<(maxChNum+1)) ?0:3000);
@@ -994,7 +994,7 @@ void ULSA4b3_DC::coolOnce_minResors()
     targetNode: randomly proportional to the indepedent information compare to current set
 
 */
- void ULSA4b3_DC::decideAdd3i_DC_HeadDetMemRan() {
+ void ULSA_DC_Estimate::decideAdd3i_DC_HeadDetMemRan() {
     targetHeadIndex=-1;
     targetNode=-1;
 
@@ -1029,7 +1029,7 @@ void ULSA4b3_DC::coolOnce_minResors()
     targetHead: (Randomly) Choose a Head uniformly
     targetNode: (Deterministically) find The one cause strongest Interference to others
 */
-void ULSA4b3_DC::decideDiscard3b()
+void ULSA_DC_Estimate::decideDiscard3b()
 {
     //Compute the discardable size
     list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
@@ -1089,7 +1089,7 @@ void ULSA4b3_DC::decideDiscard3b()
  * TargetNode: Determinisitcally find the node which provide lowest (side information)/power
  */
 
-void ULSA4b3_DC::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {
+void ULSA_DC_Estimate::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {
     //Choose targetHeadIndex Index//
     targetNode=-1;
     targetHeadIndex=-1;
@@ -1156,7 +1156,7 @@ void ULSA4b3_DC::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {
     //-----------------------//
 
 }
-void ULSA4b3_DC::decideHeadRotate2i_DC_HeadRanMemDet()
+void ULSA_DC_Estimate::decideHeadRotate2i_DC_HeadRanMemDet()
 {
 	//----Uniformly choosed
 	int rotateAbleSize=0;
@@ -1207,7 +1207,7 @@ void ULSA4b3_DC::decideHeadRotate2i_DC_HeadRanMemDet()
 }
 
 
-void ULSA4b3_DC::decideHeadJoining4b(){
+void ULSA_DC_Estimate::decideHeadJoining4b(){
     int threshold=thresholdd; // To determine the cluster size is large enough 
                               // to perform join operation 
     double usepower=powerMax; // No use
@@ -1338,7 +1338,7 @@ void ULSA4b3_DC::decideHeadJoining4b(){
 
 }
 
-double ULSA4b3_DC::estimateJoin2ndTierCost(int JoiningHeadIndex, int targetIndex){
+double ULSA_DC_Estimate::estimateJoin2ndTierCost(int JoiningHeadIndex, int targetIndex){
     //estimate the power increase of testIndex: assume interference the same;
     
     vector<double> originalInterf_FromTargetClu_JoiningClu;
@@ -1396,7 +1396,7 @@ double ULSA4b3_DC::estimateJoin2ndTierCost(int JoiningHeadIndex, int targetIndex
     //(:=upper bound + lower nbound)/2 - lower bound
 }
 
-void ULSA4b3_DC::computeOriInterference_GivenTarInJoinI(
+void ULSA_DC_Estimate::computeOriInterference_GivenTarInJoinI(
     vector<double> &originalInterf_FromTargetClusterNJoinI,
     vector<double> &interference_Except_JoinI_TargetI,
     int JoiningHeadIndex, 
@@ -1422,7 +1422,7 @@ void ULSA4b3_DC::computeOriInterference_GivenTarInJoinI(
         interference_Except_JoinI_TargetI[i]=tempAllInterf;
     }
 }
-void ULSA4b3_DC::updateJoinEstimatedPower(vector<double> &newPower, 
+void ULSA_DC_Estimate::updateJoinEstimatedPower(vector<double> &newPower, 
     vector<int> &newMem,int JoiningHeadIndex, int targetIndex){
 
     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
@@ -1462,7 +1462,7 @@ void ULSA4b3_DC::updateJoinEstimatedPower(vector<double> &newPower,
         newMem.push_back(*it_Int);
     }
 }
-void ULSA4b3_DC::computeNewInterference_FromNewTarHI(vector<double> &newInterf,
+void ULSA_DC_Estimate::computeNewInterference_FromNewTarHI(vector<double> &newInterf,
     vector<double>&newPower, vector<int>&newMem, int JoiningHeadIndex, 
     int targetIndex){
 
@@ -1486,7 +1486,7 @@ void ULSA4b3_DC::computeNewInterference_FromNewTarHI(vector<double> &newInterf,
 
 
 
-void ULSA4b3_DC::decideIsolate4b(){
+void ULSA_DC_Estimate::decideIsolate4b(){
     //calculate first tier cost
     vector<double>vecGain;
     vecGain.reserve(totalNodes);
@@ -1578,7 +1578,7 @@ void ULSA4b3_DC::decideIsolate4b(){
     fclose(fid);
 }
 
-double ULSA4b3_DC::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){
+double ULSA_DC_Estimate::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){
     vector<double> originalInterf_FromIsolatedClu;
     vector<double> interference_Except_IsolatedClu;
     originalInterf_FromIsolatedClu.resize(maxChNum);
@@ -1630,7 +1630,7 @@ double ULSA4b3_DC::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){
 
     return testMaxRatio*cur2nd_ms;
 }
-void ULSA4b3_DC::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){
+void ULSA_DC_Estimate::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){
     consSol->updateInterference();
     for(int i=0;i<maxChNum;i++){
         if(cSystem->vecHeadName[i]==-1)continue;
@@ -1647,7 +1647,7 @@ void ULSA4b3_DC::computeOriInterference_GivenIsolate(vector<double> &oriInterf,v
         interfExcept[i]=tempAllInterf;
     }
 }
-void ULSA4b3_DC::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex){
+void ULSA_DC_Estimate::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex){
     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
     for(int i=0;i<isoCluIndex;i++)it_LiInt++;
     list<int>::iterator it_Int=it_LiInt->begin();
@@ -1660,7 +1660,7 @@ void ULSA4b3_DC::updateIsolateEstimatedpower(vector<double> &newPower,int IsolNa
         newPower[*it_Int]=tmpPower;
     }
 }
-void ULSA4b3_DC::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex){
+void ULSA_DC_Estimate::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex){
     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
     for(int i=0;i<isoCluIndex;i++)it_LiInt++;
 
@@ -1690,7 +1690,7 @@ void ULSA4b3_DC::computeNewInterference_FromIsoCluster(vector<double> &newInterf
    add new member and adjust the "nodes" value
 
 */
-void ULSA4b3_DC::addMemberSA(int inputHeadIndex, int inputMemberName)
+void ULSA_DC_Estimate::addMemberSA(int inputHeadIndex, int inputMemberName)
 {
 	cSystem->addMemberCs(inputHeadIndex,inputMemberName,iniDone);
 	nodes[inputMemberName].ptrHead = cSystem->returnHeadPtr(inputHeadIndex);
@@ -1699,7 +1699,7 @@ void ULSA4b3_DC::addMemberSA(int inputHeadIndex, int inputMemberName)
    Movement Function
    discard the node form the specific head(cluster)
    */
-void ULSA4b3_DC::discardMemberSA(int inputHeadIndex, int inputMemberName)
+void ULSA_DC_Estimate::discardMemberSA(int inputHeadIndex, int inputMemberName)
 {
 	cSystem->discardMemberCs(inputHeadIndex,inputMemberName);
 	ptrHeadLastDiscard = nodes[inputMemberName].ptrHead;
@@ -1712,13 +1712,13 @@ void ULSA4b3_DC::discardMemberSA(int inputHeadIndex, int inputMemberName)
 /*
    Rotate Member SA
    */
-void ULSA4b3_DC::rotateHeadSA(int inputHeadIndex, int inputMemberName)
+void ULSA_DC_Estimate::rotateHeadSA(int inputHeadIndex, int inputMemberName)
 {
 	rotatedHeadNameLast = cSystem->vecHeadName[inputHeadIndex];
 	cSystem->vecHeadName[inputHeadIndex] = inputMemberName;
 }
 
-void ULSA4b3_DC::isolateHeadSA(int isoName,int IsolateCluI, int targetH){
+void ULSA_DC_Estimate::isolateHeadSA(int isoName,int IsolateCluI, int targetH){
     //cout<<"doing isolation: iso-"<<isoName<<" From "<<IsolateCluI<<" to "<<targetH<<endl;
 
 
@@ -1733,13 +1733,14 @@ void ULSA4b3_DC::isolateHeadSA(int isoName,int IsolateCluI, int targetH){
 }
 
 
-void ULSA4b3_DC::join_fromHeadSA(int JoiningHeadIndex,int targetH){
+void ULSA_DC_Estimate::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 
      lastJoingingMachine.clear();
      lastJoiningHeadIndex=JoiningHeadIndex;
      lastJoiningHead=cSystem->vecHeadName[lastJoiningHeadIndex];
      list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
      for(int i=0;i<JoiningHeadIndex;i++)it_LiInt++;
+     
      list<int>::iterator it_Int=it_LiInt->begin();
      for(int i=0;i<it_LiInt->size();i++,it_Int++){
          lastJoingingMachine.push_back(*it_Int);
@@ -1752,7 +1753,7 @@ void ULSA4b3_DC::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 }
 
 //Calculate next performance matircs
-void ULSA4b3_DC::calculateMatrics_minResors()
+void ULSA_DC_Estimate::calculateMatrics_minResors()
 {
 	next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
 	next1st_ms = return1stTotalNcal1stResors_HomoPower();
@@ -1806,7 +1807,7 @@ void ULSA4b3_DC::calculateMatrics_minResors()
    -confirm3c add reset some metric if structure change(add,discard)
    by"if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();"
    */
-void ULSA4b3_DC::confirmNeighbor3i()
+void ULSA_DC_Estimate::confirmNeighbor3i()
 {
     /*cout<<"By "<<nextEventFlag<<endl;
     cout<<"Next Payoff="<<nextPayoff<<"; From CurPayoff="<<curPayoff <<endl;
@@ -1858,7 +1859,7 @@ void ULSA4b3_DC::confirmNeighbor3i()
 	temparature*=alpha;
 }
 
-void ULSA4b3_DC::passNext2Cur() {
+void ULSA_DC_Estimate::passNext2Cur() {
 
 
     curJEntropy = nextJEntropy;
@@ -1908,7 +1909,7 @@ void ULSA4b3_DC::passNext2Cur() {
 /*
     reverse the last move in Csystem and node
 */
-void ULSA4b3_DC::reverseMoveSA()
+void ULSA_DC_Estimate::reverseMoveSA()
 {
     //cout<<"reverse"<<endl;
     if (nextEventFlag == 1)//reverse the add previously did
@@ -1972,7 +1973,7 @@ void ULSA4b3_DC::reverseMoveSA()
   Metrics update after structure changed
   -reset "aryFlagHRDone"
 */
-void ULSA4b3_DC::confirmStructureChange()
+void ULSA_DC_Estimate::confirmStructureChange()
 {
     //cout<<"Structure Change"<<endl;
     for(int i=0; i<maxChNum; i++)aryFlagHRDone[i]=false;
@@ -1983,7 +1984,7 @@ void ULSA4b3_DC::confirmStructureChange()
 /*
     Check if this structure is the best
 */
-bool ULSA4b3_DC::checkBestClusterStructure_DataCentric(int inputRound)
+bool ULSA_DC_Estimate::checkBestClusterStructure_DataCentric(int inputRound)
 {
     bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
     if(curAllServe)bestAllServeFound=true;
@@ -2025,7 +2026,7 @@ bool ULSA4b3_DC::checkBestClusterStructure_DataCentric(int inputRound)
 }
 
 
-void ULSA4b3_DC::keepBestStructure()
+void ULSA_DC_Estimate::keepBestStructure()
 {
     vecHeadNameBest.assign(cSystem->vecHeadName.begin(),cSystem->vecHeadName.end());
     listCluMemBest->assign(cSystem->listCluMember->begin(), cSystem->listCluMember->end());
@@ -2054,7 +2055,7 @@ void ULSA4b3_DC::keepBestStructure()
     Purpose: return the closet node index from a certain (X,Y)
 
 */
-int ULSA4b3_DC::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<int> &inputGroup)
+int ULSA_DC_Estimate::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<int> &inputGroup)
 {
     float closetNodeDistance =  numeric_limits<float>::max( );
     float tempD = 0;
@@ -2076,7 +2077,7 @@ int ULSA4b3_DC::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<int> &i
   Internal tool
   -Calculate the average power of each node
 */
-double ULSA4b3_DC::returnTransientAveragePower()
+double ULSA_DC_Estimate::returnTransientAveragePower()
 {
     list <list<int> >::iterator itlist1=cSystem->listCluMember->begin();
     double accuPower=0;
@@ -2093,7 +2094,7 @@ double ULSA4b3_DC::returnTransientAveragePower()
     return (accuPower/NodeNHeadNum);
 }
 
-double ULSA4b3_DC::returnTransientJoule() {
+double ULSA_DC_Estimate::returnTransientJoule() {
     list <list<int> >::iterator itlist1=cSystem->listCluMember->begin();
     double accuJoule=0;
     for(int i =0; itlist1!=cSystem->listCluMember->end(); itlist1++,i++)
@@ -2114,7 +2115,7 @@ double ULSA4b3_DC::returnTransientJoule() {
     return (accuJoule);
 }
 
-double ULSA4b3_DC::return1stTotalNcal1stResors_HomoPower() {
+double ULSA_DC_Estimate::return1stTotalNcal1stResors_HomoPower() {
     power1st=powerMax;
     double T1=0;
     list <list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
@@ -2130,7 +2131,7 @@ double ULSA4b3_DC::return1stTotalNcal1stResors_HomoPower() {
     }
     return T1;
 }
-void ULSA4b3_DC::resetSA3iSystem() {
+void ULSA_DC_Estimate::resetSA3iSystem() {
     iniDone = false;
     bestFeasibleJEntropy = -1;
     bestFeasibleSupNum = -1;
@@ -2161,6 +2162,150 @@ void ULSA4b3_DC::resetSA3iSystem() {
 
 
 
+/* @brief    Test the clustering operatio
+ * @param    operatorFlag
+ * @retval   void
+ */
+bool ULSA_DC_Estimate::operatorTest(int opFlag)
+{
+
+    begin = clock();
+
+    matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
+    indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
+    double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
+    (compRatio,indEntropy,static_cast<double>(totalNodes));
+    tempAddT=0;
+    tempDisT=0;
+    tempHRT=0;
+    bool inClu[totalNodes];
+    for(int i=0; i<totalNodes; i++)inClu[i]=true;
+    double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
+    wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
+    consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
+                                     nextNodePower,cSystem->listCluMember );
+
+    ULSAOutputToolSet<class ULSA_DC_Estimate> resultShow;
+    flagAnsFound =false;
+    //-----------------------------//
+    //Initialize performance matrix//
+    //-----------------------------//
+    if(curSupNum>maxChNum){cur2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);}
+    else{cur2nd_ms=0;}
+    cur1st_ms = return1stTotalNcal1stResors_HomoPower();
+    cur2nd_Joule=returnTransientJoule();
+    cur1st_Joule=power1st*cur1st_ms;
+
+
+    curSupNum=cSystem->calSupNodes();
+    curChNum=maxChNum;
+    nextChNum=curChNum;
+    curJEntropy = curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
+    curPayoff=cur1st_ms+cur2nd_ms;
+
+    bestAllServeFound=false;
+
+    if (checkBestClusterStructure_DataCentric(0))return true;
+
+    cout<<"Compression Ratio "<<returnComprRatio()<<" indEntropy "<<indEntropy<<endl;
+
+    // ----- operatorTest ----- //
+
+    int threshold=thresholdd; // To determine the cluster size is large enough 
+                              // to perform join operation 
+    double usepower=powerMax; // No use
+    //---
+    JoiningHeadIndex=-1;
+    targetHeadIndex=-1;
+
+    vector<int> vecJoinCandHeadIndex;
+    vector<int> vecTargetCandIndex;
+    vector<double>vecGain;
+    vecJoinCandHeadIndex.reserve(maxChNum);
+    vecTargetCandIndex.reserve(maxChNum);
+    vecGain.reserve(maxChNum);
+    for(int i=0;i<maxChNum;i++){
+        if(cSystem->vecClusterSize[i]>0&&cSystem->vecClusterSize[i]<=threshold){
+            vecJoinCandHeadIndex.push_back(i);
+        }
+    }
+
+    nextEventFlag = opFlag;
+    cout << nextEventFlag << endl;
+    if ( nextEventFlag ) {
+      for (int i = 0; i < maxChNum; i++) {
+        for (int j = 0; j < maxChNum; j++) {
+          if ( i == j ) continue;
+          if(cSystem->vecClusterSize[j]<=1) continue;
+
+          /* Sb */
+          double cluInfo = 
+            /* independent entropy */
+            indEntropy * cSystem->vecClusterSize[i] +
+            /* correlation entropy */  
+            matrixComputer->computeLog2Det( 1.0, 
+                cSystem->clusterStru[i] ); 
+          double firstTierGain = 
+            cluInfo / ( bandwidthKhz*log2( 1 + 
+            power1st * Gib[cSystem->vecHeadName[i]]/
+            realNoise ));
+          bool tempMerge[totalNodes];
+          /* Sa */
+          for(int k=0;k<totalNodes;k++)
+              tempMerge[k] = 
+                cSystem->clusterStru[i][k] + cSystem->clusterStru[j][k];
+          cluInfo = indEntropy * cSystem->vecClusterSize[j] + 
+            matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[j]);
+          double cluInfoMerge = indEntropy * 
+            ( cSystem->vecClusterSize[i] + cSystem->vecClusterSize[j] ) + 
+            matrixComputer->computeLog2Det(1.0,tempMerge);
+          double firstTierCost = ( cluInfoMerge - cluInfo ) / 
+            ( (bandwidthKhz*log2(1+power1st*Gib[cSystem->vecHeadName[j]]/
+                                 realNoise)) );
+          double tmp = firstTierGain - firstTierCost - 
+            estimateJoin2ndTierCost( i, j );
+          //Cost = extra mini second spent
+          char str[500]; 
+          sprintf(str,"ULSA4b_EstimateJoinGainHN%d.txt",maxChNum);
+          FILE *fid=fopen(str,"a+");
+          fprintf(fid,"%d %f %d\n",0,tmp,curChNum);
+          fclose(fid);
+
+
+          cout << "JoiningHeadIndex: " << i << " targetHeadIndex: " << j<< endl;
+          JoiningHeadIndex = i;
+          targetHeadIndex = j;
+        
+          join_fromHeadSA(JoiningHeadIndex,targetHeadIndex);
+          nextJEntropy = curJEntropy;
+          nextSupNum = curSupNum;
+          calculateMatrics_minResors();
+	  reverseMoveSA();
+        }
+      }
+    }
+
+    
+
+    end = clock();
+    computingTimes = ((float)(end-begin))/CLOCKS_PER_SEC;
+    cout<<"best "<<bestFeasibleSupNum<<"   Information Ratio:"<<bestFeasibleJEntropy/wholeSystemEntopy<<endl;
+    if(!flagAnsFound)
+    {
+        cout<<"Not Found the answer Yet"<<endl;
+        return false ;
+    }
+    else cout<<"SA end up correctly"<<endl;
+    //cout<<"best "<<bestFeasibleSupNum<<" "<<(totalNodes)<<endl;
+    cout<<"Add Times="<<tempAddT<<endl;
+    cout<<"Discard Times="<<tempDisT<<endl;
+    cout<<"HR Times="<<tempHRT<<endl;
+
+
+    char timeBuf[32];
+    TimeStamp obj_time;
+    obj_time.returnRealWordTime(timeBuf,32);
+}
 
 
 
@@ -2169,10 +2314,10 @@ void ULSA4b3_DC::resetSA3iSystem() {
 
 
 /* Not finishied
-void ULSA4b3_DC::writePayoffEachRound_MinResors(int inputRound)
+void ULSA_DC_Estimate::writePayoffEachRound_MinResors(int inputRound)
 {
   FILE *fid1;
-  fid1=fopen("ULSA4b3_DC_iterPayoff.txt","a");
+  fid1=fopen("ULSA_DC_Estimate_iterPayoff.txt","a");
   //           1   2  3  4  5 6  7  8  9  10 11 12 13
   fprintf(fid1,"%f %d %f %f %f %f %f %d %f %f %d %e %e\n",curJEntropy, curSupNum-maxChNum, bestTrafficReductionRatio,best2ndTierTraffic, best1stTierTraffic, cur2nd_ms, bestUpperLayerResource \
           ,maxChNum, C2, wholeSystemEntopy,roundBest, bestAvgInterference, bestAvgPowerOFAllNodes);
@@ -2209,3 +2354,5 @@ void printClusterList(ULCS1b *cSystem)
 
     }
 }
+
+
