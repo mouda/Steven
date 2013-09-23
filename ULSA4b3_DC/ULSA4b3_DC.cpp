@@ -1812,29 +1812,29 @@ void ULSA4b3_DC::confirmNeighbor3i()
 	bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
 	bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
 
-	if ((nextJEntropy>=curJEntropy)&&!nextAllServe&&!curAllServe)
+	if ( ( nextJEntropy >= curJEntropy ) && !nextAllServe && !curAllServe )
 	{
 		passNext2Cur();
 		for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
 		if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
 	}
-	else if (!curAllServe&&nextAllServe) {
+	else if ( !curAllServe&&nextAllServe ) {
 		passNext2Cur();
 		for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
 		if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
 	}
-	else if ((nextPayoff<curPayoff)&&nextAllServe&&curAllServe)
+	else if ( ( nextPayoff < curPayoff ) && nextAllServe && curAllServe )
 	{
 		passNext2Cur();
 		for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
 		if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
 	}
-	else if(((nextJEntropy<curJEntropy)&&!nextAllServe&&!curAllServe)||(!nextAllServe&&curAllServe)|| \
-			((nextPayoff>curPayoff)&&nextAllServe&&curAllServe))
+	else if( ( ( nextJEntropy < curJEntropy ) && !nextAllServe && !curAllServe) || 
+            ( !nextAllServe && curAllServe ) || 
+            ( ( nextPayoff > curPayoff ) && nextAllServe && curAllServe ) )
 	{
 		double probAnnealing = exp (-20*abs(nextPayoff-curPayoff)/temparature);
-        //cout<<"Show Payoff "<<nextPayoff<<"  "<<curPayoff<<endl;
-		//cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
+
 		double annealingChoose = (double)rand()/((double)RAND_MAX+1);
 		if (annealingChoose>probAnnealing)
 		{
