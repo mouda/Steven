@@ -2238,6 +2238,9 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
           if ( i == j ) continue;
           if(cSystem->vecClusterSize[j]<=1) continue;
 
+          next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+          next1st_ms = return1stTotalNcal1stResors_HomoPower();
+	  nextPayoff =(next1st_ms+next2nd_ms);
           /* Sb */
           double cluInfo = 
             /* independent entropy */
