@@ -3,6 +3,7 @@
 *.swo
 *~
 *.o
-*.txt
 *.out
 *.a
+*.err
+*.log
