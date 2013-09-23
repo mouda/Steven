@@ -1,0 +1,66 @@
+Working directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/winULSAkmeans2i_MC/bin/Release/runHN_FR.95CR.48RanMore__Finsed
+running on host mini133
+Start time is 四 9月 12 14:32:27 CST 2013
+Directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/winULSAkmeans2i_MC/bin/Release/runHN_FR.95CR.48RanMore__Finsed
+Iniial retrytimes26
+Compression Ratio 0.477355
+.............................................................................................best 186   Information Ratio:0.988113
+SA end up correctly
+Add Times=588
+Discard Times=421
+HR Times=0
+.............IP: 133
+2013-09-12_14-34_BestStrucULSAkmeans2indN195_m19_cor0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Close Fid Ok
+Computing Time 138.580000 
+release Memory Ok
+Iniial retrytimes131
+Compression Ratio 0.477355
+..............................................................................................best 186   Information Ratio:0.977088
+SA end up correctly
+Add Times=579
+Discard Times=412
+HR Times=0
+.............IP: 133
+2013-09-12_14-36_BestStrucULSAkmeans2indN195_m19_cor0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Close Fid Ok
+Computing Time 108.650000 
+release Memory Ok
+Iniial retrytimes23
+Compression Ratio 0.477355
+...............................................................................................best 186   Information Ratio:0.978696
+SA end up correctly
+Add Times=615
+Discard Times=449
+HR Times=0
+.............IP: 133
+2013-09-12_14-38_BestStrucULSAkmeans2indN195_m19_cor0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Close Fid Ok
+Computing Time 122.850000 
+release Memory Ok
+Iniial retrytimes192
+The 180 can't be initialized bykmeans
+Close Fid Ok
+Computing Time 0.000000 
+release Memory Ok
+Iniial retrytimes192
+The 180 can't be initialized bykmeans
+Close Fid Ok
+Computing Time 0.000000 
+release Memory Ok
+Iniial retrytimes192
+The 180 can't be initialized bykmeans
+Close Fid Ok
+Computing Time 0.000000 
+release Memory Ok
+End time is 四 9月 12 14:38:40 CST 2013
+Computing time is 373 sec

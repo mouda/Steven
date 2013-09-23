@@ -1,0 +1,61 @@
+Working directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/winULSA4b2_DC/bin/Release/runHN_FR.95_CR.48_N195_Finsed
+running on host mini130
+Start time is Wed Sep 11 15:57:29 CST 2013
+Directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/winULSA4b2_DC/bin/Release/runHN_FR.95_CR.48_N195_Finsed
+Compression Ratio 0.477365 indEntropy 10.0471
+....................................................................................................best 163   Information Ratio:0.953919
+SA end up correctly
+Add Times=549
+Discard Times=582
+HR Times=269
+2013-09-11_16-40
+2013-09-11_16-40_Best4b2Struc2ndN195_m3_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.477365 indEntropy 10.0471
+....................................................................................................best 159   Information Ratio:0.950529
+SA end up correctly
+Add Times=572
+Discard Times=606
+HR Times=299
+2013-09-11_17-26
+2013-09-11_17-26_Best4b2Struc2ndN195_m3_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.477365 indEntropy 10.0471
+....................................................................................................best 159   Information Ratio:0.951176
+SA end up correctly
+Add Times=561
+Discard Times=596
+HR Times=279
+2013-09-11_18-09
+2013-09-11_18-09_Best4b2Struc2ndN195_m3_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.477365 indEntropy 10.0471
+....................................................................................................best 158   Information Ratio:0.951225
+SA end up correctly
+Add Times=565
+Discard Times=600
+HR Times=342
+2013-09-11_18-48
+2013-09-11_18-48_Best4b2Struc2ndN195_m3_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.477365 indEntropy 10.0471
+....................................................................................................best 164   Information Ratio:0.950882
+SA end up correctly
+Add Times=599
+Discard Times=632
+HR Times=327
+2013-09-11_19-25
+2013-09-11_19-25_Best4b2Struc2ndN195_m3_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.477365 indEntropy 10.0471
+....................................................................................................best 158   Information Ratio:0.952511
+SA end up correctly
+Add Times=655
+Discard Times=690
+HR Times=303
+2013-09-11_20-01
+2013-09-11_20-01_Best4b2Struc2ndN195_m3_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Computing Time 1811.930000 
+End time is Wed Sep 11 20:01:24 CST 2013
+Computing time is 14635 sec

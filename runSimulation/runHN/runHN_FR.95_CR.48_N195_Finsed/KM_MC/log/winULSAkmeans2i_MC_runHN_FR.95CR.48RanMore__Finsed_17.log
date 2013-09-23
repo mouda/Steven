@@ -1,0 +1,56 @@
+Working directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/winULSAkmeans2i_MC/bin/Release/runHN_FR.95CR.48RanMore__Finsed
+running on host mini132
+Start time is Thu Sep 12 14:28:57 CST 2013
+Directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/winULSAkmeans2i_MC/bin/Release/runHN_FR.95CR.48RanMore__Finsed
+Iniial retrytimes82
+Compression Ratio 0.477355
+................................................................................................best 186   Information Ratio:0.980078
+SA end up correctly
+Add Times=694
+Discard Times=525
+HR Times=0
+.............IP: 132
+2013-09-12_14-30_BestStrucULSAkmeans2indN195_m17_cor0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Close Fid Ok
+Computing Time 80.990000 
+release Memory Ok
+Iniial retrytimes53
+Compression Ratio 0.477355
+................................................................................................best 186   Information Ratio:0.986477
+SA end up correctly
+Add Times=643
+Discard Times=474
+HR Times=0
+.............IP: 132
+2013-09-12_14-31_BestStrucULSAkmeans2indN195_m17_cor0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Close Fid Ok
+Computing Time 74.220000 
+release Memory Ok
+Iniial retrytimes192
+The 180 can't be initialized bykmeans
+Close Fid Ok
+Computing Time 0.000000 
+release Memory Ok
+Iniial retrytimes192
+The 180 can't be initialized bykmeans
+Close Fid Ok
+Computing Time 0.000000 
+release Memory Ok
+Iniial retrytimes192
+The 180 can't be initialized bykmeans
+Close Fid Ok
+Computing Time 0.000000 
+release Memory Ok
+Iniial retrytimes192
+The 180 can't be initialized bykmeans
+Close Fid Ok
+Computing Time 0.000000 
+release Memory Ok
+End time is Thu Sep 12 14:31:34 CST 2013
+Computing time is 157 sec

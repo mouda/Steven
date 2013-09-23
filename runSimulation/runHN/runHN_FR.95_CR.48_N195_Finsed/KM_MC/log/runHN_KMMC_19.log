@@ -1,0 +1,81 @@
+Working directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/runSimulation/runHN/runHN_FR.95_CR.48_N195_Finsed/KM_MC
+running on host mini136
+Start time is 一 9月 16 11:52:43 CST 2013
+Directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/runSimulation/runHN/runHN_FR.95_CR.48_N195_Finsed/KM_MC
+Iniial retrytimes86
+Compression Ratio 0.477365
+...........................................................................................best 186   Information Ratio:0.971903
+SA end up correctly
+Add Times=669
+Discard Times=502
+HR Times=0
+.............IP: 136
+2013-09-16_11-54_BestStrucULSAkmeans2indN195_m19_cor-0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Iniial retrytimes79
+Compression Ratio 0.477365
+................................................................................................best 186   Information Ratio:0.976937
+SA end up correctly
+Add Times=624
+Discard Times=458
+HR Times=0
+.............IP: 136
+2013-09-16_11-57_BestStrucULSAkmeans2indN195_m19_cor-0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Iniial retrytimes71
+Compression Ratio 0.477365
+.............................................................................................best 186   Information Ratio:0.986145
+SA end up correctly
+Add Times=561
+Discard Times=394
+HR Times=0
+.............IP: 136
+2013-09-16_11-58_BestStrucULSAkmeans2indN195_m19_cor-0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Iniial retrytimes39
+Compression Ratio 0.477365
+.............................................................................................best 186   Information Ratio:0.964377
+SA end up correctly
+Add Times=610
+Discard Times=443
+HR Times=0
+.............IP: 136
+2013-09-16_11-59_BestStrucULSAkmeans2indN195_m19_cor-0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Iniial retrytimes16
+Compression Ratio 0.477365
+.........................................................................................best 186   Information Ratio:0.975783
+SA end up correctly
+Add Times=718
+Discard Times=551
+HR Times=0
+.............IP: 136
+2013-09-16_12-02_BestStrucULSAkmeans2indN195_m19_cor-0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Iniial retrytimes86
+Compression Ratio 0.477365
+...........................................................................................best 186   Information Ratio:0.963612
+SA end up correctly
+Add Times=644
+Discard Times=477
+HR Times=0
+.............IP: 136
+2013-09-16_12-04_BestStrucULSAkmeans2indN195_m19_cor-0.0.txt
+ULSAkmeans2i_Cluster_N195_FR0.95.txt
+delete matrixComputer Ok
+delete ConSol Ok
+Close Fid Ok
+Computing Time 673.000000 
+release Memory Ok
+End time is 一 9月 16 12:04:04 CST 2013
+Computing time is 681 sec

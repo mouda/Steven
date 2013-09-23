@@ -1,0 +1,727 @@
+Working directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/runSimulation/runFR/runFR_CR.48_Finsed/SA_MC
+running on host mini134
+Start time is 一 9月 16 10:06:35 CST 2013
+Directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/runSimulation/runFR/runFR_CR.48_Finsed/SA_MC
+Compression Ratio 0.480124 indEntropy 10.0471
+.............Cand Size=1
+Tried to Join 3-th head:2 to 10-th Cluster
+Estimate Gain -0.281972 first tier gain=0.0274917Second tier cost=-0.309464
+with estimate payoff=11.2651
+.Tried to Isolate 83 from 9-th head to be 3-th head
+Estimate Gain -0.00371381 first tier Cost=-0.00741545;second tier gain=0.00370164
+with estimate payoff=11.6603
+.Cand Size=3
+Tried to Join 3-th head:83 to 7-th Cluster
+Estimate Gain -0.170451 first tier gain=0.176491Second tier cost=-0.346943
+with estimate payoff=10.5275
+Cand Size=2
+Tried to Join 10-th head:2 to 4-th Cluster
+Estimate Gain -0.406066 first tier gain=0.015029Second tier cost=-0.421095
+with estimate payoff=11.2123
+Cand Size=1
+Tried to Join 11-th head:25 to 0-th Cluster
+Estimate Gain -0.653646 first tier gain=-0.00157983Second tier cost=-0.652066
+with estimate payoff=13.6696
+.Cand Size=1
+Tried to Join 2-th head:42 to 0-th Cluster
+Estimate Gain -0.784787 first tier gain=0.01072Second tier cost=-0.795507
+with estimate payoff=15.7527
+..Tried to Isolate 194 from 8-th head to be 2-th head
+Estimate Gain -0.00517347 first tier Cost=-0.0054564;second tier gain=0.000282932
+with estimate payoff=12.8514
+.Tried to Isolate 105 from 5-th head to be 3-th head
+Estimate Gain -0.00587182 first tier Cost=-0.00588713;second tier gain=1.53136e-05
+with estimate payoff=12.4237
+Cand Size=1
+Tried to Join 3-th head:105 to 7-th Cluster
+Estimate Gain -0.616165 first tier gain=0.0217458Second tier cost=-0.637911
+with estimate payoff=13.5282
+.Tried to Isolate 132 from 2-th head to be 3-th head
+Estimate Gain -0.00440733 first tier Cost=-0.00454169;second tier gain=0.000134359
+with estimate payoff=13.6755
+.Tried to Isolate 104 from 5-th head to be 10-th head
+Estimate Gain -0.00563334 first tier Cost=-0.00588713;second tier gain=0.000253795
+with estimate payoff=12.5344
+Tried to Isolate 102 from 13-th head to be 11-th head
+Estimate Gain -0.00447862 first tier Cost=-0.00588713;second tier gain=0.00140851
+with estimate payoff=13.0808
+.Cand Size=1
+Tried to Join 11-th head:102 to 7-th Cluster
+Estimate Gain -0.282689 first tier gain=0.199603Second tier cost=-0.482292
+with estimate payoff=13.31
+Tried to Isolate 137 from 14-th head to be 11-th head
+Estimate Gain -0.00434019 first tier Cost=-0.00454169;second tier gain=0.000201495
+with estimate payoff=14.6329
+......Cand Size=1
+Tried to Join 1-th head:92 to 4-th Cluster
+Estimate Gain -0.691632 first tier gain=-0.00411534Second tier cost=-0.687517
+with estimate payoff=13.1759
+.Tried to Isolate 136 from 3-th head to be 1-th head
+Estimate Gain -0.00453334 first tier Cost=-0.00454169;second tier gain=8.34941e-06
+with estimate payoff=14.2421
+Cand Size=1
+Tried to Join 1-th head:136 to 4-th Cluster
+Estimate Gain -0.353113 first tier gain=0.284295Second tier cost=-0.637408
+with estimate payoff=12.0088
+.Tried to Isolate 133 from 0-th head to be 1-th head
+Estimate Gain -0.00441288 first tier Cost=-0.00454169;second tier gain=0.000128805
+with estimate payoff=16.1904
+............Cand Size=1
+Tried to Join 6-th head:84 to 14-th Cluster
+Estimate Gain -0.361809 first tier gain=0.0119219Second tier cost=-0.373731
+with estimate payoff=11.9456
+.Tried to Isolate 159 from 0-th head to be 6-th head
+Estimate Gain -0.00384366 first tier Cost=-0.00681387;second tier gain=0.00297021
+with estimate payoff=11.2801
+.....Cand Size=1
+Tried to Join 6-th head:159 to 14-th Cluster
+Estimate Gain 0.0123748 first tier gain=0.351654Second tier cost=-0.339279
+with estimate payoff=9.4659
+.................Cand Size=2
+Tried to Join 4-th head:155 to 7-th Cluster
+Estimate Gain -0.314948 first tier gain=0.00408181Second tier cost=-0.319029
+with estimate payoff=8.61732
+Tried to Isolate 71 from 5-th head to be 4-th head
+Estimate Gain -0.00602496 first tier Cost=-0.00653705;second tier gain=0.000512089
+with estimate payoff=8.98202
+.....Cand Size=1
+Tried to Join 11-th head:107 to 14-th Cluster
+Estimate Gain -0.332303 first tier gain=0.00966169Second tier cost=-0.341965
+with estimate payoff=8.9512
+Cand Size=1
+Tried to Join 11-th head:107 to 14-th Cluster
+Estimate Gain -0.332578 first tier gain=0.00966169Second tier cost=-0.342239
+with estimate payoff=8.96281
+..Cand Size=1
+Tried to Join 12-th head:151 to 14-th Cluster
+Estimate Gain -0.459377 first tier gain=0.0195239Second tier cost=-0.478901
+with estimate payoff=10.2903
+.Tried to Isolate 134 from 8-th head to be 11-th head
+Estimate Gain -0.00451003 first tier Cost=-0.00454169;second tier gain=3.16588e-05
+with estimate payoff=8.96568
+Tried to Isolate 139 from 13-th head to be 11-th head
+Estimate Gain -0.00414482 first tier Cost=-0.00454169;second tier gain=0.000396863
+with estimate payoff=8.94543
+.Tried to Isolate 131 from 9-th head to be 12-th head
+Estimate Gain -0.0044522 first tier Cost=-0.00454169;second tier gain=8.94847e-05
+with estimate payoff=13.2352
+..Tried to Isolate 133 from 0-th head to be 12-th head
+Estimate Gain -0.0045393 first tier Cost=-0.00454169;second tier gain=2.38252e-06
+with estimate payoff=12.2251
+Cand Size=1
+Tried to Join 12-th head:133 to 14-th Cluster
+Estimate Gain -0.651612 first tier gain=0.0472216Second tier cost=-0.698833
+with estimate payoff=12.9146
+Tried to Isolate 133 from 14-th head to be 12-th head
+Estimate Gain -0.00424179 first tier Cost=-0.00454169;second tier gain=0.000299895
+with estimate payoff=11.3036
+.............Cand Size=1
+Tried to Join 1-th head:193 to 14-th Cluster
+Estimate Gain -0.265075 first tier gain=0.00780681Second tier cost=-0.272882
+with estimate payoff=9.31081
+...Tried to Isolate 104 from 4-th head to be 1-th head
+Estimate Gain -0.0049583 first tier Cost=-0.00588713;second tier gain=0.00092883
+with estimate payoff=9.23753
+..best 186   Information Ratio:0.96847
+SA end up correctly
+Add Times=2196
+Discard Times=2204
+HR Times=616
+2013-09-16_10-15_Best2i2Struc2ndN195_m15_cor0.0_r500.0.txt
+ULSA2i2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.480124 indEntropy 10.0471
+............Cand Size=1
+Tried to Join 10-th head:10 to 4-th Cluster
+Estimate Gain -0.241052 first tier gain=-0.00455873Second tier cost=-0.236493
+with estimate payoff=9.25324
+.......Tried to Isolate 109 from 14-th head to be 10-th head
+Estimate Gain -0.00571893 first tier Cost=-0.00588713;second tier gain=0.000168202
+with estimate payoff=9.69424
+..Cand Size=1
+Tried to Join 11-th head:10 to 4-th Cluster
+Estimate Gain -0.32492 first tier gain=-0.00454535Second tier cost=-0.320375
+with estimate payoff=12.0072
+.Cand Size=1
+Tried to Join 4-th head:155 to 7-th Cluster
+Estimate Gain -0.387573 first tier gain=0.00657681Second tier cost=-0.39415
+with estimate payoff=11.5699
+.Tried to Isolate 119 from 3-th head to be 4-th head
+Estimate Gain -0.000266269 first tier Cost=-0.0114893;second tier gain=0.011223
+with estimate payoff=14.456
+..Tried to Isolate 96 from 13-th head to be 11-th head
+Estimate Gain -0.00462057 first tier Cost=-0.00642836;second tier gain=0.00180779
+with estimate payoff=11.7689
+Tried to Isolate 137 from 14-th head to be 11-th head
+Estimate Gain -0.00449945 first tier Cost=-0.00454169;second tier gain=4.22413e-05
+with estimate payoff=10.8429
+........Cand Size=2
+Tried to Join 8-th head:146 to 7-th Cluster
+Estimate Gain -0.447019 first tier gain=0.0488947Second tier cost=-0.495914
+with estimate payoff=11.9042
+Tried to Isolate 129 from 10-th head to be 8-th head
+Estimate Gain -0.00370403 first tier Cost=-0.00454169;second tier gain=0.000837658
+with estimate payoff=11.4665
+.Tried to Isolate 193 from 0-th head to be 8-th head
+Estimate Gain -0.0054515 first tier Cost=-0.0054564;second tier gain=4.90081e-06
+with estimate payoff=10.9497
+...Cand Size=2
+Tried to Join 0-th head:25 to 7-th Cluster
+Estimate Gain -0.366338 first tier gain=0.00997214Second tier cost=-0.37631
+with estimate payoff=9.05095
+.Cand Size=1
+Tried to Join 8-th head:10 to 3-th Cluster
+Estimate Gain -0.626963 first tier gain=-0.0160982Second tier cost=-0.610865
+with estimate payoff=11.475
+Tried to Isolate 74 from 7-th head to be 0-th head
+Estimate Gain 0.00358143 first tier Cost=-0.0121724;second tier gain=0.0157539
+with estimate payoff=10.8192
+Cand Size=2
+Tried to Join 0-th head:74 to 2-th Cluster
+Estimate Gain -0.635541 first tier gain=-0.00368356Second tier cost=-0.631857
+with estimate payoff=11.7973
+..Cand Size=1
+Tried to Join 2-th head:111 to 7-th Cluster
+Estimate Gain -0.464428 first tier gain=0.00637776Second tier cost=-0.470805
+with estimate payoff=10.4496
+Tried to Isolate 98 from 8-th head to be 0-th head
+Estimate Gain 0.00375721 first tier Cost=-0.00642836;second tier gain=0.0101856
+with estimate payoff=10.088
+.Tried to Isolate 10 from 8-th head to be 2-th head
+Estimate Gain -0.000569378 first tier Cost=-0.00743979;second tier gain=0.00687041
+with estimate payoff=9.84327
+Cand Size=3
+Tried to Join 2-th head:10 to 7-th Cluster
+Estimate Gain -0.318979 first tier gain=0.00187936Second tier cost=-0.320858
+with estimate payoff=9.54582
+...Tried to Isolate 133 from 12-th head to be 2-th head
+Estimate Gain -0.00408637 first tier Cost=-0.00454169;second tier gain=0.000455313
+with estimate payoff=8.81167
+.Cand Size=2
+Tried to Join 4-th head:2 to 8-th Cluster
+Estimate Gain -0.53327 first tier gain=0.0176413Second tier cost=-0.550912
+with estimate payoff=12.0271
+.Cand Size=1
+Tried to Join 7-th head:63 to 0-th Cluster
+Estimate Gain -0.725802 first tier gain=7.24961e-05Second tier cost=-0.725874
+with estimate payoff=14.213
+Tried to Isolate 136 from 10-th head to be 4-th head
+Estimate Gain -0.00451466 first tier Cost=-0.00454169;second tier gain=2.70295e-05
+with estimate payoff=13.6265
+.Tried to Isolate 151 from 6-th head to be 7-th head
+Estimate Gain -0.00570623 first tier Cost=-0.00681387;second tier gain=0.00110763
+with estimate payoff=10.2938
+Cand Size=1
+Tried to Join 7-th head:151 to 8-th Cluster
+Estimate Gain -0.329301 first tier gain=0.0185823Second tier cost=-0.347883
+with estimate payoff=10.5468
+...Tried to Isolate 132 from 4-th head to be 7-th head
+Estimate Gain -0.00447695 first tier Cost=-0.00454169;second tier gain=6.47394e-05
+with estimate payoff=10.537
+.Tried to Isolate 139 from 13-th head to be 7-th head
+Estimate Gain -0.0043922 first tier Cost=-0.00454169;second tier gain=0.000149489
+with estimate payoff=9.80593
+Cand Size=1
+Tried to Join 7-th head:139 to 13-th Cluster
+Estimate Gain -0.243722 first tier gain=0.0710151Second tier cost=-0.314737
+with estimate payoff=10.0994
+.Tried to Isolate 134 from 4-th head to be 7-th head
+Estimate Gain -0.00430141 first tier Cost=-0.00454169;second tier gain=0.000240272
+with estimate payoff=9.99802
+.Tried to Isolate 134 from 4-th head to be 7-th head
+Estimate Gain -0.00441718 first tier Cost=-0.00454169;second tier gain=0.000124507
+with estimate payoff=9.95084
+........Cand Size=1
+Tried to Join 10-th head:122 to 8-th Cluster
+Estimate Gain -0.437561 first tier gain=0.038755Second tier cost=-0.476316
+with estimate payoff=11.8196
+..Tried to Isolate 10 from 8-th head to be 10-th head
+Estimate Gain 0.0124594 first tier Cost=-0.00743979;second tier gain=0.0198992
+with estimate payoff=17.4099
+.Cand Size=3
+Tried to Join 8-th head:25 to 1-th Cluster
+Estimate Gain -0.421798 first tier gain=0.00993306Second tier cost=-0.431731
+with estimate payoff=12.0345
+..Cand Size=2
+Tried to Join 3-th head:111 to 1-th Cluster
+Estimate Gain -0.330152 first tier gain=0.00680562Second tier cost=-0.336958
+with estimate payoff=10.3473
+..Tried to Isolate 104 from 5-th head to be 3-th head
+Estimate Gain -0.00495681 first tier Cost=-0.00588713;second tier gain=0.000930322
+with estimate payoff=11.2594
+.Cand Size=2
+Tried to Join 3-th head:104 to 0-th Cluster
+Estimate Gain -0.256131 first tier gain=0.150051Second tier cost=-0.406183
+with estimate payoff=11.4169
+Cand Size=1
+Tried to Join 10-th head:10 to 12-th Cluster
+Estimate Gain -0.515353 first tier gain=-0.00338018Second tier cost=-0.511973
+with estimate payoff=12.9677
+.Tried to Isolate 135 from 13-th head to be 3-th head
+Estimate Gain -0.00391034 first tier Cost=-0.00454169;second tier gain=0.00063135
+with estimate payoff=10.2111
+..Tried to Isolate 104 from 5-th head to be 8-th head
+Estimate Gain -0.00380537 first tier Cost=-0.00588713;second tier gain=0.00208176
+with estimate payoff=9.66533
+.Tried to Isolate 132 from 7-th head to be 8-th head
+Estimate Gain -0.00436059 first tier Cost=-0.00454169;second tier gain=0.000181101
+with estimate payoff=9.55955
+Tried to Isolate 132 from 7-th head to be 8-th head
+Estimate Gain -0.00436739 first tier Cost=-0.00454169;second tier gain=0.000174298
+with estimate payoff=9.55956
+.Cand Size=1
+Tried to Join 14-th head:74 to 1-th Cluster
+Estimate Gain -0.391699 first tier gain=0.00222173Second tier cost=-0.393921
+with estimate payoff=10.314
+.Tried to Isolate 132 from 7-th head to be 8-th head
+Estimate Gain -0.00438991 first tier Cost=-0.00454169;second tier gain=0.000151775
+with estimate payoff=9.62903
+.Tried to Isolate 134 from 7-th head to be 8-th head
+Estimate Gain -0.00439165 first tier Cost=-0.00454169;second tier gain=0.000150037
+with estimate payoff=9.38733
+.Tried to Isolate 105 from 5-th head to be 10-th head
+Estimate Gain -0.00479074 first tier Cost=-0.00588713;second tier gain=0.00109639
+with estimate payoff=9.53814
+Tried to Isolate 132 from 7-th head to be 14-th head
+Estimate Gain -0.00413953 first tier Cost=-0.00454169;second tier gain=0.00040216
+with estimate payoff=9.26658
+Cand Size=1
+Tried to Join 10-th head:105 to 0-th Cluster
+Estimate Gain -0.317945 first tier gain=0.0224221Second tier cost=-0.340367
+with estimate payoff=9.10412
+...Cand Size=1
+Tried to Join 10-th head:105 to 1-th Cluster
+Estimate Gain -0.268553 first tier gain=0.023636Second tier cost=-0.292189
+with estimate payoff=9.50711
+Tried to Isolate 134 from 8-th head to be 10-th head
+Estimate Gain -0.00450347 first tier Cost=-0.00454169;second tier gain=3.82177e-05
+with estimate payoff=14.2552
+.Tried to Isolate 135 from 3-th head to be 14-th head
+Estimate Gain -0.00381145 first tier Cost=-0.00454169;second tier gain=0.000730235
+with estimate payoff=14.2644
+Cand Size=1
+Tried to Join 14-th head:135 to 0-th Cluster
+Estimate Gain -0.725756 first tier gain=0.0882781Second tier cost=-0.814034
+with estimate payoff=15.2684
+.Tried to Isolate 73 from 3-th head to be 14-th head
+Estimate Gain 0.0380043 first tier Cost=-0.0121724;second tier gain=0.0501768
+with estimate payoff=65.8722
+Cand Size=1
+Tried to Join 14-th head:73 to 12-th Cluster
+Estimate Gain -1.68686 first tier gain=0.134944Second tier cost=-1.8218
+with estimate payoff=26.938
+.....Cand Size=1
+Tried to Join 12-th head:10 to 1-th Cluster
+Estimate Gain -0.470341 first tier gain=0.00347172Second tier cost=-0.473813
+with estimate payoff=11.2019
+Tried to Isolate 131 from 9-th head to be 12-th head
+Estimate Gain -0.0035254 first tier Cost=-0.00454169;second tier gain=0.00101628
+with estimate payoff=10.0135
+.Tried to Isolate 104 from 5-th head to be 12-th head
+Estimate Gain -0.00525809 first tier Cost=-0.00588713;second tier gain=0.000629038
+with estimate payoff=9.51961
+.........best 186   Information Ratio:0.978199
+SA end up correctly
+Add Times=2146
+Discard Times=2152
+HR Times=626
+2013-09-16_10-28_Best2i2Struc2ndN195_m15_cor0.0_r500.0.txt
+ULSA2i2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.480124 indEntropy 10.0471
+.................Cand Size=1
+Tried to Join 2-th head:107 to 7-th Cluster
+Estimate Gain -0.254449 first tier gain=0.00949372Second tier cost=-0.263943
+with estimate payoff=8.32885
+..Cand Size=3
+Tried to Join 11-th head:30 to 4-th Cluster
+Estimate Gain -0.238642 first tier gain=0.0280804Second tier cost=-0.266723
+with estimate payoff=7.7954
+..Tried to Isolate 139 from 3-th head to be 2-th head
+Estimate Gain -0.00437814 first tier Cost=-0.00454169;second tier gain=0.000163543
+with estimate payoff=13.5852
+.Tried to Isolate 56 from 2-th head to be 11-th head
+Estimate Gain 0.0701707 first tier Cost=-0.0101947;second tier gain=0.0803654
+with estimate payoff=30.0541
+Cand Size=1
+Tried to Join 11-th head:56 to 4-th Cluster
+Estimate Gain -1.54183 first tier gain=0.465724Second tier cost=-2.00756
+with estimate payoff=29.0047
+..Tried to Isolate 133 from 12-th head to be 11-th head
+Estimate Gain -0.00454018 first tier Cost=-0.00454169;second tier gain=1.51098e-06
+with estimate payoff=20.0501
+..Cand Size=1
+Tried to Join 10-th head:25 to 7-th Cluster
+Estimate Gain -0.455992 first tier gain=0.00701558Second tier cost=-0.463008
+with estimate payoff=13.448
+Tried to Isolate 99 from 11-th head to be 10-th head
+Estimate Gain -0.00236104 first tier Cost=-0.00642836;second tier gain=0.00406732
+with estimate payoff=16.3688
+Cand Size=1
+Tried to Join 10-th head:99 to 7-th Cluster
+Estimate Gain -0.259077 first tier gain=0.412985Second tier cost=-0.672062
+with estimate payoff=16.1308
+.Tried to Isolate 66 from 6-th head to be 10-th head
+Estimate Gain -0.00563021 first tier Cost=-0.00653705;second tier gain=0.000906847
+with estimate payoff=15.8654
+.Cand Size=1
+Tried to Join 10-th head:66 to 4-th Cluster
+Estimate Gain -0.64335 first tier gain=0.0280507Second tier cost=-0.671401
+with estimate payoff=16.2255
+.................................Cand Size=1
+Tried to Join 7-th head:92 to 4-th Cluster
+Estimate Gain -0.360426 first tier gain=-1.24008e-05Second tier cost=-0.360413
+with estimate payoff=9.3096
+....Cand Size=1
+Tried to Join 12-th head:151 to 4-th Cluster
+Estimate Gain -0.395412 first tier gain=0.0185966Second tier cost=-0.414008
+with estimate payoff=10.0279
+Tried to Isolate 136 from 10-th head to be 12-th head
+Estimate Gain -0.00448349 first tier Cost=-0.00454169;second tier gain=5.81949e-05
+with estimate payoff=10.2305
+..Cand Size=1
+Tried to Join 7-th head:92 to 4-th Cluster
+Estimate Gain -0.428058 first tier gain=0.00127074Second tier cost=-0.429329
+with estimate payoff=11.2731
+Cand Size=1
+Tried to Join 7-th head:92 to 4-th Cluster
+Estimate Gain -0.428055 first tier gain=0.00127074Second tier cost=-0.429326
+with estimate payoff=11.2731
+.................Cand Size=1
+Tried to Join 7-th head:126 to 14-th Cluster
+Estimate Gain -0.333788 first tier gain=-0.00171222Second tier cost=-0.332076
+with estimate payoff=9.59654
+...Tried to Isolate 134 from 12-th head to be 7-th head
+Estimate Gain -0.00439951 first tier Cost=-0.00454169;second tier gain=0.000142177
+with estimate payoff=8.81309
+Cand Size=1
+Tried to Join 7-th head:134 to 4-th Cluster
+Estimate Gain -0.264737 first tier gain=0.0961406Second tier cost=-0.360878
+with estimate payoff=9.47941
+.....Cand Size=1
+Tried to Join 7-th head:134 to 4-th Cluster
+Estimate Gain -0.309553 first tier gain=0.0988151Second tier cost=-0.408368
+with estimate payoff=10.446
+Tried to Isolate 132 from 12-th head to be 7-th head
+Estimate Gain 0.185008 first tier Cost=-0.00454169;second tier gain=0.18955
+with estimate payoff=42.8196
+...best 186   Information Ratio:0.979067
+SA end up correctly
+Add Times=2287
+Discard Times=2299
+HR Times=666
+2013-09-16_10-38_Best2i2Struc2ndN195_m15_cor0.0_r500.0.txt
+ULSA2i2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.480124 indEntropy 10.0471
+...........Cand Size=1
+Tried to Join 11-th head:30 to 7-th Cluster
+Estimate Gain -0.403866 first tier gain=0.0343657Second tier cost=-0.438232
+with estimate payoff=11.1326
+..Tried to Isolate 115 from 3-th head to be 11-th head
+Estimate Gain -0.0054109 first tier Cost=-0.00588713;second tier gain=0.00047623
+with estimate payoff=10.462
+.Cand Size=2
+Tried to Join 0-th head:101 to 4-th Cluster
+Estimate Gain -0.441883 first tier gain=0.0092939Second tier cost=-0.451176
+with estimate payoff=11.1218
+Tried to Isolate 151 from 10-th head to be 0-th head
+Estimate Gain -0.00454082 first tier Cost=-0.00454169;second tier gain=8.63835e-07
+with estimate payoff=10.5816
+Cand Size=2
+Tried to Join 10-th head:193 to 8-th Cluster
+Estimate Gain -0.589803 first tier gain=0.00604116Second tier cost=-0.595844
+with estimate payoff=12.9925
+...Cand Size=3
+Tried to Join 2-th head:111 to 4-th Cluster
+Estimate Gain -0.794394 first tier gain=0.00201651Second tier cost=-0.796411
+with estimate payoff=14.825
+.Tried to Isolate 102 from 11-th head to be 2-th head
+Estimate Gain -0.0025238 first tier Cost=-0.0129454;second tier gain=0.0104216
+with estimate payoff=13.7649
+.Tried to Isolate 152 from 3-th head to be 10-th head
+Estimate Gain -0.00260786 first tier Cost=-0.00681387;second tier gain=0.00420601
+with estimate payoff=13.8731
+Cand Size=1
+Tried to Join 7-th head:98 to 8-th Cluster
+Estimate Gain -0.693316 first tier gain=-3.6907e-05Second tier cost=-0.693279
+with estimate payoff=14.5962
+.Cand Size=3
+Tried to Join 10-th head:152 to 4-th Cluster
+Estimate Gain -0.410719 first tier gain=0.169631Second tier cost=-0.58035
+with estimate payoff=13.551
+..Tried to Isolate 104 from 11-th head to be 7-th head
+Estimate Gain 0.00246479 first tier Cost=-0.00642836;second tier gain=0.00889315
+with estimate payoff=13.7127
+.Cand Size=1
+Tried to Join 7-th head:104 to 13-th Cluster
+Estimate Gain -0.473976 first tier gain=0.132476Second tier cost=-0.606452
+with estimate payoff=13.7521
+Tried to Isolate 160 from 11-th head to be 7-th head
+Estimate Gain 0.00633396 first tier Cost=-0.00681387;second tier gain=0.0131478
+with estimate payoff=15.5249
+Tried to Isolate 138 from 11-th head to be 10-th head
+Estimate Gain 0.00682108 first tier Cost=-0.0170042;second tier gain=0.0238253
+with estimate payoff=15.2139
+...Cand Size=1
+Tried to Join 10-th head:138 to 5-th Cluster
+Estimate Gain -113.159 first tier gain=0.245686Second tier cost=-113.405
+with estimate payoff=1255.59
+.............Cand Size=1
+Tried to Join 4-th head:80 to 9-th Cluster
+Estimate Gain -0.608756 first tier gain=0.00585694Second tier cost=-0.614613
+with estimate payoff=14.2381
+.Tried to Isolate 130 from 14-th head to be 4-th head
+Estimate Gain -0.00367824 first tier Cost=-0.00454169;second tier gain=0.000863442
+with estimate payoff=12.3901
+..Cand Size=1
+Tried to Join 4-th head:130 to 1-th Cluster
+Estimate Gain -0.377479 first tier gain=0.0828473Second tier cost=-0.460326
+with estimate payoff=12.9307
+Tried to Isolate 132 from 14-th head to be 4-th head
+Estimate Gain -0.00363965 first tier Cost=-0.00454169;second tier gain=0.000902041
+with estimate payoff=17.0458
+.........Cand Size=1
+Tried to Join 1-th head:111 to 9-th Cluster
+Estimate Gain -0.557536 first tier gain=0.00610704Second tier cost=-0.563643
+with estimate payoff=15.8772
+Tried to Isolate 134 from 14-th head to be 1-th head
+Estimate Gain -0.00261621 first tier Cost=-0.00454169;second tier gain=0.00192548
+with estimate payoff=15.4346
+Cand Size=1
+Tried to Join 1-th head:134 to 8-th Cluster
+Estimate Gain -0.459857 first tier gain=0.0992031Second tier cost=-0.55906
+with estimate payoff=15.7711
+Cand Size=1
+Tried to Join 1-th head:134 to 9-th Cluster
+Estimate Gain -0.43651 first tier gain=0.100173Second tier cost=-0.536683
+with estimate payoff=15.6305
+.Tried to Isolate 38 from 14-th head to be 1-th head
+Estimate Gain 0.000722537 first tier Cost=-0.0230945;second tier gain=0.0238171
+with estimate payoff=16.4085
+..Cand Size=1
+Tried to Join 9-th head:154 to 8-th Cluster
+Estimate Gain -0.575286 first tier gain=0.0036939Second tier cost=-0.57898
+with estimate payoff=13.0814
+...Tried to Isolate 139 from 7-th head to be 9-th head
+Estimate Gain -0.00447488 first tier Cost=-0.00454169;second tier gain=6.68089e-05
+with estimate payoff=11.5552
+.......Cand Size=1
+Tried to Join 5-th head:98 to 8-th Cluster
+Estimate Gain -0.418134 first tier gain=2.0303e-05Second tier cost=-0.418155
+with estimate payoff=12.5075
+..Cand Size=1
+Tried to Join 7-th head:174 to 1-th Cluster
+Estimate Gain -0.336552 first tier gain=0.0260589Second tier cost=-0.362611
+with estimate payoff=10.4053
+Tried to Isolate 99 from 13-th head to be 5-th head
+Estimate Gain -0.00530197 first tier Cost=-0.00642836;second tier gain=0.0011264
+with estimate payoff=9.77898
+..Tried to Isolate 136 from 4-th head to be 7-th head
+Estimate Gain -0.00430063 first tier Cost=-0.00454169;second tier gain=0.000241059
+with estimate payoff=12.4265
+...........................best 186   Information Ratio:1.01149
+SA end up correctly
+Add Times=2064
+Discard Times=2073
+HR Times=619
+2013-09-16_11-08_Best2i2Struc2ndN195_m15_cor0.0_r500.0.txt
+ULSA2i2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.480124 indEntropy 10.0471
+..................Cand Size=1
+Tried to Join 0-th head:192 to 10-th Cluster
+Estimate Gain -0.235303 first tier gain=0.00937797Second tier cost=-0.244681
+with estimate payoff=8.8119
+.Tried to Isolate 143 from 12-th head to be 0-th head
+Estimate Gain -0.00446011 first tier Cost=-0.00454169;second tier gain=8.15771e-05
+with estimate payoff=8.0841
+.........Cand Size=1
+Tried to Join 10-th head:92 to 2-th Cluster
+Estimate Gain -0.231206 first tier gain=-0.00247859Second tier cost=-0.228727
+with estimate payoff=9.90397
+.Tried to Isolate 140 from 3-th head to be 10-th head
+Estimate Gain -0.00425092 first tier Cost=-0.00454169;second tier gain=0.000290771
+with estimate payoff=9.89959
+........Cand Size=1
+Tried to Join 4-th head:67 to 7-th Cluster
+Estimate Gain -0.298825 first tier gain=0.00741897Second tier cost=-0.306244
+with estimate payoff=10.1175
+Tried to Isolate 139 from 3-th head to be 4-th head
+Estimate Gain -0.00434196 first tier Cost=-0.00454169;second tier gain=0.000199732
+with estimate payoff=9.85911
+........Cand Size=1
+Tried to Join 7-th head:141 to 2-th Cluster
+Estimate Gain -0.308813 first tier gain=0.000760236Second tier cost=-0.309574
+with estimate payoff=11.1799
+Tried to Isolate 133 from 0-th head to be 7-th head
+Estimate Gain -0.00335498 first tier Cost=-0.00454169;second tier gain=0.00118671
+with estimate payoff=11.376
+.............Cand Size=1
+Tried to Join 11-th head:10 to 13-th Cluster
+Estimate Gain -0.322475 first tier gain=0.00276622Second tier cost=-0.325241
+with estimate payoff=9.29004
+.Tried to Isolate 133 from 7-th head to be 11-th head
+Estimate Gain -0.00421167 first tier Cost=-0.00454169;second tier gain=0.000330016
+with estimate payoff=8.68814
+.........Cand Size=1
+Tried to Join 13-th head:185 to 5-th Cluster
+Estimate Gain -0.351886 first tier gain=0.000238478Second tier cost=-0.352124
+with estimate payoff=9.28303
+.Cand Size=2
+Tried to Join 12-th head:89 to 7-th Cluster
+Estimate Gain -0.355403 first tier gain=0.00484857Second tier cost=-0.360251
+with estimate payoff=9.10757
+Tried to Isolate 141 from 5-th head to be 12-th head
+Estimate Gain -0.00446818 first tier Cost=-0.00454169;second tier gain=7.35088e-05
+with estimate payoff=8.75153
+.Cand Size=3
+Tried to Join 7-th head:193 to 5-th Cluster
+Estimate Gain -0.38406 first tier gain=0.00294063Second tier cost=-0.387
+with estimate payoff=9.17276
+Tried to Isolate 139 from 4-th head to be 7-th head
+Estimate Gain -0.00414344 first tier Cost=-0.00454169;second tier gain=0.000398245
+with estimate payoff=9.04662
+Cand Size=2
+Tried to Join 7-th head:139 to 4-th Cluster
+Estimate Gain -0.329615 first tier gain=0.0659992Second tier cost=-0.395614
+with estimate payoff=9.29562
+..Tried to Isolate 134 from 8-th head to be 7-th head
+Estimate Gain -0.00386411 first tier Cost=-0.00454169;second tier gain=0.000677575
+with estimate payoff=8.90302
+...Tried to Isolate 132 from 8-th head to be 13-th head
+Estimate Gain -0.00454169 first tier Cost=-0.00454169;second tier gain=0
+with estimate payoff=6.43882
+.Cand Size=2
+Tried to Join 12-th head:185 to 5-th Cluster
+Estimate Gain -2.96598 first tier gain=0.00245212Second tier cost=-2.96843
+with estimate payoff=38.4991
+.Tried to Isolate 102 from 10-th head to be 12-th head
+Estimate Gain 0.00450981 first tier Cost=-0.00588713;second tier gain=0.0103969
+with estimate payoff=35.0977
+.Cand Size=1
+Tried to Join 12-th head:102 to 10-th Cluster
+Estimate Gain -1.79699 first tier gain=0.286567Second tier cost=-2.08356
+with estimate payoff=29.4141
+Cand Size=1
+Tried to Join 12-th head:102 to 10-th Cluster
+Estimate Gain -1.86964 first tier gain=0.286567Second tier cost=-2.15621
+with estimate payoff=30.4106
+..Tried to Isolate 104 from 10-th head to be 13-th head
+Estimate Gain -0.00289471 first tier Cost=-0.00588713;second tier gain=0.00299242
+with estimate payoff=20.1554
+Cand Size=3
+Tried to Join 12-th head:102 to 3-th Cluster
+Estimate Gain -1.09426 first tier gain=0.194928Second tier cost=-1.28919
+with estimate payoff=20.5054
+...Cand Size=1
+Tried to Join 6-th head:10 to 1-th Cluster
+Estimate Gain -2.79333 first tier gain=-0.00787434Second tier cost=-2.78545
+with estimate payoff=38.0131
+.Cand Size=1
+Tried to Join 2-th head:92 to 5-th Cluster
+Estimate Gain -2.76641 first tier gain=2.49279e-05Second tier cost=-2.76644
+with estimate payoff=37.8912
+Tried to Isolate 104 from 13-th head to be 2-th head
+Estimate Gain 0.0512712 first tier Cost=-0.00588713;second tier gain=0.0571583
+with estimate payoff=49.3423
+Tried to Isolate 131 from 13-th head to be 6-th head
+Estimate Gain 0.0742324 first tier Cost=-0.0546205;second tier gain=0.128853
+with estimate payoff=47.2173
+Tried to Isolate 71 from 13-th head to be 12-th head
+Estimate Gain -0.00116988 first tier Cost=-0.0121724;second tier gain=0.0110026
+with estimate payoff=20.2105
+...Cand Size=1
+Tried to Join 2-th head:104 to 3-th Cluster
+Estimate Gain -1.29393 first tier gain=0.144018Second tier cost=-1.43795
+with estimate payoff=22.2771
+Cand Size=1
+Tried to Join 2-th head:104 to 1-th Cluster
+Estimate Gain -1.29385 first tier gain=0.139778Second tier cost=-1.43363
+with estimate payoff=22.138
+..Cand Size=2
+Tried to Join 2-th head:104 to 5-th Cluster
+Estimate Gain -1.12564 first tier gain=0.148694Second tier cost=-1.27433
+with estimate payoff=20.902
+Cand Size=2
+Tried to Join 2-th head:104 to 14-th Cluster
+Estimate Gain -1.10524 first tier gain=0.126023Second tier cost=-1.23126
+with estimate payoff=20.1763
+Cand Size=2
+Tried to Join 2-th head:104 to 14-th Cluster
+Estimate Gain -1.10615 first tier gain=0.126023Second tier cost=-1.23217
+with estimate payoff=20.188
+Cand Size=2
+Tried to Join 2-th head:104 to 5-th Cluster
+Estimate Gain -1.05907 first tier gain=0.148694Second tier cost=-1.20777
+with estimate payoff=19.8817
+Cand Size=2
+Tried to Join 2-th head:104 to 5-th Cluster
+Estimate Gain -1.06524 first tier gain=0.148694Second tier cost=-1.21393
+with estimate payoff=19.9179
+.Tried to Isolate 104 from 5-th head to be 2-th head
+Estimate Gain 0.00556138 first tier Cost=-0.00588713;second tier gain=0.0114485
+with estimate payoff=22.1388
+Cand Size=2
+Tried to Join 2-th head:104 to 5-th Cluster
+Estimate Gain -1.05933 first tier gain=0.148694Second tier cost=-1.20803
+with estimate payoff=19.9521
+Cand Size=1
+Tried to Join 13-th head:87 to 14-th Cluster
+Estimate Gain -1.28497 first tier gain=0.0644596Second tier cost=-1.34943
+with estimate payoff=21.7396
+.Tried to Isolate 79 from 10-th head to be 2-th head
+Estimate Gain -0.000439364 first tier Cost=-0.00741545;second tier gain=0.00697608
+with estimate payoff=19.9841
+.Cand Size=1
+Tried to Join 2-th head:79 to 3-th Cluster
+Estimate Gain -0.77842 first tier gain=0.355325Second tier cost=-1.13375
+with estimate payoff=19.522
+best 186   Information Ratio:0.984316
+SA end up correctly
+Add Times=2225
+Discard Times=2235
+HR Times=652
+2013-09-16_11-15_Best2i2Struc2ndN195_m15_cor0.0_r500.0.txt
+ULSA2i2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.480124 indEntropy 10.0471
+...............Cand Size=1
+Tried to Join 2-th head:190 to 10-th Cluster
+Estimate Gain -0.227609 first tier gain=0.0112383Second tier cost=-0.238847
+with estimate payoff=11.0457
+....Tried to Isolate 132 from 8-th head to be 2-th head
+Estimate Gain -0.00437083 first tier Cost=-0.00454169;second tier gain=0.000170855
+with estimate payoff=12.4695
+.................Cand Size=1
+Tried to Join 5-th head:105 to 10-th Cluster
+Estimate Gain -0.29079 first tier gain=0.0231037Second tier cost=-0.313894
+with estimate payoff=10.8114
+Tried to Isolate 194 from 2-th head to be 5-th head
+Estimate Gain -0.00525838 first tier Cost=-0.0054564;second tier gain=0.000198024
+with estimate payoff=10.6516
+.Tried to Isolate 132 from 2-th head to be 5-th head
+Estimate Gain -0.00430001 first tier Cost=-0.00454169;second tier gain=0.000241675
+with estimate payoff=10.4635
+Tried to Isolate 106 from 14-th head to be 5-th head
+Estimate Gain -0.00563801 first tier Cost=-0.00588713;second tier gain=0.000249121
+with estimate payoff=10.5622
+.....................Cand Size=1
+Tried to Join 3-th head:92 to 1-th Cluster
+Estimate Gain -0.338625 first tier gain=0.000619149Second tier cost=-0.339244
+with estimate payoff=10.1587
+Tried to Isolate 135 from 13-th head to be 3-th head
+Estimate Gain -0.00372226 first tier Cost=-0.00454169;second tier gain=0.000819422
+with estimate payoff=10.1241
+................................Cand Size=1
+Tried to Join 0-th head:185 to 10-th Cluster
+Estimate Gain -0.285162 first tier gain=0.00119566Second tier cost=-0.286357
+with estimate payoff=9.42354
+....Tried to Isolate 99 from 12-th head to be 0-th head
+Estimate Gain -0.00368634 first tier Cost=-0.00642836;second tier gain=0.00274202
+with estimate payoff=9.55605
+best 186   Information Ratio:0.993159
+SA end up correctly
+Add Times=2163
+Discard Times=2172
+HR Times=639
+2013-09-16_11-22_Best2i2Struc2ndN195_m15_cor0.0_r500.0.txt
+ULSA2i2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Computing Time 258.922704 
+End time is 一 9月 16 11:22:40 CST 2013
+Computing time is 4565 sec

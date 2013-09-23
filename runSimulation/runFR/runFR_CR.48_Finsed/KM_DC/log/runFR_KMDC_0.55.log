@@ -1,0 +1,67 @@
+Working directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/runSimulation/runFR/runFR_CR.48_Finsed/KM_DC
+running on host mini132
+Start time is Mon Sep 16 10:24:48 CST 2013
+Directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/runSimulation/runFR/runFR_CR.48_Finsed/KM_DC
+Iniial retrytimes132
+indEntropy10.0471 all entropy:1959.18
+Compression Ratio 0.480124 indEntropy 10.0471
+....................................................................................................best 88   Information Ratio:0.553276
+SA end up correctly
+Add Times=568
+Discard Times=681
+HR Times=0
+2013-09-16_10-25_Best4b2Struc2ndN195_m5_cor-0.0.txt
+ULSAkmeans4b2_Cluster_N195_BW180.0PW0.001_FR0.55.txt
+Iniial retrytimes88
+indEntropy10.0471 all entropy:1959.18
+Compression Ratio 0.480124 indEntropy 10.0471
+....................................................................................................best 75   Information Ratio:0.550238
+SA end up correctly
+Add Times=544
+Discard Times=664
+HR Times=0
+2013-09-16_10-25_Best4b2Struc2ndN195_m5_cor-0.0.txt
+ULSAkmeans4b2_Cluster_N195_BW180.0PW0.001_FR0.55.txt
+Iniial retrytimes25
+indEntropy10.0471 all entropy:1959.18
+Compression Ratio 0.480124 indEntropy 10.0471
+....................................................................................................best 91   Information Ratio:0.552574
+SA end up correctly
+Add Times=503
+Discard Times=620
+HR Times=0
+2013-09-16_10-26_Best4b2Struc2ndN195_m5_cor-0.0.txt
+ULSAkmeans4b2_Cluster_N195_BW180.0PW0.001_FR0.55.txt
+Iniial retrytimes186
+indEntropy10.0471 all entropy:1959.18
+Compression Ratio 0.480124 indEntropy 10.0471
+....................................................................................................best 89   Information Ratio:0.552715
+SA end up correctly
+Add Times=552
+Discard Times=665
+HR Times=0
+2013-09-16_10-26_Best4b2Struc2ndN195_m5_cor-0.0.txt
+ULSAkmeans4b2_Cluster_N195_BW180.0PW0.001_FR0.55.txt
+Iniial retrytimes67
+indEntropy10.0471 all entropy:1959.18
+Compression Ratio 0.480124 indEntropy 10.0471
+....................................................................................................best 85   Information Ratio:0.553075
+SA end up correctly
+Add Times=533
+Discard Times=648
+HR Times=0
+2013-09-16_10-27_Best4b2Struc2ndN195_m5_cor-0.0.txt
+ULSAkmeans4b2_Cluster_N195_BW180.0PW0.001_FR0.55.txt
+Iniial retrytimes159
+indEntropy10.0471 all entropy:1959.18
+Compression Ratio 0.480124 indEntropy 10.0471
+....................................................................................................best 72   Information Ratio:0.550074
+SA end up correctly
+Add Times=479
+Discard Times=601
+HR Times=0
+2013-09-16_10-27_Best4b2Struc2ndN195_m5_cor-0.0.txt
+ULSAkmeans4b2_Cluster_N195_BW180.0PW0.001_FR0.55.txt
+Computing Time 170.990000 
+End time is Mon Sep 16 10:27:47 CST 2013
+Computing time is 179 sec

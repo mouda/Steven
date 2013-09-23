@@ -1,0 +1,104 @@
+Working directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/winULSA4b2_DC/bin/Release/runHN_FR.95_CR.48_N195_Finsed
+running on host mini130
+Start time is Wed Sep 11 15:57:29 CST 2013
+Directory is /home/mouda/Work/Thesis/figures_src/Simulatorsrc/winULSA4b2_DC/bin/Release/runHN_FR.95_CR.48_N195_Finsed
+Compression Ratio 0.477365 indEntropy 10.0471
+.........................................................................Cand Size=1
+Tried to Join 1-th head:185 to 4-th Cluster
+Estimate Gain -0.917987 first tier gain=-0.0318484Second tier cost=-0.886138
+with estimate payoff=10.9508
+.Cand Size=1
+Tried to Join 1-th head:185 to 4-th Cluster
+Estimate Gain -0.536421 first tier gain=-0.0144494Second tier cost=-0.521971
+with estimate payoff=9.24223
+.Tried to Isolate 74 from 2-th head to be 1-th head
+Estimate Gain 0.021661 first tier Cost=-0.00741545;second tier gain=0.0290765
+with estimate payoff=8.81311
+....Cand Size=1
+Tried to Join 1-th head:126 to 2-th Cluster
+Estimate Gain -0.76589 first tier gain=-0.153778Second tier cost=-0.612112
+with estimate payoff=9.42273
+...................Cand Size=1
+Tried to Join 1-th head:141 to 3-th Cluster
+Estimate Gain -2.06601 first tier gain=-0.0734985Second tier cost=-1.99251
+with estimate payoff=9.97619
+.Cand Size=1
+Tried to Join 1-th head:185 to 4-th Cluster
+Estimate Gain -0.68252 first tier gain=-0.033107Second tier cost=-0.649413
+with estimate payoff=9.41993
+.best 153   Information Ratio:0.954825
+SA end up correctly
+Add Times=1008
+Discard Times=1052
+HR Times=537
+2013-09-11_16-40
+2013-09-11_16-40_Best4b2Struc2ndN195_m5_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.477365 indEntropy 10.0471
+....................................................................................................best 157   Information Ratio:0.95183
+SA end up correctly
+Add Times=974
+Discard Times=1011
+HR Times=509
+2013-09-11_17-28
+2013-09-11_17-28_Best4b2Struc2ndN195_m5_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.477365 indEntropy 10.0471
+................................................Cand Size=1
+Tried to Join 0-th head:98 to 4-th Cluster
+Estimate Gain -0.605844 first tier gain=-0.038785Second tier cost=-0.567059
+with estimate payoff=9.2855
+...........................................Cand Size=1
+Tried to Join 0-th head:98 to 4-th Cluster
+Estimate Gain -0.743874 first tier gain=-0.032941Second tier cost=-0.710933
+with estimate payoff=9.27678
+......Cand Size=1
+Tried to Join 0-th head:185 to 3-th Cluster
+Estimate Gain -0.573581 first tier gain=-0.0784475Second tier cost=-0.495133
+with estimate payoff=8.88744
+.Cand Size=1
+Tried to Join 0-th head:154 to 4-th Cluster
+Estimate Gain -0.534053 first tier gain=-0.00858713Second tier cost=-0.525466
+with estimate payoff=9.15047
+.Cand Size=1
+Tried to Join 0-th head:175 to 3-th Cluster
+Estimate Gain -0.571023 first tier gain=-0.0530666Second tier cost=-0.517957
+with estimate payoff=9.74771
+.best 159   Information Ratio:0.950184
+SA end up correctly
+Add Times=971
+Discard Times=1018
+HR Times=517
+2013-09-11_18-10
+2013-09-11_18-10_Best4b2Struc2ndN195_m5_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.477365 indEntropy 10.0471
+....................................................................................................best 159   Information Ratio:0.950688
+SA end up correctly
+Add Times=940
+Discard Times=974
+HR Times=516
+2013-09-11_18-50
+2013-09-11_18-50_Best4b2Struc2ndN195_m5_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.477365 indEntropy 10.0471
+....................................................................................................best 159   Information Ratio:0.951869
+SA end up correctly
+Add Times=975
+Discard Times=1016
+HR Times=439
+2013-09-11_19-27
+2013-09-11_19-27_Best4b2Struc2ndN195_m5_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Compression Ratio 0.477365 indEntropy 10.0471
+....................................................................................................best 158   Information Ratio:0.951775
+SA end up correctly
+Add Times=908
+Discard Times=945
+HR Times=484
+2013-09-11_20-02
+2013-09-11_20-02_Best4b2Struc2ndN195_m5_FR0.9_r500.0.txt
+ULSA4b2_Cluster_N195_BW180.0PW0.001_FR0.95_r500.0.txt
+Computing Time 2072.340000 
+End time is Wed Sep 11 20:02:58 CST 2013
+Computing time is 14729 sec
