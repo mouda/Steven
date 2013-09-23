@@ -23,11 +23,11 @@ template<class  T> void ULSAOutputToolSet<T>::writeIniHead(char* filename, T &my
 
     FILE* fid;
     fid = fopen(filename,"w");
-    fprintf(fid,"%d\n",myObj.cSystem->vecHeadName.size());
+    fprintf(fid,"%zu\n",myObj.cSystem->vecHeadName.size());
 
     for(unsigned int i=0; i<myObj.cSystem->vecHeadName.size(); i++)
     {
-        fprintf(fid,"%d\n",myObj.cSystem->vecHeadName[i]);
+        fprintf(fid,"%zu\n",myObj.cSystem->vecHeadName[i]);
     }
     fclose(fid);
 }
