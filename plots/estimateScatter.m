@@ -1,7 +1,7 @@
 clear all; close all;
 
 fJoin = ...
-    dlmread('../runSimulation/runTest/operatorTest/ULSA4b_EstimateJoinGainHN25.txt');
+    dlmread('../runSimulation/runTest/operatorTest/ULSA4b_EstimateJoinGainHN25.txt-backup3');
 
 
 vecJoinEstiGain = [];
@@ -16,5 +16,6 @@ for i = 1:size(fJoin,1)
         vecJoinRealGain = [vecJoinRealGain fJoin(i,2)];
     end
 end
-scatter(vecJoinEstiGain,vecJoinRealGain);
+idxs = find(vecJoinEstiGain > -500);
+scatter(vecJoinEstiGain(idxs),vecJoinRealGain(idxs));
 grid on;

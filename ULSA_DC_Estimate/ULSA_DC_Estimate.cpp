@@ -1392,7 +1392,7 @@ double ULSA_DC_Estimate::estimateJoin2ndTierCost(int JoiningHeadIndex, int targe
         }
     }
 
-    return ( ( testMaxRatio )/ 10*cur2nd_ms );
+    return ( ( testMaxRatio )*cur2nd_ms / 10);
     //(:=upper bound + lower nbound)/2 - lower bound
 }
 
@@ -1780,7 +1780,7 @@ void ULSA_DC_Estimate::calculateMatrics_minResors()
           char str[500]; 
           sprintf(str,"ULSA4b_EstimateJoinGainHN%d.txt",maxChNum);
           FILE *fid=fopen(str,"a+");
-          double gain = (next1st_ms+next2nd_ms) - (cur1st_ms+cur2nd_ms);
+          double gain =  (cur1st_ms+cur2nd_ms)-(next1st_ms+next2nd_ms);
           fprintf( fid,"%d %f %d\n", 2, gain, curChNum );
           fclose(fid);
 
@@ -2265,8 +2265,7 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
           double firstTierCost = ( cluInfoMerge - cluInfo ) / 
             ( (bandwidthKhz*log2(1+power1st*Gib[cSystem->vecHeadName[j]]/
                                  realNoise)) );
-          double tmp = firstTierGain - firstTierCost - 
-            estimateJoin2ndTierCost( i, j );
+          double tmp = firstTierGain - firstTierCost - estimateJoin2ndTierCost( i, j );
           //Cost = extra mini second spent
           char str[500]; 
           sprintf(str,"ULSA4b_EstimateJoinGainHN%d.txt",maxChNum);
