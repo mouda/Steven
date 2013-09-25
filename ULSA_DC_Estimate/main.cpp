@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
     }
 
     //toolSA.startCool();
-    toolSA.operatorTest(4);
+    toolSA.operatorTest(5);
   }
 
   end = clock();

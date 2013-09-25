@@ -1777,22 +1777,10 @@ void ULSA_DC_Estimate::calculateMatrics_minResors()
 	else if (nextEventFlag==4) { //Do Nothing
           //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
           
-          char str[500]; 
-          sprintf(str,"ULSA4b_EstimateJoinGainHN%d.txt",maxChNum);
-          FILE *fid=fopen(str,"a+");
-          double gain =  (cur1st_ms+cur2nd_ms)-(next1st_ms+next2nd_ms);
-          fprintf( fid,"%d %f %d\n", 2, gain, curChNum );
-          fclose(fid);
 
         }
         else if (nextEventFlag==5) {  //Do Nothing
           //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
-          char str[500]; 
-          sprintf(str,"ULSA4b_EstimateIsolateGainHN%d.txt",maxChNum);
-          FILE *fid=fopen(str,"a+");
-          double gain = (next1st_ms+next2nd_ms) - (cur1st_ms+cur2nd_ms);
-          fprintf( fid,"%d %f %d\n", 3, gain, curChNum );
-          fclose(fid);
         }
 	else {
           cout<<"Error in calculateMatrics_minResors "<<endl;
@@ -2162,7 +2150,7 @@ void ULSA_DC_Estimate::resetSA3iSystem() {
 
 
 
-/* @brief    Test the clustering operatio
+/* @brief    Test the clustering operator
  * @param    operatorFlag
  * @retval   void
  */
@@ -2218,21 +2206,21 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
     JoiningHeadIndex=-1;
     targetHeadIndex=-1;
 
-    vector<int> vecJoinCandHeadIndex;
-    vector<int> vecTargetCandIndex;
-    vector<double>vecGain;
-    vecJoinCandHeadIndex.reserve(maxChNum);
-    vecTargetCandIndex.reserve(maxChNum);
-    vecGain.reserve(maxChNum);
-    for(int i=0;i<maxChNum;i++){
-        if(cSystem->vecClusterSize[i]>0&&cSystem->vecClusterSize[i]<=threshold){
-            vecJoinCandHeadIndex.push_back(i);
-        }
-    }
 
     nextEventFlag = opFlag;
-    cout << nextEventFlag << endl;
-    if ( nextEventFlag ) {
+    if ( nextEventFlag  == 4) {
+
+      vector<int> vecJoinCandHeadIndex;
+      vector<int> vecTargetCandIndex;
+      vector<double>vecGain;
+      vecJoinCandHeadIndex.reserve(maxChNum);
+      vecTargetCandIndex.reserve(maxChNum);
+      vecGain.reserve(maxChNum);
+      for(int i=0;i<maxChNum;i++){
+          if(cSystem->vecClusterSize[i]>0&&cSystem->vecClusterSize[i]<=threshold){
+              vecJoinCandHeadIndex.push_back(i);
+          }
+      }
       for (int i = 0; i < maxChNum; i++) {
         for (int j = 0; j < maxChNum; j++) {
           if ( i == j ) continue;
@@ -2267,25 +2255,130 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
                                  realNoise)) );
           double tmp = firstTierGain - firstTierCost - estimateJoin2ndTierCost( i, j );
           //Cost = extra mini second spent
-          char str[500]; 
-          sprintf(str,"ULSA4b_EstimateJoinGainHN%d.txt",maxChNum);
-          FILE *fid=fopen(str,"a+");
+          char str1[500]; 
+          sprintf(str1,"ULSA4b_EstimateJoinGainHN%d.txt",maxChNum);
+          FILE *fid=fopen(str1,"a+");
           fprintf(fid,"%d %f %d\n",0,tmp,curChNum);
-          fclose(fid);
 
 
-          cout << "JoiningHeadIndex: " << i << " targetHeadIndex: " << j<< endl;
+          cout << "JoiningHeadIndex: " << i << " targetHeadIndex: " << j << endl;
           JoiningHeadIndex = i;
           targetHeadIndex = j;
         
           join_fromHeadSA(JoiningHeadIndex,targetHeadIndex);
           nextJEntropy = curJEntropy;
           nextSupNum = curSupNum;
-          calculateMatrics_minResors();
+          next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+          next1st_ms = return1stTotalNcal1stResors_HomoPower();
+          
+          char str2[500]; 
+          sprintf(str2,"ULSA4b_EstimateJoinGainHN%d.txt",maxChNum);
+          double gain =  (cur1st_ms+cur2nd_ms)-(next1st_ms+next2nd_ms);
+          fprintf( fid,"%d %f %d\n", 2, gain, curChNum );
+          fclose(fid);
+          //calculateMatrics_minResors();
 	  reverseMoveSA();
+          }
         }
+      } 
+      else if ( nextEventFlag == 5) 
+      {
+          join_fromHeadSA(0,1);
+          nextJEntropy = curJEntropy;
+          nextSupNum = curSupNum;
+          next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+          next1st_ms = return1stTotalNcal1stResors_HomoPower();
+	  nextPayoff = (next1st_ms+next2nd_ms);
+	  passNext2Cur();
+
+	  for(int i=0; i<totalNodes; i++) nodes[i].power = nextNodePower[i];
+
+          vector<double>vecGain;
+          vecGain.reserve(totalNodes);
+          for( int i=0; i < totalNodes; i++ ) {
+              /* no gain if the nodes are not supported */
+              if( nodes[i].ptrHead == NULL ){ 
+                vecGain.push_back(-DBL_MAX);
+                continue; 
+              }
+              /* rateibMax: ? */
+              double firstTierCost = indEntropy/rateibMax[i];
+              firstTierCost *= 1000;
+              assert( firstTierCost > 0 );
+              //cout << "Node: " << i << " in Isolate 1st tier cost = "
+              //<< firstTierCost << endl;
+              vecGain.push_back(-firstTierCost);//Gain = mini second reduced
+          }
+
+          vector<double> firsttierC;
+          firsttierC.resize(totalNodes);
+
+          //Calculate 2nd tier Gain
+          vector<vector<int> > nodeRecord;
+          nodeRecord.resize(cSystem->listCluMember->size());
+          list<list<int> >::iterator it_LiInt = cSystem->listCluMember->begin();
+          for(unsigned int i = 0; i < cSystem->listCluMember->size(); i++,it_LiInt++ ){
+            
+  
+              if( cSystem->vecHeadName[i] == -1 )
+                continue;
+              else if( 0 < it_LiInt->size() && it_LiInt->size() <= thresholdd )
+                continue;
+
+              list<int>::iterator it_Int = it_LiInt->begin();
+              for(; it_Int != it_LiInt->end(); it_Int++ ){
+                  if( cSystem->vecHeadName[i] == *it_Int ) continue;
+                  double tmp = estimateIsolate2ndTierGain(*it_Int,i);
+                  double secondGain = cur2nd_ms - tmp;
+                  firsttierC[*it_Int] = vecGain[*it_Int];
+                  vecGain[*it_Int] += secondGain;
+                  nodeRecord[i].push_back(*it_Int);
+              }
+          }
+          //Find max Gain
+          double tmpGainTest = -DBL_MAX;
+          it_LiInt=cSystem->listCluMember->begin();
+          for(unsigned int i=0; i < cSystem->listCluMember->size(); i++,it_LiInt++){
+              if(cSystem->vecHeadName[i]==-1)continue;
+              if(it_LiInt->size()<2)continue;
+              list<int>::iterator it_Int=it_LiInt->begin();
+
+              //for(; it_Int!=it_LiInt->end(); it_Int++ ){
+              for(unsigned int j = 0; j < nodeRecord[i].size(); j++) {
+                  if(nodeRecord[i][j]==cSystem->vecHeadName[i])continue;
+
+                  cout << curSupNum << ' ' <<i << ' '<<nodeRecord[i][j]<< endl; 
+                  //try all the commbination
+                  char str[500]; 
+                  sprintf(str,"ULSA4b_EstimateIsolateGainHN%d.txt",maxChNum);
+                  FILE *fid=fopen(str,"a+");
+                  
+                  fprintf( fid,"%d %f %d\n", 1, vecGain[nodeRecord[i][j]], curChNum );
+                  for(unsigned int k=0;k<cSystem->vecHeadName.size();k++){
+                      //cout<<i<<" "<<cSystem->vecHeadName[i]<<endl;
+                      if(cSystem->vecHeadName[k]==-1){
+                          targetHeadIndex=k;
+                          break;
+                      }
+                  }
+                  isolatedHeadIndex=i;
+                  IsolateNodeName=nodeRecord[i][j];
+                  isolateHeadSA(IsolateNodeName,isolatedHeadIndex,targetHeadIndex);
+
+                  nextJEntropy = curJEntropy;
+                  nextSupNum = curSupNum;
+                  next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+                  next1st_ms = return1stTotalNcal1stResors_HomoPower();
+
+                  cout << cur1st_ms << ' ' << cur2nd_ms << endl;
+                  double gain = (cur1st_ms+cur2nd_ms)-(next1st_ms+next2nd_ms);
+                  fprintf( fid,"%d %f %d\n", 3, gain, curChNum );
+                  fclose(fid);
+	          reverseMoveSA();
+              }
+          }
+
       }
-    }
 
     
 
