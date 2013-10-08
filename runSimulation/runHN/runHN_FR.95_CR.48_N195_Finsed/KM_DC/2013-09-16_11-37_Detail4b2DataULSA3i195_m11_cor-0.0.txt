@@ -1,0 +1,16 @@
+------------------
+SupNum 156       Sup Ratio: 0.800000
+Info   975.688241     Sup Info Ratio: 9.528809e-01 CR:4.77365e-01
+total: 13.778884(ms),     1st:1.288029e+01(ms)     2nd:8.985901e-01(ms)
+total: 1.401978e-05(joule),  1st:1.288029e-05(joule)  2nd:1.139481e-06(joule)
+0-th Head 185, DataLoad:109.533231(bits), Power: 1.000000e-03(Watt), Time: 5.948567e-02(ms) Energy: 5.948568e-08(Joule) 
+1-th Head 151, DataLoad:82.427935(bits), Power: 1.000000e-03(Watt), Time: 1.972749e-01(ms) Energy: 1.972749e-07(Joule) 
+2-th Head 90, DataLoad:85.293875(bits), Power: 1.000000e-03(Watt), Time: 5.134909e-01(ms) Energy: 5.134909e-07(Joule) 
+3-th Head 145, DataLoad:127.885379(bits), Power: 1.000000e-03(Watt), Time: 1.094936e+00(ms) Energy: 1.094936e-06(Joule) 
+4-th Head 82, DataLoad:51.900155(bits), Power: 1.000000e-03(Watt), Time: 1.108432e+00(ms) Energy: 1.108432e-06(Joule) 
+5-th Head 95, DataLoad:100.306648(bits), Power: 1.000000e-03(Watt), Time: 1.340132e+00(ms) Energy: 1.340132e-06(Joule) 
+6-th Head 182, DataLoad:72.506810(bits), Power: 1.000000e-03(Watt), Time: 1.103217e+00(ms) Energy: 1.103217e-06(Joule) 
+7-th Head 45, DataLoad:76.446670(bits), Power: 1.000000e-03(Watt), Time: 1.675837e+00(ms) Energy: 1.675837e-06(Joule) 
+8-th Head 38, DataLoad:133.643321(bits), Power: 1.000000e-03(Watt), Time: 1.362413e+00(ms) Energy: 1.362413e-06(Joule) 
+9-th Head 11, DataLoad:87.208688(bits), Power: 1.000000e-03(Watt), Time: 1.397899e+00(ms) Energy: 1.397899e-06(Joule) 
+10-th Head 106, DataLoad:121.641405(bits), Power: 1.000000e-03(Watt), Time: 3.027177e+00(ms) Energy: 3.027177e-06(Joule) 

@@ -1,0 +1,20 @@
+------------------
+SupNum 147       Sup Ratio: 0.753846
+Info   872.928045     Sup Info Ratio: 8.570460e-01 CR:4.80124e-01
+total: 6.461561(ms),     1st:4.265516e+00(ms)     2nd:2.196045e+00(ms)
+total: 6.230805e-06(joule),  1st:4.265516e-06(joule)  2nd:1.965289e-06(joule)
+0-th Head 25, DataLoad:74.666905(bits), Power: 1.000000e-03(Watt), Time: 1.069558e-01(ms) Energy: 1.069558e-07(Joule) 
+1-th Head 166, DataLoad:74.732312(bits), Power: 1.000000e-03(Watt), Time: 8.118813e-01(ms) Energy: 8.118813e-07(Joule) 
+2-th Head 120, DataLoad:92.199680(bits), Power: 1.000000e-03(Watt), Time: 1.560435e-01(ms) Energy: 1.560435e-07(Joule) 
+3-th Head 151, DataLoad:125.799073(bits), Power: 1.000000e-03(Watt), Time: 3.010751e-01(ms) Energy: 3.010751e-07(Joule) 
+4-th Head 163, DataLoad:143.851743(bits), Power: 1.000000e-03(Watt), Time: 8.426729e-01(ms) Energy: 8.426730e-07(Joule) 
+5-th Head 34, DataLoad:19.278992(bits), Power: 1.000000e-03(Watt), Time: 4.431534e-02(ms) Energy: 4.431534e-08(Joule) 
+6-th Head 55, DataLoad:45.745595(bits), Power: 1.000000e-03(Watt), Time: 8.580917e-02(ms) Energy: 8.580917e-08(Joule) 
+7-th Head 69, DataLoad:100.118634(bits), Power: 1.000000e-03(Watt), Time: 3.959722e-01(ms) Energy: 3.959723e-07(Joule) 
+8-th Head 122, DataLoad:92.491651(bits), Power: 1.000000e-03(Watt), Time: 4.252616e-01(ms) Energy: 4.252616e-07(Joule) 
+9-th Head 10, DataLoad:19.708070(bits), Power: 1.000000e-03(Watt), Time: 1.459369e-02(ms) Energy: 1.459369e-08(Joule) 
+10-th Head -1, DataLoad:10.047074(bits), Power: 1.000000e-03(Watt), Time: 1.148929e-02(ms) Energy: 1.148929e-08(Joule) 
+11-th Head -1, DataLoad:10.047074(bits), Power: 1.000000e-03(Watt), Time: 6.537053e-03(ms) Energy: 6.537054e-09(Joule) 
+12-th Head 190, DataLoad:110.651231(bits), Power: 1.000000e-03(Watt), Time: 2.592307e-01(ms) Energy: 2.592307e-07(Joule) 
+13-th Head 141, DataLoad:17.767923(bits), Power: 1.000000e-03(Watt), Time: 1.205010e-02(ms) Energy: 1.205010e-08(Joule) 
+14-th Head 88, DataLoad:80.699910(bits), Power: 1.000000e-03(Watt), Time: 8.096542e-01(ms) Energy: 8.096543e-07(Joule) 

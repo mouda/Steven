@@ -1,0 +1,20 @@
+------------------
+SupNum 127       Sup Ratio: 0.651282
+Info   830.226867     Sup Info Ratio: 8.151217e-01 CR:4.80124e-01
+total: 5.991457(ms),     1st:3.860110e+00(ms)     2nd:2.131348e+00(ms)
+total: 6.037621e-06(joule),  1st:3.860110e-06(joule)  2nd:2.177511e-06(joule)
+0-th Head 127, DataLoad:10.047074(bits), Power: 1.000000e-03(Watt), Time: 2.701539e-01(ms) Energy: 2.701539e-07(Joule) 
+1-th Head 97, DataLoad:95.186973(bits), Power: 1.000000e-03(Watt), Time: 4.315090e-01(ms) Energy: 4.315090e-07(Joule) 
+2-th Head -1, DataLoad:10.047074(bits), Power: 1.000000e-03(Watt), Time: 3.151260e-02(ms) Energy: 3.151260e-08(Joule) 
+3-th Head 94, DataLoad:96.770934(bits), Power: 1.000000e-03(Watt), Time: 6.775947e-01(ms) Energy: 6.775947e-07(Joule) 
+4-th Head 92, DataLoad:51.939817(bits), Power: 1.000000e-03(Watt), Time: 3.323235e-02(ms) Energy: 3.323235e-08(Joule) 
+5-th Head 2, DataLoad:29.133741(bits), Power: 1.000000e-03(Watt), Time: 9.288731e-02(ms) Energy: 9.288731e-08(Joule) 
+6-th Head -1, DataLoad:10.047074(bits), Power: 1.000000e-03(Watt), Time: 5.422071e-02(ms) Energy: 5.422072e-08(Joule) 
+7-th Head 122, DataLoad:111.574027(bits), Power: 1.000000e-03(Watt), Time: 5.129993e-01(ms) Energy: 5.129993e-07(Joule) 
+8-th Head -1, DataLoad:10.047074(bits), Power: 1.000000e-03(Watt), Time: 7.439789e-03(ms) Energy: 7.439789e-09(Joule) 
+9-th Head 101, DataLoad:127.413663(bits), Power: 1.000000e-03(Watt), Time: 2.379641e-01(ms) Energy: 2.379641e-07(Joule) 
+10-th Head 34, DataLoad:123.688565(bits), Power: 1.000000e-03(Watt), Time: 2.843147e-01(ms) Energy: 2.843147e-07(Joule) 
+11-th Head -1, DataLoad:10.047074(bits), Power: 1.000000e-03(Watt), Time: 3.532788e-01(ms) Energy: 3.532788e-07(Joule) 
+12-th Head 145, DataLoad:94.643234(bits), Power: 1.000000e-03(Watt), Time: 8.103215e-01(ms) Energy: 8.103215e-07(Joule) 
+13-th Head 93, DataLoad:156.529109(bits), Power: 1.000000e-03(Watt), Time: 5.091330e-01(ms) Energy: 5.091330e-07(Joule) 
+14-th Head -1, DataLoad:10.047074(bits), Power: 1.000000e-03(Watt), Time: 1.615550e-01(ms) Energy: 1.615550e-07(Joule) 

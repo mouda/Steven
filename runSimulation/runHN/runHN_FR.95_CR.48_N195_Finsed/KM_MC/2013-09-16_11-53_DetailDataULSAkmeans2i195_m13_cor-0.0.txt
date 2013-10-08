@@ -1,0 +1,36 @@
+------------------
+SupNum 186       Sup Ratio: 0.953846
+Info   1014.344605     Sup Info Ratio: 9.906337e-01 CR:4.77365e-01
+total: 16.664183(ms),     1st:1.494055e+01(ms)     2nd:1.723633e+00(ms)
+total: 1.569794e-05(joule),  1st:1.494055e-05(joule)  2nd:7.573918e-07(joule)
+0-th Head 125, DataLoad:97.514052(bits), Power: 1.000000e-03(Watt), Time: 5.301311e-01(ms) Energy: 5.301311e-07(Joule) 
+1-th Head 113, DataLoad:83.235990(bits), Power: 1.000000e-03(Watt), Time: 1.774161e+00(ms) Energy: 1.774161e-06(Joule) 
+2-th Head 3, DataLoad:112.605794(bits), Power: 1.000000e-03(Watt), Time: 1.080235e+00(ms) Energy: 1.080235e-06(Joule) 
+3-th Head 52, DataLoad:82.874267(bits), Power: 1.000000e-03(Watt), Time: 8.409200e-02(ms) Energy: 8.409200e-08(Joule) 
+4-th Head 114, DataLoad:24.363247(bits), Power: 1.000000e-03(Watt), Time: 9.125678e-01(ms) Energy: 9.125678e-07(Joule) 
+5-th Head 102, DataLoad:70.802370(bits), Power: 1.000000e-03(Watt), Time: 1.454636e+00(ms) Energy: 1.454636e-06(Joule) 
+6-th Head 78, DataLoad:145.212282(bits), Power: 1.000000e-03(Watt), Time: 1.790139e+00(ms) Energy: 1.790139e-06(Joule) 
+7-th Head 67, DataLoad:103.640928(bits), Power: 1.000000e-03(Watt), Time: 1.255651e-01(ms) Energy: 1.255651e-07(Joule) 
+8-th Head 149, DataLoad:138.443536(bits), Power: 1.000000e-03(Watt), Time: 2.061103e+00(ms) Energy: 2.061103e-06(Joule) 
+9-th Head 34, DataLoad:62.226810(bits), Power: 1.000000e-03(Watt), Time: 1.430366e-01(ms) Energy: 1.430366e-07(Joule) 
+10-th Head 24, DataLoad:158.905777(bits), Power: 1.000000e-03(Watt), Time: 2.184523e+00(ms) Energy: 2.184523e-06(Joule) 
+11-th Head 95, DataLoad:85.851233(bits), Power: 1.000000e-03(Watt), Time: 1.147002e+00(ms) Energy: 1.147002e-06(Joule) 
+12-th Head 72, DataLoad:54.188942(bits), Power: 1.000000e-03(Watt), Time: 1.653358e+00(ms) Energy: 1.653358e-06(Joule) 
+------------------
+SupNum 186       Sup Ratio: 0.953846
+Info   1000.303691     Sup Info Ratio: 9.769210e-01 CR:4.77365e-01
+total: 15.740350(ms),     1st:1.418578e+01(ms)     2nd:1.554565e+00(ms)
+total: 1.477846e-05(joule),  1st:1.418578e-05(joule)  2nd:5.926779e-07(joule)
+0-th Head 86, DataLoad:39.334719(bits), Power: 1.000000e-03(Watt), Time: 7.502606e-01(ms) Energy: 7.502607e-07(Joule) 
+1-th Head 1, DataLoad:66.829727(bits), Power: 1.000000e-03(Watt), Time: 2.150389e+00(ms) Energy: 2.150389e-06(Joule) 
+2-th Head 158, DataLoad:140.524179(bits), Power: 1.000000e-03(Watt), Time: 1.378392e+00(ms) Energy: 1.378392e-06(Joule) 
+3-th Head 123, DataLoad:87.566757(bits), Power: 1.000000e-03(Watt), Time: 1.349259e+00(ms) Energy: 1.349259e-06(Joule) 
+4-th Head 190, DataLoad:92.504922(bits), Power: 1.000000e-03(Watt), Time: 2.167180e-01(ms) Energy: 2.167180e-07(Joule) 
+5-th Head 125, DataLoad:86.814445(bits), Power: 1.000000e-03(Watt), Time: 4.719631e-01(ms) Energy: 4.719632e-07(Joule) 
+6-th Head 23, DataLoad:75.616958(bits), Power: 1.000000e-03(Watt), Time: 1.275294e+00(ms) Energy: 1.275294e-06(Joule) 
+7-th Head 45, DataLoad:76.446670(bits), Power: 1.000000e-03(Watt), Time: 1.675837e+00(ms) Energy: 1.675837e-06(Joule) 
+8-th Head 95, DataLoad:127.130770(bits), Power: 1.000000e-03(Watt), Time: 1.698511e+00(ms) Energy: 1.698511e-06(Joule) 
+9-th Head 98, DataLoad:117.464336(bits), Power: 1.000000e-03(Watt), Time: 6.882881e-02(ms) Energy: 6.882881e-08(Joule) 
+10-th Head 57, DataLoad:68.306119(bits), Power: 1.000000e-03(Watt), Time: 2.016441e-01(ms) Energy: 2.016441e-07(Joule) 
+11-th Head 149, DataLoad:109.632973(bits), Power: 1.000000e-03(Watt), Time: 1.632180e+00(ms) Energy: 1.632180e-06(Joule) 
+12-th Head 28, DataLoad:118.132920(bits), Power: 1.000000e-03(Watt), Time: 1.316508e+00(ms) Energy: 1.316508e-06(Joule) 

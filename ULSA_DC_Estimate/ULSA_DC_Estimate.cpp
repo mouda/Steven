@@ -726,8 +726,8 @@ bool ULSA_DC_Estimate::startCool()
     begin = clock();
     matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
     indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
-    double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
-    (compRatio,indEntropy,static_cast<double>(totalNodes));
+    double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio 
+      (compRatio,indEntropy,static_cast<double>(totalNodes));
     tempAddT=0;
     tempDisT=0;
     tempHRT=0;
@@ -743,11 +743,11 @@ bool ULSA_DC_Estimate::startCool()
     //-----------------------------//
     //Initialize performance matrix//
     //-----------------------------//
-    if(curSupNum>maxChNum){cur2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);}
-    else{cur2nd_ms=0;}
+    if( curSupNum > maxChNum ){ cur2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10); }
+    else{ cur2nd_ms=0; }
     cur1st_ms = return1stTotalNcal1stResors_HomoPower();
     cur2nd_Joule=returnTransientJoule();
-    cur1st_Joule=power1st*cur1st_ms;
+    cur1st_Joule = power1st * cur1st_ms;
 
 
     curSupNum=cSystem->calSupNodes();
@@ -764,14 +764,8 @@ bool ULSA_DC_Estimate::startCool()
     cout<<"Compression Ratio "<<returnComprRatio()<<" indEntropy "<<indEntropy<<endl;
 #endif
 
-    for(int i=0; i<SAIter; i++)
+    for(int i=0; i < SAIter; i++)
     {
-        //cout<<"-----------"<<i<<"---------"<<endl;
-        //cout<<i<<"  CurSup#:"<<curSupNum<<" CurFeasible:"<<curFeasible<<" CurEntropy:"<<curJEntropy<<" CurInfeas:"<<curInfeasibility<<endl;
-        //cout<<endl;
-
-        /*cout<<curFeasible<<" "<<i<<"-TH Sup Num"<<bestFeasibleSupNum<<"  InfoRatio:"<<curJEntropy/wholeSystemEntopy<<" "<<cur1st_Joule+cur2nd_Joule<<"=("<< cur1st_Joule<<"+"<<cur2nd_Joule<<")joule "<< \
-           cur1st_ms+cur2nd_ms<<"=("<<cur1st_ms<<"+"<<cur2nd_ms<<")ms "<<endl;*/
         coolOnce_minResors();
         if( targetHeadIndex == -1 || targetHeadIndex == -1 ){ 
           i++;
@@ -780,16 +774,16 @@ bool ULSA_DC_Estimate::startCool()
         calculateMatrics_minResors();
         confirmNeighbor3i();
         if ( curJEntropy > ( fidelityRatio*wholeSystemEntopy ) ) {
-            flagAnsFound=true;
+            flagAnsFound = true;
         }
         assert( curSupNum >= 0 );
-        if(checkBestClusterStructure_DataCentric(i)) {
-            cout<<"Congratulation All nodes are served"<<endl;
+        if( checkBestClusterStructure_DataCentric(i) ) {
+            cout << "Congratulation All nodes are served" << endl;
             break;
         }
         double sch = SAIter/100;
-        if (sch==0) sch = 1;
-        if(( i % (int)sch) ==0 ) cout<<".";
+        if ( sch == 0 ) sch = 1;
+        if ( ( i % (int)sch) == 0 ) cout<<".";
         //if(outCtrl==2)
 
         writePayoffEachRound_MinResors_withHead(i,curChNum);
@@ -937,14 +931,14 @@ void ULSA_DC_Estimate::coolOnce_minResors()
     if (nextEventFlag==1)
     {
        if (cSystem->listUnSupport->size()==0) cout<<"Error, it should haven't come in here with empty addlist and add."<<endl;
-        else
-        {
-            decideAdd3i_DC_HeadDetMemRan();
-            if(targetHeadIndex!=-1&&targetNode!=-1){
-             //cout<<"add "<<targetNode<<" to "<<cSystem->vecHeadName[targetHeadIndex]<<endl;
-             addMemberSA(targetHeadIndex,targetNode);
-            }
-        }
+       else
+       {
+           decideAdd3i_DC_HeadDetMemRan();
+           if(targetHeadIndex!=-1&&targetNode!=-1){
+            //cout<<"add "<<targetNode<<" to "<<cSystem->vecHeadName[targetHeadIndex]<<endl;
+            addMemberSA(targetHeadIndex,targetNode);
+           }
+       }
         nextChNum=curChNum;
 
     }
@@ -2185,11 +2179,11 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
     cur1st_Joule=power1st*cur1st_ms;
 
 
-    curSupNum=cSystem->calSupNodes();
-    curChNum=maxChNum;
-    nextChNum=curChNum;
+    curSupNum   = cSystem->calSupNodes();
+    curChNum    = maxChNum;
+    nextChNum   = curChNum;
     curJEntropy = curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-    curPayoff=cur1st_ms+cur2nd_ms;
+    curPayoff   = cur1st_ms+cur2nd_ms;
 
     bestAllServeFound=false;
 
@@ -2283,7 +2277,7 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
       } 
       else if ( nextEventFlag == 5) 
       {
-          join_fromHeadSA(0,1);
+          join_fromHeadSA(1,2);
           nextJEntropy = curJEntropy;
           nextSupNum = curSupNum;
           next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
@@ -2305,8 +2299,6 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
               double firstTierCost = indEntropy/rateibMax[i];
               firstTierCost *= 1000;
               assert( firstTierCost > 0 );
-              //cout << "Node: " << i << " in Isolate 1st tier cost = "
-              //<< firstTierCost << endl;
               vecGain.push_back(-firstTierCost);//Gain = mini second reduced
           }
 
@@ -2338,13 +2330,12 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
           //Find max Gain
           double tmpGainTest = -DBL_MAX;
           it_LiInt=cSystem->listCluMember->begin();
-          for(unsigned int i=0; i < cSystem->listCluMember->size(); i++,it_LiInt++){
-              if(cSystem->vecHeadName[i]==-1)continue;
-              if(it_LiInt->size()<2)continue;
-              list<int>::iterator it_Int=it_LiInt->begin();
+          for( unsigned int i=0; i < cSystem->listCluMember->size(); i++,it_LiInt++ ){
+              if( cSystem->vecHeadName[i] == -1 ) continue;
+              if( it_LiInt->size() < 2 )continue;
+              list<int>::iterator it_Int = it_LiInt->begin();
 
-              //for(; it_Int!=it_LiInt->end(); it_Int++ ){
-              for(unsigned int j = 0; j < nodeRecord[i].size(); j++) {
+              for( unsigned int j = 0; j < nodeRecord[i].size(); j++ ) {
                   if(nodeRecord[i][j]==cSystem->vecHeadName[i])continue;
 
                   cout << curSupNum << ' ' <<i << ' '<<nodeRecord[i][j]<< endl; 
@@ -2354,21 +2345,21 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
                   FILE *fid=fopen(str,"a+");
                   
                   fprintf( fid,"%d %f %d\n", 1, vecGain[nodeRecord[i][j]], curChNum );
-                  for(unsigned int k=0;k<cSystem->vecHeadName.size();k++){
+                  for( unsigned int k=0; k < cSystem->vecHeadName.size(); k++ ){
                       //cout<<i<<" "<<cSystem->vecHeadName[i]<<endl;
                       if(cSystem->vecHeadName[k]==-1){
                           targetHeadIndex=k;
                           break;
                       }
                   }
-                  isolatedHeadIndex=i;
-                  IsolateNodeName=nodeRecord[i][j];
-                  isolateHeadSA(IsolateNodeName,isolatedHeadIndex,targetHeadIndex);
+                  isolatedHeadIndex = i;
+                  IsolateNodeName   = nodeRecord[i][j];
+                  isolateHeadSA(IsolateNodeName, isolatedHeadIndex, targetHeadIndex);
 
-                  nextJEntropy = curJEntropy;
-                  nextSupNum = curSupNum;
-                  next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
-                  next1st_ms = return1stTotalNcal1stResors_HomoPower();
+                  nextJEntropy  = curJEntropy;
+                  nextSupNum    = curSupNum;
+                  next2nd_ms    = consSol->solve_withT2Adj_BinerySearch_2(10);
+                  next1st_ms    = return1stTotalNcal1stResors_HomoPower();
 
                   cout << cur1st_ms << ' ' << cur2nd_ms << endl;
                   double gain = (cur1st_ms+cur2nd_ms)-(next1st_ms+next2nd_ms);
@@ -2383,12 +2374,12 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
     
 
     end = clock();
-    computingTimes = ((float)(end-begin))/CLOCKS_PER_SEC;
+    computingTimes = ((float)(end - begin))/CLOCKS_PER_SEC;
     cout<<"best "<<bestFeasibleSupNum<<"   Information Ratio:"<<bestFeasibleJEntropy/wholeSystemEntopy<<endl;
     if(!flagAnsFound)
     {
         cout<<"Not Found the answer Yet"<<endl;
-        return false ;
+        return false;
     }
     else cout<<"SA end up correctly"<<endl;
     //cout<<"best "<<bestFeasibleSupNum<<" "<<(totalNodes)<<endl;
