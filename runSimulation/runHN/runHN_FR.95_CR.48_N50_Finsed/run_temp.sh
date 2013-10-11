@@ -14,7 +14,7 @@
   time1=`date +%s`
   echo Directory is `pwd`
  
-  ../../../ULSA4b2_DC/ULSA4b2_DC 50 25 8 0 180 mapFile/mapFile_uni_50_r500/mapFile_uniR500_N50_1.txt 0.477 2 1 50 0.95 0 20000 
+  ../../../ULSA4b2_DC/ULSA4b2_DC 50 25 8 0 180 mapFile/mapFile_uni_50_r500/mapFile_uniR500_N50_1.txt 0.477 2 1 25 0.95 0 40000 
   
 
   echo End time is `date`

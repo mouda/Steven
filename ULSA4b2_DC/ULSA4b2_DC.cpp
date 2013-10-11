@@ -779,9 +779,9 @@ bool ULSA4b2_DC::startCool()
             cout<<"Congratulation All nodes are served"<<endl;
             break;
         }
-        double sch = SAIter/100;
-        if (sch==0)sch=1;
-        if((i%(int)sch)==0)cout<<".";
+//        double sch = SAIter/100;
+//        if (sch==0)sch=1;
+//        if((i%(int)sch)==0)cout<<".";
         //if(outCtrl==2)
 
         if (isDetailOutputOn) {
@@ -789,7 +789,7 @@ bool ULSA4b2_DC::startCool()
         }
         int tempche=(signed)cSystem->listUnSupport->size();
 
-        assert(( curSupNum+tempche)== totalNodes);
+        assert(( curSupNum + tempche) == totalNodes);
         //cout<<"======================"<<endl;
         //writeStruSingleRound(i);
         //cout<<cur1st_ms<<" +  "<<cur2nd_ms<<" = "<<curPayoff<<"; with InfoR "<<curJEntropy/wholeSystemEntopy<<" and "<<curSupNum<<endl;
@@ -877,14 +877,15 @@ void ULSA4b2_DC::do1sttierPowerControlforCur_DataCentric() {
 */
 void ULSA4b2_DC::coolOnce_minResors()
 {
-    int probAdd = ((curSupNum<(totalNodes)) ?2000 :0);
-    int probDiscard = ((curSupNum<(maxChNum+1)) ?0:3000);
+    int probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
+    int probDiscard = ((curSupNum<(maxChNum+1)) ?0:30000);
     bool checkRotateble=false;//check if there are rotatableSet;
     for(int i=0; i<maxChNum; i++) {
         //cout<<aryFlagHRDone[i]<<" "<<cSystem->vecClusterSize[i]<<endl;
-        if(aryFlagHRDone[i]==false&&cSystem->vecClusterSize[i]>1)checkRotateble=true;
+        if( aryFlagHRDone[i] == false && cSystem->vecClusterSize[i] > 1 )
+          checkRotateble=true;
     }
-    int probHeadRotate = (((curSupNum>2*maxChNum)&&checkRotateble) ?1000:0);//Don't do head rotate if there are only a few nodes
+    int probHeadRotate = (((curSupNum>2*maxChNum)&&checkRotateble) ?10000:0);//Don't do head rotate if there are only a few nodes
 
 
 
@@ -892,11 +893,11 @@ void ULSA4b2_DC::coolOnce_minResors()
     bool chkLessCluster=cSystem->returnIfClusterSmall(thresholdd,tmpJoinCan);
 
     //int probJoin = (chkLessCluster&&curJEntropy>(fidelityRatio*wholeSystemEntopy))?tmpJoinCan*50:0;
-    int probJoin = (chkLessCluster)?tmpJoinCan*50:0;
+    int probJoin = (chkLessCluster)?tmpJoinCan*30:0;
 
     //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
 
-    int probIsoltae=((curChNum<maxChNum)?60:0);
+    int probIsoltae=((curChNum<maxChNum)?30:0);
     //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
 
 
@@ -1214,13 +1215,17 @@ void ULSA4b2_DC::decideHeadJoining4b(){
     vecJoinCandHeadIndex.reserve(maxChNum);
     vecTargetCandIndex.reserve(maxChNum);
     vecGain.reserve(maxChNum);
+    int count = 0;
     for(int i=0;i<maxChNum;i++){
-        if(cSystem->vecClusterSize[i]>0&&cSystem->vecClusterSize[i]<=threshold){
+        if( cSystem->vecClusterSize[i] > 0) {
+          count++;
+        }
+        if( cSystem->vecClusterSize[i] > 0 && cSystem->vecClusterSize[i] <= threshold ){
             vecJoinCandHeadIndex.push_back(i);
         }
     }
 
-    cout<<"Cand Size="<<vecJoinCandHeadIndex.size()<<endl;
+    cout<<"Cand Size="<<vecJoinCandHeadIndex.size()<<" " << count <<  endl;
     vector<double> firtGainRecord;
     //only for check
     firtGainRecord.resize(maxChNum);
@@ -1521,6 +1526,13 @@ void ULSA4b2_DC::decideIsolate4b(){
 
     vector<double> firsttierC;
     firsttierC.resize(totalNodes);
+    //Calculate the cluster number 
+    int count = 0;
+    for (int i = 0; i < maxChNum; i++) {
+      if (cSystem->vecClusterSize[i] > 0 ) count++;
+    }
+    cout << count << endl;
+
 
     //Calculate 2nd tier Gain
     list<list<int> >::iterator it_LiInt = cSystem->listCluMember->begin();
@@ -1815,40 +1827,49 @@ void ULSA4b2_DC::confirmNeighbor3i()
 	bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
 	bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
 
-	if ((nextJEntropy>=curJEntropy)&&!nextAllServe&&!curAllServe)
+	if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
 	{
-		passNext2Cur();
-		for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
-		if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
+          passNext2Cur();
+          for(int i=0; i<totalNodes; i++) 
+            nodes[i].power = nextNodePower[i];
+          if( nextEventFlag == 1 || nextEventFlag == 2 ) 
+            confirmStructureChange();
 	}
-	else if (!curAllServe&&nextAllServe) {
-		passNext2Cur();
-		for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
-		if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
+	else if ( !curAllServe && nextAllServe ) {
+          passNext2Cur();
+          for(int i=0; i<totalNodes; i++) 
+            nodes[i].power = nextNodePower[i];
+          if( nextEventFlag == 1 || nextEventFlag == 2 ) 
+            confirmStructureChange();
 	}
-	else if ((nextPayoff<curPayoff)&&nextAllServe&&curAllServe)
+	else if ( ( nextPayoff < curPayoff ) && nextAllServe && curAllServe )
 	{
-		passNext2Cur();
-		for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
-		if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
+          passNext2Cur();
+          for(int i=0; i<totalNodes; i++)
+            nodes[i].power = nextNodePower[i];
+          if( nextEventFlag == 1 || nextEventFlag == 2 )
+            confirmStructureChange();
 	}
-	else if(((nextJEntropy<curJEntropy)&&!nextAllServe&&!curAllServe)||(!nextAllServe&&curAllServe)|| \
-			((nextPayoff>curPayoff)&&nextAllServe&&curAllServe))
+	else if( ( ( nextJEntropy < curJEntropy ) && !nextAllServe && !curAllServe ) || 
+            ( !nextAllServe && curAllServe ) || 
+            ( ( nextPayoff > curPayoff ) && nextAllServe && curAllServe ) )
 	{
-		double probAnnealing = exp (-20*abs(nextPayoff-curPayoff)/temparature);
-        //cout<<"Show Payoff "<<nextPayoff<<"  "<<curPayoff<<endl;
-		//cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
-		double annealingChoose = (double)rand()/((double)RAND_MAX+1);
-		if (annealingChoose>probAnnealing)
-		{
-			reverseMoveSA();
-		}
-		else//accept the move
-		{
-			passNext2Cur();
-			for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
-			if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
-		}
+          double probAnnealing = exp (-20*abs(nextPayoff-curPayoff)/temparature);
+          //cout<<"Show Payoff "<<nextPayoff<<"  "<<curPayoff<<endl;
+          //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
+          double annealingChoose = (double)rand()/((double)RAND_MAX+1);
+          if ( annealingChoose > probAnnealing )
+          {
+            reverseMoveSA();
+          }
+          else//accept the move
+          {
+            passNext2Cur();
+            for(int i=0; i<totalNodes; i++)
+              nodes[i].power = nextNodePower[i];
+            if(nextEventFlag==1||nextEventFlag==2)
+              confirmStructureChange();
+          }
 	}
 	targetHeadIndex = -1;
 	targetNode = -1;

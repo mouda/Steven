@@ -1,4 +1,4 @@
-for ((addue=3;addue<=25;addue=addue+2))
+for ((addue=3;addue<=23;addue=addue+2))
 do
   echo "
   ### Job name
@@ -16,7 +16,7 @@ do
   time1=`date +%s`
   echo Directory is `pwd`' >> ./run_temp.sh
   echo " 
-  ../../../ULSA4b2_DC/ULSA4b2_DC 50 $addue 8 0 180 mapFile/mapFile_uni_50_r500/mapFile_uniR500_N50_1.txt 0.477 2 1 50 0.95 0 20000 
+  ../../../ULSA4b2_DC/ULSA4b2_DC 50 $addue 8 0 180 mapFile/mapFile_uni_50_r500/mapFile_uniR500_N50_1.txt 0.477 2 1 25 0.95 0 40000 
   " >> ./run_temp.sh
   echo '
   echo End time is `date`

@@ -468,13 +468,26 @@ template<class T> void ULSAOutputToolSet<T>::writePeformance_MinResors_with2ndPo
     }
     bestTotalJoule +=myobj.best1st_Joule;
     FILE *fid=fopen(filename,"a");
-    fprintf(fid,"%d %d %.2f %.2f %2f %d %.1f %d        %.3f %d %5e %5e %5e %5e %d     %5e %5e\n",  \
-            myobj.totalNodes,myobj.maxChNum, myobj.wholeSystemEntopy, myobj.returnComprRatio(),\
-            myobj.fidelityRatio, myobj.quantizationBits, density, myobj.roundBest, \
-             myobj.bestFeasibleJEntropy, myobj.bestFeasibleSupNum, \
-            myobj.best1st_Joule, best2ndJoule, myobj.best1st_ms, myobj.best2nd_ms, \
-            bestChNum, \
-             bestTotalJoule, bestTotal_ms);
+    fprintf(fid,"%d %d %.2f %.2f %2f %d %.1f %d        %.3f %d %5e %5e %5e %5e %d     %5e %5e\n",  
+            myobj.totalNodes, 
+            myobj.maxChNum, 
+            myobj.wholeSystemEntopy, 
+            myobj.returnComprRatio(),
+            myobj.fidelityRatio, 
+            myobj.quantizationBits, 
+            density, 
+            myobj.roundBest,
+
+            myobj.bestFeasibleJEntropy, 
+            myobj.bestFeasibleSupNum, 
+            myobj.best1st_Joule, 
+            best2ndJoule, 
+            myobj.best1st_ms, 
+            myobj.best2nd_ms, 
+            bestChNum, 
+            bestTotalJoule, 
+            bestTotal_ms
+            );
 
     fclose(fid);
 

@@ -1,4 +1,5 @@
 CPP= g++
+CFLAGS=-O -O1 -O2 -O3
 #DFLAGS= -D DEBUG
 LIB_PATH= ../commonLibrary/CORRE_MA_OPE.o \
 	  ../commonLibrary/SimSystem.o \
