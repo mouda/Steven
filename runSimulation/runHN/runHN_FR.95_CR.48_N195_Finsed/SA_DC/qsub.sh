@@ -16,7 +16,7 @@ do
   time1=`date +%s`
   echo Directory is `pwd`' >> ./run_temp.sh
   echo " 
-  ../../../../ULSA4b2_DC/ULSA4b2_DC 195 $addue 8 0 180 mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_2.txt 0.477 2 1 25 0.95 0 40000
+  ../../../../ULSA4b2_DC/ULSA4b2_DC 195 $addue 8 0 180 mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_2.txt 0.477 2 1 12 0.95 0 80000
   " >> ./run_temp.sh
   echo '
   echo End time is `date`
