@@ -6,7 +6,7 @@
 #include<cstring>
 #include<cassert>
 
-#include "ULSA4b2_DC.h"
+#include "ULSA4b4_DC.h"
 
 #define SA_INI_TEMP 3.0
 #define SA_FIN_TEMP 0.5
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     cout <<"\t 13[ Number of Iteration]"  << endl;
 
 
-    cout<<"Example:Usage: winULSA4b2_DC 195 10 10 10 180 mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_2.txt 10000 2 2 3"<<endl;
+    cout<<"Example:Usage: winULSA4b4_DC 195 10 10 10 180 mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_2.txt 10000 2 2 3"<<endl;
     cout<<"Output 1: Struc, Detail, Matrics"<<endl;
     cout<<"Output 2: Struc, Detail, Metrics, Metrics Every Round"<<endl;
     cout<<"IniFlag: kmeans , HeadLimites"<<endl;
@@ -112,9 +112,9 @@ int main(int argc, char* argv[])
 
   double alpha =pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
 
-  //ULSA4b2_DC *toolSA = new ULSA4b2_DC(fid, totalNodes, maxChNum, SAIter,outputControl, SA_INI_TEMP, alpha, correlationFactor);
-  //ULSA4b2_DC toolSA(fid, totalNodes, maxChNum, SAIter,outputControl, SA_INI_TEMP, alpha, correlationFactor);
-  ULSA4b2_DC toolSA(fid, totalNodes, maxChNum, SAIter,outputControl, isDetailOn,SA_INI_TEMP, alpha, compressionRatio, ipAddr);
+  //ULSA4b4_DC *toolSA = new ULSA4b4_DC(fid, totalNodes, maxChNum, SAIter,outputControl, SA_INI_TEMP, alpha, correlationFactor);
+  //ULSA4b4_DC toolSA(fid, totalNodes, maxChNum, SAIter,outputControl, SA_INI_TEMP, alpha, correlationFactor);
+  ULSA4b4_DC toolSA(fid, totalNodes, maxChNum, SAIter,outputControl, isDetailOn,SA_INI_TEMP, alpha, compressionRatio, ipAddr);
 
 
   toolSA.radius=radius;
