@@ -1,5 +1,5 @@
 /*
-  File: ULSA4b2_DC.h
+  File: ULSA2i3_MC.h
   Brief: Simulated anealing Solver. The purpose is to do the SA to solve the clustering problem with input
         "Mapfile position cursor" "Total nodes number" "Max number of CH allowed" "Power Max"
         Deal with Gaussian Random Source:
@@ -13,8 +13,8 @@
 
 
 */
-#ifndef ULSA4b2_DC_H
-#define ULSA4b2_DC_H
+#ifndef ULSA2i3_MC_H
+#define ULSA2i3_MC_H
 
 #include<cmath>
 #include<vector>
@@ -33,23 +33,20 @@
 #include "../commonLibrary/TimeStamp.h"
 #include "../lib/SA/SABASE.h"
 
-template class ULSAOutputToolSet<class ULSA4b2_DC>;
+template class ULSAOutputToolSet<class ULSA2i3_MC>;
 
 class ULCS1b;
 class ULAGENT;
-class ULSA4b2_DC :public SABASE
+class ULSA2i3_MC :public SABASE
 {
 public:
-  ULSA4b2_DC();
+  ULSA2i3_MC();
   //Constructor for scenario wise parameter
-  ULSA4b2_DC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  
-               int inOutputControl,
-               int isStrucOuput,
-               double inputTemprature, double InputSaAlpha, 
-               double inCorrelationFactor,
-               string ipAddr);
+  ULSA2i3_MC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \
+               int inOutputControl, int isStrucOuput, double inputTemprature, double InputSaAlpha, \
+               double inCorrelationFactor, string ipAddr);
 
-  ~ULSA4b2_DC();
+  ~ULSA2i3_MC();
 
 
   //Make a friend with template function
@@ -71,7 +68,6 @@ public:
 
   void writeStruSingleRound(int round);
   void writePayoffEachRound_MinResors(int round);
-  void writePayoffEachRound_MinResors_withHead(int round,int head);
 
   //Incomplete!!!
 
@@ -112,8 +108,8 @@ public:
   int sortIndex;
   struct compareDis
   {
-    const ULSA4b2_DC& mySA;// data member
-    compareDis(const ULSA4b2_DC& sa) : mySA(sa) {} // constructor
+    const ULSA2i3_MC& mySA;// data member
+    compareDis(const ULSA2i3_MC& sa) : mySA(sa) {} // constructor
     bool operator() (const int &i, const int &j)
     { //i, j are index
       return mySA.Gij[mySA.sortIndex][i] > mySA.Gij[mySA.sortIndex][j];
@@ -155,7 +151,7 @@ public:
 
 
   bool iniDone;
-  bool *aryFlagHRDone; //If it is true means Head Rotate have been done in this structure, starrt from ULSA4b2_DC
+  bool *aryFlagHRDone; //If it is true means Head Rotate have been done in this structure, starrt from ULSA2i3_MC
 
 
  //--------------------------------------------//
@@ -183,7 +179,7 @@ public:
   double next1st_Joule;
   double next2nd_ms;
   double next2nd_Joule;
-
+  double radius;
 
   double wholeSystemEntopy;
   double indEntropy;
@@ -231,7 +227,6 @@ public:
   clock_t begin, end;
   float computingTimes;
 
-  double radius;
 
 
   private:
@@ -248,7 +243,7 @@ public:
   void adaptSearchingProbability();
   void updateHeadLocation();
 
-  void decideAdd3i_DC_HeadDetMemRan();
+  void decideAdd2i_MC_HeadDetMemRan();
   void decideDiscard3b();
   void decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio();
   void decideHeadRotate1();
@@ -310,7 +305,7 @@ public:
   float **distanceOf2Nodes;
   float **Gij;// channel gain from node i to node j
   float *Gib; // channel gain from node i to base station
-  double *rateibMax; //
+  double *rateibMax;
   double realNoise;
 
   void resetSA3iSystem();
@@ -327,7 +322,7 @@ public:
   double tempHRT;
   double tempIsoT;
   double tempJoinT;
-  static const int thresholdd=5;
+    static const int thresholdd=1;
   //static const int thres2=800;
   static const int thres2=200;
 

@@ -2,7 +2,7 @@ function [ totalNum totalInfo MapCR FidRatio  QuantiBits Density BestRound gathe
     firstResors secondResors headx finalHead] = parseResorsToMatrixByHead_4b( input_args )
 data=dlmread(input_args);
 head = data(:,2);
-[HV HI]=sort(head);
+[HV HI] = sort(head);
 headx=unique(HV);   
 for i =1:length(headx)
     target=headx(i);

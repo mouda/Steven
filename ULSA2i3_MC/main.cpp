@@ -6,7 +6,7 @@
 #include<cstring>
 #include<cassert>
 
-#include "ULSA4b4_DC.h"
+#include "ULSA2i3_MC.h"
 
 #define SA_INI_TEMP 3.0
 #define SA_FIN_TEMP 0.5
@@ -23,23 +23,22 @@ int main(int argc, char* argv[])
 
   if(argc!=14)
   {
-    cout <<"Usage: ULSA_DC_Estimate "         << endl;
-    cout <<"\t 1 [ totalNodes         ]" << endl;
-    cout <<"\t 2 [ maxChNum           ]" << endl;
-    cout <<"\t 3 [ quantizationBits   ]" << endl;
-    cout <<"\t 4 [ PowerMax(dbm)      ]" << endl;
-    cout <<"\t 5 [ Bandwidth(kHz)     ]" << endl;
-    cout <<"\t 6 [ FilePath           ]" << endl;
-    cout <<"\t 7 [ Correlation Factor ]" << endl;
-    cout <<"\t 8 [ MapIndex           ]" << endl;
-    cout <<"\t 9 [ outputIndex        ]" << endl;
-    cout <<"\t 10[ Simulation Time    ]" << endl;
-    cout <<"\t 11[ Fidelity Ratio     ]" << endl;
+    cout <<"Usage: ULSA2i3_MC"            << endl; 
+    cout <<"\t 1 [ totalNodes         ] " << endl;
+    cout <<"\t 2 [ maxChNum           ] " << endl;
+    cout <<"\t 3 [ quantizationBits   ] " << endl; 
+    cout <<"\t 4 [ PowerMax(dbm)      ] " << endl;
+    cout <<"\t 5 [ Bandwidth(kHz)     ] " << endl;
+    cout <<"\t 6 [ FilePath           ] " << endl;
+    cout <<"\t 7 [ Correlation Factor ] " << endl;
+    cout <<"\t 8 [ MapIndex           ] " << endl;
+    cout <<"\t 9 [ outputIndex        ] " << endl;
+    cout <<"\t 10[ Simulation Time    ] " << endl;
+    cout <<"\t 11[ Fidelity Ratio     ] " << endl;
     cout <<"\t 12[ Structure and Detail: 0 to turn off; 1 to turn on ]" << endl;
     cout <<"\t 13[ Number of Iteration]"  << endl;
 
-
-    cout<<"Example:Usage: winULSA4b4_DC 195 10 10 10 180 mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_2.txt 10000 2 2 3"<<endl;
+    cout<<"Example:Usage: winULSA2i3_MC 195 10 10 10 180 mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_2.txt 10000 2 2 3"<<endl;
     cout<<"Output 1: Struc, Detail, Matrics"<<endl;
     cout<<"Output 2: Struc, Detail, Metrics, Metrics Every Round"<<endl;
     cout<<"IniFlag: kmeans , HeadLimites"<<endl;
@@ -55,9 +54,7 @@ int main(int argc, char* argv[])
   const int outputControl=atoi(argv[9]);
   const int simulationTime=atoi(argv[10]);
   const double fidelityRatio=atof(argv[11]);
-
   const int isDetailOn=atoi(argv[12]);
-
   //********************************************//
   // Set internal parameters                    //
   //********************************************//
@@ -69,7 +66,7 @@ int main(int argc, char* argv[])
   //---------------------//
   char iniFlag[]="kmeans";
   const float powerMaxWatt = pow(10,((float)powerMaxDbm)/10) /1000;//we don't need to divide the BW(bandwidthKhz*1000);//Unit := Watt
-  const int SAIter=atoi(argv[13]);
+  const int SAIter=atoi(argv[13]); //8000 by default
   //****************************//
   //Exception Handling Variable //
   //****************************//
@@ -109,15 +106,13 @@ int main(int argc, char* argv[])
     return 1;
   cout << ipAddr << endl;
 
-
   double alpha =pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
 
-  //ULSA4b4_DC *toolSA = new ULSA4b4_DC(fid, totalNodes, maxChNum, SAIter,outputControl, SA_INI_TEMP, alpha, correlationFactor);
-  //ULSA4b4_DC toolSA(fid, totalNodes, maxChNum, SAIter,outputControl, SA_INI_TEMP, alpha, correlationFactor);
-  ULSA4b4_DC toolSA(fid, totalNodes, maxChNum, SAIter, outputControl, isDetailOn, SA_INI_TEMP, alpha, compressionRatio, ipAddr);
-
-
+  //ULSA2i3_MC *toolSA = new ULSA2i3_MC(fid, totalNodes, maxChNum, SAIter,outputControl, SA_INI_TEMP, alpha, correlationFactor);
+  //ULSA2i3_MC toolSA(fid, totalNodes, maxChNum, SAIter,outputControl, SA_INI_TEMP, alpha, correlationFactor);
+  ULSA2i3_MC toolSA(fid, totalNodes, maxChNum, SAIter, outputControl, isDetailOn, SA_INI_TEMP, alpha, compressionRatio, ipAddr);
   toolSA.radius=radius;
+
   begin = clock();
   for(int i=0;i<simulationTime;i++)
   {
@@ -135,7 +130,6 @@ int main(int argc, char* argv[])
   toolSA.releaseMemory();
   return 1;
 }
-
 
 int print_addresses(const int domain, string& ipAddr)
 {
@@ -184,3 +178,4 @@ int print_addresses(const int domain, string& ipAddr)
 
   return 1;
 }
+

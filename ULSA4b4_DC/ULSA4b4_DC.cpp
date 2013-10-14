@@ -826,7 +826,6 @@ bool ULSA4b4_DC::startCool()
           sprintf(str2,"%s_Detail4b2DataULSA3i%d_m%d_FR%.1f_r%.1f.txt",timeBuf, totalNodes,maxChNum,fidelityRatio,radius);
           resultShow.summaryNwrite2tiers_MinResors_with2ndPowerControl(str2, *this, best2nd_ms);
         }
-        cout << strIpAddr << endl;
         sprintf(str3,"tmpAll/ULSA4b2_All_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius,strIpAddr.c_str());
         resultShow.writePeformance_MinResors_with2ndPowerControl_4b(str3,*this, best2nd_ms, fidelityRatio,bestChNum);
         sprintf(str3,"tmpAll/ULSA4b2_Cluster_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius,strIpAddr.c_str());

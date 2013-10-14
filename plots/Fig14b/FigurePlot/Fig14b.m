@@ -6,14 +6,14 @@ set(hFig, 'Position', [1 1 600 450 ]);
 DC_colorMap=jet(16);
 
 [ totalNum totalInfo MapCR FidRatio  QuantiBits Density BestRound gatherInfo supNum firstEnergy SecondEnergy ... 
-    firstResors secondResors headx finalHead] = parseResorsToMatrixByHead_4b('data/ULSA4b2_All_N195_BW180.0PW0.001_FR0.95_r500.0.txt-1012-80000iters-12times');
+    firstResors secondResors headx finalHead] = parseResorsToMatrixByHead_4b('data/ULSA4b2_All_N195_BW180.0PW0.001_FR0.95_r500.0.txt-1012-multiTopo-20000iters-50times');
 mincolsize=returnColNonZeroSize(firstResors);
 secondResors4b195=secondResors([1:1:mincolsize],[1:1:size(secondResors,2)]);
 firstResors4b195=firstResors([1:1:mincolsize],[1:1:size(firstResors,2)]);
 gatherInfo4b195=gatherInfo([1:1:mincolsize],[1:1:size(gatherInfo,2)]);
 finalHead195=finalHead;
 [ totalNum totalInfo MapCR FidRatio  QuantiBits Density BestRound gatherInfo supNum firstEnergy SecondEnergy ... 
-    firstResors secondResors headx finalHead] = parseResorsToMatrixByHead_4b('data/ULSA4b2_All_N150_BW180.0PW0.001_FR0.95_r500.0.txt-1012-80000iters-12times');
+    firstResors secondResors headx finalHead] = parseResorsToMatrixByHead_4b('data/ULSA4b2_All_N150_BW180.0PW0.001_FR0.95_r500.0.txt-1012-multiTopo-20000iters-50times');
 mincolsize=returnColNonZeroSize(firstResors);
 secondResors4b150=secondResors([1:1:mincolsize],[1:1:size(secondResors,2)]);
 firstResors4b150=firstResors([1:1:mincolsize],[1:1:size(firstResors,2)]);
@@ -21,7 +21,7 @@ gatherInfo4b150=gatherInfo([1:1:mincolsize],[1:1:size(gatherInfo,2)]);
 finalHead150=finalHead;
 
 [ totalNum totalInfo MapCR FidRatio  QuantiBits Density BestRound gatherInfo supNum firstEnergy SecondEnergy ... 
-    firstResors secondResors headx finalHead] = parseResorsToMatrixByHead_4b('data/ULSA4b2_All_N50_BW180.0PW0.001_FR0.95_r500.0.txt-1012-80000iters-12times');
+    firstResors secondResors headx finalHead] = parseResorsToMatrixByHead_4b('data/ULSA4b2_All_N50_BW180.0PW0.001_FR0.95_r500.0.txt-1012-multiTopo-20000iters-50times');
 mincolsize=returnColNonZeroSize(firstResors);
 secondResors4b50=secondResors([1:1:mincolsize],[1:1:size(secondResors,2)]);
 firstResors4b50=firstResors([1:1:mincolsize],[1:1:size(firstResors,2)]);
