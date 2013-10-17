@@ -9,3 +9,19 @@ TODO
 4. add all the binary files into the execution path ...discard
 5. let the time stamp file into the sub-folder....TODO
 6. Porting the progect to Torque cluster...done 
+
+
+COMMAND TOOL RMEMIND
+
+
+*** Fastly fork new test version ***
+1. cp -r $(OLDVERSION) $(NEWVERSION); cd $(NEWVRSION)
+2. rename $(OLDVERSION) $(NEWVRSION) *
+3. sed -i 's/$(OLDVERSION)/$(NEWVERSION)/gi' * 
+
+1. cat
+2. sort
+3. rename
+4. sed 
+5. grep
+6. ctags

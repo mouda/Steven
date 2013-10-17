@@ -713,125 +713,125 @@ double ULSA2i3_MC::returnComprRatio()
 
 bool ULSA2i3_MC::startCool()
 {
-    begin = clock();
-    matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
-    indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
-    double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
-    (compRatio,indEntropy,static_cast<double>(totalNodes));
-    tempAddT=0;
-    tempDisT=0;
-    tempHRT=0;
-    bool inClu[totalNodes];
-    for(int i=0; i<totalNodes; i++)inClu[i]=true;
-    double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
-    wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
-    consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
-                                     nextNodePower,cSystem->listCluMember );
+  begin = clock();
+  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
+  indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
+  double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio 
+                    (compRatio,indEntropy,static_cast<double>(totalNodes));
+  tempAddT=0;
+  tempDisT=0;
+  tempHRT=0;
+  bool inClu[totalNodes];
+  for(int i=0; i<totalNodes; i++)inClu[i]=true;
+  double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
+  wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
+  consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
+      nextNodePower,cSystem->listCluMember );
 
-    ULSAOutputToolSet<class ULSA2i3_MC> resultShow;
-    flagAnsFound =false;
-    //-----------------------------//
-    //Initialize performance matrix//
-    //-----------------------------//
-    if(curSupNum>maxChNum){cur2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);}
-    else{cur2nd_ms=0;}
-    cur1st_ms = return1stTotalNcal1stResors_HomoPower();
-    cur2nd_Joule=returnTransientJoule();
-    cur1st_Joule=power1st*cur1st_ms;
+  ULSAOutputToolSet<class ULSA2i3_MC> resultShow;
+  flagAnsFound =false;
+  //-----------------------------//
+  //Initialize performance matrix//
+  //-----------------------------//
+  if(curSupNum>maxChNum){cur2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);}
+  else{cur2nd_ms=0;}
+  cur1st_ms = return1stTotalNcal1stResors_HomoPower();
+  cur2nd_Joule=returnTransientJoule();
+  cur1st_Joule=power1st*cur1st_ms;
 
 
-    curSupNum=cSystem->calSupNodes();
-    curChNum=maxChNum;
-    nextChNum=curChNum;
-    curJEntropy = curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-    curPayoff=cur1st_ms+cur2nd_ms;
+  curSupNum=cSystem->calSupNodes();
+  curChNum=maxChNum;
+  nextChNum=curChNum;
+  curJEntropy = curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
+  curPayoff=cur1st_ms+cur2nd_ms;
 
-    bestAllServeFound=false;
+  bestAllServeFound=false;
 
-    if (checkBestClusterStructure_DataCentric(0))return true;
-    cout<<"Compression Ratio "<<returnComprRatio()<<" indEntropy "<<indEntropy<<endl;
-    for(int i=0; i<SAIter; i++)
+  if (checkBestClusterStructure_DataCentric(0))return true;
+  cout<<"Compression Ratio "<<returnComprRatio()<<" indEntropy "<<indEntropy<<endl;
+  for(int i=0; i<SAIter; i++)
+  {
+    //cout<<"-----------"<<i<<"---------"<<endl;
+    //cout<<i<<"  CurSup#:"<<curSupNum<<" CurFeasible:"<<curFeasible<<" CurEntropy:"<<curJEntropy<<" CurInfeas:"<<curInfeasibility<<endl;
+    //cout<<endl;
+
+    /*cout<<curFeasible<<" "<<i<<"-TH Sup Num"<<bestFeasibleSupNum<<"  InfoRatio:"<<curJEntropy/wholeSystemEntopy<<" "<<cur1st_Joule+cur2nd_Joule<<"=("<< cur1st_Joule<<"+"<<cur2nd_Joule<<")joule "<< \
+      cur1st_ms+cur2nd_ms<<"=("<<cur1st_ms<<"+"<<cur2nd_ms<<")ms "<<endl;*/
+    coolOnce_minResors();
+    if(targetHeadIndex==-1||targetHeadIndex==-1){i++;continue;}
+    calculateMatrics_minResors();
+    confirmNeighbor3i();
+    if (curJEntropy>(fidelityRatio*wholeSystemEntopy)) {
+      flagAnsFound=true;
+    }
+    assert(curSupNum>=0);
+    if(checkBestClusterStructure_DataCentric(i))
     {
-        //cout<<"-----------"<<i<<"---------"<<endl;
-        //cout<<i<<"  CurSup#:"<<curSupNum<<" CurFeasible:"<<curFeasible<<" CurEntropy:"<<curJEntropy<<" CurInfeas:"<<curInfeasibility<<endl;
-        //cout<<endl;
-
-        /*cout<<curFeasible<<" "<<i<<"-TH Sup Num"<<bestFeasibleSupNum<<"  InfoRatio:"<<curJEntropy/wholeSystemEntopy<<" "<<cur1st_Joule+cur2nd_Joule<<"=("<< cur1st_Joule<<"+"<<cur2nd_Joule<<")joule "<< \
-           cur1st_ms+cur2nd_ms<<"=("<<cur1st_ms<<"+"<<cur2nd_ms<<")ms "<<endl;*/
-        coolOnce_minResors();
-	    if(targetHeadIndex==-1||targetHeadIndex==-1){i++;continue;}
-        calculateMatrics_minResors();
-        confirmNeighbor3i();
-        if (curJEntropy>(fidelityRatio*wholeSystemEntopy)) {
-            flagAnsFound=true;
-        }
-        assert(curSupNum>=0);
-        if(checkBestClusterStructure_DataCentric(i))
-        {
-            cout<<"Congratulation All nodes are served"<<endl;
-            break;
-        }
-        double sch = SAIter/100;
-        if (sch==0)sch=1;
-        if((i%(int)sch)==0)cout<<".";
-        //if(outCtrl==2)
-
-        //writePayoffEachRound_MinResors(i);
-        int tempche=(signed)cSystem->listUnSupport->size();
-
-        assert(( curSupNum+tempche)== totalNodes);
-        //cout<<"======================"<<endl;
-        //writeStruSingleRound(i);
-        //cout<<cur1st_ms<<" +  "<<cur2nd_ms<<" = "<<curPayoff<<"; with InfoR "<<curJEntropy/wholeSystemEntopy<<" and "<<curSupNum<<endl;
-   }
-
-    end = clock();
-    computingTimes = ((float)(end-begin))/CLOCKS_PER_SEC;
-    cout<<"best "<<bestFeasibleSupNum<<"   Information Ratio:"<<bestFeasibleJEntropy/wholeSystemEntopy<<endl;
-    if(!flagAnsFound)
-    {
-        cout<<"Not Found the answer Yet"<<endl;
-        return false ;
+      cout<<"Congratulation All nodes are served"<<endl;
+      break;
     }
-    else cout<<"SA end up correctly"<<endl;
-    //cout<<"best "<<bestFeasibleSupNum<<" "<<(totalNodes)<<endl;
-    cout<<"Add Times="<<tempAddT<<endl;
-    cout<<"Discard Times="<<tempDisT<<endl;
-    cout<<"HR Times="<<tempHRT<<endl;
+//    double sch = SAIter/100;
+//    if (sch==0)sch=1;
+//    if((i%(int)sch)==0)cout<<".";
+    //if(outCtrl==2)
+
+    //writePayoffEachRound_MinResors(i);
+    int tempche=(signed)cSystem->listUnSupport->size();
+
+    assert(( curSupNum+tempche)== totalNodes);
+    //cout<<"======================"<<endl;
+    //writeStruSingleRound(i);
+    //cout<<cur1st_ms<<" +  "<<cur2nd_ms<<" = "<<curPayoff<<"; with InfoR "<<curJEntropy/wholeSystemEntopy<<" and "<<curSupNum<<endl;
+  }
+
+  end = clock();
+  computingTimes = ((float)(end-begin))/CLOCKS_PER_SEC;
+  cout<<"best "<<bestFeasibleSupNum<<"   Information Ratio:"<<bestFeasibleJEntropy/wholeSystemEntopy<<endl;
+  if(!flagAnsFound)
+  {
+    cout<<"Not Found the answer Yet"<<endl;
+    return false ;
+  }
+  else cout<<"SA end up correctly"<<endl;
+  //cout<<"best "<<bestFeasibleSupNum<<" "<<(totalNodes)<<endl;
+  cout<<"Add Times="<<tempAddT<<endl;
+  cout<<"Discard Times="<<tempDisT<<endl;
+  cout<<"HR Times="<<tempHRT<<endl;
 
 
-    char timeBuf[32];
-    TimeStamp obj_time;
-    obj_time.returnRealWordTime(timeBuf,32);
+  char timeBuf[32];
+  TimeStamp obj_time;
+  obj_time.returnRealWordTime(timeBuf,32);
 
-    char str[500];
-    char str2[500];
-    char str3[500];
-    if(bestFeasibleJEntropy>=(wholeSystemEntopy*fidelityRatio)) {
-        if (isDetailOutputOn) {
-          sprintf(str,"%s_Best2i2Struc2ndN%d_m%d_cor%.1f_r%.1f.txt",timeBuf,totalNodes,maxChNum,correlationFactor,radius);
-          resultShow.writeBestStru(str,*this);
-          sprintf(str2,"%s_Detail2i2DataULSA3i%d_m%d_cor%.1f_r%.1f.txt",timeBuf, totalNodes,maxChNum,correlationFactor,radius);
-          resultShow.summaryNwrite2tiers_MinResors_with2ndPowerControl(str2, *this, best2nd_ms);
-        }
-        sprintf(str3,"ULSA2i2_All_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt", 
-            totalNodes, bandwidthKhz, powerMax, fidelityRatio, radius, strIpAddr.c_str());
-        resultShow.writePeformance_MinResors_with2ndPowerControl_4b(str3,*this, best2nd_ms, fidelityRatio,bestChNum);
-        sprintf(str3,"ULSA2i2_Cluster_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",
-            totalNodes, bandwidthKhz, powerMax, fidelityRatio, radius, strIpAddr.c_str());
-        resultShow.writeClusterInfo(str3,*this,timeBuf);
-
-
-
-        delete matrixComputer;
-        delete consSol;
-        return true;
+  char str[500];
+  char str2[500];
+  char str3[500];
+  if(bestFeasibleJEntropy>=(wholeSystemEntopy*fidelityRatio)) {
+    if (isDetailOutputOn) {
+      sprintf(str,"%s_Best2i2Struc2ndN%d_m%d_cor%.1f_r%.1f.txt",timeBuf,totalNodes,maxChNum,correlationFactor,radius);
+      resultShow.writeBestStru(str,*this);
+      sprintf(str2,"%s_Detail2i2DataULSA3i%d_m%d_cor%.1f_r%.1f.txt",timeBuf, totalNodes,maxChNum,correlationFactor,radius);
+      resultShow.summaryNwrite2tiers_MinResors_with2ndPowerControl(str2, *this, best2nd_ms);
     }
-    else{
-        delete matrixComputer;
-        delete consSol;
-        return false;
-    }
+    sprintf(str3,"tmpAll/ULSA2i3_All_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt", 
+        totalNodes, bandwidthKhz, powerMax, fidelityRatio, radius, strIpAddr.c_str());
+    resultShow.writePeformance_MinResors_with2ndPowerControl_4b(str3,*this, best2nd_ms, fidelityRatio,bestChNum);
+    sprintf(str3,"tmpAll/ULSA2i3_Cluster_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",
+        totalNodes, bandwidthKhz, powerMax, fidelityRatio, radius, strIpAddr.c_str());
+    resultShow.writeClusterInfo(str3,*this,timeBuf);
+
+
+
+    delete matrixComputer;
+    delete consSol;
+    return true;
+  }
+  else{
+    delete matrixComputer;
+    delete consSol;
+    return false;
+  }
 
 }
 
@@ -1192,83 +1192,94 @@ void ULSA2i3_MC::decideHeadRotate2i_DC_HeadRanMemDet()
 
 
 void ULSA2i3_MC::decideHeadJoining4b(){
-    int threshold=thresholdd;
-    double usepower=powerMax;
-    //---
-    JoiningHeadIndex=-1;
-    targetHeadIndex=-1;
+  int threshold=thresholdd;
+  double usepower=powerMax;
+  //---
+  JoiningHeadIndex=-1;
+  targetHeadIndex=-1;
 
-    vector<int> vecJoinCandHeadIndex;
-    vector<int> vecTargetCandIndex;
-    vector<double>vecGain;
-    vecJoinCandHeadIndex.reserve(maxChNum);
-    vecTargetCandIndex.reserve(maxChNum);
-    vecGain.reserve(maxChNum);
-    for(int i=0;i<maxChNum;i++){
-        if(cSystem->vecClusterSize[i]>0&&cSystem->vecClusterSize[i]<=threshold){
-            vecJoinCandHeadIndex.push_back(i);
-        }
+  vector<int> vecJoinCandHeadIndex;
+  vector<int> vecTargetCandIndex;
+  vector<double>vecGain;
+  vecJoinCandHeadIndex.reserve(maxChNum);
+  vecTargetCandIndex.reserve(maxChNum);
+  vecGain.reserve(maxChNum);
+  int count = 0;
+  for(int i=0;i<maxChNum;i++){
+    if( cSystem->vecClusterSize[i] > 0) {
+      count++;
     }
-
-    cout<<"Cand Size="<<vecJoinCandHeadIndex.size()<<endl;
-    vector<double> firtGainRecord;
-    //only for check
-    firtGainRecord.resize(maxChNum);
-     vector<double> firtCostRecord;
-     firtCostRecord.resize(maxChNum);
-
-    for(unsigned int i=0;i<vecJoinCandHeadIndex.size();i++){
-        double tmpTest=-DBL_MAX;
-        double tmpFirstGain=0;
-        double tmpFirstCost=0;
-                int  tmpTarget=-1;
-        for(unsigned int j=0;j<maxChNum;j++){
-            if(cSystem->vecClusterSize[j]<=threshold) continue;//Candidates or Not existed
-            else if(vecJoinCandHeadIndex[i]==j)continue;
-            double cluInfo=indEntropy*cSystem->vecClusterSize[vecJoinCandHeadIndex[i]]+matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[vecJoinCandHeadIndex[i]]);
-            double firstTierGain=cluInfo/(bandwidthKhz*log2(1+power1st*Gib[cSystem->vecHeadName[vecJoinCandHeadIndex[i]]]/realNoise));
-
-
-            bool tempMerge[totalNodes];
-            for(int k=0;k<totalNodes;k++)
-                tempMerge[k]=cSystem->clusterStru[vecJoinCandHeadIndex[i]][k]+cSystem->clusterStru[j][k];
-
-            cluInfo=indEntropy*cSystem->vecClusterSize[j]+matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[j]);
-
-            double cluInfoMerge=indEntropy*(cSystem->vecClusterSize[vecJoinCandHeadIndex[i]]+cSystem->vecClusterSize[j])+ \
-            matrixComputer->computeLog2Det(1.0,tempMerge);
-            double firstTierCost=(cluInfoMerge-cluInfo)/((bandwidthKhz*log2(1+power1st*Gib[cSystem->vecHeadName[j]]/realNoise)));
-            //assert(firstTierCost>0);
-
-
-            double tmp = firstTierGain-(firstTierCost)-estimateJoin2ndTierCost(vecJoinCandHeadIndex[i],j);//Cost = extra mini second spent
-            if((tmp)>tmpTest){
-                tmpTarget=j;
-                tmpTest=tmp;
-                tmpFirstGain=firstTierGain;
-                tmpFirstCost=firstTierCost;
-            }
-        }
-        assert(tmpTarget!=-1);
-        firtGainRecord[i]=tmpFirstGain;
-        firtCostRecord[i]=tmpFirstCost;
-        vecGain.push_back(tmpTest);
-        vecTargetCandIndex.push_back(tmpTarget);
+    if(cSystem->vecClusterSize[i]>0&&cSystem->vecClusterSize[i]<=threshold){
+      vecJoinCandHeadIndex.push_back(i);
     }
-    /*for(unsigned int i=0;i<vecJoinCandHeadIndex.size();i++)
-          cout<<vecGain[i]<<endl;*/
+  }
 
-    assert(vecGain.size()==vecTargetCandIndex.size());
-    int ttIndex=-1;
-    double tmpGainTest=-DBL_MAX;
-    for(unsigned int i=0;i<vecJoinCandHeadIndex.size();i++){
-        if(tmpGainTest<vecGain[i]){
-            ttIndex=i;
-            tmpGainTest=vecGain[i];
-            JoiningHeadIndex=vecJoinCandHeadIndex[i];
-            targetHeadIndex=vecTargetCandIndex[i];
-        }
+  //cout<<"Cand Size="<<vecJoinCandHeadIndex.size()<<endl;
+  cout << "J: HeadNumber: " << count << endl; 
+  vector<double> firtGainRecord;
+  //only for check
+  firtGainRecord.resize(maxChNum);
+  vector<double> firtCostRecord;
+  firtCostRecord.resize(maxChNum);
+
+  for(unsigned int i=0;i<vecJoinCandHeadIndex.size();i++){
+    double tmpTest=-DBL_MAX;
+    double tmpFirstGain=0;
+    double tmpFirstCost=0;
+    int  tmpTarget=-1;
+    for(unsigned int j=0;j<maxChNum;j++){
+      if(cSystem->vecClusterSize[j]<=threshold) continue;//Candidates or Not existed
+      else if(vecJoinCandHeadIndex[i]==j)continue;
+      double cluInfo = indEntropy * cSystem->vecClusterSize[vecJoinCandHeadIndex[i]] + 
+        matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[vecJoinCandHeadIndex[i]]);
+      double firstTierGain = cluInfo / 
+        ( bandwidthKhz * log2(1 + power1st*Gib[cSystem->vecHeadName[vecJoinCandHeadIndex[i]]] / realNoise ) );
+
+
+      bool tempMerge[totalNodes];
+      for(int k=0;k<totalNodes;k++)
+        tempMerge[k] = cSystem->clusterStru[vecJoinCandHeadIndex[i]][k] + cSystem->clusterStru[j][k];
+
+      cluInfo = indEntropy * cSystem->vecClusterSize[j] + matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[j]);
+
+      double cluInfoMerge = indEntropy * ( cSystem->vecClusterSize[vecJoinCandHeadIndex[i]] + cSystem->vecClusterSize[j] ) + 
+                          matrixComputer->computeLog2Det(1.0,tempMerge);
+      double firstTierCost = ( cluInfoMerge - cluInfo ) / ( ( bandwidthKhz * log2(1 + power1st*Gib[cSystem->vecHeadName[j]] /realNoise ) ) );
+      //assert(firstTierCost>0);
+
+
+      double tmp = firstTierGain - (firstTierCost) - 
+        estimateJoin2ndTierCost(vecJoinCandHeadIndex[i],j);
+      //Cost = extra mini second spent
+
+      if((tmp)>tmpTest){
+        tmpTarget=j;
+        tmpTest=tmp;
+        tmpFirstGain=firstTierGain;
+        tmpFirstCost=firstTierCost;
+      }
     }
+    assert(tmpTarget!=-1);
+    firtGainRecord[i]=tmpFirstGain;
+    firtCostRecord[i]=tmpFirstCost;
+    vecGain.push_back(tmpTest);
+    vecTargetCandIndex.push_back(tmpTarget);
+  }
+  /*for(unsigned int i=0;i<vecJoinCandHeadIndex.size();i++)
+    cout<<vecGain[i]<<endl;*/
+
+  assert(vecGain.size()==vecTargetCandIndex.size());
+  int ttIndex=-1;
+  double tmpGainTest=-DBL_MAX;
+  for(unsigned int i=0;i<vecJoinCandHeadIndex.size();i++){
+    if(tmpGainTest<vecGain[i]){
+      ttIndex=i;
+      tmpGainTest=vecGain[i];
+      JoiningHeadIndex=vecJoinCandHeadIndex[i];
+      targetHeadIndex=vecTargetCandIndex[i];
+    }
+  }
+  if (isDetailOutputOn) {
     assert(JoiningHeadIndex!=-1&&targetHeadIndex!=-1);
     cout<<"Tried to Join "<<JoiningHeadIndex<<"-th head:"<<cSystem->vecHeadName[JoiningHeadIndex]<<" to "<<targetHeadIndex<<"-th Cluster"<<endl;
     cout<<"Estimate Gain "<<tmpGainTest<<" first tier gain="<<firtGainRecord[ttIndex]-firtCostRecord[ttIndex];
@@ -1276,35 +1287,36 @@ void ULSA2i3_MC::decideHeadJoining4b(){
     cout<<"with estimate payoff="<<curPayoff-tmpGainTest<<endl;
     char str[500];
     sprintf(str,"ULSA4b_EstimateJoinGainHN%d.txt",maxChNum);
-    //FILE *fid=fopen(str,"a+");
-    //fprintf(fid,"%f %d ",tmpGainTest,curChNum);
-    //fclose(fid);
+  }
+  //FILE *fid=fopen(str,"a+");
+  //fprintf(fid,"%f %d ",tmpGainTest,curChNum);
+  //fclose(fid);
 
 }
 
-double ULSA2i3_MC::estimateJoin2ndTierCost(int JoiningHeadIndex, int targetIndex){
+double ULSA2i3_MC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
     //estimate the power increase of testIndex: assume interference the same;
     vector<double> originalInterf_FromTargetClu_JoiningClu;
     vector<double> interference_Except_JoinI_TargetI;
     originalInterf_FromTargetClu_JoiningClu.resize(maxChNum);
     interference_Except_JoinI_TargetI.resize(maxChNum);
-    computeOriInterference_GivenTarInJoinI(originalInterf_FromTargetClu_JoiningClu,interference_Except_JoinI_TargetI,JoiningHeadIndex,targetIndex);
+    computeOriInterference_GivenTarInJoinI(originalInterf_FromTargetClu_JoiningClu,interference_Except_JoinI_TargetI,joinCHIdx,targetCHIdx);
 
     vector <double> newPower;
     newPower.resize(totalNodes);
     vector <int> newTarMem;
     newTarMem.reserve(totalNodes);
-    updateJoinEstimatedPower(newPower,newTarMem,JoiningHeadIndex,targetIndex);
+    updateJoinEstimatedPower(newPower,newTarMem,joinCHIdx,targetCHIdx);
 
 
     vector<double> newInterf_FromTargetCluster;
     newInterf_FromTargetCluster.resize(maxChNum);
-    computeNewInterference_FromNewTarHI(newInterf_FromTargetCluster,newPower,newTarMem,JoiningHeadIndex,targetIndex);
+    computeNewInterference_FromNewTarHI(newInterf_FromTargetCluster,newPower,newTarMem,joinCHIdx,targetCHIdx);
 
     double testMaxRatio=0;
     list< list<int> >::iterator it_LiInt=cSystem->listCluMember->begin();
     for(int i=0;i<maxChNum;i++,it_LiInt++){
-        if (cSystem->vecHeadName[i]==-1||i==JoiningHeadIndex||i==targetHeadIndex)continue;
+        if ( cSystem->vecHeadName[i] == -1 || i == joinCHIdx || i == targetCHIdx ) continue;
         list<int>::iterator it_Int=it_LiInt->begin();
         for(;it_Int!=it_LiInt->end();it_Int++){
             double tmpRcvPW=nextNodePower[*it_Int]*Gij[*it_Int][cSystem->vecHeadName[i]];
@@ -1316,7 +1328,13 @@ double ULSA2i3_MC::estimateJoin2ndTierCost(int JoiningHeadIndex, int targetIndex
     return ((testMaxRatio)/10*cur2nd_ms);//(:=upper bound + lower nbound)/2 - lower bound
 }
 
-void ULSA2i3_MC::computeOriInterference_GivenTarInJoinI(vector<double> &originalInterf_FromTargetClusterNJoinI,vector<double> &interference_Except_JoinI_TargetI,int JoiningHeadIndex, int targetIndex){
+void ULSA2i3_MC::computeOriInterference_GivenTarInJoinI( 
+    vector<double> &originalInterf_FromTargetClusterNJoinI, 
+    vector<double> &interference_Except_JoinI_TargetI, 
+    int joinCHIdx, 
+    int targetCHIdx){
+
+
     consSol->updateInterference();
 
     for(int i=0;i<maxChNum;i++){
@@ -1325,19 +1343,21 @@ void ULSA2i3_MC::computeOriInterference_GivenTarInJoinI(vector<double> &original
         double tempAllInterf=0;
         for(int j=0;j<maxChNum;j++){
             if(cSystem->vecHeadName[j]==-1)continue;
-            if(j==targetIndex||j==JoiningHeadIndex)tempJointI_TargetI_Interf+=consSol->maStrengthInterference[i][j];
+            if(j==targetCHIdx||j==joinCHIdx)tempJointI_TargetI_Interf+=consSol->maStrengthInterference[i][j];
             else tempAllInterf+=consSol->maStrengthInterference[i][j];
         }
         originalInterf_FromTargetClusterNJoinI[i]=tempJointI_TargetI_Interf;
         interference_Except_JoinI_TargetI[i]=tempAllInterf;
     }
 }
-void ULSA2i3_MC::updateJoinEstimatedPower(vector<double> &newPower, vector<int> &newMem,int JoiningHeadIndex, int targetIndex){
+void ULSA2i3_MC::updateJoinEstimatedPower(vector<double> &newPower, 
+    vector<int> &newMem, int joinCHIdx, int targetCHIdx){
+
     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-    for(int i=0;i<targetIndex;i++)it_LiInt++;
+    for(int i=0;i<targetCHIdx;i++)it_LiInt++;
     list<int>::iterator it_Int=it_LiInt->begin();
-    int tarOriSize= cSystem->vecClusterSize[targetIndex];
-    int newCluSize= cSystem->vecClusterSize[JoiningHeadIndex]+tarOriSize;
+    int tarOriSize= cSystem->vecClusterSize[targetCHIdx];
+    int newCluSize= cSystem->vecClusterSize[joinCHIdx]+tarOriSize;
     //update Original Cluster Member
     for(;it_Int!=it_LiInt->end();it_Int++){
         double tmpPower=nextNodePower[*it_Int]*(pow(2,newCluSize*indEntropy/bandwidthKhz/cur2nd_ms)-1)/(pow(2,tarOriSize*indEntropy/bandwidthKhz/cur2nd_ms)-1);
@@ -1346,20 +1366,23 @@ void ULSA2i3_MC::updateJoinEstimatedPower(vector<double> &newPower, vector<int> 
     }
     //update new Cluster Member
 
-    int cursorIndex=(newMem[1]!=cSystem->vecHeadName[targetIndex])?newMem[0]:newMem[1];
+    int cursorIndex=(newMem[1]!=cSystem->vecHeadName[targetCHIdx])?newMem[0]:newMem[1];
     it_LiInt=cSystem->listCluMember->begin();
-    for(int i=0;i<JoiningHeadIndex;i++)it_LiInt++;
+    for(int i=0;i<joinCHIdx;i++)it_LiInt++;
     it_Int=it_LiInt->begin();
     for(;it_Int!=it_LiInt->end();it_Int++){
-        int tmpHead=cSystem->vecHeadName[targetIndex];
+        int tmpHead=cSystem->vecHeadName[targetCHIdx];
         double tmpPower2=newPower[cursorIndex]*Gij[cursorIndex][tmpHead]/Gij[*it_Int][tmpHead];
         newPower[*it_Int]=tmpPower2;
         newMem.push_back(*it_Int);
     }
 }
-void ULSA2i3_MC::computeNewInterference_FromNewTarHI(vector<double> &newInterf,vector<double>&newPower,vector<int>&newMem,int JoiningHeadIndex, int targetIndex){
+void ULSA2i3_MC::computeNewInterference_FromNewTarHI(vector<double> &newInterf, 
+    vector<double>&newPower, vector<int>&newMem, int joinCHIdx, 
+    int targetCHIdx){
+
     for(unsigned int i=0;i<maxChNum;i++){
-        if(i==JoiningHeadIndex||i==targetIndex||cSystem->vecHeadName[i]==-1){
+        if(i==joinCHIdx||i==targetCHIdx||cSystem->vecHeadName[i]==-1){
             newInterf[i]=-1;
             continue;
         }
@@ -1389,6 +1412,13 @@ void ULSA2i3_MC::decideIsolate4b(){
         //cout<<"Node: "<<i<<" in Isolate 1st tier cost = "<<firstTierCost<<endl;
         vecGain.push_back(-firstTierCost);//Gain = mini second reduced
     }
+
+    //Calculate the cluster number 
+    int count = 0;
+    for (int i = 0; i < maxChNum; i++) {
+      if (cSystem->vecClusterSize[i] > 0 ) count++;
+    }
+    cout <<"I: HeadNumber: " << count << endl;
 
     vector<double> firsttierC;
     firsttierC.resize(totalNodes);
@@ -1437,9 +1467,12 @@ void ULSA2i3_MC::decideIsolate4b(){
 
 
     assert(isolatedHeadIndex!=-1&&IsolateNodeName!=-1);
-    cout<<"Tried to Isolate "<<IsolateNodeName<<" from "<<isolatedHeadIndex<<"-th head to be "<<targetHeadIndex<<"-th head"<<endl;
-    cout<<"Estimate Gain "<<tmpGainTest<<" first tier Cost="<<firsttierC[IsolateNodeName]<<";second tier gain="<<tmpGainTest-firsttierC[IsolateNodeName]<<endl;
-    cout<<"with estimate payoff="<<curPayoff-tmpGainTest<<endl;
+
+    if ( isDetailOutputOn ) {
+      cout<<"Tried to Isolate "<<IsolateNodeName<<" from "<<isolatedHeadIndex<<"-th head to be "<<targetHeadIndex<<"-th head"<<endl;
+      cout<<"Estimate Gain "<<tmpGainTest<<" first tier Cost="<<firsttierC[IsolateNodeName]<<";second tier gain="<<tmpGainTest-firsttierC[IsolateNodeName]<<endl;
+      cout<<"with estimate payoff="<<curPayoff-tmpGainTest<<endl;
+    }
     //char str[500];
     //sprintf(str,"ULSA4b_EstimateIsolateGainHN%d.txt",maxChNum);
     //FILE *fid=fopen(str,"a+");
@@ -1595,62 +1628,62 @@ void ULSA2i3_MC::isolateHeadSA(int isoName,int IsolateCluI, int targetH){
 
 void ULSA2i3_MC::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 
-     lastJoingingMachine.clear();
-     lastJoiningHeadIndex=JoiningHeadIndex;
-     lastJoiningHead=cSystem->vecHeadName[lastJoiningHeadIndex];
-     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-     for(int i=0;i<JoiningHeadIndex;i++)it_LiInt++;
-     list<int>::iterator it_Int=it_LiInt->begin();
-     for(int i=0;i<it_LiInt->size();i++,it_Int++){
-         lastJoingingMachine.push_back(*it_Int);
-         nodes[*it_Int].ptrHead=&(cSystem->vecHeadName[targetH]);
-     }
+  lastJoingingMachine.clear();
+  lastJoiningHeadIndex=JoiningHeadIndex;
+  lastJoiningHead=cSystem->vecHeadName[lastJoiningHeadIndex];
+  list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
+  for(int i=0;i<JoiningHeadIndex;i++)it_LiInt++;
+  list<int>::iterator it_Int=it_LiInt->begin();
+  for(int i=0;i<it_LiInt->size();i++,it_Int++){
+    lastJoingingMachine.push_back(*it_Int);
+    nodes[*it_Int].ptrHead=&(cSystem->vecHeadName[targetH]);
+  }
 
-     cSystem->join_FromHead(JoiningHeadIndex,targetH);
-     nextChNum=curChNum-1;
+  cSystem->join_FromHead(JoiningHeadIndex,targetH);
+  nextChNum=curChNum-1;
 
 }
 
 
 void ULSA2i3_MC::calculateMatrics_minResors()//Calculate next performance matircs
 {
-	next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
-	next1st_ms = return1stTotalNcal1stResors_HomoPower();
-	next2nd_Joule = returnTransientJoule();
-	next1st_Joule= power1st*next1st_ms/1000;
-	//:<<"MaxPowerLoad="<<returnMaxPowerLoad()<<" Max="<<powerMax<<endl;
+  next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+  next1st_ms = return1stTotalNcal1stResors_HomoPower();
+  next2nd_Joule = returnTransientJoule();
+  next1st_Joule= power1st*next1st_ms/1000;
+  //:<<"MaxPowerLoad="<<returnMaxPowerLoad()<<" Max="<<powerMax<<endl;
 
-	if (nextEventFlag==1)
-	{
-		nextSupNum = curSupNum + 1;//Serve one more node
-		nextJEntropy = nextSupNum*indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
-	}
-	else if(nextEventFlag==2)
-	{
-		nextSupNum = curSupNum -1;
-		nextJEntropy = nextSupNum * indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
-	}
-	else if (nextEventFlag==3)  //Do Nothing
-	{
-		//cout<<"Original Head="<<rotatedHeadNameLast<<endl;
+  if (nextEventFlag==1)
+  {
+    nextSupNum = curSupNum + 1;//Serve one more node
+    nextJEntropy = nextSupNum*indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
+  }
+  else if(nextEventFlag==2)
+  {
+    nextSupNum = curSupNum -1;
+    nextJEntropy = nextSupNum * indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
+  }
+  else if (nextEventFlag==3)  //Do Nothing
+  {
+    //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
 
-	}
-	else if (nextEventFlag==4)  //Do Nothing
-    {
-        //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
+  }
+  else if (nextEventFlag==4)  //Do Nothing
+  {
+    //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
 
-    }
-    else if (nextEventFlag==5)  //Do Nothing
-    {
-        //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
+  }
+  else if (nextEventFlag==5)  //Do Nothing
+  {
+    //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
 
-    }
-	else
-	{
-		cout<<"Error in calculateMatrics_minResors "<<endl;
-		assert(0);
-	}
-	nextPayoff =(next1st_ms+next2nd_ms);
+  }
+  else
+  {
+    cout<<"Error in calculateMatrics_minResors "<<endl;
+    assert(0);
+  }
+  nextPayoff =(next1st_ms+next2nd_ms);
 }
 
 /*
@@ -1661,57 +1694,69 @@ void ULSA2i3_MC::calculateMatrics_minResors()//Calculate next performance matirc
    */
 void ULSA2i3_MC::confirmNeighbor3i()
 {
-    /*cout<<"By "<<nextEventFlag<<endl;
-    cout<<"Next Payoff="<<nextPayoff<<"; From CurPayoff="<<curPayoff <<endl;
-    cout<<"Oiginal 1st="<<cur1st_ms<<" Original2nd="<<cur2nd_ms<<";CurInfoRatio="<<curJEntropy/wholeSystemEntopy<<endl;
-    cout<<"    new 1st="<<next1st_ms<<" new     2nd="<<next2nd_ms<<";NexInfoRatio="<<nextJEntropy/wholeSystemEntopy<<endl;
-	cout<<"   CurChNum="<<curChNum<<endl;
-	*/
-    bool nextAllServe = (((nextJEntropy>(fidelityRatio*wholeSystemEntopy)) \
-                       &&(static_cast<double>(nextSupNum)>(static_cast<double>(totalNodes)*fidelityRatio)))?true:false);
-	bool curAllServe = (((curJEntropy>(fidelityRatio*wholeSystemEntopy))
-                     &&(static_cast<double>(curSupNum)>(static_cast<double>(totalNodes)*fidelityRatio)))?true:false);
+  /*
+  cout<<"By "<<nextEventFlag<<endl;
+  cout<<"Next Payoff="<<nextPayoff<<"; From CurPayoff="<<curPayoff <<endl;
+  cout<<"Oiginal 1st="<<cur1st_ms<<" Original2nd="<<cur2nd_ms<<";CurInfoRatio="<<curJEntropy/wholeSystemEntopy<<endl;
+  cout<<"    new 1st="<<next1st_ms<<" new     2nd="<<next2nd_ms<<";NexInfoRatio="<<nextJEntropy/wholeSystemEntopy<<endl;
+  cout<<"   CurChNum="<<curChNum<<endl;
+  */
+  bool nextAllServe = ( ( ( nextJEntropy > ( fidelityRatio * wholeSystemEntopy ) ) 
+        && ( static_cast<double>(nextSupNum) > ( static_cast<double>(totalNodes) * fidelityRatio ) ) ) 
+      ?true:false );
+
+  bool curAllServe = ( ( ( curJEntropy > ( fidelityRatio * wholeSystemEntopy ) )
+        && ( static_cast<double>(curSupNum) > (static_cast<double>(totalNodes) * fidelityRatio ) ) ) 
+      ?true:false );
 
 
-	if ((nextSupNum>=curSupNum)&&!nextAllServe&&!curAllServe)
-	{
-		passNext2Cur();
-		for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
-		if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
-	}
-	else if (!curAllServe&&nextAllServe) {
-		passNext2Cur();
-		for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
-		if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
-	}
-	else if ((nextPayoff<curPayoff)&&nextAllServe&&curAllServe)
-	{
-		passNext2Cur();
-		for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
-		if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
-	}
-	else if(((nextSupNum<curSupNum)&&!nextAllServe&&!curAllServe)||(!nextAllServe&&curAllServe)|| \
-			((nextPayoff>curPayoff)&&nextAllServe&&curAllServe))
-	{
-		double probAnnealing = exp (-20*abs(nextPayoff-curPayoff)/temparature);
-        //cout<<"Show Payoff "<<nextPayoff<<"  "<<curPayoff<<endl;
-		//cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
-		double annealingChoose = (double)rand()/((double)RAND_MAX+1);
-		if (annealingChoose>probAnnealing)
-		{
-			reverseMoveSA();
-		}
-		else//accept the move
-		{
-			passNext2Cur();
-			for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
-			if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
-		}
-	}
-	targetHeadIndex = -1;
-	targetNode = -1;
-	nextEventFlag = -1;
-	temparature*=alpha;
+  if ( ( nextSupNum >= curSupNum ) && !nextAllServe && !curAllServe )
+  {
+    passNext2Cur();
+    for( int i = 0; i < totalNodes; i++)
+      nodes[i].power = nextNodePower[i];
+    if( nextEventFlag == 1 || nextEventFlag == 2 )
+      confirmStructureChange();
+  }
+  else if ( !curAllServe && nextAllServe ) {
+    passNext2Cur();
+    for( int i = 0; i < totalNodes; i++)
+      nodes[i].power = nextNodePower[i];
+    if( nextEventFlag == 1 || nextEventFlag == 2 )
+      confirmStructureChange();
+  }
+  else if ( ( nextPayoff < curPayoff ) && nextAllServe && curAllServe )
+  {
+    passNext2Cur();
+    for( int i = 0; i < totalNodes; i++ ) 
+      nodes[i].power = nextNodePower[i];
+    if( nextEventFlag == 1 || nextEventFlag == 2 )
+      confirmStructureChange();
+  }
+  else if( ( ( nextSupNum < curSupNum ) 
+        && !nextAllServe 
+        && !curAllServe) || ( !nextAllServe && curAllServe ) || 
+      ( ( nextPayoff > curPayoff ) && nextAllServe && curAllServe ) )
+  {
+    double probAnnealing = exp (-20*abs(nextPayoff-curPayoff)/temparature);
+    //cout<<"Show Payoff "<<nextPayoff<<"  "<<curPayoff<<endl;
+    //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
+    double annealingChoose = (double)rand()/((double)RAND_MAX+1);
+    if (annealingChoose>probAnnealing)
+    {
+      reverseMoveSA();
+    }
+    else//accept the move
+    {
+      passNext2Cur();
+      for(int i=0; i<totalNodes; i++)nodes[i].power = nextNodePower[i];
+      if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();
+    }
+  }
+  targetHeadIndex = -1;
+  targetNode = -1;
+  nextEventFlag = -1;
+  temparature*=alpha;
 }
 
 void ULSA2i3_MC::passNext2Cur() {

@@ -89,6 +89,7 @@ public:
   // Main part
   bool startCool();
   bool operatorTest(int opFlag);
+  double powerConstraintTest();
 
 //-------------------------------------------------------------------//
 // @Purpose: Public Parameters

@@ -63,7 +63,7 @@ end
 
 %plot(headx,mean(finalHead),'^-.','LineWidth',1.5,'DisplayName','Head\leqm','MarkerSize',10);hold on;
 
-plot (headx,headx,'kx-','LineWidth',1.5,'DisplayName','Head=m');
+%plot (headx,headx,'kx-','LineWidth',1.5,'DisplayName','Head=m');
 
 title('180 Khz;\lambda=0.95;\eta=0.48');
 ylabel('Final Converged Head Number ');

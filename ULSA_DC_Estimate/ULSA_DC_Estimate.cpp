@@ -2393,6 +2393,11 @@ bool ULSA_DC_Estimate::operatorTest(int opFlag)
     obj_time.returnRealWordTime(timeBuf,32);
 }
 
+double ULSA_DC_Estimate::powerConstraintTest()
+{
+  return 0.0;
+}
+
 
 
 
