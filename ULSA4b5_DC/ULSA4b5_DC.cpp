@@ -1217,13 +1217,15 @@ void ULSA4b5_DC::decideHeadJoining4b(){
   vecTargetCandIndex.reserve(maxChNum);
   vecGain.reserve(maxChNum);
   int count = 0;
+
+  vector<vector<int> > matNeighborhood(maxChNum, vector<int>(maxChNum));
+  genNeighborhoodMat(matNeighborhood);
   for(int i=0;i<maxChNum;i++){
     if( cSystem->vecClusterSize[i] > 0) {
       count++;
     }
     if( cSystem->vecClusterSize[i] > 0 && cSystem->vecClusterSize[i] <= threshold ){
       /* check join neighborhood  */
-      checkNeighborhood(0,0);
       vecJoinCandHeadIndex.push_back(i);
     }
   }
@@ -1341,6 +1343,29 @@ void ULSA4b5_DC::decideHeadJoining4b(){
 }
 bool ULSA4b5_DC::checkNeighborhood(int joinCHIdx, int targetCHIdx) {
   return true;
+}
+void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matNeighborhood) {
+  /* construct the listen range vector */
+  vector<vector<double> > matChListenPower(maxChNum);
+  vector<double> originalInterf_FromTargetClu_JoiningClu(maxChNum);
+  vector<double> interference_Except_JoinI_TargetI(maxChNum);
+
+  /*loop for each target CH*/
+  for (int i = 0; i < maxChNum; i++) {
+    /*loop for each join CH*/
+    for (int j = 0; j < maxChNum; j++) {
+      if ( cSystem->vecClusterSize[i] <= 0) {
+        matChListenPower[i][j] = 0.0;
+      }
+      else {
+        computeOriInterference_GivenTarInJoinI( 
+            originalInterf_FromTargetClu_JoiningClu,
+            interference_Except_JoinI_TargetI, j, i);
+
+      }
+    }
+  }
+  return;
 }
 
 double ULSA4b5_DC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
