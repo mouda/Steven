@@ -1344,12 +1344,21 @@ void ULSA4b5_DC::decideHeadJoining4b(){
 bool ULSA4b5_DC::checkNeighborhood(int joinCHIdx, int targetCHIdx) {
   return true;
 }
+double ULSA4b5_DC::computePcInterference_GivenTarnInJoinI(const int& joinCHIdx, const int& targetCHIdx){
+  double sumPower; 
+  for (int i = 0; i < maxChNum; i++) {
+    if ( joinCHIdx == i ) continue;
+    sumPower = Gij[i][consSol->maIndexInterference[targetCHIdx][i]]*powerMax;
+  }
+  return sumPower;
+}
 void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matNeighborhood) {
   /* construct the listen range vector */
   vector<vector<double> > matChListenPower(maxChNum);
   vector<double> originalInterf_FromTargetClu_JoiningClu(maxChNum);
   vector<double> interference_Except_JoinI_TargetI(maxChNum);
 
+  consSol->updateInterference();
   /*loop for each target CH*/
   for (int i = 0; i < maxChNum; i++) {
     /*loop for each join CH*/
@@ -1358,9 +1367,19 @@ void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matNeighborhood) {
         matChListenPower[i][j] = 0.0;
       }
       else {
-        computeOriInterference_GivenTarInJoinI( 
-            originalInterf_FromTargetClu_JoiningClu,
-            interference_Except_JoinI_TargetI, j, i);
+        /* compute all the other Pc interference except j */
+        double firstTerm = (realNoise + computePcInterference_GivenTarnInJoinI( j, i)) / Gij[i][j];
+        double exponent = 
+          static_cast<double>( (cSystem->vecClusterSize[i] + cSystem->vecClusterSize[j] - 1 ) * quantizationBits ) / bandwidthKhz; 
+        double secondTerm = pow( 2, exponent ) - 1.0;
+        matChListenPower[i][j] = firstTerm + secondTerm;
+
+
+        
+        /* add real noise divide by channel gain  */
+
+        /* multiply the entropy term */
+        //matChListenPower[i][j] = 
 
       }
     }
@@ -1467,8 +1486,8 @@ void ULSA4b5_DC::computeOriInterference_GivenTarInJoinI(
                 consSol->maStrengthInterference[i][j];
             else tempAllInterf+=consSol->maStrengthInterference[i][j];
         }
-        originalInterf_FromTargetClusterNJoinI[i]=tempJointI_TargetI_Interf;
-        interference_Except_JoinI_TargetI[i]=tempAllInterf;
+        originalInterf_FromTargetClusterNJoinI[i] = tempJointI_TargetI_Interf;
+        interference_Except_JoinI_TargetI[i] = tempAllInterf;
     }
 }
 void ULSA4b5_DC::updateJoinEstimatedPower(vector<double> &newPower, 

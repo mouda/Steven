@@ -3,7 +3,7 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.8	//
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 CFLAGS	Makefile	/^CFLAGS=-O -O1 -O2 -O3$/;"	m
 CPP	Makefile	/^CPP= g++$/;"	m
 Gib	ULSA4b5_DC.h	/^  float *Gib; \/\/ channel gain from node i to base station$/;"	m	class:ULSA4b5_DC
@@ -42,6 +42,7 @@ bestUpperLayerResource	ULSA4b5_DC.h	/^  double bestUpperLayerResource;$/;"	m	cla
 cSystem	ULSA4b5_DC.h	/^  ULCS1b*  cSystem;   \/\/ system cluseter structure$/;"	m	class:ULSA4b5_DC
 calculateMatrics_minResors	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::calculateMatrics_minResors()\/\/Calculate next performance matircs$/;"	f	class:ULSA4b5_DC
 checkBestClusterStructure_DataCentric	ULSA4b5_DC.cpp	/^bool ULSA4b5_DC::checkBestClusterStructure_DataCentric(int inputRound)$/;"	f	class:ULSA4b5_DC
+checkNeighborhood	ULSA4b5_DC.cpp	/^bool ULSA4b5_DC::checkNeighborhood(int joinCHIdx, int targetCHIdx) {$/;"	f	class:ULSA4b5_DC
 compRatio	ULSA4b5_DC.h	/^  double compRatio;$/;"	m	class:ULSA4b5_DC
 compareDis	ULSA4b5_DC.h	/^    compareDis(const ULSA4b5_DC& sa) : mySA(sa) {} \/\/ constructor$/;"	f	struct:ULSA4b5_DC::compareDis
 compareDis	ULSA4b5_DC.h	/^  struct compareDis$/;"	s	class:ULSA4b5_DC
@@ -69,7 +70,7 @@ curPayoff	ULSA4b5_DC.h	/^  double curPayoff;$/;"	m	class:ULSA4b5_DC
 curSupNum	ULSA4b5_DC.h	/^  int  curSupNum;$/;"	m	class:ULSA4b5_DC
 dataBits	ULSA4b5_DC.h	/^  double dataBits;$/;"	m	class:ULSA4b5_DC
 debug_CheckSizeCorrect	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::debug_CheckSizeCorrect() {$/;"	f	class:ULSA4b5_DC
-decideAdd3i_DC_HeadDetMemRan	ULSA4b5_DC.cpp	/^ void ULSA4b5_DC::decideAdd3i_DC_HeadDetMemRan() {$/;"	f	class:ULSA4b5_DC
+decideAdd3i_DC_HeadDetMemRan	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideAdd3i_DC_HeadDetMemRan() {$/;"	f	class:ULSA4b5_DC
 decideDiscard3b	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideDiscard3b()$/;"	f	class:ULSA4b5_DC
 decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {$/;"	f	class:ULSA4b5_DC
 decideHeadJoining4b	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideHeadJoining4b(){$/;"	f	class:ULSA4b5_DC
@@ -87,6 +88,7 @@ estimateIsolate2ndTierGain	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::estimateIsolate2n
 estimateJoin2ndTierCost	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){$/;"	f	class:ULSA4b5_DC
 fidelityRatio	ULSA4b5_DC.h	/^  double fidelityRatio;\/\/ Temporary set by here 2013\/02\/21$/;"	m	class:ULSA4b5_DC
 flagAnsFound	ULSA4b5_DC.h	/^  bool flagAnsFound;$/;"	m	class:ULSA4b5_DC
+genNeighborhoodMat	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matNeighborhood) {$/;"	f	class:ULSA4b5_DC
 headCandidatesNum	ULSA4b5_DC.h	/^  int headCandidatesNum;$/;"	m	class:ULSA4b5_DC
 indEntropy	ULSA4b5_DC.h	/^  double indEntropy;$/;"	m	class:ULSA4b5_DC
 iniDone	ULSA4b5_DC.h	/^  bool iniDone;$/;"	m	class:ULSA4b5_DC
