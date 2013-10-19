@@ -17,20 +17,20 @@
 #include<cstddef>//For keyworkd like NULL
 class ULAGENT
 {
-	  //locations are set in readLocation();
-	  //Their groups are set in setIniStru();
-      public:
-             ULAGENT();
-             ULAGENT(const ULAGENT &);
-             void aryConstructor(int inputIndex, float X, float Y); // Triggered and Set Location
-             bool existed;
-             int nodeIndex; //nodeindex := nodeName
-             float locX;
-             float locY;
-             double dibSQ;
-             int* ptrHead;  //In which group, the number is its cluster head's name.
-             float power;
-             double T2ndtier;
+  //locations are set in readLocation();
+  //Their groups are set in setIniStru();
+  public:
+    ULAGENT();
+    ULAGENT(const ULAGENT &);
+    void aryConstructor(int inputIndex, float X, float Y); // Triggered and Set Location
+    bool existed;
+    int nodeIndex; //nodeindex := nodeName
+    float locX;
+    float locY;
+    double dibSQ;
+    int* ptrHead;  //In which group, the number is its cluster head's name.
+    float power;
+    double T2ndtier;
 
 };
 #endif

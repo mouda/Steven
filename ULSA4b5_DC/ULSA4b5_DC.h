@@ -263,7 +263,7 @@ public:
   void computeNewInterference_FromNewTarHI(std::vector<double> &newInterf,std::vector<double>&newPower,std::vector<int>&newMem,int JoiningHeadIndex, int targetIndex);
   bool checkNeighborhood(int joinCHIdx, int targetCHIdx); 
   /* for neigborhood filtering */
-  void genNeighborhoodMat(std::vector<std::vector<int> > &matNeighborhood);
+  void genNeighborhoodMat(std::vector<std::vector<int> > & );
   double computePcInterference_GivenTarnInJoinI(const int &joinCHIdx, const int &targetCHIdx);
 
   void decideIsolate4b();

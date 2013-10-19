@@ -43,6 +43,8 @@ public:
   bool returnIfClusterSmall(int thershold, int &numOfClu);
 
 
+  /* report cluster status method */
+  int getCHIdxByCHName(const int &name);
 
   int calSupNodes();
   void writeCsFile(char* fileName);

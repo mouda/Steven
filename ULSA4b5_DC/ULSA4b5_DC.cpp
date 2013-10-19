@@ -1,5 +1,5 @@
 #include <iostream>
-#include<iomanip>
+#include <iomanip>
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
@@ -8,7 +8,9 @@
 #include <algorithm>//for sort
 #include <cfloat>
 #include <list>
-#include<cassert>
+#include <cassert>
+#include <cv.h>
+#include "../commonLibrary/matrixUtility.h"
 
 using namespace std;
 #include "ULSA4b5_DC.h"
@@ -767,6 +769,7 @@ bool ULSA4b5_DC::startCool()
 
         /*cout<<curFeasible<<" "<<i<<"-TH Sup Num"<<bestFeasibleSupNum<<"  InfoRatio:"<<curJEntropy/wholeSystemEntopy<<" "<<cur1st_Joule+cur2nd_Joule<<"=("<< cur1st_Joule<<"+"<<cur2nd_Joule<<")joule "<< \
            cur1st_ms+cur2nd_ms<<"=("<<cur1st_ms<<"+"<<cur2nd_ms<<")ms "<<endl;*/
+      
         coolOnce_minResors();
 	    if(targetHeadIndex==-1||targetHeadIndex==-1){i++;continue;}
         calculateMatrics_minResors();
@@ -1220,6 +1223,10 @@ void ULSA4b5_DC::decideHeadJoining4b(){
 
   vector<vector<int> > matNeighborhood(maxChNum, vector<int>(maxChNum));
   genNeighborhoodMat(matNeighborhood);
+#ifdef DEBUG
+  mat2Ddisplay<int>(matNeighborhood);
+#endif
+
   for(int i=0;i<maxChNum;i++){
     if( cSystem->vecClusterSize[i] > 0) {
       count++;
@@ -1352,39 +1359,82 @@ double ULSA4b5_DC::computePcInterference_GivenTarnInJoinI(const int& joinCHIdx, 
   }
   return sumPower;
 }
-void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matNeighborhood) {
+void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matAvailableCount) {
   /* construct the listen range vector */
-  vector<vector<double> > matChListenPower(maxChNum);
-  vector<double> originalInterf_FromTargetClu_JoiningClu(maxChNum);
-  vector<double> interference_Except_JoinI_TargetI(maxChNum);
+  vector<vector<double> > matChRxPower(maxChNum, vector<double>(maxChNum));
+  vector<vector<double> > matNodeTxPower(maxChNum, vector<double>(totalNodes));
 
+
+  vector<int> reverseCHIdx(totalNodes);
+  for (int i = 0; i < totalNodes; i++) {
+    if ( nodes[i].ptrHead == NULL) {
+      reverseCHIdx[i] = -1;
+    }
+    else {
+      reverseCHIdx[i] = cSystem->getCHIdxByCHName(*(nodes[i].ptrHead));
+    }
+  }
   consSol->updateInterference();
-  /*loop for each target CH*/
+  /* initialize matChRxPower matrix */
+  /* loop for each target CH*/
   for (int i = 0; i < maxChNum; i++) {
     /*loop for each join CH*/
     for (int j = 0; j < maxChNum; j++) {
       if ( cSystem->vecClusterSize[i] <= 0) {
-        matChListenPower[i][j] = 0.0;
+        matChRxPower[i][j] = 0.0;
       }
       else {
         /* compute all the other Pc interference except j */
         double firstTerm = (realNoise + computePcInterference_GivenTarnInJoinI( j, i)) / Gij[i][j];
+        /* add real noise divide by channel gain  */
         double exponent = 
           static_cast<double>( (cSystem->vecClusterSize[i] + cSystem->vecClusterSize[j] - 1 ) * quantizationBits ) / bandwidthKhz; 
-        double secondTerm = pow( 2, exponent ) - 1.0;
-        matChListenPower[i][j] = firstTerm + secondTerm;
-
-
-        
-        /* add real noise divide by channel gain  */
-
         /* multiply the entropy term */
-        //matChListenPower[i][j] = 
-
+        double secondTerm = pow( 2, exponent ) - 1.0;
+        matChRxPower[i][j] = firstTerm * secondTerm;
       }
     }
   }
-  return;
+  //mat2Ddisplay<double>(matChRxPower);
+  /* initialize matNodeTxPower matrix */
+  for (int i = 0; i < maxChNum; i++) {
+    for (int j = 0; j < totalNodes; j++) {
+      int rxChName = cSystem->vecHeadName[i];
+      int txChName = reverseCHIdx[j];
+      if (rxChName == -1) {
+        matNodeTxPower[i][j] = DBL_MAX;
+
+      } else {
+        matNodeTxPower[i][j] = Gij[rxChName][j] * matChRxPower[i][txChName];
+      }
+    }
+  }
+  /* initialized achiveablity matrix */
+  vector<vector<int> > achiveablity(maxChNum, vector<int>(totalNodes));
+  for (int i = 0; i < maxChNum; i++) {
+    for (int j = 0; j < totalNodes; j++) {
+      if (matNodeTxPower[i][j] < powerMax) {
+        achiveablity[i][j] = 1;
+      }
+      else {
+        achiveablity[i][j] = 0;
+      }
+    }
+  }
+  
+  /* initialized mask matrix */
+  vector<vector<int> > matMatrix(totalNodes, vector<int>(maxChNum,0));
+  for (int i = 0; i < maxChNum; i++) {
+    for (int j = 0; j < totalNodes; j++) {
+      if ( reverseCHIdx[j] == i ) {
+        matMatrix[j][i] = 1;
+      }
+    }
+  }
+  //mat2Ddisplay<int>(matMatrix);
+  matAvailableCount = multiply2D(achiveablity, matMatrix);
+  //mat2Ddisplay<int>(matAvailableCount);
+
 }
 
 double ULSA4b5_DC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
@@ -1455,7 +1505,7 @@ double ULSA4b5_DC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
               cerr << "Current CH idx: " << i << endl;
               cerr << "Current CH name: " << cSystem->vecHeadName[i] << endl;
             }
-            assert(ratio != numeric_limits<double>::infinity()); 
+            //assert(ratio != numeric_limits<double>::infinity()); 
 #endif
 
             if( ratio > testMaxRatio ) testMaxRatio = ratio;

@@ -3,8 +3,8 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-CFLAGS	Makefile	/^CFLAGS=-O -O1 -O2 -O3$/;"	m
+!_TAG_PROGRAM_VERSION	5.8	//
+CFLAGS	Makefile	/^CFLAGS= -g -D DEBUG $/;"	m
 CPP	Makefile	/^CPP= g++$/;"	m
 Gib	ULSA4b5_DC.h	/^  float *Gib; \/\/ channel gain from node i to base station$/;"	m	class:ULSA4b5_DC
 Gij	ULSA4b5_DC.h	/^  float **Gij;\/\/ channel gain from node i to node j$/;"	m	class:ULSA4b5_DC
@@ -53,6 +53,7 @@ computeNewInterference_FromIsoCluster	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::computeN
 computeNewInterference_FromNewTarHI	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::computeNewInterference_FromNewTarHI(vector<double> &newInterf,$/;"	f	class:ULSA4b5_DC
 computeOriInterference_GivenIsolate	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){$/;"	f	class:ULSA4b5_DC
 computeOriInterference_GivenTarInJoinI	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::computeOriInterference_GivenTarInJoinI($/;"	f	class:ULSA4b5_DC
+computePcInterference_GivenTarnInJoinI	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::computePcInterference_GivenTarnInJoinI(const int& joinCHIdx, const int& targetCHIdx){$/;"	f	class:ULSA4b5_DC
 computeUpperResourceNoCodingNoPowerControl	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::computeUpperResourceNoCodingNoPowerControl()$/;"	f	class:ULSA4b5_DC
 computingTimes	ULSA4b5_DC.h	/^  float computingTimes;$/;"	m	class:ULSA4b5_DC
 confirmNeighbor3i	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::confirmNeighbor3i()$/;"	f	class:ULSA4b5_DC
@@ -88,7 +89,7 @@ estimateIsolate2ndTierGain	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::estimateIsolate2n
 estimateJoin2ndTierCost	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){$/;"	f	class:ULSA4b5_DC
 fidelityRatio	ULSA4b5_DC.h	/^  double fidelityRatio;\/\/ Temporary set by here 2013\/02\/21$/;"	m	class:ULSA4b5_DC
 flagAnsFound	ULSA4b5_DC.h	/^  bool flagAnsFound;$/;"	m	class:ULSA4b5_DC
-genNeighborhoodMat	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matNeighborhood) {$/;"	f	class:ULSA4b5_DC
+genNeighborhoodMat	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> >) {$/;"	f	class:ULSA4b5_DC
 headCandidatesNum	ULSA4b5_DC.h	/^  int headCandidatesNum;$/;"	m	class:ULSA4b5_DC
 indEntropy	ULSA4b5_DC.h	/^  double indEntropy;$/;"	m	class:ULSA4b5_DC
 iniDone	ULSA4b5_DC.h	/^  bool iniDone;$/;"	m	class:ULSA4b5_DC

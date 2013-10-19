@@ -307,6 +307,15 @@ bool ULCS1b::returnIfClusterSmall(int threshold, int &numOfClu){
     return tmpFlag;
 }
 
+int ULCS1b::getCHIdxByCHName(const int& name){
+  assert( vecHeadName.size() != 0 );
+  int headIdx = 0;
+  for ( headIdx = 0; headIdx < vecHeadName.size(); headIdx++ ) {
+    if( vecHeadName[headIdx] == name ) break; 
+  }
+  return headIdx; 
+}
+
 
 
 
