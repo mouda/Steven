@@ -1224,7 +1224,7 @@ void ULSA4b5_DC::decideHeadJoining4b(){
   vector<vector<int> > matNeighborhood(maxChNum, vector<int>(maxChNum));
   genNeighborhoodMat(matNeighborhood);
 #ifdef DEBUG
-  mat2Ddisplay<int>(matNeighborhood);
+  //mat2Ddisplay<int>(matNeighborhood);
 #endif
 
   for(int i=0;i<maxChNum;i++){
@@ -1374,6 +1374,10 @@ void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matAvailableCount) {
       reverseCHIdx[i] = cSystem->getCHIdxByCHName(*(nodes[i].ptrHead));
     }
   }
+//  cout << "----- reverseCHIdx --- " << endl;
+//  vec1DDisplay(reverseCHIdx);
+//  cout << "----- vecHeadName ---- " << endl;
+//  vec1DDisplay(cSystem->vecHeadName);
   consSol->updateInterference();
   /* initialize matChRxPower matrix */
   /* loop for each target CH*/
@@ -1402,10 +1406,10 @@ void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matAvailableCount) {
       int rxChName = cSystem->vecHeadName[i];
       int txChName = reverseCHIdx[j];
       if (rxChName == -1) {
-        matNodeTxPower[i][j] = DBL_MAX;
+        matNodeTxPower[i][j] = DBL_MAX; // un-supported
 
       } else {
-        matNodeTxPower[i][j] = Gij[rxChName][j] * matChRxPower[i][txChName];
+        matNodeTxPower[i][j] =  matChRxPower[i][txChName] / Gij[rxChName][j];
       }
     }
   }
@@ -1423,17 +1427,21 @@ void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matAvailableCount) {
   }
   
   /* initialized mask matrix */
-  vector<vector<int> > matMatrix(totalNodes, vector<int>(maxChNum,0));
+  vector<vector<int> > matMask(totalNodes, vector<int>(maxChNum,0));
   for (int i = 0; i < maxChNum; i++) {
+    if (cSystem->vecHeadName[i] == -1) continue; 
     for (int j = 0; j < totalNodes; j++) {
-      if ( reverseCHIdx[j] == i ) {
-        matMatrix[j][i] = 1;
+      if (  reverseCHIdx[j] == i ) {
+        matMask[j][i] = 1;
       }
     }
   }
-  //mat2Ddisplay<int>(matMatrix);
-  matAvailableCount = multiply2D(achiveablity, matMatrix);
-  //mat2Ddisplay<int>(matAvailableCount);
+  //mat2Ddisplay<int>(matMask);
+  //matAvailableCount = multiply2D(achiveablity, matMask);
+  matAvailableCount = multiply2D<int>(achiveablity, matMask);
+  mat2Ddisplay<int>(matAvailableCount);
+  cout <<"-----vecClusterSize ---- " << endl;
+  vec1DDisplay(cSystem->vecClusterSize);
 
 }
 

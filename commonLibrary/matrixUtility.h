@@ -3,14 +3,20 @@
 
 using namespace std;
 
-vector<vector<int> > multiply2D(  const vector<vector<int> > &lhs, const vector<vector<int> > &rhs) {
+// -------------------------------------------------------------------------- //
+// @Description: operation methods
+// @Provides: 
+// -------------------------------------------------------------------------- //
+
+template <typename T> 
+vector<vector<T> > multiply2D(  const vector<vector<T> > &lhs, const vector<vector<T> > &rhs) {
   int lhsRowSize = lhs.size();
   assert(lhsRowSize > 0);
   int lhsColSize = lhs[0].size(); 
   int rhsRowSize = rhs.size();
   assert(rhsRowSize > 0);
-  int rhsColSize = rhs[0].size();
-  vector<vector<int> > matReturn(lhsRowSize,vector<int>(rhsColSize));
+  T rhsColSize = rhs[0].size();
+  vector<vector<T> > matReturn(lhsRowSize,vector<T>(rhsColSize));
 
   for (int i = 0; i < lhsRowSize; i++) {
     for (int j = 0; j < rhsColSize; j++) {
@@ -25,6 +31,12 @@ vector<vector<int> > multiply2D(  const vector<vector<int> > &lhs, const vector<
   return matReturn;
 }
 
+// -------------------------------------------------------------------------- //
+// @Description: display methods
+// @Provides: 
+// -------------------------------------------------------------------------- //
+
+
 template <typename T>
 void mat2Ddisplay( const vector<vector<T> >&mat ){
   for (int i = 0; i < mat.size(); i++) {
@@ -34,3 +46,12 @@ void mat2Ddisplay( const vector<vector<T> >&mat ){
     cout << endl;
   }
 }
+
+template <typename T>
+void vec1DDisplay( const vector<T> &vec ) {
+  for (int i = 0; i < vec.size(); i++) {
+    cout << vec[i] << ' ';
+  }
+  cout << endl;
+}
+

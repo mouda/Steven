@@ -89,7 +89,7 @@ estimateIsolate2ndTierGain	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::estimateIsolate2n
 estimateJoin2ndTierCost	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){$/;"	f	class:ULSA4b5_DC
 fidelityRatio	ULSA4b5_DC.h	/^  double fidelityRatio;\/\/ Temporary set by here 2013\/02\/21$/;"	m	class:ULSA4b5_DC
 flagAnsFound	ULSA4b5_DC.h	/^  bool flagAnsFound;$/;"	m	class:ULSA4b5_DC
-genNeighborhoodMat	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> >) {$/;"	f	class:ULSA4b5_DC
+genNeighborhoodMat	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matAvailableCount) {$/;"	f	class:ULSA4b5_DC
 headCandidatesNum	ULSA4b5_DC.h	/^  int headCandidatesNum;$/;"	m	class:ULSA4b5_DC
 indEntropy	ULSA4b5_DC.h	/^  double indEntropy;$/;"	m	class:ULSA4b5_DC
 iniDone	ULSA4b5_DC.h	/^  bool iniDone;$/;"	m	class:ULSA4b5_DC
