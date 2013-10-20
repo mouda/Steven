@@ -9,7 +9,6 @@
 #include <cfloat>
 #include <list>
 #include <cassert>
-#include <cv.h>
 #include "../commonLibrary/matrixUtility.h"
 
 using namespace std;
@@ -1352,13 +1351,28 @@ bool ULSA4b5_DC::checkNeighborhood(int joinCHIdx, int targetCHIdx) {
   return true;
 }
 double ULSA4b5_DC::computePcInterference_GivenTarnInJoinI(const int& joinCHIdx, const int& targetCHIdx){
-  double sumPower; 
+  double sumPower = 0.0; 
   for (int i = 0; i < maxChNum; i++) {
     if ( joinCHIdx == i ) continue;
-    sumPower = Gij[i][consSol->maIndexInterference[targetCHIdx][i]]*powerMax;
+    /* tight bound */
+    sumPower += Gij[i][consSol->maIndexInterference[targetCHIdx][i]] * powerMax;
+    /* soft bound */
+    //sumPower += consSol->maStrengthInterference[targetCHIdx][i]; 
   }
   return sumPower;
 }
+
+double ULSA4b5_DC::computePcInterference(const int& CHIdx){
+  double sumPower = 0.0; 
+  for (int i = 0; i < maxChNum; i++) {
+    /* tight bound */
+    sumPower += Gij[i][consSol->maIndexInterference[CHIdx][i]] * powerMax;
+    /* soft bound */
+    //sumPower += consSol->maStrengthInterference[CHIdx][i]; 
+  }
+  return sumPower;
+}
+
 void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matAvailableCount) {
   /* construct the listen range vector */
   vector<vector<double> > matChRxPower(maxChNum, vector<double>(maxChNum));
@@ -1388,11 +1402,22 @@ void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matAvailableCount) {
         matChRxPower[i][j] = 0.0;
       }
       else {
+        int targetChName = cSystem->vecHeadName[i];
+        int joinChName = cSystem->vecHeadName[j];
         /* compute all the other Pc interference except j */
-        double firstTerm = (realNoise + computePcInterference_GivenTarnInJoinI( j, i)) / Gij[i][j];
+        double firstTerm = 0.0;
         /* add real noise divide by channel gain  */
-        double exponent = 
-          static_cast<double>( (cSystem->vecClusterSize[i] + cSystem->vecClusterSize[j] - 1 ) * quantizationBits ) / bandwidthKhz; 
+        double exponent = 0.0;
+        if (i == j ) {
+          firstTerm = realNoise + computePcInterference(i); 
+          exponent = 
+            static_cast<double>( (cSystem->vecClusterSize[i] ) * quantizationBits ) / bandwidthKhz/cur2nd_ms; 
+        }
+        else {
+          firstTerm = (realNoise + computePcInterference_GivenTarnInJoinI( j, i));
+          exponent = 
+            static_cast<double>( (cSystem->vecClusterSize[i] + cSystem->vecClusterSize[j] - 1 ) * quantizationBits ) / bandwidthKhz/cur2nd_ms; 
+        }
         /* multiply the entropy term */
         double secondTerm = pow( 2, exponent ) - 1.0;
         matChRxPower[i][j] = firstTerm * secondTerm;

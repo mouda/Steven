@@ -16,6 +16,6 @@ ULSA4b5_DC: 	main.o ULSA4b5_DC.o
 	$(CPP)  $(LIB_PATH) $(CFLAGS)  `pkg-config opencv --cflags --libs` $^  -o $@ 
 
 %.o: %.cpp
-	$(CPP) `pkg-config opencv --cflags --libs` -c $(CFLAGS) $(DFLAGS) $< -o $@
+	$(CPP)  -c $(CFLAGS) $(DFLAGS) $< -o $@
 clean:
 	rm ULSA4b5_DC *.o

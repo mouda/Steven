@@ -265,6 +265,7 @@ public:
   /* for neigborhood filtering */
   void genNeighborhoodMat(std::vector<std::vector<int> > & );
   double computePcInterference_GivenTarnInJoinI(const int &joinCHIdx, const int &targetCHIdx);
+  double computePcInterference(const int&);
 
   void decideIsolate4b();
   double estimateIsolate2ndTierGain(int IsolatNodeName,int isoCluIndex);
