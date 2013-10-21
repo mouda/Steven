@@ -150,6 +150,9 @@ public:
   int  IsolateNodeName;
   int  isolatedHeadIndex;
   int  nextEventFlag;
+  int preJoinedHeadIdx;
+  int rotateCountDown;
+  
   double* nextNodePower;
 
 
@@ -255,6 +258,7 @@ public:
   void decideHeadRotate2f();
   void decideHeadRotate3c();
   void decideHeadRotate2i_DC_HeadRanMemDet();
+  void joinedHeadRotate(const int& headIdx);
 
   void decideHeadJoining4b();
   double estimateJoin2ndTierCost(int JoiningHeadIndex, int testIndex);
@@ -262,8 +266,11 @@ public:
   void updateJoinEstimatedPower(std::vector<double> &newPower, std::vector<int>&newMem,int JoiningHeadIndex, int targetIndex);
   void computeNewInterference_FromNewTarHI(std::vector<double> &newInterf,std::vector<double>&newPower,std::vector<int>&newMem,int JoiningHeadIndex, int targetIndex);
   /* for neigborhood filtering */
+  void decideHeadJoining4c();
   void genNeighborhoodMat(std::vector<std::vector<int> > & );
   void genJoinPair( int& joinCHIdx, int& targetCHIdx, const std::vector<std::vector<int> > & matNeighborhood);
+  void decideSmallestTargetSize_givenJoin( int& joinCHIdx, int& targetCHIdx, const std::vector<std::vector<int> > &matNeighborhood);
+  int decideChHearMost(const std::vector<std::vector<int> > &matNeighborhood, const int& joinCHIdx);
   double computePcInterference_GivenTarnInJoinI(const int &joinCHIdx, const int &targetCHIdx);
   double computePcInterference(const int&);
 

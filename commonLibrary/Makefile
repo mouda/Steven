@@ -1,4 +1,3 @@
-
 CPP=g++
 all: CORRE_MA_OPE.o SimSystem.o timesearch.o TimeStamp.o ULAGENT.o ULConstraintSolver.o ULCS1b.o
 

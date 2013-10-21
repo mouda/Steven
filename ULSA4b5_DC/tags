@@ -42,7 +42,6 @@ bestUpperLayerResource	ULSA4b5_DC.h	/^  double bestUpperLayerResource;$/;"	m	cla
 cSystem	ULSA4b5_DC.h	/^  ULCS1b*  cSystem;   \/\/ system cluseter structure$/;"	m	class:ULSA4b5_DC
 calculateMatrics_minResors	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::calculateMatrics_minResors()\/\/Calculate next performance matircs$/;"	f	class:ULSA4b5_DC
 checkBestClusterStructure_DataCentric	ULSA4b5_DC.cpp	/^bool ULSA4b5_DC::checkBestClusterStructure_DataCentric(int inputRound)$/;"	f	class:ULSA4b5_DC
-checkNeighborhood	ULSA4b5_DC.cpp	/^bool ULSA4b5_DC::checkNeighborhood(int joinCHIdx, int targetCHIdx) {$/;"	f	class:ULSA4b5_DC
 compRatio	ULSA4b5_DC.h	/^  double compRatio;$/;"	m	class:ULSA4b5_DC
 compareDis	ULSA4b5_DC.h	/^    compareDis(const ULSA4b5_DC& sa) : mySA(sa) {} \/\/ constructor$/;"	f	struct:ULSA4b5_DC::compareDis
 compareDis	ULSA4b5_DC.h	/^  struct compareDis$/;"	s	class:ULSA4b5_DC
@@ -53,7 +52,8 @@ computeNewInterference_FromIsoCluster	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::computeN
 computeNewInterference_FromNewTarHI	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::computeNewInterference_FromNewTarHI(vector<double> &newInterf,$/;"	f	class:ULSA4b5_DC
 computeOriInterference_GivenIsolate	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){$/;"	f	class:ULSA4b5_DC
 computeOriInterference_GivenTarInJoinI	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::computeOriInterference_GivenTarInJoinI($/;"	f	class:ULSA4b5_DC
-computePcInterference_GivenTarnInJoinI	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::computePcInterference_GivenTarnInJoinI(const int& joinCHIdx, const int& targetCHIdx){$/;"	f	class:ULSA4b5_DC
+computePcInterference	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::computePcInterference(const int& CHIdx){$/;"	f	class:ULSA4b5_DC
+computePcInterference_GivenTarnInJoinI	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::computePcInterference_GivenTarnInJoinI(const int& joinCHIdx, $/;"	f	class:ULSA4b5_DC
 computeUpperResourceNoCodingNoPowerControl	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::computeUpperResourceNoCodingNoPowerControl()$/;"	f	class:ULSA4b5_DC
 computingTimes	ULSA4b5_DC.h	/^  float computingTimes;$/;"	m	class:ULSA4b5_DC
 confirmNeighbor3i	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::confirmNeighbor3i()$/;"	f	class:ULSA4b5_DC
@@ -72,11 +72,13 @@ curSupNum	ULSA4b5_DC.h	/^  int  curSupNum;$/;"	m	class:ULSA4b5_DC
 dataBits	ULSA4b5_DC.h	/^  double dataBits;$/;"	m	class:ULSA4b5_DC
 debug_CheckSizeCorrect	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::debug_CheckSizeCorrect() {$/;"	f	class:ULSA4b5_DC
 decideAdd3i_DC_HeadDetMemRan	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideAdd3i_DC_HeadDetMemRan() {$/;"	f	class:ULSA4b5_DC
+decideChHearMost	ULSA4b5_DC.cpp	/^int ULSA4b5_DC::decideChHearMost( const vector<vector<int> >& matCHListenable, const int& joinCHIdx) {$/;"	f	class:ULSA4b5_DC
 decideDiscard3b	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideDiscard3b()$/;"	f	class:ULSA4b5_DC
 decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {$/;"	f	class:ULSA4b5_DC
 decideHeadJoining4b	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideHeadJoining4b(){$/;"	f	class:ULSA4b5_DC
 decideHeadRotate2i_DC_HeadRanMemDet	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideHeadRotate2i_DC_HeadRanMemDet()$/;"	f	class:ULSA4b5_DC
 decideIsolate4b	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideIsolate4b(){$/;"	f	class:ULSA4b5_DC
+decideSmallestTargetSize_givenJoin	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::decideSmallestTargetSize_givenJoin( int& joinCHIdx, int& targetCHIdx,$/;"	f	class:ULSA4b5_DC
 discardMemberSA	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::discardMemberSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b5_DC
 distanceOf2Nodes	ULSA4b5_DC.h	/^  float **distanceOf2Nodes;$/;"	m	class:ULSA4b5_DC
 do1sttierPowerControlforBest_DataCentric	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::do1sttierPowerControlforBest_DataCentric() {$/;"	f	class:ULSA4b5_DC
@@ -89,6 +91,7 @@ estimateIsolate2ndTierGain	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::estimateIsolate2n
 estimateJoin2ndTierCost	ULSA4b5_DC.cpp	/^double ULSA4b5_DC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){$/;"	f	class:ULSA4b5_DC
 fidelityRatio	ULSA4b5_DC.h	/^  double fidelityRatio;\/\/ Temporary set by here 2013\/02\/21$/;"	m	class:ULSA4b5_DC
 flagAnsFound	ULSA4b5_DC.h	/^  bool flagAnsFound;$/;"	m	class:ULSA4b5_DC
+genJoinPair	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::genJoinPair( int& joinCHIdx, int& targetCHIdx, $/;"	f	class:ULSA4b5_DC
 genNeighborhoodMat	ULSA4b5_DC.cpp	/^void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matAvailableCount) {$/;"	f	class:ULSA4b5_DC
 headCandidatesNum	ULSA4b5_DC.h	/^  int headCandidatesNum;$/;"	m	class:ULSA4b5_DC
 indEntropy	ULSA4b5_DC.h	/^  double indEntropy;$/;"	m	class:ULSA4b5_DC

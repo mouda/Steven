@@ -906,6 +906,7 @@ void ULSA4b5_DC::coolOnce_minResors()
 
   int sumProb = probAdd + probDiscard + probHeadRotate+probJoin+probIsoltae;
   int eventCursor= (int)((double)rand() / ((double)RAND_MAX + 1) * sumProb);
+
   nextEventFlag=-1;// this flag tell add or discard or Headrotate
 
 
@@ -915,17 +916,26 @@ void ULSA4b5_DC::coolOnce_minResors()
   //Decide event Flag                    //
   //-------------------------------------//
 
-  if (eventCursor<probAdd) nextEventFlag = 1;
-  else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
-  else if (eventCursor<(probAdd+probDiscard+probHeadRotate)) nextEventFlag=3;
-  else if (eventCursor<(probAdd+probDiscard+probHeadRotate+probJoin)) nextEventFlag=4;
-  else if (eventCursor<sumProb)nextEventFlag=5;
-  else
-  {
-    cout<<"Failure in the random step"<<endl;
-    cout<<sumProb<<endl;
-    cout<<eventCursor<<endl;
-  }
+//  if ( preJoinedHeadIdx > 0 && rotateCountDown > 0 ) { 
+//    nextEventFlag = 6; 
+//    --rotateCountDown;
+//  }
+//  else{
+    rotateCountDown = 5;
+    preJoinedHeadIdx = -1;
+    if (eventCursor<probAdd) nextEventFlag = 1;
+    else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
+    else if (eventCursor<(probAdd+probDiscard+probHeadRotate)) nextEventFlag=3;
+    else if (eventCursor<(probAdd+probDiscard+probHeadRotate+probJoin)){nextEventFlag=4; }
+    else if (eventCursor<sumProb)nextEventFlag=5;
+    else
+    {
+      cout<<"Failure in the random step"<<endl;
+      cout<<sumProb<<endl;
+      cout<<eventCursor<<endl;
+    }
+//  } 
+
   //-------------------------------------//
   // Start the movement                  //
   //-------------------------------------//  if (nextEventFlag==1)//Add
@@ -964,7 +974,9 @@ void ULSA4b5_DC::coolOnce_minResors()
   else if (nextEventFlag==4){
     JoiningHeadIndex=-1;
     decideHeadJoining4b();
+    //decideHeadJoining4c();
     join_fromHeadSA(JoiningHeadIndex,targetHeadIndex);
+    preJoinedHeadIdx = targetHeadIndex; // for locally rotation
     nextJEntropy = curJEntropy;
     nextSupNum = curSupNum;
   }
@@ -975,6 +987,16 @@ void ULSA4b5_DC::coolOnce_minResors()
     isolateHeadSA(IsolateNodeName,isolatedHeadIndex,targetHeadIndex);
     nextJEntropy = curJEntropy;
     nextSupNum = curSupNum;
+  }
+  else if (nextEventFlag ==6)
+  {
+    joinedHeadRotate(preJoinedHeadIdx);
+    //cout<<"HR "<<targetNode+1<<" to Replace "<<cSystem->vecHeadName[targetHeadIndex]+1<<endl;
+    rotateHeadSA(targetHeadIndex,targetNode);
+    nextJEntropy = curJEntropy;
+    nextSupNum = curSupNum;
+    nextChNum=curChNum;
+
   }
   else
   {
@@ -1203,6 +1225,50 @@ void ULSA4b5_DC::decideHeadRotate2i_DC_HeadRanMemDet()
 	cSystem->vecHeadName[targetHeadIndex]=OriginalNode;
 }
 
+void ULSA4b5_DC::joinedHeadRotate(const int& headIdx) {
+  //Choose targetNode
+  targetNode=cSystem->vecHeadName[headIdx];
+  double temp1st_ms=0;
+  double temp2nd_ms=0;
+  double temp2tiers_ms=0;
+  double test2tiers_ms=DBL_MAX;
+
+  list <list<int> > ::iterator itlist1 = cSystem->listCluMember->begin();
+  for (int i = 0; i < headIdx; i++) itlist1++;
+  int OriginalNode=cSystem->vecHeadName[headIdx];
+  list<int>::iterator it1=itlist1->begin();
+  for(; it1!=itlist1->end(); it1++)//find minimum interference received among nodes in the cluster
+  {
+    if((*it1)==OriginalNode)continue;
+    cSystem->vecHeadName[headIdx]=(*it1);//==Head Rotate
+    temp2nd_ms=consSol->solve_withT2Adj_BinerySearch_2(10);
+    temp1st_ms=return1stTotalNcal1stResors_HomoPower();
+    temp2tiers_ms=temp1st_ms+temp2nd_ms;
+    if(temp2tiers_ms<test2tiers_ms)
+    {
+      test2tiers_ms=temp2tiers_ms;
+      targetNode=*it1;
+    }
+  }
+  cSystem->vecHeadName[headIdx]=OriginalNode;
+
+}
+
+void ULSA4b5_DC::decideHeadJoining4c() {
+  vector<vector<int> > matNeighborhood(maxChNum, vector<int>(maxChNum));
+  genNeighborhoodMat(matNeighborhood);
+  genJoinPair(JoiningHeadIndex, targetHeadIndex, matNeighborhood);
+  
+#ifdef DEBUG
+  mat2Ddisplay<int>(matNeighborhood);
+  vec1DDisplay<int>(cSystem->vecClusterSize); 
+  cout << "NJoin: " << JoiningHeadIndex << " Pos: " <<nodes[cSystem->vecHeadName[JoiningHeadIndex]].locX<<' ' <<nodes[cSystem->vecHeadName[JoiningHeadIndex]].locY << endl;
+  cout << "NTarget: " << targetHeadIndex << " Pos: " << nodes[cSystem->vecHeadName[targetHeadIndex]].locX<<' ' <<nodes[cSystem->vecHeadName[targetHeadIndex]].locY<< endl;
+  cout << "Distance: " << sqrt(pow(nodes[cSystem->vecHeadName[JoiningHeadIndex]].locX-nodes[cSystem->vecHeadName[targetHeadIndex]].locX,2)+
+      pow(nodes[cSystem->vecHeadName[JoiningHeadIndex]].locY -nodes[cSystem->vecHeadName[targetHeadIndex]].locY,2)) << endl;
+#endif
+
+}
 
 void ULSA4b5_DC::decideHeadJoining4b(){
   int threshold=thresholdd; // To determine the cluster size is large enough 
@@ -1219,13 +1285,8 @@ void ULSA4b5_DC::decideHeadJoining4b(){
   vecTargetCandIndex.reserve(maxChNum);
   vecGain.reserve(maxChNum);
   int count = 0;
-
   vector<vector<int> > matNeighborhood(maxChNum, vector<int>(maxChNum));
   genNeighborhoodMat(matNeighborhood);
-#ifdef DEBUG
-  //mat2Ddisplay<int>(matNeighborhood);
-#endif
-  genJoinPair(JoiningHeadIndex, targetHeadIndex, matNeighborhood);
 
   for(int i=0;i<maxChNum;i++){
     if( cSystem->vecClusterSize[i] > 0) {
@@ -1237,7 +1298,7 @@ void ULSA4b5_DC::decideHeadJoining4b(){
     }
   }
 
-  cout<<"Cand Size="<<vecJoinCandHeadIndex.size()<<" " << count <<  endl;
+  //cout<<"Cand Size="<<vecJoinCandHeadIndex.size()<<" " << count <<  endl;
   vector<double> firtGainRecord;
   //only for check
   firtGainRecord.resize(maxChNum);
@@ -1328,6 +1389,10 @@ void ULSA4b5_DC::decideHeadJoining4b(){
       targetHeadIndex = vecTargetCandIndex[i];
     }
   }
+  cout << "NJoin: " << JoiningHeadIndex << " Pos: " <<nodes[cSystem->vecHeadName[JoiningHeadIndex]].locX<<' ' <<nodes[cSystem->vecHeadName[JoiningHeadIndex]].locY << endl;
+  cout << "NTarget: " << targetHeadIndex << " Pos: " << nodes[cSystem->vecHeadName[targetHeadIndex]].locX<<' ' <<nodes[cSystem->vecHeadName[targetHeadIndex]].locY<< endl;
+  cout << "Distance: " << sqrt(pow(nodes[cSystem->vecHeadName[JoiningHeadIndex]].locX-nodes[cSystem->vecHeadName[targetHeadIndex]].locX,2)+
+      pow(nodes[cSystem->vecHeadName[JoiningHeadIndex]].locY -nodes[cSystem->vecHeadName[targetHeadIndex]].locY,2)) << endl;
   assert(JoiningHeadIndex!=-1&&targetHeadIndex!=-1);
 
   if (isDetailOutputOn) {
@@ -1359,14 +1424,67 @@ void ULSA4b5_DC::genJoinPair( int& joinCHIdx, int& targetCHIdx,
   
   //count cluster size equals to 1 first
   int count = countVectorElements<int>(cSystem->vecClusterSize, 1); 
+  int minIdx = 0;
+  if (count > 0) {
+    decideSmallestTargetSize_givenJoin(joinCHIdx, targetCHIdx, matCHListenable);
+  }
+  else 
+  {
+    minIdx = vecMinIdxNoConsiderZero<int>(cSystem->vecClusterSize); 
+    targetCHIdx = decideChHearMost(matCHListenable, minIdx);
+    joinCHIdx = minIdx;
+  }
 
+}
 
-  int minIdx = vecMinIdxNoConsiderZero<int>(cSystem->vecClusterSize); 
-  cout <<"-----vecClusterSize ---- " << endl;
-  vec1DDisplay(cSystem->vecClusterSize);
-  cout <<"min: " << minIdx << endl  ;
-  cout <<"numbe of ones: " << count << endl;
+void ULSA4b5_DC::decideSmallestTargetSize_givenJoin( int& joinCHIdx, int& targetCHIdx,
+   const vector<vector<int > >&  matCHListenable ) {
 
+  /* loop the columns */
+  int tmp = INT_MAX;
+  int tmpJoinCHIdx = 0;
+  int tmpTargetCHIdx = 0;
+//  for (int i = 0; i < maxChNum; i++) {
+//    if (cSystem->vecClusterSize[i] != 1) continue; 
+//    for ( int j = 0; j < maxChNum ; j++) {
+//      if (matCHListenable[j][i] < tmp) {
+//        tmp = matCHListenable[j][i];
+//        tmpJoinCHIdx = j;
+//        tmpTargetCHIdx = i;
+//      }
+//    }
+//  }
+  vector<vector<int> > matCHListenable_transposed = matTranspose(matCHListenable);
+  vector<pair<int,int> > record;
+  
+  for (int i = 0; i < maxChNum; i++) {
+    if( cSystem->vecClusterSize[i] != 1 ) continue;
+    matCHListenable_transposed[i][i] = INT_MAX;
+    record.push_back( pair<int,int>(i, vecMinIdxNoConsiderZero<int>(matCHListenable_transposed[i])) );
+  }
+
+  for (int i = 0; i < record.size(); i++) {
+    if ( record[i].second != -1 &&  matCHListenable_transposed[record[i].first][record[i].second] < tmp ) {
+      tmp = matCHListenable_transposed[record[i].first][record[i].second];
+      tmpJoinCHIdx = record[i].first;
+      tmpTargetCHIdx = record[i].second;
+    }
+  }
+  joinCHIdx = tmpJoinCHIdx;
+  targetCHIdx = tmpTargetCHIdx;
+}
+
+int ULSA4b5_DC::decideChHearMost( const vector<vector<int> >& matCHListenable, const int& joinCHIdx) {
+  int tempHearNumber = 0;
+  int tempHearIdx = 0;
+  for (int i = 0; i < maxChNum; i++) {
+    if (i == joinCHIdx) continue; 
+    if (matCHListenable[i][joinCHIdx] > tempHearNumber) {
+      tempHearNumber = matCHListenable[i][joinCHIdx];
+      tempHearIdx = i;
+    }
+  }
+  return tempHearIdx;
 }
 
 double ULSA4b5_DC::computePcInterference_GivenTarnInJoinI(const int& joinCHIdx, 
@@ -1696,7 +1814,7 @@ void ULSA4b5_DC::decideIsolate4b(){
     for (int i = 0; i < maxChNum; i++) {
       if (cSystem->vecClusterSize[i] > 0 ) count++;
     }
-    cout << count << endl;
+    //cout << count << endl;
 
 
     //Calculate 2nd tier Gain

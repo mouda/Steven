@@ -14,7 +14,6 @@ using namespace std;
  * @param    two std::vector matrix lhs, rhs 
  * @retval   std::vector matrix
  */
-
 template <typename T> 
 vector<vector<T> > multiply2D(  const vector<vector<T> > &lhs, const vector<vector<T> > &rhs) {
   int lhsRowSize = lhs.size();
@@ -34,7 +33,6 @@ vector<vector<T> > multiply2D(  const vector<vector<T> > &lhs, const vector<vect
       matReturn[i][j] = temp;
     }
   }
-
   return matReturn;
 }
 
@@ -42,7 +40,6 @@ vector<vector<T> > multiply2D(  const vector<vector<T> > &lhs, const vector<vect
  * @param    
  * @retval   
  */
-
 template <typename T>
 int countVectorElements( const vector<T>& rhs, const T& element ) {
   if (rhs.size() == 0) return -1;
@@ -53,6 +50,10 @@ int countVectorElements( const vector<T>& rhs, const T& element ) {
   return count; 
 }
 
+/* @brief    only consider the non-zero element
+ * @param    
+ * @retval   
+ */
 template <typename T>
 int vecMinIdxNoConsiderZero( const vector<T> &rhs) {
   if (rhs.size() == 0) return -1;
@@ -61,8 +62,29 @@ int vecMinIdxNoConsiderZero( const vector<T> &rhs) {
   for (int i = 0; i < rhs.size(); i++) {
     if (tempVec[i] == 0) tempVec[i] = INT_MAX;  
   }
+  if (countVectorElements<T>(rhs,INT_MAX)==rhs.size()) {
+    return -1;
+  }
   return distance(tempVec.begin(),min_element(tempVec.begin(),tempVec.end()));
 }
+
+/* @brief    vector matrix transpose
+ * @param    
+ * @retval   
+ */
+template <typename T>
+vector<vector<T> > matTranspose(const vector<vector<T> >& rhs){
+  assert( rhs.size() != 0);
+  assert( rhs[0].size() != 0);
+  vector<vector<T> > result(rhs[0].size(), vector<T>(rhs.size()));
+  for (int i = 0; i < rhs.size(); i++) {
+    for (int j = 0; j < rhs[0].size(); j++) {
+      result[j][i] = rhs[i][j];
+    }
+  }
+  return result;
+}
+
 
 
 
