@@ -2,7 +2,7 @@ clear all;
 radius = 500;%(meter)
 area = pi * radius^2 ;
 % use this to generate the mapfile
-expA=[50 150 195];  
+expA=[100];  
 
 for i =1:length(expA)
     display start

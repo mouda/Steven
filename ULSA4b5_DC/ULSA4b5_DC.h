@@ -152,6 +152,7 @@ public:
   int  nextEventFlag;
   int preJoinedHeadIdx;
   int rotateCountDown;
+  int countSA;
   
   double* nextNodePower;
 
@@ -267,6 +268,7 @@ public:
   void computeNewInterference_FromNewTarHI(std::vector<double> &newInterf,std::vector<double>&newPower,std::vector<int>&newMem,int JoiningHeadIndex, int targetIndex);
   /* for neigborhood filtering */
   void decideHeadJoining4c();
+  void decideHeadJoining4d();
   void genNeighborhoodMat(std::vector<std::vector<int> > & );
   void genJoinPair( int& joinCHIdx, int& targetCHIdx, const std::vector<std::vector<int> > & matNeighborhood);
   void decideSmallestTargetSize_givenJoin( int& joinCHIdx, int& targetCHIdx, const std::vector<std::vector<int> > &matNeighborhood);

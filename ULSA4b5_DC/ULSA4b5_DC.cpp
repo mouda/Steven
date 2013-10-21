@@ -760,7 +760,7 @@ bool ULSA4b5_DC::startCool()
 
     if (checkBestClusterStructure_DataCentric(0))return true;
     cout<<"Compression Ratio "<<returnComprRatio()<<" indEntropy "<<indEntropy<<endl;
-    for(int i=0; i<SAIter; i++)
+    for(countSA = 0; countSA<SAIter; countSA++)
     {
         //cout<<"-----------"<<i<<"---------"<<endl;
         //cout<<i<<"  CurSup#:"<<curSupNum<<" CurFeasible:"<<curFeasible<<" CurEntropy:"<<curJEntropy<<" CurInfeas:"<<curInfeasibility<<endl;
@@ -770,14 +770,14 @@ bool ULSA4b5_DC::startCool()
            cur1st_ms+cur2nd_ms<<"=("<<cur1st_ms<<"+"<<cur2nd_ms<<")ms "<<endl;*/
       
         coolOnce_minResors();
-	    if(targetHeadIndex==-1||targetHeadIndex==-1){i++;continue;}
+	    if(targetHeadIndex==-1||targetHeadIndex==-1){countSA++;continue;}
         calculateMatrics_minResors();
         confirmNeighbor3i();
         if (curJEntropy>(fidelityRatio*wholeSystemEntopy)) {
             flagAnsFound=true;
         }
         assert(curSupNum>=0);
-        if(checkBestClusterStructure_DataCentric(i))
+        if(checkBestClusterStructure_DataCentric(countSA))
         {
             cout<<"Congratulation All nodes are served"<<endl;
             break;
@@ -788,7 +788,7 @@ bool ULSA4b5_DC::startCool()
         //if(outCtrl==2)
 
         if (isDetailOutputOn) {
-          writePayoffEachRound_MinResors_withHead(i,curChNum);
+          writePayoffEachRound_MinResors_withHead(countSA,curChNum);
         }
         int tempche=(signed)cSystem->listUnSupport->size();
 
@@ -973,7 +973,15 @@ void ULSA4b5_DC::coolOnce_minResors()
   }
   else if (nextEventFlag==4){
     JoiningHeadIndex=-1;
-    decideHeadJoining4b();
+    if (countSA < SAIter/2) {
+      decideHeadJoining4b();
+    }
+    else {
+      decideHeadJoining4d();
+    }
+    if (JoiningHeadIndex == -1 || targetHeadIndex == -1) {
+      return;
+    }
     //decideHeadJoining4c();
     join_fromHeadSA(JoiningHeadIndex,targetHeadIndex);
     preJoinedHeadIdx = targetHeadIndex; // for locally rotation
@@ -1269,6 +1277,146 @@ void ULSA4b5_DC::decideHeadJoining4c() {
 #endif
 
 }
+void ULSA4b5_DC::decideHeadJoining4d() {
+  int threshold=thresholdd; // To determine the cluster size is large enough 
+  // to perform join operation 
+  double usepower=powerMax; // No use
+  //---
+  JoiningHeadIndex=-1;
+  targetHeadIndex=-1;
+
+  vector<int> vecJoinCandHeadIndex; // used for determine the candidate head idx
+  vector<int> vecTargetCandIndex;
+  vector<double>vecGain;
+  vecJoinCandHeadIndex.reserve(maxChNum);
+  vecTargetCandIndex.reserve(maxChNum);
+  vecGain.reserve(maxChNum);
+  int count = 0;
+  vector<vector<int> > matNeighborhood(maxChNum, vector<int>(maxChNum));
+  genNeighborhoodMat(matNeighborhood);
+  vector<pair<int,int> > vecPairHeadCandidate;
+
+  for (int i = 0; i < maxChNum; i++) {
+    for (int j = 0; j < maxChNum; j++) {
+      if (i == j) continue;
+      if (cSystem->vecClusterSize[i] > 0 && cSystem->vecClusterSize[i] <= threshold 
+          && matNeighborhood[j][i] > 0 ) {
+        vecPairHeadCandidate.push_back(pair<int,int>(i,j));
+      }
+    }
+  }
+  cout << "cand: " << vecPairHeadCandidate.size() << endl;
+  if (vecPairHeadCandidate.size() == 0) {
+    return;
+  }
+
+  for(int i=0;i<maxChNum;i++){
+    if( cSystem->vecClusterSize[i] > 0) {
+      count++;
+    }
+    if( cSystem->vecClusterSize[i] > 0 && cSystem->vecClusterSize[i] <= threshold ){
+      /* check join neighborhood  */
+      vecJoinCandHeadIndex.push_back(i);
+    }
+  }
+
+  //cout<<"Cand Size="<<vecJoinCandHeadIndex.size()<<" " << count <<  endl;
+  vector<double> firtGainRecord;
+  //only for check
+  firtGainRecord.resize(maxChNum);
+  vector<double> firtCostRecord;
+  firtCostRecord.resize(maxChNum);
+
+
+  int tmpChoosedJoinCHIdx = 0;
+  int tmpChoosedTargetCHIdx = 0;
+  double tmpFirstGain=0;
+  double tmpFirstCost=0;
+  double maxGain=-DBL_MAX;
+
+  for(unsigned int i=0;i<vecPairHeadCandidate.size();i++){
+
+    int tmpJoinCHIdx = vecPairHeadCandidate[i].first;
+    int tmpTargetCHIdx = vecPairHeadCandidate[i].second;
+    /* Sb */
+    double cluInfo = 
+      /* independent entropy */
+      indEntropy * cSystem->vecClusterSize[tmpJoinCHIdx] +
+      /* correlation entropy */  
+      matrixComputer->computeLog2Det( 1.0, 
+          cSystem->clusterStru[tmpJoinCHIdx] ); 
+
+    double firstTierGain = 
+      cluInfo / ( bandwidthKhz*log2( 1 + 
+            power1st * Gib[cSystem->vecHeadName[tmpJoinCHIdx]]/
+            realNoise ));
+
+
+    bool tempMerge[totalNodes];
+    /* Sa */
+    for(int k=0;k<totalNodes;k++)
+      tempMerge[k] = 
+        cSystem->clusterStru[tmpJoinCHIdx][k] + 
+        cSystem->clusterStru[tmpTargetCHIdx][k];
+
+    cluInfo = indEntropy * cSystem->vecClusterSize[tmpTargetCHIdx] + 
+      matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[tmpTargetCHIdx]);
+
+    double cluInfoMerge = indEntropy * 
+      ( cSystem->vecClusterSize[tmpJoinCHIdx] + 
+        cSystem->vecClusterSize[tmpTargetCHIdx] ) + 
+      matrixComputer->computeLog2Det(1.0,tempMerge);
+
+    double firstTierCost = ( cluInfoMerge - cluInfo ) / 
+      ( (bandwidthKhz*log2(1+power1st*Gib[cSystem->vecHeadName[tmpTargetCHIdx]]/
+                           realNoise)) );
+
+    //assert(firstTierCost>0);
+
+
+    double tmp = firstTierGain - firstTierCost - 
+      estimateJoin2ndTierCost( tmpJoinCHIdx, tmpTargetCHIdx );
+    //Cost = extra mini second spent
+
+
+    if((tmp)>maxGain){
+      tmpChoosedJoinCHIdx = tmpJoinCHIdx;
+      tmpChoosedTargetCHIdx = tmpTargetCHIdx;
+      maxGain=tmp;
+      tmpFirstGain=firstTierGain;
+      tmpFirstCost=firstTierCost;
+    }
+    assert(tmpChoosedJoinCHIdx!=-1);
+  }
+  JoiningHeadIndex = tmpChoosedJoinCHIdx;
+  targetHeadIndex = tmpChoosedTargetCHIdx;
+  /*for(unsigned int i=0;i<vecJoinCandHeadIndex.size();i++)
+    cout<<vecGain[i]<<endl;*/
+
+  cout << "NJoin: " << JoiningHeadIndex << " Pos: " <<nodes[cSystem->vecHeadName[JoiningHeadIndex]].locX<<' ' <<nodes[cSystem->vecHeadName[JoiningHeadIndex]].locY << endl;
+  cout << "NTarget: " << targetHeadIndex << " Pos: " << nodes[cSystem->vecHeadName[targetHeadIndex]].locX<<' ' <<nodes[cSystem->vecHeadName[targetHeadIndex]].locY<< endl;
+  cout << "Distance: " << sqrt(pow(nodes[cSystem->vecHeadName[JoiningHeadIndex]].locX-nodes[cSystem->vecHeadName[targetHeadIndex]].locX,2)+
+      pow(nodes[cSystem->vecHeadName[JoiningHeadIndex]].locY -nodes[cSystem->vecHeadName[targetHeadIndex]].locY,2)) << endl;
+  assert(JoiningHeadIndex!=-1&&targetHeadIndex!=-1);
+
+  if (isDetailOutputOn) {
+    cout << "Tried to Join " << JoiningHeadIndex 
+      << "-th head:" << cSystem->vecHeadName[JoiningHeadIndex] 
+      << " to "<< targetHeadIndex << "-th Cluster" << endl;
+
+    cout << "Estimate Gain "<< maxGain
+      <<" first tier gain=" << tmpFirstGain - tmpFirstCost;
+    cout <<"Second tier cost=" 
+      << tmpFirstGain - tmpFirstCost - maxGain << endl;
+    cout << "with estimate payoff=" << curPayoff-maxGain<< endl;
+    char str[500]; 
+    sprintf(str,"ULSA4b_EstimateJoinGainHN%d.txt",maxChNum);
+  }
+  //FILE *fid=fopen(str,"a+");
+  //fprintf(fid,"%f %d ",tmpGainTest,curChNum);
+  //fclose(fid);
+
+}
 
 void ULSA4b5_DC::decideHeadJoining4b(){
   int threshold=thresholdd; // To determine the cluster size is large enough 
@@ -1287,6 +1435,24 @@ void ULSA4b5_DC::decideHeadJoining4b(){
   int count = 0;
   vector<vector<int> > matNeighborhood(maxChNum, vector<int>(maxChNum));
   genNeighborhoodMat(matNeighborhood);
+  vector<pair<int,int> > vecPairHeadCandidate;
+
+  mat2Ddisplay<int>(matNeighborhood);
+  vec1DDisplay<int>(cSystem->vecClusterSize);
+
+  for (int i = 0; i < maxChNum; i++) {
+    for (int j = 0; j < maxChNum; j++) {
+      if (i == j) continue;
+      if (cSystem->vecClusterSize[i] > 0  
+          && matNeighborhood[j][i] > 0) {
+        vecPairHeadCandidate.push_back(pair<int,int>(i,j));
+      }
+    }
+  }
+  cout << "cand: " << vecPairHeadCandidate.size() << endl;
+  if (vecPairHeadCandidate.size() == 0) {
+    return;
+  }
 
   for(int i=0;i<maxChNum;i++){
     if( cSystem->vecClusterSize[i] > 0) {
