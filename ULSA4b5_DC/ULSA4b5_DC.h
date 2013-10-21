@@ -261,9 +261,9 @@ public:
   void computeOriInterference_GivenTarInJoinI(std::vector<double> &oriInterf,std::vector<double> &interfExcept,int JoiningI,int tarHead);
   void updateJoinEstimatedPower(std::vector<double> &newPower, std::vector<int>&newMem,int JoiningHeadIndex, int targetIndex);
   void computeNewInterference_FromNewTarHI(std::vector<double> &newInterf,std::vector<double>&newPower,std::vector<int>&newMem,int JoiningHeadIndex, int targetIndex);
-  bool checkNeighborhood(int joinCHIdx, int targetCHIdx); 
   /* for neigborhood filtering */
   void genNeighborhoodMat(std::vector<std::vector<int> > & );
+  void genJoinPair( int& joinCHIdx, int& targetCHIdx, const std::vector<std::vector<int> > & matNeighborhood);
   double computePcInterference_GivenTarnInJoinI(const int &joinCHIdx, const int &targetCHIdx);
   double computePcInterference(const int&);
 

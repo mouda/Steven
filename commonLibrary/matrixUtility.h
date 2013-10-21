@@ -1,5 +1,7 @@
 #include <vector>
 #include <algorithm>//for sort
+#include <climits>
+
 
 using namespace std;
 
@@ -7,6 +9,11 @@ using namespace std;
 // @Description: operation methods
 // @Provides: 
 // -------------------------------------------------------------------------- //
+
+/* @brief    maxtrix products
+ * @param    two std::vector matrix lhs, rhs 
+ * @retval   std::vector matrix
+ */
 
 template <typename T> 
 vector<vector<T> > multiply2D(  const vector<vector<T> > &lhs, const vector<vector<T> > &rhs) {
@@ -30,6 +37,36 @@ vector<vector<T> > multiply2D(  const vector<vector<T> > &lhs, const vector<vect
 
   return matReturn;
 }
+
+/* @brief    count specified element in the vector
+ * @param    
+ * @retval   
+ */
+
+template <typename T>
+int countVectorElements( const vector<T>& rhs, const T& element ) {
+  if (rhs.size() == 0) return -1;
+  int count = 0;
+  for (int i = 0; i < rhs.size(); ++i) {
+    if (rhs[i] == element) ++count; 
+  }
+  return count; 
+}
+
+template <typename T>
+int vecMinIdxNoConsiderZero( const vector<T> &rhs) {
+  if (rhs.size() == 0) return -1;
+  vector<T> tempVec(rhs);
+
+  for (int i = 0; i < rhs.size(); i++) {
+    if (tempVec[i] == 0) tempVec[i] = INT_MAX;  
+  }
+  return distance(tempVec.begin(),min_element(tempVec.begin(),tempVec.end()));
+}
+
+
+
+
 
 // -------------------------------------------------------------------------- //
 // @Description: display methods

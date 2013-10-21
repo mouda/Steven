@@ -1225,6 +1225,7 @@ void ULSA4b5_DC::decideHeadJoining4b(){
 #ifdef DEBUG
   //mat2Ddisplay<int>(matNeighborhood);
 #endif
+  genJoinPair(JoiningHeadIndex, targetHeadIndex, matNeighborhood);
 
   for(int i=0;i<maxChNum;i++){
     if( cSystem->vecClusterSize[i] > 0) {
@@ -1347,10 +1348,29 @@ void ULSA4b5_DC::decideHeadJoining4b(){
   //fclose(fid);
 
 }
-bool ULSA4b5_DC::checkNeighborhood(int joinCHIdx, int targetCHIdx) {
-  return true;
+
+/* @brief    core join neighborhood filtering is implement here
+ * @param    
+ * @retval   
+ */
+void ULSA4b5_DC::genJoinPair( int& joinCHIdx, int& targetCHIdx, 
+    const vector<vector<int> >& matCHListenable) {
+  //int minIdx =  *min_element(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
+  
+  //count cluster size equals to 1 first
+  int count = countVectorElements<int>(cSystem->vecClusterSize, 1); 
+
+
+  int minIdx = vecMinIdxNoConsiderZero<int>(cSystem->vecClusterSize); 
+  cout <<"-----vecClusterSize ---- " << endl;
+  vec1DDisplay(cSystem->vecClusterSize);
+  cout <<"min: " << minIdx << endl  ;
+  cout <<"numbe of ones: " << count << endl;
+
 }
-double ULSA4b5_DC::computePcInterference_GivenTarnInJoinI(const int& joinCHIdx, const int& targetCHIdx){
+
+double ULSA4b5_DC::computePcInterference_GivenTarnInJoinI(const int& joinCHIdx, 
+    const int& targetCHIdx){
   double sumPower = 0.0; 
   for (int i = 0; i < maxChNum; i++) {
     if ( joinCHIdx == i ) continue;
@@ -1373,6 +1393,18 @@ double ULSA4b5_DC::computePcInterference(const int& CHIdx){
   return sumPower;
 }
 
+/* @brief             cluster 1, cluster 2, cluster 3, cluster 4 ....
+ *          cluster 1:  count     count     ... 
+ *          cluster 2:  count     count     ...
+ *          cluster 3:  ...       ...
+ *          cluster 4:
+ *          ...
+ *          to generate a list to record each cluster head can receive
+ *          # of member from other cluster. The rx cluster in the order 
+ *          or row dimension (downword)
+ * @param   calculation is return by reference 
+ * @retval   
+ */
 void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matAvailableCount) {
   /* construct the listen range vector */
   vector<vector<double> > matChRxPower(maxChNum, vector<double>(maxChNum));
@@ -1464,9 +1496,9 @@ void ULSA4b5_DC::genNeighborhoodMat(vector<vector<int> > &matAvailableCount) {
   //mat2Ddisplay<int>(matMask);
   //matAvailableCount = multiply2D(achiveablity, matMask);
   matAvailableCount = multiply2D<int>(achiveablity, matMask);
-  mat2Ddisplay<int>(matAvailableCount);
-  cout <<"-----vecClusterSize ---- " << endl;
-  vec1DDisplay(cSystem->vecClusterSize);
+  //mat2Ddisplay<int>(matAvailableCount);
+  //cout <<"-----vecClusterSize ---- " << endl;
+  ///vec1DDisplay(cSystem->vecClusterSize);
 
 }
 
