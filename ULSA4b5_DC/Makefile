@@ -1,6 +1,6 @@
 CPP= g++
-#CFLAGS=-O -O1 -O2 -O3
-CFLAGS= -g -D DEBUG 
+CFLAGS=-O -O1 -O2 -O3
+#CFLAGS= -g -D DEBUG 
 #DFLAGS= -D DEBUG
 
 LIB_PATH= ../commonLibrary/CORRE_MA_OPE.o \

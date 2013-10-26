@@ -770,7 +770,14 @@ bool ULSA4b5_DC::startCool()
            cur1st_ms+cur2nd_ms<<"=("<<cur1st_ms<<"+"<<cur2nd_ms<<")ms "<<endl;*/
       
         coolOnce_minResors();
-	    if(targetHeadIndex==-1||targetHeadIndex==-1){countSA++;continue;}
+
+        if(targetHeadIndex==-1||targetHeadIndex==-1){ 
+          countSA++;
+          calculateMatrics_minResors();
+          passNext2Cur();
+          continue;
+        }
+
         calculateMatrics_minResors();
         confirmNeighbor3i();
         if (curJEntropy>(fidelityRatio*wholeSystemEntopy)) {
@@ -782,10 +789,6 @@ bool ULSA4b5_DC::startCool()
             cout<<"Congratulation All nodes are served"<<endl;
             break;
         }
-//        double sch = SAIter/100;
-//        if (sch==0)sch=1;
-//        if((i%(int)sch)==0)cout<<".";
-        //if(outCtrl==2)
 
         if (isDetailOutputOn) {
           writePayoffEachRound_MinResors_withHead(countSA,curChNum);
@@ -906,7 +909,6 @@ void ULSA4b5_DC::coolOnce_minResors()
 
   int sumProb = probAdd + probDiscard + probHeadRotate+probJoin+probIsoltae;
   int eventCursor= (int)((double)rand() / ((double)RAND_MAX + 1) * sumProb);
-
   nextEventFlag=-1;// this flag tell add or discard or Headrotate
 
 
@@ -921,8 +923,6 @@ void ULSA4b5_DC::coolOnce_minResors()
 //    --rotateCountDown;
 //  }
 //  else{
-    rotateCountDown = 5;
-    preJoinedHeadIdx = -1;
     if (eventCursor<probAdd) nextEventFlag = 1;
     else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
     else if (eventCursor<(probAdd+probDiscard+probHeadRotate)) nextEventFlag=3;
@@ -935,6 +935,7 @@ void ULSA4b5_DC::coolOnce_minResors()
       cout<<eventCursor<<endl;
     }
 //  } 
+  cout << nextEventFlag << endl;
 
   //-------------------------------------//
   // Start the movement                  //
@@ -995,16 +996,6 @@ void ULSA4b5_DC::coolOnce_minResors()
     isolateHeadSA(IsolateNodeName,isolatedHeadIndex,targetHeadIndex);
     nextJEntropy = curJEntropy;
     nextSupNum = curSupNum;
-  }
-  else if (nextEventFlag ==6)
-  {
-    joinedHeadRotate(preJoinedHeadIdx);
-    //cout<<"HR "<<targetNode+1<<" to Replace "<<cSystem->vecHeadName[targetHeadIndex]+1<<endl;
-    rotateHeadSA(targetHeadIndex,targetNode);
-    nextJEntropy = curJEntropy;
-    nextSupNum = curSupNum;
-    nextChNum=curChNum;
-
   }
   else
   {
@@ -1450,9 +1441,9 @@ void ULSA4b5_DC::decideHeadJoining4b(){
     }
   }
   cout << "cand: " << vecPairHeadCandidate.size() << endl;
-  if (vecPairHeadCandidate.size() == 0) {
-    return;
-  }
+//  if (vecPairHeadCandidate.size() == 0) {
+//    return;
+//  }
 
   for(int i=0;i<maxChNum;i++){
     if( cSystem->vecClusterSize[i] > 0) {
