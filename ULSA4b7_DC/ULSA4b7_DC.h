@@ -65,7 +65,8 @@ public:
 
   bool setInitialStucture(char* inputFlag);
   bool setIniStruKmeans();//not public but related to setIniStrucKmeans
-  bool setIniStruKmedoids();
+  bool setIniStruDistanceKmedoids();
+  bool setIniStruResourceKmedoids();
   bool setIniHeadLimited();
 
 

@@ -240,9 +240,14 @@ bool ULSA4b7_DC::setInitialStucture(char* iniFlag)
     }
 
 
-    if (!strcmp(iniFlag, "kmeans")) normalFlag = setIniStruKmeans();
-    else if (!strcmp(iniFlag, "kmedoids")) normalFlag = setIniStruKmedoids();
-    else if (!strcmp(iniFlag, "HeadLimited")) normalFlag = setIniHeadLimited();
+    if (!strcmp(iniFlag, "kmeans")) 
+      normalFlag = setIniStruKmeans();
+    else if (!strcmp(iniFlag, "kmedoid_distance")) 
+      normalFlag = setIniStruDistanceKmedoids();
+    else if (!strcmp(iniFlag, "kmedoid_resource")) 
+      normalFlag = setIniStruResourceKmedoids();
+    else if (!strcmp(iniFlag, "HeadLimited")) 
+      normalFlag = setIniHeadLimited();
 
 
     //--------------------------------------------------------------//
@@ -439,13 +444,10 @@ bool ULSA4b7_DC::setIniHeadLimited()
     {
         nodes[cSystem->vecHeadName[i]].ptrHead = &(cSystem->vecHeadName[i]);
     }
-
-
-
     return true;
 }
 
-bool ULSA4b7_DC::setIniStruKmedoids() 
+bool ULSA4b7_DC::setIniStruDistanceKmedoids() 
 {
   int retryTimes = 0;
   float tempHeadX [maxChNum];
@@ -480,7 +482,6 @@ bool ULSA4b7_DC::setIniStruKmedoids()
       //Find the closet head to form a cluster
 
       //Same number cluster head but clear in the converge process
-      
       for (unsigned int i=0 ; i<tempGroup.size(); i++) tempGroup[i].clear(); //clear all the eixsted group members
       for (int i=0; i<totalNodes; i++)
       {
@@ -545,9 +546,6 @@ bool ULSA4b7_DC::setIniStruKmedoids()
 
     retryTimes++;
   }
-
-
-
 // -------------------------------------------------------------------------- //
 // @Description: confirm initialization of structure
 // @Provides: 
@@ -570,6 +568,11 @@ bool ULSA4b7_DC::setIniStruKmedoids()
     }
   }
 
+  return true;
+}
+
+bool ULSA4b7_DC::setIniStruResourceKmedoids()
+{
   return true;
 }
 

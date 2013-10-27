@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
   //---------------------//
   // Control Constant    //
   //---------------------//
-  char iniFlag[]="kmedoids";
+  char iniFlag[]="kmedoids_distance";
   const float powerMaxWatt = pow(10,((float)powerMaxDbm)/10) /1000;//we don't need to divide the BW(bandwidthKhz*1000);//Unit := Watt
   const int SAIter=atoi(argv[13]);
   //****************************//
