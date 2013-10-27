@@ -1,8 +1,11 @@
 CPP= g++
-CFLAGS=-O -O1 -O2 -O3
-#DFLAGS= -D DEBUG
-INCLUDE= -I/home/share/armadillo39202/include/
-LIB_PATH = -L/home/share/armadillo39202/lib/ -L/home/share/openblas/lib -L/home/share/lpack342/lib/ 
+#CFLAGS=-O -O1 -O2 -O3
+DFLAGS= -D DEBUG -g
+PREFIX=/opt
+INCLUDE= -I$(PREFIX)/armadillo39202/include/
+LIB_PATH = -L$(PREFIX)/armadillo39202/lib/ \
+	   -L$(PREFIX)/openblas/lib \
+	   -L$(PREFIX)/lpack342/lib/ 
 LIB_FLAGS= -larmadillo -lopenblas -llapack  
 COMM_UTILITY= ../commonLibrary/CORRE_MA_OPE.o \
 	  ../commonLibrary/SimSystem.o \

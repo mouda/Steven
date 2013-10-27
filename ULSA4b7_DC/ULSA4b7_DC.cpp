@@ -242,9 +242,9 @@ bool ULSA4b7_DC::setInitialStucture(char* iniFlag)
 
     if (!strcmp(iniFlag, "kmeans")) 
       normalFlag = setIniStruKmeans();
-    else if (!strcmp(iniFlag, "kmedoid_distance")) 
+    else if (!strcmp(iniFlag, "kmedoids_distance")) 
       normalFlag = setIniStruDistanceKmedoids();
-    else if (!strcmp(iniFlag, "kmedoid_resource")) 
+    else if (!strcmp(iniFlag, "kmedoids_distance")) 
       normalFlag = setIniStruResourceKmedoids();
     else if (!strcmp(iniFlag, "HeadLimited")) 
       normalFlag = setIniHeadLimited();
@@ -527,10 +527,10 @@ bool ULSA4b7_DC::setIniStruDistanceKmedoids()
         cout << "cluster: " << i << endl;
         cout << " min distance: " << vecDistance.min(idx) << endl;
         cout << " at: " << idx <<endl;
-        cout << "newHx: " << newHx << " newHy: " << newHy <<endl;
-        cout << "-------end00---------" << endl;
         newHx = nodes[tempGroup[i][idx]].locX;
         newHy = nodes[tempGroup[i][idx]].locY;
+        cout << "newHx: " << newHx << " newHy: " << newHy <<endl;
+        cout << "-------end00---------" << endl;
         if ( (abs(newHx-tempHeadX[i]) > 0.01) || (abs(newHy-tempHeadY[i])>0.01) ) convergedFlag = false; // checkcheck if the original head close enough
         //find the new approriate location of the head
         tempHeadX[i] = newHx;
