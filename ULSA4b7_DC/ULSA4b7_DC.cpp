@@ -769,9 +769,11 @@ bool ULSA4b7_DC::startCool()
            cur1st_ms+cur2nd_ms<<"=("<<cur1st_ms<<"+"<<cur2nd_ms<<")ms "<<endl;*/
         coolOnce_minResors();
         if(targetHeadIndex==-1||targetHeadIndex==-1){
-          passNext2Cur();
-          for(int j=0; j<totalNodes; j++) 
-            nodes[j].power = nextNodePower[j];
+          if (nextEventFlag == 4 ) {
+            passNext2Cur();
+            for(int j=0; j<totalNodes; j++) 
+              nodes[j].power = nextNodePower[j];
+          }
           i++;
           continue;
         }
