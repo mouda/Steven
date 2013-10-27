@@ -239,8 +239,8 @@ bool ULSA4b7_DC::setInitialStucture(char* iniFlag)
     }
 
 
-    if (!strcmp(iniFlag, "kmeans")) normalFlag=setIniStruKmeans();
-    else if (!strcmp(iniFlag, "HeadLimited")) normalFlag=setIniHeadLimited();
+    if (!strcmp(iniFlag, "kmeans")) normalFlag = setIniStruKmeans();
+    else if (!strcmp(iniFlag, "HeadLimited")) normalFlag = setIniHeadLimited();
 
 
     //--------------------------------------------------------------//
@@ -256,142 +256,142 @@ bool ULSA4b7_DC::setInitialStucture(char* iniFlag)
 */
 bool ULSA4b7_DC::setIniStruKmeans()
 {
-    int retryTimes = 0;
-    float tempHeadX [maxChNum];
-    float tempHeadY [maxChNum];
-    int tempHeadList [maxChNum];
-    vector <vector <int> > tempGroup;
-    bool convergedFlag = false;
-    bool sameHeadFlag = true;
-    while(sameHeadFlag)
+  int retryTimes = 0;
+  float tempHeadX [maxChNum];
+  float tempHeadY [maxChNum];
+  int tempHeadList [maxChNum];
+  vector <vector <int> > tempGroup;
+  bool convergedFlag = false;
+  bool sameHeadFlag = true;
+  while(sameHeadFlag)
+  {
+    sameHeadFlag = false;
+    convergedFlag = false;
+    //Clear before added members
+    if (retryTimes>(totalNodes-maxChNum+1))
     {
-        sameHeadFlag = false;
-        convergedFlag = false;
-        //Clear before added members
-        if (retryTimes>(totalNodes-maxChNum+1))
-        {
-            return false;
-        }
-        for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
-        tempGroup.clear();
-
-        for (int i=0; i<maxChNum; i++)
-        {
-            vector <int> tempV;
-            tempGroup.push_back(tempV);
-            tempHeadX[i] = nodes[i+retryTimes].locX;
-            tempHeadY[i] = nodes[i+retryTimes].locY;
-            tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
-        }
-        while(!convergedFlag) // This loop want to find a new K-means coordinate
-        {
-            //choose "maxChNum" nember of node to use as the intial Cluster head
-            //Find the closet head to form a cluster
-
-            //Same number cluster head but clear in the converge process
-            for (unsigned int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
-            for (int i=0; i<totalNodes; i++)
-            {
-                float closetDistance = numeric_limits<float>::max( );
-                int closetHeadIndex = -1;
-                for(int j=0; j<maxChNum; j++)
-                {
-                    float tempDistance = (tempHeadX[j] - nodes[i].locX)*(tempHeadX[j] - nodes[i].locX)\
-                                         +(tempHeadY[j] - nodes[i].locY)*(tempHeadY[j] - nodes[i].locY);
-                    if (closetDistance > tempDistance )
-                    {
-                        closetDistance = tempDistance;
-                        closetHeadIndex = j;
-                    }
-                }
-                tempGroup[closetHeadIndex].push_back(i);
-            }
-            convergedFlag = true;
-            //find the k-means coordinate of each cluster
-            for(int i=0; i<maxChNum; i++)
-            {
-                float newHx = 0;
-                float newHy = 0;
-                for(unsigned int j=0; j<tempGroup[i].size(); j++)
-                {
-                    newHx += nodes[tempGroup[i][j]].locX;
-                    newHy += nodes[tempGroup[i][j]].locY;
-                }
-                newHx /= tempGroup[i].size();
-                newHy /= tempGroup[i].size();
-                if ( (abs(newHx-tempHeadX[i]) > 0.01) || (abs(newHy-tempHeadY[i])>0.01) ) convergedFlag = false; // checkcheck if the original head close enough
-                //find the new approriate location of the head
-                tempHeadX[i] = newHx;
-                tempHeadY[i] = newHy;
-            }
-        }
-        // leave this loop if 'converged = 1;'
-        for (int i=0; i<maxChNum; i++) tempHeadList[i] = \
-                    tempGroup[i][returnClosetNodeIndexInGroup(tempHeadX[i], tempHeadY[i], tempGroup[i])];
-        //check there is same head exist
-        for (int i=0; i<maxChNum; i++)
-            for (int j=i+1; j<maxChNum; j++)if (tempHeadList[i] == tempHeadList[j]) sameHeadFlag = true;
-
-        retryTimes++;
+      return false;
     }
-    //Construct the initial Structure in the Group from
-    //tempHeadList[] tempGroup[][]
-
-    //---------------------------------------------------------
-    //Intial Structure: Full Set and connection set according to K-means
+    for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
+    tempGroup.clear();
 
     for (int i=0; i<maxChNum; i++)
+    {
+      vector <int> tempV;
+      tempGroup.push_back(tempV);
+      tempHeadX[i] = nodes[i+retryTimes].locX;
+      tempHeadY[i] = nodes[i+retryTimes].locY;
+      tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
+    }
+    while(!convergedFlag) // This loop want to find a new K-means coordinate
+    {
+      //choose "maxChNum" nember of node to use as the intial Cluster head
+      //Find the closet head to form a cluster
+
+      //Same number cluster head but clear in the converge process
+      for (unsigned int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
+      for (int i=0; i<totalNodes; i++)
       {
-        cSystem->addNewHeadCs(tempHeadList[i]);
-        for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
-          {
-            addMemberSAIni(i, tempGroup[i][j]);//we correct the ptrHead later, Because the address will change
-          }
-      }
-        //Re assign the ptrHead NOW
-    for (int i=0; i<maxChNum; i++)
-      {
-        for(int j=0; j<totalNodes; j++)
-          {
-            if(cSystem->clusterStru[i][j]==true)
-              nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
-          }
-      }
-/*
-  for(int i=0; i<maxChNum; i++)
-    {
-        cSystem->allSupStru[i]=false;
-
-        for(int j=0; j<totalNodes; j++) {
-            cSystem->clusterStru[i][j]=false;
-
-        }
-    }
-
-
-    //----------------------------------------------------------
-    //Intial Structure: Head Only and :no connection set at all
-    for (int i=0; i<maxChNum; i++)
-    {
-        cSystem->addNewHeadCs(tempHeadList[i]);
-        for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
+        float closetDistance = numeric_limits<float>::max( );
+        int closetHeadIndex = -1;
+        for(int j=0; j<maxChNum; j++)
         {
-            if(tempGroup[i][j]==tempHeadList[i])
-                addMemberSAIni(i, tempGroup[i][j]);
-            else
-            {
-                cSystem->listUnSupport->push_back(tempGroup[i][j]);
-                //cout<<"Push in list "<<tempGroup[i][j]<<" listSize "<<cSystem->listUnSupport->size()<<endl;
-            }
+          float tempDistance = (tempHeadX[j] - nodes[i].locX)*(tempHeadX[j] - nodes[i].locX)\
+                               +(tempHeadY[j] - nodes[i].locY)*(tempHeadY[j] - nodes[i].locY);
+          if (closetDistance > tempDistance )
+          {
+            closetDistance = tempDistance;
+            closetHeadIndex = j;
+          }
         }
+        tempGroup[closetHeadIndex].push_back(i);
+      }
+      convergedFlag = true;
+      //find the k-means coordinate of each cluster
+      for(int i=0; i<maxChNum; i++)
+      {
+        float newHx = 0;
+        float newHy = 0;
+        for(unsigned int j=0; j<tempGroup[i].size(); j++)
+        {
+          newHx += nodes[tempGroup[i][j]].locX;
+          newHy += nodes[tempGroup[i][j]].locY;
+        }
+        newHx /= tempGroup[i].size();
+        newHy /= tempGroup[i].size();
+        if ( (abs(newHx-tempHeadX[i]) > 0.01) || (abs(newHy-tempHeadY[i])>0.01) ) convergedFlag = false; // checkcheck if the original head close enough
+        //find the new approriate location of the head
+        tempHeadX[i] = newHx;
+        tempHeadY[i] = newHy;
+      }
     }
+    // leave this loop if 'converged = 1;'
+    for (int i=0; i<maxChNum; i++) tempHeadList[i] = \
+      tempGroup[i][returnClosetNodeIndexInGroup(tempHeadX[i], tempHeadY[i], tempGroup[i])];
+    //check there is same head exist
     for (int i=0; i<maxChNum; i++)
+      for (int j=i+1; j<maxChNum; j++)if (tempHeadList[i] == tempHeadList[j]) sameHeadFlag = true;
+
+    retryTimes++;
+  }
+  //Construct the initial Structure in the Group from
+  //tempHeadList[] tempGroup[][]
+
+  //---------------------------------------------------------
+  //Intial Structure: Full Set and connection set according to K-means
+
+  for (int i=0; i<maxChNum; i++)
+  {
+    cSystem->addNewHeadCs(tempHeadList[i]);
+    for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
     {
-        nodes[cSystem->vecHeadName[i]].ptrHead = &(cSystem->vecHeadName[i]);
-        //cout<<cSystem->vecHeadName[i]<<" "<<nodes[cSystem->vecHeadName[i]].ptrHead<<endl;
+      addMemberSAIni(i, tempGroup[i][j]);//we correct the ptrHead later, Because the address will change
     }
-*/
-    return true;
+  }
+  //Re assign the ptrHead NOW
+  for (int i=0; i<maxChNum; i++)
+  {
+    for(int j=0; j<totalNodes; j++)
+    {
+      if(cSystem->clusterStru[i][j]==true)
+        nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
+    }
+  }
+  /*
+     for(int i=0; i<maxChNum; i++)
+     {
+     cSystem->allSupStru[i]=false;
+
+     for(int j=0; j<totalNodes; j++) {
+     cSystem->clusterStru[i][j]=false;
+
+     }
+     }
+
+
+  //----------------------------------------------------------
+  //Intial Structure: Head Only and :no connection set at all
+  for (int i=0; i<maxChNum; i++)
+  {
+  cSystem->addNewHeadCs(tempHeadList[i]);
+  for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
+  {
+  if(tempGroup[i][j]==tempHeadList[i])
+  addMemberSAIni(i, tempGroup[i][j]);
+  else
+  {
+  cSystem->listUnSupport->push_back(tempGroup[i][j]);
+  //cout<<"Push in list "<<tempGroup[i][j]<<" listSize "<<cSystem->listUnSupport->size()<<endl;
+  }
+  }
+  }
+  for (int i=0; i<maxChNum; i++)
+  {
+  nodes[cSystem->vecHeadName[i]].ptrHead = &(cSystem->vecHeadName[i]);
+  //cout<<cSystem->vecHeadName[i]<<" "<<nodes[cSystem->vecHeadName[i]].ptrHead<<endl;
+  }
+  */
+  return true;
 }
 
 
@@ -441,6 +441,11 @@ bool ULSA4b7_DC::setIniHeadLimited()
 
 
     return true;
+}
+
+bool ULSA4b7_DC::setIniStruKmedoids() 
+{
+  return true;
 }
 
 
@@ -722,134 +727,129 @@ double ULSA4b7_DC::returnComprRatio()
 
 bool ULSA4b7_DC::startCool()
 {
-    begin = clock();
-    matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
-    indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
-    double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
-    (compRatio,indEntropy,static_cast<double>(totalNodes));
-    tempAddT=0;
-    tempDisT=0;
-    tempHRT=0;
-    bool inClu[totalNodes];
-    for(int i=0; i<totalNodes; i++)inClu[i]=true;
-    double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
-    wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
-    consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
-                                     nextNodePower,cSystem->listCluMember );
+  begin = clock();
+  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
+  indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
+  double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
+                    (compRatio,indEntropy,static_cast<double>(totalNodes));
+  tempAddT=0;
+  tempDisT=0;
+  tempHRT=0;
+  bool inClu[totalNodes];
+  for(int i=0; i<totalNodes; i++)inClu[i]=true;
+  double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
+  wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
+  consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
+      nextNodePower,cSystem->listCluMember );
 
-    ULSAOutputToolSet<class ULSA4b7_DC> resultShow;
-    flagAnsFound =false;
-    //-----------------------------//
-    //Initialize performance matrix//
-    //-----------------------------//
-    if(curSupNum>maxChNum){cur2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);}
-    else{cur2nd_ms=0;}
-    cur1st_ms = return1stTotalNcal1stResors_HomoPower();
-    cur2nd_Joule=returnTransientJoule();
-    cur1st_Joule=power1st*cur1st_ms;
+  ULSAOutputToolSet<class ULSA4b7_DC> resultShow;
+  flagAnsFound =false;
+  //-----------------------------//
+  //Initialize performance matrix//
+  //-----------------------------//
+  if( curSupNum > maxChNum ){ cur2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10); }
+  else{ cur2nd_ms = 0; }
+  cur1st_ms = return1stTotalNcal1stResors_HomoPower();
+  cur2nd_Joule = returnTransientJoule();
+  cur1st_Joule = power1st*cur1st_ms;
 
 
-    curSupNum=cSystem->calSupNodes();
-    curChNum=maxChNum;
-    nextChNum=curChNum;
-    curJEntropy = curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-    curPayoff=cur1st_ms+cur2nd_ms;
+  curSupNum=cSystem->calSupNodes();
+  curChNum=maxChNum;
+  nextChNum=curChNum;
+  curJEntropy = curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
+  curPayoff=cur1st_ms+cur2nd_ms;
 
-    bestAllServeFound=false;
+  bestAllServeFound=false;
 
-    if (checkBestClusterStructure_DataCentric(0))return true;
-    cout<<"Compression Ratio "<<returnComprRatio()<<" indEntropy "<<indEntropy<<endl;
-    for(int i=0; i<SAIter; i++)
+  if ( checkBestClusterStructure_DataCentric(0) ) return true;
+  cout << "Compression Ratio " << returnComprRatio() <<" indEntropy " << indEntropy << endl;
+  for(int i=0; i<SAIter; i++)
+  {
+    coolOnce_minResors();
+
+    if( targetHeadIndex == -1 || targetHeadIndex == -1 ) {
+      if ( nextEventFlag == 4 ) {
+        passNext2Cur();
+        for(int j=0; j<totalNodes; j++) 
+          nodes[j].power = nextNodePower[j];
+      }
+      i++;
+      continue;
+    }
+
+    calculateMatrics_minResors();
+    confirmNeighbor3i();
+    if (curJEntropy>(fidelityRatio*wholeSystemEntopy)) {
+      flagAnsFound=true;
+    }
+    assert(curSupNum>=0);
+    if(checkBestClusterStructure_DataCentric(i))
     {
-        //cout<<"-----------"<<i<<"---------"<<endl;
-        //cout<<i<<"  CurSup#:"<<curSupNum<<" CurFeasible:"<<curFeasible<<" CurEntropy:"<<curJEntropy<<" CurInfeas:"<<curInfeasibility<<endl;
-        //cout<<endl;
-
-        /*cout<<curFeasible<<" "<<i<<"-TH Sup Num"<<bestFeasibleSupNum<<"  InfoRatio:"<<curJEntropy/wholeSystemEntopy<<" "<<cur1st_Joule+cur2nd_Joule<<"=("<< cur1st_Joule<<"+"<<cur2nd_Joule<<")joule "<< \
-           cur1st_ms+cur2nd_ms<<"=("<<cur1st_ms<<"+"<<cur2nd_ms<<")ms "<<endl;*/
-        coolOnce_minResors();
-        if(targetHeadIndex==-1||targetHeadIndex==-1){
-          if (nextEventFlag == 4 ) {
-            passNext2Cur();
-            for(int j=0; j<totalNodes; j++) 
-              nodes[j].power = nextNodePower[j];
-          }
-          i++;
-          continue;
-        }
-        calculateMatrics_minResors();
-        confirmNeighbor3i();
-        if (curJEntropy>(fidelityRatio*wholeSystemEntopy)) {
-            flagAnsFound=true;
-        }
-        assert(curSupNum>=0);
-        if(checkBestClusterStructure_DataCentric(i))
-        {
-            cout<<"Congratulation All nodes are served"<<endl;
-            break;
-        }
-//        double sch = SAIter/100;
-//        if (sch==0)sch=1;
-//        if((i%(int)sch)==0)cout<<".";
-        //if(outCtrl==2)
-
-        if (isDetailOutputOn) {
-          writePayoffEachRound_MinResors_withHead(i,curChNum);
-        }
-        int tempche=(signed)cSystem->listUnSupport->size();
-
-        assert(( curSupNum + tempche) == totalNodes);
-        //cout<<"======================"<<endl;
-        //writeStruSingleRound(i);
-        //cout<<cur1st_ms<<" +  "<<cur2nd_ms<<" = "<<curPayoff<<"; with InfoR "<<curJEntropy/wholeSystemEntopy<<" and "<<curSupNum<<endl;
-   }
-
-    end = clock();
-    computingTimes = ((float)(end-begin))/CLOCKS_PER_SEC;
-    cout<<"best "<<bestFeasibleSupNum<<"   Information Ratio:"<<bestFeasibleJEntropy/wholeSystemEntopy<<endl;
-    if(!flagAnsFound)
-    {
-        cout<<"Not Found the answer Yet"<<endl;
-        return false ;
+      cout<<"Congratulation All nodes are served"<<endl;
+      break;
     }
-    else cout<<"SA end up correctly"<<endl;
-    //cout<<"best "<<bestFeasibleSupNum<<" "<<(totalNodes)<<endl;
-    cout<<"Add Times="<<tempAddT<<endl;
-    cout<<"Discard Times="<<tempDisT<<endl;
-    cout<<"HR Times="<<tempHRT<<endl;
 
-
-    char timeBuf[32];
-    TimeStamp obj_time;
-    obj_time.returnRealWordTime(timeBuf,32);
-
-    char str[500];
-    char str2[500];
-    char str3[500];
-    if(bestFeasibleJEntropy>=(wholeSystemEntopy*fidelityRatio)) {
-        cout<<timeBuf<<endl;
-        if (isDetailOutputOn) {
-          sprintf(str,"%s_Best4b2Struc2ndN%d_m%d_FR%.1f_r%.1f.txt",timeBuf,totalNodes,maxChNum,fidelityRatio,radius);
-          resultShow.writeBestStru(str,*this);
-          sprintf(str2,"%s_Detail4b2DataULSA3i%d_m%d_FR%.1f_r%.1f.txt",timeBuf, totalNodes,maxChNum,fidelityRatio,radius);
-          resultShow.summaryNwrite2tiers_MinResors_with2ndPowerControl(str2, *this, best2nd_ms);
-        }
-        sprintf(str3,"tmpAll/ULSA4b7_All_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius, strIpAddr.c_str());
-        resultShow.writePeformance_MinResors_with2ndPowerControl_4b(str3,*this, best2nd_ms, fidelityRatio,bestChNum);
-        sprintf(str3,"tmpAll/ULSA4b7_Cluster_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius, strIpAddr.c_str());
-        resultShow.writeClusterInfo(str3,*this,timeBuf);
-
-
-
-        delete matrixComputer;
-        delete consSol;
-        return true;
+    if (isDetailOutputOn) {
+      writePayoffEachRound_MinResors_withHead(i,curChNum);
     }
-    else{
-        delete matrixComputer;
-        delete consSol;
-        return false;
+    int tempche=(signed)cSystem->listUnSupport->size();
+
+    assert(( curSupNum + tempche) == totalNodes);
+    //cout<<"======================"<<endl;
+    //writeStruSingleRound(i);
+    //cout<<cur1st_ms<<" +  "<<cur2nd_ms<<" = "<<curPayoff<<"; with InfoR "<<curJEntropy/wholeSystemEntopy<<" and "<<curSupNum<<endl;
+  }
+
+  end = clock();
+  computingTimes = ((float)(end-begin))/CLOCKS_PER_SEC;
+  cout << "best "<< bestFeasibleSupNum << "   Information Ratio:" 
+    << bestFeasibleJEntropy / wholeSystemEntopy << endl;
+  if(!flagAnsFound)
+  {
+    cout<<"Not Found the answer Yet"<<endl;
+    //return false ; // We don't care if the result is feasible.
+  }
+  else cout<<"SA end up correctly"<<endl;
+  cout<<"Add Times="<<tempAddT<<endl;
+  cout<<"Discard Times="<<tempDisT<<endl;
+  cout<<"HR Times="<<tempHRT<<endl;
+
+  char timeBuf[32];
+  TimeStamp obj_time;
+  obj_time.returnRealWordTime(timeBuf,32);
+
+  char str[500];
+  char str2[500];
+  char str3[500];
+  if(bestFeasibleJEntropy>=(wholeSystemEntopy*fidelityRatio)) {
+    cout<<timeBuf<<endl;
+    if (isDetailOutputOn) {
+      sprintf(str,"%s_Best4b2Struc2ndN%d_m%d_FR%.1f_r%.1f.txt",timeBuf,totalNodes,maxChNum,fidelityRatio,radius);
+      resultShow.writeBestStru(str,*this);
+      sprintf(str2,"%s_Detail4b2DataULSA3i%d_m%d_FR%.1f_r%.1f.txt",timeBuf, totalNodes,maxChNum,fidelityRatio,radius);
+      resultShow.summaryNwrite2tiers_MinResors_with2ndPowerControl(str2, *this, best2nd_ms);
     }
+    sprintf(str3,"tmpAll/ULSA4b7_All_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius, strIpAddr.c_str());
+    resultShow.writePeformance_MinResors_with2ndPowerControl_4b(str3,*this, best2nd_ms, fidelityRatio,bestChNum);
+    sprintf(str3,"tmpAll/ULSA4b7_Cluster_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius, strIpAddr.c_str());
+    resultShow.writeClusterInfo(str3,*this,timeBuf);
+
+    delete matrixComputer;
+    delete consSol;
+    return true;
+  }
+  else{
+    if (isDetailOutputOn) {
+      sprintf(str,"%s_Best4b2Struc2ndN%d_m%d_FR%.1f_r%.1f.txt",timeBuf,totalNodes,maxChNum,fidelityRatio,radius);
+      resultShow.writeBestStru(str,*this);
+      sprintf(str2,"%s_Detail4b2DataULSA3i%d_m%d_FR%.1f_r%.1f.txt",timeBuf, totalNodes,maxChNum,fidelityRatio,radius);
+      resultShow.summaryNwrite2tiers_MinResors_with2ndPowerControl(str2, *this, best2nd_ms);
+    }
+    delete matrixComputer;
+    delete consSol;
+    return false;
+  }
 
 }
 
