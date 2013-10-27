@@ -768,7 +768,13 @@ bool ULSA4b7_DC::startCool()
         /*cout<<curFeasible<<" "<<i<<"-TH Sup Num"<<bestFeasibleSupNum<<"  InfoRatio:"<<curJEntropy/wholeSystemEntopy<<" "<<cur1st_Joule+cur2nd_Joule<<"=("<< cur1st_Joule<<"+"<<cur2nd_Joule<<")joule "<< \
            cur1st_ms+cur2nd_ms<<"=("<<cur1st_ms<<"+"<<cur2nd_ms<<")ms "<<endl;*/
         coolOnce_minResors();
-	    if(targetHeadIndex==-1||targetHeadIndex==-1){i++;continue;}
+        if(targetHeadIndex==-1||targetHeadIndex==-1){
+          passNext2Cur();
+          for(int j=0; j<totalNodes; j++) 
+            nodes[j].power = nextNodePower[j];
+          i++;
+          continue;
+        }
         calculateMatrics_minResors();
         confirmNeighbor3i();
         if (curJEntropy>(fidelityRatio*wholeSystemEntopy)) {
@@ -962,6 +968,11 @@ void ULSA4b7_DC::coolOnce_minResors()
     else if (nextEventFlag==4){
         JoiningHeadIndex=-1;
         decideHeadJoining4b();
+        if (JoiningHeadIndex==-1 || targetHeadIndex==-1) {
+          nextJEntropy = curJEntropy; // entropy unchanged
+          nextSupNum = curSupNum; //support number unchanged
+          return;
+        }
         join_fromHeadSA(JoiningHeadIndex,targetHeadIndex);
         nextJEntropy = curJEntropy;
         nextSupNum = curSupNum;

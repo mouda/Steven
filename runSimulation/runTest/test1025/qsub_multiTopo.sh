@@ -6,10 +6,10 @@ do
   do
     echo "
     ### Job name
-    #PBS -N ULSA4b2_DC_runHN_N50_$addue
+    #PBS -N ULSA4b7_DC_runHN_N50_$addue
     ### out files
-    #PBS -e ./log/ULSA4b2_DC_runHN_N50_${addue}_${topoIdx}.err
-    #PBS -o ./log/ULSA4b2_DC_runHN_N50_${addue}_${topoIdx}.log
+    #PBS -e ./log/ULSA4b7_DC_runHN_N50_${addue}_${topoIdx}.err
+    #PBS -o ./log/ULSA4b7_DC_runHN_N50_${addue}_${topoIdx}.log
     ### put the job to which queue (qwork)
     #PBS -q qwork" > ./run_temp.sh
     echo ' 
@@ -20,7 +20,7 @@ do
     time1=`date +%s`
     echo Directory is `pwd`' >> ./run_temp.sh
     echo " 
-    ../../../ULSA4b5_DC/ULSA4b5_DC 50 $addue 8 0 180 ../../mapFile/mapFile_uni_50_r500/mapFile_uniR500_N50_${topoIdx}.txt 0.477 2 1 1 0.95 0 20000 
+    ../../../ULSA4b7_DC/ULSA4b7_DC 50 $addue 8 0 180 ../../mapFile/mapFile_uni_50_r500/mapFile_uniR500_N50_${topoIdx}.txt 0.477 2 1 1 0.95 0 20000 
     " >> ./run_temp.sh
     echo '
     echo End time is `date`
@@ -33,6 +33,6 @@ done
 
 # Proccess remain files
 
-cat tmpAll/ULSA4b2_All_N50_BW180.0PW0.001_FR0.95_r500.0.* > ULSA4b2_All_N50_BW180.0PW0.001_FR0.95_r500.0.txt 
+cat tmpAll/ULSA4b7_All_N50_BW180.0PW0.001_FR0.95_r500.0.* > ULSA4b7_All_N50_BW180.0PW0.001_FR0.95_r500.0.txt 
 
 
