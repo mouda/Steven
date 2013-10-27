@@ -1,7 +1,10 @@
 CPP= g++
 CFLAGS=-O -O1 -O2 -O3
 #DFLAGS= -D DEBUG
-LIB_PATH= ../commonLibrary/CORRE_MA_OPE.o \
+INCLUDE= -I/home/share/armadillo39202/include/
+LIB_PATH = -L/home/share/armadillo39202/lib/ -L/home/share/openblas/lib -L/home/share/lpack342/lib/ 
+LIB_FLAGS= -larmadillo -lopenblas -llapack  
+COMM_UTILITY= ../commonLibrary/CORRE_MA_OPE.o \
 	  ../commonLibrary/SimSystem.o \
 	  ../commonLibrary/timesearch.o \
 	  ../commonLibrary/TimeStamp.o \
@@ -11,9 +14,9 @@ LIB_PATH= ../commonLibrary/CORRE_MA_OPE.o \
 all: ULSA4b7_DC
 
 ULSA4b7_DC: 	main.o ULSA4b7_DC.o 
-	$(CPP)  $(LIB_PATH) $(CFLAGS)  `pkg-config opencv --cflags --libs` $^  -o $@ 
+	$(CPP)  $(COMM_UTILITY) $(CFLAGS) $(INCLUDE) $(LIB_PATH) $(LIB_FLAGS) `pkg-config opencv --cflags --libs` $^  -o $@ 
 
 %.o: %.cpp
-	$(CPP) -c $(CFLAGS) $(DFLAGS) $< -o $@
+	$(CPP) -c $(CFLAGS) $(DFLAGS) $(INCLUDE) $(LIB_PATH) $(LIB_FLAGS) $< -o $@
 clean:
 	rm ULSA4b7_DC *.o

@@ -8,7 +8,8 @@
 #include <algorithm>//for sort
 #include <cfloat>
 #include <list>
-#include<cassert>
+#include <cassert>
+#include <armadillo>
 
 using namespace std;
 #include "ULSA4b7_DC.h"
@@ -240,6 +241,7 @@ bool ULSA4b7_DC::setInitialStucture(char* iniFlag)
 
 
     if (!strcmp(iniFlag, "kmeans")) normalFlag = setIniStruKmeans();
+    else if (!strcmp(iniFlag, "kmedoids")) normalFlag = setIniStruKmedoids();
     else if (!strcmp(iniFlag, "HeadLimited")) normalFlag = setIniHeadLimited();
 
 
@@ -445,6 +447,129 @@ bool ULSA4b7_DC::setIniHeadLimited()
 
 bool ULSA4b7_DC::setIniStruKmedoids() 
 {
+  int retryTimes = 0;
+  float tempHeadX [maxChNum];
+  float tempHeadY [maxChNum];
+  int tempHeadList [maxChNum];
+  vector <vector <int> > tempGroup;
+  bool convergedFlag = false;
+  bool sameHeadFlag = true;
+  while(sameHeadFlag)
+  {
+    sameHeadFlag = false;
+    convergedFlag = false;
+    //Clear before added members
+    if (retryTimes>(totalNodes-maxChNum+1))
+    {
+      return false;
+    }
+    for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
+    tempGroup.clear();
+
+    for (int i=0; i<maxChNum; i++)
+    {
+      vector <int> tempV;
+      tempGroup.push_back(tempV);
+      tempHeadX[i] = nodes[i+retryTimes].locX;
+      tempHeadY[i] = nodes[i+retryTimes].locY;
+      tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
+    }
+    while(!convergedFlag) // This loop want to find a new K-means coordinate
+    {
+      //choose "maxChNum" nember of node to use as the intial Cluster head
+      //Find the closet head to form a cluster
+
+      //Same number cluster head but clear in the converge process
+      
+      for (unsigned int i=0 ; i<tempGroup.size(); i++) tempGroup[i].clear(); //clear all the eixsted group members
+      for (int i=0; i<totalNodes; i++)
+      {
+        float closetDistance = numeric_limits<float>::max( );
+        int closetHeadIndex = -1;
+        for(int j=0; j<maxChNum; j++)
+        {
+          float tempDistance = (tempHeadX[j] - nodes[i].locX)*(tempHeadX[j] - nodes[i].locX)
+                               +(tempHeadY[j] - nodes[i].locY)*(tempHeadY[j] - nodes[i].locY);
+          if (closetDistance > tempDistance )
+          {
+            closetDistance = tempDistance;
+            closetHeadIndex = j;
+          }
+        }
+        tempGroup[closetHeadIndex].push_back(i);
+      }
+      convergedFlag = true;
+      //find the k-means coordinate of each cluster
+      for (int i = 0; i < tempGroup.size(); i++) {
+        for (int j = 0; j < tempGroup[j].size(); j++) {
+          cout << tempGroup[i][j] << ' ';
+        }
+        cout << endl;
+      }
+      for(int i=0; i<maxChNum; i++)
+      {
+        float newHx = 0;
+        float newHy = 0;
+        arma::vec vecDistance = arma::zeros<arma::vec>(tempGroup[i].size());
+        for(unsigned int j=0; j<tempGroup[i].size(); j++)
+        {
+          float tempDistance = 0;
+          for (int k = 0; k < tempGroup[i].size(); k++) {
+            if ( j == k ) continue;
+            tempDistance = (nodes[tempGroup[i][j]].locX - nodes[tempGroup[i][k]].locX ) * 
+              (nodes[tempGroup[i][j]].locX - nodes[tempGroup[i][k]].locX) 
+              + (nodes[tempGroup[i][j]].locY - nodes[tempGroup[i][k]].locY)*(nodes[tempGroup[i][j]].locY - nodes[tempGroup[i][k]].locY);
+          }
+          vecDistance.at(j) += tempDistance; 
+        }
+        arma::uword idx;
+        cout << "cluster: " << i << endl;
+        cout << " min distance: " << vecDistance.min(idx) << endl;
+        cout << " at: " << idx <<endl;
+        cout << "newHx: " << newHx << " newHy: " << newHy <<endl;
+        cout << "-------end00---------" << endl;
+        newHx = nodes[tempGroup[i][idx]].locX;
+        newHy = nodes[tempGroup[i][idx]].locY;
+        if ( (abs(newHx-tempHeadX[i]) > 0.01) || (abs(newHy-tempHeadY[i])>0.01) ) convergedFlag = false; // checkcheck if the original head close enough
+        //find the new approriate location of the head
+        tempHeadX[i] = newHx;
+        tempHeadY[i] = newHy;
+      }
+    }
+    // leave this loop if 'converged = 1;'
+    for (int i=0; i<maxChNum; i++) tempHeadList[i] = \
+      tempGroup[i][returnClosetNodeIndexInGroup(tempHeadX[i], tempHeadY[i], tempGroup[i])];
+    //check there is same head exist
+    for (int i=0; i<maxChNum; i++)
+      for (int j=i+1; j<maxChNum; j++)if (tempHeadList[i] == tempHeadList[j]) sameHeadFlag = true;
+
+    retryTimes++;
+  }
+
+
+
+// -------------------------------------------------------------------------- //
+// @Description: confirm initialization of structure
+// @Provides: 
+// -------------------------------------------------------------------------- //
+  for (int i=0; i<maxChNum; i++)
+  {
+    cSystem->addNewHeadCs(tempHeadList[i]);
+    for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
+    {
+      addMemberSAIni(i, tempGroup[i][j]);//we correct the ptrHead later, Because the address will change
+    }
+  }
+  //Re assign the ptrHead NOW
+  for (int i=0; i<maxChNum; i++)
+  {
+    for(int j=0; j<totalNodes; j++)
+    {
+      if(cSystem->clusterStru[i][j]==true)
+        nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
+    }
+  }
+
   return true;
 }
 
