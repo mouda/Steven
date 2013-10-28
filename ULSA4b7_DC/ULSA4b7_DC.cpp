@@ -244,7 +244,7 @@ bool ULSA4b7_DC::setInitialStucture(char* iniFlag)
       normalFlag = setIniStruKmeans();
     else if (!strcmp(iniFlag, "kmedoids_distance")) 
       normalFlag = setIniStruDistanceKmedoids();
-    else if (!strcmp(iniFlag, "kmedoids_distance")) 
+    else if (!strcmp(iniFlag, "kmedoids_resource")) 
       normalFlag = setIniStruResourceKmedoids();
     else if (!strcmp(iniFlag, "HeadLimited")) 
       normalFlag = setIniHeadLimited();
@@ -573,6 +573,149 @@ bool ULSA4b7_DC::setIniStruDistanceKmedoids()
 
 bool ULSA4b7_DC::setIniStruResourceKmedoids()
 {
+  int retryTimes = 0;
+  float tempHeadX [maxChNum];
+  float tempHeadY [maxChNum];
+  int tempHeadList [maxChNum];
+  vector <vector <int> > tempGroup;
+  bool convergedFlag = false;
+  bool sameHeadFlag = true;
+  indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
+  cSystem->listCluMember->resize(maxChNum);
+  consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
+      nextNodePower,cSystem->listCluMember );
+  double checkResource = 0.0;
+  while(sameHeadFlag)
+  {
+    sameHeadFlag = false;
+    convergedFlag = false;
+    //Clear before added members
+    if (retryTimes>(totalNodes-maxChNum+1))
+    {
+      return false;
+    }
+    for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
+    tempGroup.clear();
+
+    for (int i=0; i<maxChNum; i++)
+    {
+      vector <int> tempV;
+      tempGroup.push_back(tempV);
+      tempHeadX[i] = nodes[i+retryTimes].locX;
+      tempHeadY[i] = nodes[i+retryTimes].locY;
+      tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
+    }
+    while(!convergedFlag) // This loop want to find a new resource-based K-medoids coordinate
+    {
+      for (unsigned int i=0 ; i<tempGroup.size(); i++) tempGroup[i].clear(); //clear all the eixsted group members
+      list<list<int> >::iterator iterClear = cSystem->listCluMember->begin();
+      for (; iterClear != cSystem->listCluMember->end(); iterClear++) iterClear->clear(); 
+
+      for (int i=0; i<totalNodes; i++)
+      {
+        float tempDistanceTier_1 = 0.0;
+        float tempDistanceTier_2 = 0.0;
+        float closetDistance = numeric_limits<float>::max();
+        int closetHeadIndex = -1;
+        list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
+        for (int j = 0; j < maxChNum; j++) {
+            iterRow++;
+            tempDistanceTier_1 = 
+              (tempHeadX[j] - nodes[i].locX) * 
+              (tempHeadX[j] - nodes[i].locX) + 
+              (tempHeadY[j] - nodes[i].locY) * 
+              (tempHeadY[j] - nodes[i].locY);
+            tempDistanceTier_2 = 0; 
+            if (tempDistanceTier_1+tempDistanceTier_2 < closetDistance) {
+              closetDistance = tempDistanceTier_1 + tempDistanceTier_2;
+              closetHeadIndex = j;
+            }
+        }
+        list<list<int> >::iterator iterCloset = cSystem->listCluMember->begin();
+        for (int k = 0; k < closetHeadIndex; k++) iterCloset++;
+        //cout <<"closetHeadIndex: "  << closetHeadIndex << ' ' << endl;
+        tempGroup[closetHeadIndex].push_back(i);
+        (*iterCloset).push_back(i);
+      }
+      convergedFlag = true;
+      //find the k-medoids coordinate of each cluster
+      list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
+      for (int i = 0; iterRow != cSystem->listCluMember->end(); iterRow++, i++) {
+        list<int>::iterator iterCol = iterRow->begin();
+	double temp1st_ms=0;
+	double temp2nd_ms=0;
+	double temp2tiers_ms=0;
+	double test2tiers_ms=DBL_MAX;
+        int minHeadName = 0;
+        for (; iterCol != iterRow->end(); iterCol++) {
+          cSystem->vecHeadName[i] = *iterCol;
+          temp2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+          temp1st_ms = return1stTotalNcal1stResors_HomoPower();
+          temp2tiers_ms = temp1st_ms + temp2nd_ms;
+          if(temp2tiers_ms < test2tiers_ms)
+          {
+            test2tiers_ms = temp2tiers_ms;
+            minHeadName = *iterCol;
+          }
+        }
+        float newHx = nodes[minHeadName].locX;
+        float newHy = nodes[minHeadName].locY;
+        cSystem->vecHeadName[i] = minHeadName;
+        //if ( (abs(newHx-tempHeadX[i]) > 0.01) || (abs(newHy-tempHeadY[i])>0.01) ) convergedFlag = false; // checkcheck if the original head close enough
+        if ( abs(checkResource - test2tiers_ms) > 0.01 ) convergedFlag = false; // checkcheck if the original head close enough
+        tempHeadX[i] = newHx;
+        tempHeadY[i] = newHy;
+        checkResource = test2tiers_ms;
+
+      }
+      iterRow = cSystem->listCluMember->begin();
+      for (; iterRow != cSystem->listCluMember->end(); iterRow++) {
+        list<int>::iterator  iterCol = iterRow->begin();
+        for (; iterCol != iterRow->end(); iterCol++) {
+          cout << *iterCol << ' ';
+        }
+        cout << endl;
+      }
+      for (int i = 0; i < maxChNum ; i++) {
+        cout << "X: " << tempHeadX[i] << ' ';
+        cout << "Y: " << tempHeadY[i] << ' ';
+      }
+      cout << endl;
+    }
+
+    // leave this loop if 'converged = 1;'
+    list<list<int> >::iterator iterClear = cSystem->listCluMember->begin();
+    for (; iterClear != cSystem->listCluMember->end(); iterClear++) iterClear->clear(); 
+    cSystem->listCluMember->clear();
+    for (int i=0; i<maxChNum; i++) tempHeadList[i] = cSystem->vecHeadName[i]; 
+    //check there is same head exist
+    for (int i=0; i<maxChNum; i++)
+      for (int j=i+1; j<maxChNum; j++) if (tempHeadList[i] == tempHeadList[j]) sameHeadFlag = true;
+    retryTimes++;
+  }
+  delete consSol; 
+// -------------------------------------------------------------------------- //
+// @Description: confirm initialization of structure
+// @Provides: 
+// -------------------------------------------------------------------------- //
+  for (int i=0; i<maxChNum; i++)
+  {
+    cSystem->addNewHeadCs(tempHeadList[i]);
+    for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
+    {
+      addMemberSAIni(i, tempGroup[i][j]);//we correct the ptrHead later, Because the address will change
+    }
+  }
+  //Re assign the ptrHead NOW
+  for (int i=0; i<maxChNum; i++)
+  {
+    for(int j=0; j<totalNodes; j++)
+    {
+      if(cSystem->clusterStru[i][j]==true)
+        nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
+    }
+  }
+
   return true;
 }
 
