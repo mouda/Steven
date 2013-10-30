@@ -999,6 +999,7 @@ void ULSA4b6_DC::coolOnce_minResors()
     double chooseCurs=0;
     list <int>::iterator it_Int=cSystem->listUnSupport->begin();
 
+
     for(; it_Int!=cSystem->listUnSupport->end(); it_Int++) {
         cSystem->allSupStru[*it_Int]=true;
         double tmpIndInfo=(curSupNum+1)*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru)-curInfo;
@@ -1026,6 +1027,7 @@ void ULSA4b6_DC::coolOnce_minResors()
 */
 void ULSA4b6_DC::decideDiscard3b()
 {
+
     //Compute the discardable size
     list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
     int discardableSize=0;
@@ -1077,6 +1079,7 @@ void ULSA4b6_DC::decideDiscard3b()
     }
     assert(maxInteredName!=-1);
 
+
     targetNode = maxInteredName;
 }
 /*
@@ -1085,6 +1088,10 @@ void ULSA4b6_DC::decideDiscard3b()
  */
 
 void ULSA4b6_DC::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {
+
+
+
+    cout << endl;
     //Choose targetHeadIndex Index//
     targetNode=-1;
     targetHeadIndex=-1;
@@ -1772,12 +1779,48 @@ void ULSA4b6_DC::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 
 void ULSA4b6_DC::calculateMatrics_minResors()//Calculate next performance matircs
 {
-	next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
-	next1st_ms = return1stTotalNcal1stResors_HomoPower();
-	next2nd_Joule = returnTransientJoule();
-	next1st_Joule= power1st*next1st_ms/1000;
-	//:<<"MaxPowerLoad="<<returnMaxPowerLoad()<<" Max="<<powerMax<<endl;
 
+#ifdef OBSERVE
+  vector<double> vecEstimatePower;
+  if (nextEventFlag == 1) {
+    consSol->updateInterference();
+    list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
+    for (int i = 0; i < targetHeadIndex; i++) iterRow++;
+    list<int>::iterator iterCol = iterRow->begin();
+    cout << "---- cluster----" << endl;
+    for (; iterCol != iterRow->end(); iterCol++) {
+      double de = pow(2,indEntropy*(cSystem->vecClusterSize[targetHeadIndex])/bandwidthKhz/cur2nd_ms) - 1;
+      double no = pow(2,indEntropy*(cSystem->vecClusterSize[targetHeadIndex]-1)/bandwidthKhz/cur2nd_ms) - 1;
+      double estimatePower = de * nextNodePower[*iterCol] / no; 
+
+      vecEstimatePower.push_back(estimatePower);
+    }
+  }
+#endif
+
+  next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+  next1st_ms = return1stTotalNcal1stResors_HomoPower();
+  next2nd_Joule = returnTransientJoule();
+  next1st_Joule= power1st*next1st_ms/1000;
+  //:<<"MaxPowerLoad="<<returnMaxPowerLoad()<<" Max="<<powerMax<<endl;
+
+#ifdef OBSERVE
+  if (nextEventFlag == 1) {
+    consSol->updateInterference();
+    list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
+    for (int i = 0; i < targetHeadIndex; i++) iterRow++;
+    list<int>::iterator iterCol = iterRow->begin();
+    cout << "---------- iter ---------" << endl;
+    for (int i = 0; iterCol != iterRow->end(); iterCol++, i++) {
+      double updatedPower = nextNodePower[*iterCol];
+      cout << "vecEstimatePower: " << vecEstimatePower[i] << endl;
+      cout << "Diff: " << (vecEstimatePower[i] - updatedPower)*100.0 /updatedPower<< endl;
+      cout << "Real: " << updatedPower << endl;
+    }
+    cout << endl;
+  }
+
+#endif
 	if (nextEventFlag==1)
 	{
 		nextSupNum = curSupNum + 1;//Serve one more node

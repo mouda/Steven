@@ -98,7 +98,7 @@ public:
 
   //@Set by setSystem();
   double bandwidthKhz;
-  float powerMax;
+  double powerMax;
   double power1st;
   int quantizationBits;
   double dataBits;
