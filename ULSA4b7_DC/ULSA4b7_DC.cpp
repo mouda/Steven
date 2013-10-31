@@ -733,6 +733,14 @@ bool ULSA4b7_DC::setIniStruResourceKmedoids()
   }
   delete consSol; 
   delete matrixComputer;
+  cSystem->vecHeadName.clear();
+  for (int i = 0; i < maxChNum; i++) {
+    for (int j = 0; j < totalNodes; j++) {
+      //cout << cSystem->clusterStru[i][j] << ' ';
+      cSystem->clusterStru[i][j] = false;
+    }
+    //cout << endl;
+  }
 // -------------------------------------------------------------------------- //
 // @Description: confirm initialization of structure
 // @Provides: 
@@ -1070,6 +1078,7 @@ bool ULSA4b7_DC::startCool()
   curJEntropy = curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
   curPayoff=cur1st_ms+cur2nd_ms;
 
+  cout << "curPayoff: " << curPayoff << endl;
   bestAllServeFound=false;
 
   if ( checkBestClusterStructure_DataCentric(0) ) return true;
