@@ -4,13 +4,17 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
+COMM_UTILITY	Makefile	/^COMM_UTILITY= ..\/commonLibrary\/CORRE_MA_OPE.o \\$/;"	m
 CPP	Makefile	/^CPP= g++$/;"	m
-CR	bin/Release/python/genScriptPy_RunCR.py	/^CR=(0.25,0.3,0.35,0.4,0.483);$/;"	v
+DFLAGS	Makefile	/^DFLAGS= -D DEBUG -g$/;"	m
 Gib	ULSA4b7_DC.h	/^  float *Gib; \/\/ channel gain from node i to base station$/;"	m	class:ULSA4b7_DC
 Gij	ULSA4b7_DC.h	/^  float **Gij;\/\/ channel gain from node i to node j$/;"	m	class:ULSA4b7_DC
+INCLUDE	Makefile	/^INCLUDE= -I$(PREFIX)\/armadillo39202\/include\/$/;"	m
 IsolateNodeName	ULSA4b7_DC.h	/^  int  IsolateNodeName;$/;"	m	class:ULSA4b7_DC
 JoiningHeadIndex	ULSA4b7_DC.h	/^  int  JoiningHeadIndex;$/;"	m	class:ULSA4b7_DC
-LIB_PATH	Makefile	/^LIB_PATH= ..\/commonLibrary\/CORRE_MA_OPE.o \\$/;"	m
+LIB_FLAGS	Makefile	/^LIB_FLAGS= -larmadillo -lopenblas -llapack  $/;"	m
+LIB_PATH	Makefile	/^LIB_PATH = -L$(PREFIX)\/armadillo39202\/lib\/ \\$/;"	m
+PREFIX	Makefile	/^PREFIX=\/home\/share$/;"	m
 SA_FIN_TEMP	main.cpp	12;"	d	file:
 SA_INI_TEMP	main.cpp	11;"	d	file:
 ULSA4b7_DC	ULSA4b7_DC.cpp	/^ULSA4b7_DC::ULSA4b7_DC() {};$/;"	f	class:ULSA4b7_DC
@@ -84,20 +88,13 @@ do1sttierPowerControlforTEMP_DataCentric	ULSA4b7_DC.cpp	/^void ULSA4b7_DC::do1st
 do1sttierPowerMaxforBest_DataCentric	ULSA4b7_DC.cpp	/^void ULSA4b7_DC::do1sttierPowerMaxforBest_DataCentric() {$/;"	f	class:ULSA4b7_DC
 end	ULSA4b7_DC.h	/^  clock_t begin, end;$/;"	m	class:ULSA4b7_DC
 estimateIsolate2ndTierGain	ULSA4b7_DC.cpp	/^double ULSA4b7_DC::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){$/;"	f	class:ULSA4b7_DC
-estimateJoin2ndTierCost	ULSA4b7_DC.cpp	/^double ULSA4b7_DC::estimateJoin2ndTierCost(int JoiningHeadIndex, int targetIndex){$/;"	f	class:ULSA4b7_DC
-fName	bin/Release/python/genScriptPy_RunCR.py	/^  fName='RunByCR4b2_'+str(x)+'.bat';$/;"	v
-fName	bin/Release/python/genScriptPy_RunFR.py	/^  fName='RunByFR4b2_'+str(0.55+0.1*x)+'.bat';$/;"	v
-fName	bin/Release/python/genScriptPy_RunHN.py	/^  fName='RunByHN4b2_'+str(3+2*(x-1))+'.bat';$/;"	v
-fName	bin/Release/python/genScriptPy_RunRadius.py	/^  fName='RunByRadius4b2_'+str(250+100*x)+'.bat';$/;"	v
+estimateJoin2ndTierCost	ULSA4b7_DC.cpp	/^double ULSA4b7_DC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){$/;"	f	class:ULSA4b7_DC
 fidelityRatio	ULSA4b7_DC.h	/^  double fidelityRatio;\/\/ Temporary set by here 2013\/02\/21$/;"	m	class:ULSA4b7_DC
 flagAnsFound	ULSA4b7_DC.h	/^  bool flagAnsFound;$/;"	m	class:ULSA4b7_DC
-fo	bin/Release/python/genScriptPy_RunCR.py	/^  fo = open(fName,'a+');$/;"	v
-fo	bin/Release/python/genScriptPy_RunFR.py	/^  fo = open(fName,'a+');$/;"	v
-fo	bin/Release/python/genScriptPy_RunHN.py	/^  fo = open(fName,'a+');$/;"	v
-fo	bin/Release/python/genScriptPy_RunRadius.py	/^  fo = open(fName,'a+');$/;"	v
 headCandidatesNum	ULSA4b7_DC.h	/^  int headCandidatesNum;$/;"	m	class:ULSA4b7_DC
 indEntropy	ULSA4b7_DC.h	/^  double indEntropy;$/;"	m	class:ULSA4b7_DC
 iniDone	ULSA4b7_DC.h	/^  bool iniDone;$/;"	m	class:ULSA4b7_DC
+isDetailOutputOn	ULSA4b7_DC.h	/^  int isDetailOutputOn;$/;"	m	class:ULSA4b7_DC
 isolateHeadSA	ULSA4b7_DC.cpp	/^void ULSA4b7_DC::isolateHeadSA(int isoName,int IsolateCluI, int targetH){$/;"	f	class:ULSA4b7_DC
 isolatedHeadIndex	ULSA4b7_DC.h	/^  int  isolatedHeadIndex;$/;"	m	class:ULSA4b7_DC
 join_fromHeadSA	ULSA4b7_DC.cpp	/^void ULSA4b7_DC::join_fromHeadSA(int JoiningHeadIndex,int targetH){$/;"	f	class:ULSA4b7_DC
@@ -137,6 +134,7 @@ powerLastDiscard	ULSA4b7_DC.h	/^  double powerLastDiscard;$/;"	m	class:ULSA4b7_D
 powerMax	ULSA4b7_DC.h	/^  float powerMax;$/;"	m	class:ULSA4b7_DC
 printClusterList	ULSA4b7_DC.cpp	/^void printClusterList(ULCS1b *cSystem)$/;"	f
 printVecMatrix	ULSA4b7_DC.cpp	/^void printVecMatrix(vector <vector<int> >& ma)$/;"	f
+print_addresses	main.cpp	/^int print_addresses(const int domain, string& ipAddr)$/;"	f
 ptrHeadLastDiscard	ULSA4b7_DC.h	/^  int  *ptrHeadLastDiscard;$/;"	m	class:ULSA4b7_DC
 quantizationBits	ULSA4b7_DC.h	/^  int quantizationBits;$/;"	m	class:ULSA4b7_DC
 radius	ULSA4b7_DC.h	/^  double radius;$/;"	m	class:ULSA4b7_DC
@@ -154,11 +152,14 @@ rotateHeadSA	ULSA4b7_DC.cpp	/^void ULSA4b7_DC::rotateHeadSA(int inputHeadIndex, 
 rotatedHeadNameLast	ULSA4b7_DC.h	/^  int rotatedHeadNameLast;$/;"	m	class:ULSA4b7_DC
 roundBest	ULSA4b7_DC.h	/^  int  roundBest;;$/;"	m	class:ULSA4b7_DC
 setIniHeadLimited	ULSA4b7_DC.cpp	/^bool ULSA4b7_DC::setIniHeadLimited()$/;"	f	class:ULSA4b7_DC
+setIniStruDistanceKmedoids	ULSA4b7_DC.cpp	/^bool ULSA4b7_DC::setIniStruDistanceKmedoids() $/;"	f	class:ULSA4b7_DC
 setIniStruKmeans	ULSA4b7_DC.cpp	/^bool ULSA4b7_DC::setIniStruKmeans()$/;"	f	class:ULSA4b7_DC
+setIniStruResourceKmedoids	ULSA4b7_DC.cpp	/^bool ULSA4b7_DC::setIniStruResourceKmedoids()$/;"	f	class:ULSA4b7_DC
 setInitialStucture	ULSA4b7_DC.cpp	/^bool ULSA4b7_DC::setInitialStucture(char* iniFlag)$/;"	f	class:ULSA4b7_DC
 setSystem	ULSA4b7_DC.cpp	/^bool ULSA4b7_DC::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)$/;"	f	class:ULSA4b7_DC
 sortIndex	ULSA4b7_DC.h	/^  int sortIndex;$/;"	m	class:ULSA4b7_DC
 startCool	ULSA4b7_DC.cpp	/^bool ULSA4b7_DC::startCool()$/;"	f	class:ULSA4b7_DC
+strIpAddr	ULSA4b7_DC.h	/^  string strIpAddr; $/;"	m	class:ULSA4b7_DC
 sysComputing	ULSA4b7_DC.h	/^  SimSystem *sysComputing;$/;"	m	class:ULSA4b7_DC
 targetHeadIndex	ULSA4b7_DC.h	/^  int  targetHeadIndex;$/;"	m	class:ULSA4b7_DC
 targetNode	ULSA4b7_DC.h	/^  int  targetNode;$/;"	m	class:ULSA4b7_DC

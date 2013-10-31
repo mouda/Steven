@@ -578,12 +578,16 @@ bool ULSA4b7_DC::setIniStruResourceKmedoids()
   float tempHeadY [maxChNum];
   int tempHeadList [maxChNum];
   vector <vector <int> > tempGroup;
+  vector <int> nodeHeadIdx(totalNodes);
   bool convergedFlag = false;
   bool sameHeadFlag = true;
+  bool firstTimeFlag = true;
   indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
-  cSystem->listCluMember->resize(maxChNum);
+  cSystem->listCluMember->resize(maxChNum); // important outscope variable
+  cSystem->vecHeadName.resize(maxChNum);   // important outscope variable
   consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
       nextNodePower,cSystem->listCluMember );
+  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
   double checkResource = 0.0;
   while(sameHeadFlag)
   {
@@ -604,6 +608,7 @@ bool ULSA4b7_DC::setIniStruResourceKmedoids()
       tempHeadX[i] = nodes[i+retryTimes].locX;
       tempHeadY[i] = nodes[i+retryTimes].locY;
       tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
+      cSystem->vecHeadName[i] = nodes[i+retryTimes].nodeIndex;
     }
     while(!convergedFlag) // This loop want to find a new resource-based K-medoids coordinate
     {
@@ -611,14 +616,15 @@ bool ULSA4b7_DC::setIniStruResourceKmedoids()
       list<list<int> >::iterator iterClear = cSystem->listCluMember->begin();
       for (; iterClear != cSystem->listCluMember->end(); iterClear++) iterClear->clear(); 
 
-      for (int i=0; i<totalNodes; i++)
-      {
-        float tempDistanceTier_1 = 0.0;
-        float tempDistanceTier_2 = 0.0;
-        float closetDistance = numeric_limits<float>::max();
-        int closetHeadIndex = -1;
-        list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
-        for (int j = 0; j < maxChNum; j++) {
+      if (firstTimeFlag == true) {
+        for (int i=0; i<totalNodes; i++)
+        {
+          float tempDistanceTier_1 = 0.0;
+          float tempDistanceTier_2 = 0.0;
+          float closetDistance = numeric_limits<float>::max();
+          int closetHeadIndex = -1;
+          list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
+          for (int j = 0; j < maxChNum; j++) {
             iterRow++;
             tempDistanceTier_1 = 
               (tempHeadX[j] - nodes[i].locX) * 
@@ -630,13 +636,45 @@ bool ULSA4b7_DC::setIniStruResourceKmedoids()
               closetDistance = tempDistanceTier_1 + tempDistanceTier_2;
               closetHeadIndex = j;
             }
+          }
+          list<list<int> >::iterator iterCloset = cSystem->listCluMember->begin();
+          for (int k = 0; k < closetHeadIndex; k++) iterCloset++;
+          //cout <<"closetHeadIndex: "  << closetHeadIndex << ' ' << endl;
+          tempGroup[closetHeadIndex].push_back(i);
+          (*iterCloset).push_back(i);
+          nodeHeadIdx[i] = closetHeadIndex; 
+          cSystem->clusterStru[closetHeadIndex][i] = true;
         }
-        list<list<int> >::iterator iterCloset = cSystem->listCluMember->begin();
-        for (int k = 0; k < closetHeadIndex; k++) iterCloset++;
-        //cout <<"closetHeadIndex: "  << closetHeadIndex << ' ' << endl;
-        tempGroup[closetHeadIndex].push_back(i);
-        (*iterCloset).push_back(i);
+        //firstTimeFlag = false;
       }
+      else {
+        for (int i = 0; i < totalNodes; i++) {
+          double temp1st_ms = 0;
+          double temp2nd_ms = 0;
+          double temp2tiers_ms = 0;
+          double test2tiers_ms = DBL_MAX;
+          int minHeadName = 0;
+          discardMemberSA(nodeHeadIdx[i],i);
+          for (int j = 0; j < maxChNum; j++) {
+            addMemberSA(j,i);
+            temp2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+            temp1st_ms = return1stTotalNcal1stResors_HomoPower();
+            temp2tiers_ms = temp1st_ms + temp2nd_ms;
+            if(temp2tiers_ms < test2tiers_ms)
+            {
+              test2tiers_ms = temp2tiers_ms;
+              minHeadName = i;
+            }
+          }
+        }
+
+      }
+//      for (int i = 0; i < maxChNum; i++) {
+//        for (int j = 0; j < totalNodes; j++) {
+//          cout << cSystem->clusterStru[i][j] << ' ';
+//        }
+//        cout << endl;
+//      }
       convergedFlag = true;
       //find the k-medoids coordinate of each cluster
       list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
@@ -694,6 +732,7 @@ bool ULSA4b7_DC::setIniStruResourceKmedoids()
     retryTimes++;
   }
   delete consSol; 
+  delete matrixComputer;
 // -------------------------------------------------------------------------- //
 // @Description: confirm initialization of structure
 // @Provides: 
