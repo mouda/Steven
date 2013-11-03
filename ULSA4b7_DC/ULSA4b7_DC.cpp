@@ -518,16 +518,16 @@ bool ULSA4b7_DC::setIniStruDistanceKmedoids()
         arma::vec vecDistance = arma::zeros<arma::vec>(tempGroup[i].size());
         for(unsigned int j=0; j<tempGroup[i].size(); j++)
         {
-          float tempDistance = 0;
+          float tempDistance = 0.0;
           for (int k = 0; k < tempGroup[i].size(); k++) {
             if ( j == k ) continue;
-            tempDistance = 
+            tempDistance += 
               sqrt ( (nodes[tempGroup[i][j]].locX - nodes[tempGroup[i][k]].locX ) * 
                   (nodes[tempGroup[i][j]].locX - nodes[tempGroup[i][k]].locX) + 
                   (nodes[tempGroup[i][j]].locY - nodes[tempGroup[i][k]].locY) * 
                   (nodes[tempGroup[i][j]].locY - nodes[tempGroup[i][k]].locY) ) ;
           }
-          vecDistance.at(j) += tempDistance; 
+          vecDistance.at(j) = tempDistance; 
         }
         arma::uword idx;
         vecDistance.min(idx);
