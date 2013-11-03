@@ -255,6 +255,7 @@ bool ULSA4b7_DC::setInitialStucture(char* iniFlag)
     //--------------------------------------------------------------//
     //Check the initial constraint and drop node form the furtherest//
     //--------------------------------------------------------------//
+    curSupNum = totalNodes;
     iniDone = true;
     return normalFlag;
 }
@@ -504,7 +505,8 @@ bool ULSA4b7_DC::setIniStruDistanceKmedoids()
       convergedFlag = true;
       //find the k-means coordinate of each cluster
       for (int i = 0; i < tempGroup.size(); i++) {
-        for (int j = 0; j < tempGroup[j].size(); j++) {
+        cout << "cluster: " << i <<"-th ";
+        for (int j = 0; j < tempGroup[i].size(); j++) {
           cout << tempGroup[i][j] << ' ';
         }
         cout << endl;
@@ -519,29 +521,28 @@ bool ULSA4b7_DC::setIniStruDistanceKmedoids()
           float tempDistance = 0;
           for (int k = 0; k < tempGroup[i].size(); k++) {
             if ( j == k ) continue;
-            tempDistance = (nodes[tempGroup[i][j]].locX - nodes[tempGroup[i][k]].locX ) * 
-              (nodes[tempGroup[i][j]].locX - nodes[tempGroup[i][k]].locX) 
-              + (nodes[tempGroup[i][j]].locY - nodes[tempGroup[i][k]].locY)*(nodes[tempGroup[i][j]].locY - nodes[tempGroup[i][k]].locY);
+            tempDistance = 
+              sqrt ( (nodes[tempGroup[i][j]].locX - nodes[tempGroup[i][k]].locX ) * 
+                  (nodes[tempGroup[i][j]].locX - nodes[tempGroup[i][k]].locX) + 
+                  (nodes[tempGroup[i][j]].locY - nodes[tempGroup[i][k]].locY) * 
+                  (nodes[tempGroup[i][j]].locY - nodes[tempGroup[i][k]].locY) ) ;
           }
           vecDistance.at(j) += tempDistance; 
         }
         arma::uword idx;
-        cout << "cluster: " << i << endl;
-        cout << " min distance: " << vecDistance.min(idx) << endl;
-        cout << " at: " << idx <<endl;
+        vecDistance.min(idx);
         newHx = nodes[tempGroup[i][idx]].locX;
         newHy = nodes[tempGroup[i][idx]].locY;
-        cout << "newHx: " << newHx << " newHy: " << newHy <<endl;
-        cout << "-------end00---------" << endl;
         if ( (abs(newHx-tempHeadX[i]) > 0.01) || (abs(newHy-tempHeadY[i])>0.01) ) convergedFlag = false; // checkcheck if the original head close enough
         //find the new approriate location of the head
         tempHeadX[i] = newHx;
         tempHeadY[i] = newHy;
+        tempHeadList[i] = tempGroup[i][idx];
       }
     }
     // leave this loop if 'converged = 1;'
-    for (int i=0; i<maxChNum; i++) tempHeadList[i] = \
-      tempGroup[i][returnClosetNodeIndexInGroup(tempHeadX[i], tempHeadY[i], tempGroup[i])];
+//    for (int i=0; i<maxChNum; i++) tempHeadList[i] = \
+//      tempGroup[i][returnClosetNodeIndexInGroup(tempHeadX[i], tempHeadY[i], tempGroup[i])];
     //check there is same head exist
     for (int i=0; i<maxChNum; i++)
       for (int j=i+1; j<maxChNum; j++)if (tempHeadList[i] == tempHeadList[j]) sameHeadFlag = true;
