@@ -3,7 +3,7 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.8	//
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 COMM_UTILITY	Makefile	/^COMM_UTILITY= ..\/commonLibrary\/CORRE_MA_OPE.o \\$/;"	m
 CPP	Makefile	/^CPP= g++$/;"	m
 DFLAGS	Makefile	/^DFLAGS= -D DEBUG -g$/;"	m
@@ -14,7 +14,7 @@ IsolateNodeName	ULSA4b7_NOGUIDE.h	/^  int  IsolateNodeName;$/;"	m	class:ULSA4b7_
 JoiningHeadIndex	ULSA4b7_NOGUIDE.h	/^  int  JoiningHeadIndex;$/;"	m	class:ULSA4b7_NOGUIDE
 LIB_FLAGS	Makefile	/^LIB_FLAGS= -larmadillo -lopenblas -llapack  $/;"	m
 LIB_PATH	Makefile	/^LIB_PATH = -L$(PREFIX)\/armadillo39202\/lib\/ \\$/;"	m
-PREFIX	Makefile	/^PREFIX=\/home\/share$/;"	m
+PREFIX	Makefile	/^PREFIX=\/opt$/;"	m
 SA_FIN_TEMP	main.cpp	12;"	d	file:
 SA_INI_TEMP	main.cpp	11;"	d	file:
 ULSA4b7_NOGUIDE	ULSA4b7_NOGUIDE.cpp	/^ULSA4b7_NOGUIDE::ULSA4b7_NOGUIDE() {};$/;"	f	class:ULSA4b7_NOGUIDE
@@ -77,6 +77,7 @@ decideAdd3i_DC_HeadDetMemRan	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideA
 decideAddRandom	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideAddRandom() {$/;"	f	class:ULSA4b7_NOGUIDE
 decideDiscard3b	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideDiscard3b()$/;"	f	class:ULSA4b7_NOGUIDE
 decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {$/;"	f	class:ULSA4b7_NOGUIDE
+decideDiscardRandom	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideDiscardRandom() $/;"	f	class:ULSA4b7_NOGUIDE
 decideHeadJoining4b	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideHeadJoining4b(){$/;"	f	class:ULSA4b7_NOGUIDE
 decideHeadRotate2i_DC_HeadRanMemDet	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideHeadRotate2i_DC_HeadRanMemDet()$/;"	f	class:ULSA4b7_NOGUIDE
 decideIsolate4b	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideIsolate4b(){$/;"	f	class:ULSA4b7_NOGUIDE

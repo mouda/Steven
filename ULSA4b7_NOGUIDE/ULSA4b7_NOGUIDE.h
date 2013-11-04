@@ -253,6 +253,7 @@ public:
   void decideAdd3i_DC_HeadDetMemRan();
   void decideAddRandom();
   void decideDiscard3b();
+  void decideDiscardRandom();
   void decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio();
   void decideHeadRotate1();
   void decideHeadRotate2f();

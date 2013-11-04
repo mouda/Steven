@@ -504,15 +504,6 @@ bool ULSA4b7_NOGUIDE::setIniStruDistanceKmedoids()
       }
       convergedFlag = true;
       //find the k-means coordinate of each cluster
-#ifdef DEBUG
-      for (int i = 0; i < tempGroup.size(); i++) {
-        cout << "cluster: " << i <<"-th ";
-        for (int j = 0; j < tempGroup[i].size(); j++) {
-          cout << tempGroup[i][j] << ' ';
-        }
-        cout << endl;
-      }
-#endif
       for(int i=0; i<maxChNum; i++)
       {
         float newHx = 0;
@@ -1461,8 +1452,9 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
     if (cSystem->listUnSupport->size()==0) cout<<"Error, it should haven't come in here with empty addlist and add."<<endl;
     else
     {
-      decideAddRandom();
+      //decideAddRandom(); //this will be too bad
       decideAdd3i_DC_HeadDetMemRan();
+//      cout << curSupNum << ' ' << targetHeadIndex << ' ' << targetNode << endl;
       if(targetHeadIndex!=-1&&targetNode!=-1){
         //cout<<"add "<<targetNode<<" to "<<cSystem->vecHeadName[targetHeadIndex]<<endl;
         addMemberSA(targetHeadIndex,targetNode);
@@ -1473,7 +1465,9 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
   }
   else if (nextEventFlag ==2)
   {
-    decideDiscard3b();
+    decideDiscardRandom();
+    //decideDiscard3b();
+    cout <<curSupNum <<' '<< targetHeadIndex << ' ' << targetNode << endl;
     discardMemberSA(targetHeadIndex,targetNode);
     nextChNum=curChNum;
 
@@ -1556,8 +1550,17 @@ void ULSA4b7_NOGUIDE::decideAdd3i_DC_HeadDetMemRan() {
 
 void ULSA4b7_NOGUIDE::decideAddRandom() {
     targetHeadIndex=-1;
-    targetNode=-1;
-    cout << rand()%maxChNum << endl;
+    targetNode =-1;
+    targetHeadIndex = rand()%maxChNum;
+    int targetUnSupportIdx = 0;
+
+    if (cSystem->listUnSupport->size() != 0) {
+      targetUnSupportIdx = rand() % cSystem->listUnSupport->size();
+    }
+
+    list<int>::iterator iter = cSystem->listUnSupport->begin();
+    for (int i = 0; i < targetUnSupportIdx; ++i ) ++iter;
+    targetNode = *iter;
 }
 /*
     targetHead: (Randomly) Choose a Head uniformly
@@ -1689,6 +1692,33 @@ void ULSA4b7_NOGUIDE::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {
     cout<<"Information lose="<<ary_extraInfromation[tmpFinalNodeindex]<<" Reduce PowerInterference="<<ary_InterfHazard[tmpFinalNodeindex]<<endl;
     //-----------------------//
 
+}
+
+void ULSA4b7_NOGUIDE::decideDiscardRandom() 
+{
+  targetHeadIndex = -1;
+  targetNode = -1;
+  bool isHead = true;
+  bool isSingleNodeCluster = true;
+  for ( int idx = 0; idx < maxChNum; idx++) {
+    /* code */
+    if (cSystem->vecClusterSize[idx] != 1 && cSystem->vecHeadName[idx] != -1) {
+      targetHeadIndex = idx;
+    }
+  }
+  if (targetHeadIndex == -1 ) return; 
+
+  list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
+  for (int i = 0; i < targetHeadIndex; ++i ) ++iterRow;
+  while (isHead ) {
+    int targetNodeListIdx = rand() % iterRow->size();
+    list<int>::iterator iterCol = iterRow->begin(); 
+    for (int j = 0; j < targetNodeListIdx; ++j) ++iterCol;
+    if (*iterCol != cSystem->vecHeadName[targetHeadIndex] ) {
+      targetNode = *iterCol;
+      isHead = false;
+    }
+  }
 }
 void ULSA4b7_NOGUIDE::decideHeadRotate2i_DC_HeadRanMemDet()
 {
@@ -1945,7 +1975,7 @@ double ULSA4b7_NOGUIDE::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
               cerr << "Current CH idx: " << i << endl;
               cerr << "Current CH name: " << cSystem->vecHeadName[i] << endl;
             }
-            assert(ratio != numeric_limits<double>::infinity()); 
+            //assert(ratio != numeric_limits<double>::infinity()); 
 #endif
 
             if( ratio > testMaxRatio ) testMaxRatio = ratio;

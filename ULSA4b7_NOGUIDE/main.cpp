@@ -106,7 +106,6 @@ int main(int argc, char* argv[])
   string ipAddr;
   if (!print_addresses(domains[0], ipAddr))
     return 1;
-  cout << ipAddr << endl;
 
   double alpha =pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
 
