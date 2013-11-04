@@ -1404,115 +1404,113 @@ void ULSA4b7_DC::do1sttierPowerControlforCur_DataCentric() {
 */
 void ULSA4b7_DC::coolOnce_minResors()
 {
-    int probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
-    int probDiscard = ((curSupNum<(maxChNum+1)) ?0:30000);
-    bool checkRotateble=false;//check if there are rotatableSet;
-    for(int i=0; i<maxChNum; i++) {
-        //cout<<aryFlagHRDone[i]<<" "<<cSystem->vecClusterSize[i]<<endl;
-        if( aryFlagHRDone[i] == false && cSystem->vecClusterSize[i] > 1 )
-          checkRotateble=true;
-    }
-    int probHeadRotate = (((curSupNum>2*maxChNum)&&checkRotateble) ?10000:0);//Don't do head rotate if there are only a few nodes
+  int probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
+  int probDiscard = ((curSupNum<(maxChNum+1)) ?0:30000);
+  bool checkRotateble=false;//check if there are rotatableSet;
+  for(int i=0; i<maxChNum; i++) {
+    //cout<<aryFlagHRDone[i]<<" "<<cSystem->vecClusterSize[i]<<endl;
+    if( aryFlagHRDone[i] == false && cSystem->vecClusterSize[i] > 1 )
+      checkRotateble=true;
+  }
+  int probHeadRotate = (((curSupNum>2*maxChNum)&&checkRotateble) ?10000:0);//Don't do head rotate if there are only a few nodes
 
 
 
-    int tmpJoinCan=0;
-    bool chkLessCluster=cSystem->returnIfClusterSmall(thresholdd,tmpJoinCan);
+  int tmpJoinCan=0;
+  bool chkLessCluster=cSystem->returnIfClusterSmall(thresholdd,tmpJoinCan);
 
-    //int probJoin = (chkLessCluster&&curJEntropy>(fidelityRatio*wholeSystemEntopy))?tmpJoinCan*50:0;
-    int probJoin = (chkLessCluster)?tmpJoinCan*30:0;
+  //int probJoin = (chkLessCluster&&curJEntropy>(fidelityRatio*wholeSystemEntopy))?tmpJoinCan*50:0;
+  int probJoin = (chkLessCluster)?tmpJoinCan*30:0;
 
-    //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
+  //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
 
-    int probIsoltae=((curChNum<maxChNum)?30:0);
-    //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
-
-
-    int sumProb = probAdd + probDiscard + probHeadRotate+probJoin+probIsoltae;
-    int eventCursor= (int)((double)rand() / ((double)RAND_MAX + 1) * sumProb);
-    nextEventFlag=-1;// this flag tell add or discard or Headrotate
+  int probIsoltae=((curChNum<maxChNum)?30:0);
+  //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
 
 
+  int sumProb = probAdd + probDiscard + probHeadRotate+probJoin+probIsoltae;
+  int eventCursor= (int)((double)rand() / ((double)RAND_MAX + 1) * sumProb);
+  nextEventFlag=-1;// this flag tell add or discard or Headrotate
 
 
-    //-------------------------------------//
-    //Decide event Flag                    //
-    //-------------------------------------//
 
-    if (eventCursor<probAdd) nextEventFlag = 1;
-    else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
-    else if (eventCursor<(probAdd+probDiscard+probHeadRotate)) nextEventFlag=3;
-    else if (eventCursor<(probAdd+probDiscard+probHeadRotate+probJoin)) nextEventFlag=4;
-    else if (eventCursor<sumProb)nextEventFlag=5;
+
+  //-------------------------------------//
+  //Decide event Flag                    //
+  //-------------------------------------//
+
+  if (eventCursor<probAdd) nextEventFlag = 1;
+  else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
+  else if (eventCursor<(probAdd+probDiscard+probHeadRotate)) nextEventFlag=3;
+  else if (eventCursor<(probAdd+probDiscard+probHeadRotate+probJoin)) nextEventFlag=4;
+  else if (eventCursor<sumProb)nextEventFlag=5;
+  else
+  {
+    cout<<"Failure in the random step"<<endl;
+    cout<<sumProb<<endl;
+    cout<<eventCursor<<endl;
+  }
+  //-------------------------------------//
+  // Start the movement                  //
+  //-------------------------------------//  if (nextEventFlag==1)//Add
+  if (nextEventFlag==1)
+  {
+    if (cSystem->listUnSupport->size()==0) cout<<"Error, it should haven't come in here with empty addlist and add."<<endl;
     else
     {
-        cout<<"Failure in the random step"<<endl;
-        cout<<sumProb<<endl;
-        cout<<eventCursor<<endl;
+      decideAdd3i_DC_HeadDetMemRan();
+      if(targetHeadIndex!=-1&&targetNode!=-1){
+        //cout<<"add "<<targetNode<<" to "<<cSystem->vecHeadName[targetHeadIndex]<<endl;
+        addMemberSA(targetHeadIndex,targetNode);
+      }
     }
-    //-------------------------------------//
-    // Start the movement                  //
-    //-------------------------------------//  if (nextEventFlag==1)//Add
-    if (nextEventFlag==1)
-    {
-       if (cSystem->listUnSupport->size()==0) cout<<"Error, it should haven't come in here with empty addlist and add."<<endl;
-        else
-        {
-            decideAdd3i_DC_HeadDetMemRan();
-            if(targetHeadIndex!=-1&&targetNode!=-1){
-             //cout<<"add "<<targetNode<<" to "<<cSystem->vecHeadName[targetHeadIndex]<<endl;
-             addMemberSA(targetHeadIndex,targetNode);
-            }
-        }
-        nextChNum=curChNum;
+    nextChNum=curChNum;
 
+  }
+  else if (nextEventFlag ==2)
+  {
+    decideDiscard3b();
+    discardMemberSA(targetHeadIndex,targetNode);
+    nextChNum=curChNum;
+
+    //cout<<"discard "<<targetNode+1<<" from "<<cSystem->vecHeadName[targetHeadIndex]+1<<endl;
+  }
+  else if (nextEventFlag ==3)
+  {
+    decideHeadRotate2i_DC_HeadRanMemDet();
+    //cout<<"HR "<<targetNode+1<<" to Replace "<<cSystem->vecHeadName[targetHeadIndex]+1<<endl;
+    rotateHeadSA(targetHeadIndex,targetNode);
+    nextJEntropy = curJEntropy;
+    nextSupNum = curSupNum;
+    nextChNum=curChNum;
+
+  }
+  else if (nextEventFlag==4){
+    JoiningHeadIndex=-1;
+    decideHeadJoining4b();
+    if (JoiningHeadIndex==-1 || targetHeadIndex==-1) {
+      nextJEntropy = curJEntropy; // entropy unchanged
+      nextSupNum = curSupNum; //support number unchanged
+      return;
     }
-    else if (nextEventFlag ==2)
-    {
-        decideDiscard3b();
-        discardMemberSA(targetHeadIndex,targetNode);
-        nextChNum=curChNum;
-
-        //cout<<"discard "<<targetNode+1<<" from "<<cSystem->vecHeadName[targetHeadIndex]+1<<endl;
-    }
-    else if (nextEventFlag ==3)
-    {
-        decideHeadRotate2i_DC_HeadRanMemDet();
-        //cout<<"HR "<<targetNode+1<<" to Replace "<<cSystem->vecHeadName[targetHeadIndex]+1<<endl;
-        rotateHeadSA(targetHeadIndex,targetNode);
-        nextJEntropy = curJEntropy;
-        nextSupNum = curSupNum;
-        nextChNum=curChNum;
-
-    }
-    else if (nextEventFlag==4){
-        JoiningHeadIndex=-1;
-        decideHeadJoining4b();
-        if (JoiningHeadIndex==-1 || targetHeadIndex==-1) {
-          nextJEntropy = curJEntropy; // entropy unchanged
-          nextSupNum = curSupNum; //support number unchanged
-          return;
-        }
-        join_fromHeadSA(JoiningHeadIndex,targetHeadIndex);
-        nextJEntropy = curJEntropy;
-        nextSupNum = curSupNum;
-   }
-   else if (nextEventFlag==5){
-        isolatedHeadIndex=-1;
-        IsolateNodeName=-1;
-        decideIsolate4b();
-        isolateHeadSA(IsolateNodeName,isolatedHeadIndex,targetHeadIndex);
-        nextJEntropy = curJEntropy;
-        nextSupNum = curSupNum;
-   }
-    else
-    {
-        cout<<"Error. The random Neighbor event "<<nextEventFlag<<" choose is wrong"<<endl;
-        cout<<"CursupNum "<<curSupNum<<" maxChNUm "<<maxChNum<<endl;
-        cout<<"SumProb "<<sumProb<<endl;
-
-
-    }
+    join_fromHeadSA(JoiningHeadIndex,targetHeadIndex);
+    nextJEntropy = curJEntropy;
+    nextSupNum = curSupNum;
+  }
+  else if (nextEventFlag==5){
+    isolatedHeadIndex=-1;
+    IsolateNodeName=-1;
+    decideIsolate4b();
+    isolateHeadSA(IsolateNodeName,isolatedHeadIndex,targetHeadIndex);
+    nextJEntropy = curJEntropy;
+    nextSupNum = curSupNum;
+  }
+  else
+  {
+    cout<<"Error. The random Neighbor event "<<nextEventFlag<<" choose is wrong"<<endl;
+    cout<<"CursupNum "<<curSupNum<<" maxChNUm "<<maxChNum<<endl;
+    cout<<"SumProb "<<sumProb<<endl;
+  }
 }
 
 /*
