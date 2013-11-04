@@ -1,7 +1,7 @@
 clear all; close all;
 
 fJoin = ...
-    dlmread('../runSimulation/runTest/operatorTest/ULSA4b_EstimateJoinGainHN25.txt');
+    dlmread('../runSimulation/runTest/operatorTest/ULSA4b_EstimateJoinGainHN19.txt');
 
 fIsolate = ...
     dlmread('../runSimulation/runTest/operatorTest/ULSA4b_EstimateIsolateGainHN25.txt');
@@ -21,11 +21,11 @@ for i = 1:size(fJoin,1)
 end
 %idxs = find(vecJoinEstiGain > -500);
 figure;
-scatter(vecJoinEstiGain,vecJoinRealGain);
+scatter(vecJoinEstiGain,vecJoinRealGain,'*');
 title('Joining Operation');
 xlabel('Estimated Saved Time (ms)');
 ylabel('Real Saved Time (ms)');
-
+%axis([-3 3 -4 1 ])
 
 grid on;
 

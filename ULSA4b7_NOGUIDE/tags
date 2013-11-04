@@ -1,0 +1,196 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+COMM_UTILITY	Makefile	/^COMM_UTILITY= ..\/commonLibrary\/CORRE_MA_OPE.o \\$/;"	m
+CPP	Makefile	/^CPP= g++$/;"	m
+DFLAGS	Makefile	/^DFLAGS= -D DEBUG -g$/;"	m
+Gib	ULSA4b7_NOGUIDE.h	/^  float *Gib; \/\/ channel gain from node i to base station$/;"	m	class:ULSA4b7_NOGUIDE
+Gij	ULSA4b7_NOGUIDE.h	/^  float **Gij;\/\/ channel gain from node i to node j$/;"	m	class:ULSA4b7_NOGUIDE
+INCLUDE	Makefile	/^INCLUDE= -I$(PREFIX)\/armadillo39202\/include\/$/;"	m
+IsolateNodeName	ULSA4b7_NOGUIDE.h	/^  int  IsolateNodeName;$/;"	m	class:ULSA4b7_NOGUIDE
+JoiningHeadIndex	ULSA4b7_NOGUIDE.h	/^  int  JoiningHeadIndex;$/;"	m	class:ULSA4b7_NOGUIDE
+LIB_FLAGS	Makefile	/^LIB_FLAGS= -larmadillo -lopenblas -llapack  $/;"	m
+LIB_PATH	Makefile	/^LIB_PATH = -L$(PREFIX)\/armadillo39202\/lib\/ \\$/;"	m
+PREFIX	Makefile	/^PREFIX=\/home\/share$/;"	m
+SA_FIN_TEMP	main.cpp	12;"	d	file:
+SA_INI_TEMP	main.cpp	11;"	d	file:
+ULSA4b7_NOGUIDE	ULSA4b7_NOGUIDE.cpp	/^ULSA4b7_NOGUIDE::ULSA4b7_NOGUIDE() {};$/;"	f	class:ULSA4b7_NOGUIDE
+ULSA4b7_NOGUIDE	ULSA4b7_NOGUIDE.cpp	/^ULSA4b7_NOGUIDE::ULSA4b7_NOGUIDE(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \\$/;"	f	class:ULSA4b7_NOGUIDE
+ULSA4b7_NOGUIDE	ULSA4b7_NOGUIDE.h	/^class ULSA4b7_NOGUIDE :public SABASE$/;"	c
+ULSA4b7_NOGUIDE_H	ULSA4b7_NOGUIDE.h	17;"	d
+addMemberSA	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::addMemberSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b7_NOGUIDE
+addMemberSAIni	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::addMemberSAIni(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b7_NOGUIDE
+aryFlagHRDone	ULSA4b7_NOGUIDE.h	/^  bool *aryFlagHRDone; \/\/If it is true means Head Rotate have been done in this structure, starrt from ULSA4b7_NOGUIDE$/;"	m	class:ULSA4b7_NOGUIDE
+bandwidthKhz	ULSA4b7_NOGUIDE.h	/^  double bandwidthKhz;$/;"	m	class:ULSA4b7_NOGUIDE
+begin	ULSA4b7_NOGUIDE.h	/^  clock_t begin, end;$/;"	m	class:ULSA4b7_NOGUIDE
+best1stTierTraffic	ULSA4b7_NOGUIDE.h	/^  double best1stTierTraffic;$/;"	m	class:ULSA4b7_NOGUIDE
+best1st_Joule	ULSA4b7_NOGUIDE.h	/^  double best1st_Joule;$/;"	m	class:ULSA4b7_NOGUIDE
+best1st_ms	ULSA4b7_NOGUIDE.h	/^  double best1st_ms;$/;"	m	class:ULSA4b7_NOGUIDE
+best2ndTierTraffic	ULSA4b7_NOGUIDE.h	/^  double best2ndTierTraffic;$/;"	m	class:ULSA4b7_NOGUIDE
+best2nd_Joule	ULSA4b7_NOGUIDE.h	/^  double best2nd_Joule;$/;"	m	class:ULSA4b7_NOGUIDE
+best2nd_ms	ULSA4b7_NOGUIDE.h	/^  double best2nd_ms;$/;"	m	class:ULSA4b7_NOGUIDE
+bestAllServeFound	ULSA4b7_NOGUIDE.h	/^  bool   bestAllServeFound;$/;"	m	class:ULSA4b7_NOGUIDE
+bestAllSupStru	ULSA4b7_NOGUIDE.h	/^  bool *bestAllSupStru;$/;"	m	class:ULSA4b7_NOGUIDE
+bestAvgInterference	ULSA4b7_NOGUIDE.h	/^  double bestAvgInterference;$/;"	m	class:ULSA4b7_NOGUIDE
+bestAvgPowerOFAllNodes	ULSA4b7_NOGUIDE.h	/^  double bestAvgPowerOFAllNodes;$/;"	m	class:ULSA4b7_NOGUIDE
+bestChNum	ULSA4b7_NOGUIDE.h	/^  int    bestChNum;$/;"	m	class:ULSA4b7_NOGUIDE
+bestFeasibleJEntropy	ULSA4b7_NOGUIDE.h	/^  double bestFeasibleJEntropy;$/;"	m	class:ULSA4b7_NOGUIDE
+bestFeasiblePayoff	ULSA4b7_NOGUIDE.h	/^  double bestFeasiblePayoff;$/;"	m	class:ULSA4b7_NOGUIDE
+bestFeasibleSupNum	ULSA4b7_NOGUIDE.h	/^  int    bestFeasibleSupNum;$/;"	m	class:ULSA4b7_NOGUIDE
+bestMaClusterStru	ULSA4b7_NOGUIDE.h	/^  bool** bestMaClusterStru;$/;"	m	class:ULSA4b7_NOGUIDE
+bestTrafficReductionRatio	ULSA4b7_NOGUIDE.h	/^  double bestTrafficReductionRatio;$/;"	m	class:ULSA4b7_NOGUIDE
+bestUpperLayerResource	ULSA4b7_NOGUIDE.h	/^  double bestUpperLayerResource;$/;"	m	class:ULSA4b7_NOGUIDE
+cSystem	ULSA4b7_NOGUIDE.h	/^  ULCS1b*  cSystem;   \/\/ system cluseter structure$/;"	m	class:ULSA4b7_NOGUIDE
+calculateMatrics_minResors	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::calculateMatrics_minResors()\/\/Calculate next performance matircs$/;"	f	class:ULSA4b7_NOGUIDE
+checkBestClusterStructure_DataCentric	ULSA4b7_NOGUIDE.cpp	/^bool ULSA4b7_NOGUIDE::checkBestClusterStructure_DataCentric(int inputRound)$/;"	f	class:ULSA4b7_NOGUIDE
+compRatio	ULSA4b7_NOGUIDE.h	/^  double compRatio;$/;"	m	class:ULSA4b7_NOGUIDE
+compareDis	ULSA4b7_NOGUIDE.h	/^    compareDis(const ULSA4b7_NOGUIDE& sa) : mySA(sa) {} \/\/ constructor$/;"	f	struct:ULSA4b7_NOGUIDE::compareDis
+compareDis	ULSA4b7_NOGUIDE.h	/^  struct compareDis$/;"	s	class:ULSA4b7_NOGUIDE
+computeBestAvgInterference	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::computeBestAvgInterference()$/;"	f	class:ULSA4b7_NOGUIDE
+computeBestAvgPower	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::computeBestAvgPower()$/;"	f	class:ULSA4b7_NOGUIDE
+computeBestTRR_DataCentric	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::computeBestTRR_DataCentric()$/;"	f	class:ULSA4b7_NOGUIDE
+computeNewInterference_FromIsoCluster	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex){$/;"	f	class:ULSA4b7_NOGUIDE
+computeNewInterference_FromNewTarHI	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::computeNewInterference_FromNewTarHI(vector<double> &newInterf,$/;"	f	class:ULSA4b7_NOGUIDE
+computeOriInterference_GivenIsolate	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){$/;"	f	class:ULSA4b7_NOGUIDE
+computeOriInterference_GivenTarInJoinI	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::computeOriInterference_GivenTarInJoinI($/;"	f	class:ULSA4b7_NOGUIDE
+computeUpperResourceNoCodingNoPowerControl	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::computeUpperResourceNoCodingNoPowerControl()$/;"	f	class:ULSA4b7_NOGUIDE
+computingTimes	ULSA4b7_NOGUIDE.h	/^  float computingTimes;$/;"	m	class:ULSA4b7_NOGUIDE
+confirmNeighbor3i	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::confirmNeighbor3i()$/;"	f	class:ULSA4b7_NOGUIDE
+confirmStructureChange	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::confirmStructureChange()$/;"	f	class:ULSA4b7_NOGUIDE
+consSol	ULSA4b7_NOGUIDE.h	/^  ULConstraintSolver* consSol;$/;"	m	class:ULSA4b7_NOGUIDE
+coolOnce_minResors	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::coolOnce_minResors()$/;"	f	class:ULSA4b7_NOGUIDE
+correlationFactor	ULSA4b7_NOGUIDE.h	/^  double correlationFactor;$/;"	m	class:ULSA4b7_NOGUIDE
+cur1st_Joule	ULSA4b7_NOGUIDE.h	/^  double cur1st_Joule;$/;"	m	class:ULSA4b7_NOGUIDE
+cur1st_ms	ULSA4b7_NOGUIDE.h	/^  double cur1st_ms;$/;"	m	class:ULSA4b7_NOGUIDE
+cur2nd_Joule	ULSA4b7_NOGUIDE.h	/^  double cur2nd_Joule;$/;"	m	class:ULSA4b7_NOGUIDE
+cur2nd_ms	ULSA4b7_NOGUIDE.h	/^  double cur2nd_ms;$/;"	m	class:ULSA4b7_NOGUIDE
+curChNum	ULSA4b7_NOGUIDE.h	/^  int curChNum;$/;"	m	class:ULSA4b7_NOGUIDE
+curJEntropy	ULSA4b7_NOGUIDE.h	/^  double  curJEntropy;$/;"	m	class:ULSA4b7_NOGUIDE
+curPayoff	ULSA4b7_NOGUIDE.h	/^  double curPayoff;$/;"	m	class:ULSA4b7_NOGUIDE
+curSupNum	ULSA4b7_NOGUIDE.h	/^  int  curSupNum;$/;"	m	class:ULSA4b7_NOGUIDE
+dataBits	ULSA4b7_NOGUIDE.h	/^  double dataBits;$/;"	m	class:ULSA4b7_NOGUIDE
+debug_CheckSizeCorrect	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::debug_CheckSizeCorrect() {$/;"	f	class:ULSA4b7_NOGUIDE
+decideAdd3i_DC_HeadDetMemRan	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideAdd3i_DC_HeadDetMemRan() {$/;"	f	class:ULSA4b7_NOGUIDE
+decideAddRandom	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideAddRandom() {$/;"	f	class:ULSA4b7_NOGUIDE
+decideDiscard3b	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideDiscard3b()$/;"	f	class:ULSA4b7_NOGUIDE
+decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {$/;"	f	class:ULSA4b7_NOGUIDE
+decideHeadJoining4b	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideHeadJoining4b(){$/;"	f	class:ULSA4b7_NOGUIDE
+decideHeadRotate2i_DC_HeadRanMemDet	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideHeadRotate2i_DC_HeadRanMemDet()$/;"	f	class:ULSA4b7_NOGUIDE
+decideIsolate4b	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::decideIsolate4b(){$/;"	f	class:ULSA4b7_NOGUIDE
+discardMemberSA	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::discardMemberSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b7_NOGUIDE
+distanceOf2Nodes	ULSA4b7_NOGUIDE.h	/^  float **distanceOf2Nodes;$/;"	m	class:ULSA4b7_NOGUIDE
+do1sttierPowerControlforBest_DataCentric	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::do1sttierPowerControlforBest_DataCentric() {$/;"	f	class:ULSA4b7_NOGUIDE
+do1sttierPowerControlforCur_DataCentric	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::do1sttierPowerControlforCur_DataCentric() {$/;"	f	class:ULSA4b7_NOGUIDE
+do1sttierPowerControlforNext_DataCentric	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::do1sttierPowerControlforNext_DataCentric() {$/;"	f	class:ULSA4b7_NOGUIDE
+do1sttierPowerControlforTEMP_DataCentric	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, double &temp1stMs) {$/;"	f	class:ULSA4b7_NOGUIDE
+do1sttierPowerMaxforBest_DataCentric	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::do1sttierPowerMaxforBest_DataCentric() {$/;"	f	class:ULSA4b7_NOGUIDE
+end	ULSA4b7_NOGUIDE.h	/^  clock_t begin, end;$/;"	m	class:ULSA4b7_NOGUIDE
+estimateIsolate2ndTierGain	ULSA4b7_NOGUIDE.cpp	/^double ULSA4b7_NOGUIDE::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){$/;"	f	class:ULSA4b7_NOGUIDE
+estimateJoin2ndTierCost	ULSA4b7_NOGUIDE.cpp	/^double ULSA4b7_NOGUIDE::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){$/;"	f	class:ULSA4b7_NOGUIDE
+fidelityRatio	ULSA4b7_NOGUIDE.h	/^  double fidelityRatio;\/\/ Temporary set by here 2013\/02\/21$/;"	m	class:ULSA4b7_NOGUIDE
+flagAnsFound	ULSA4b7_NOGUIDE.h	/^  bool flagAnsFound;$/;"	m	class:ULSA4b7_NOGUIDE
+headCandidatesNum	ULSA4b7_NOGUIDE.h	/^  int headCandidatesNum;$/;"	m	class:ULSA4b7_NOGUIDE
+indEntropy	ULSA4b7_NOGUIDE.h	/^  double indEntropy;$/;"	m	class:ULSA4b7_NOGUIDE
+iniDone	ULSA4b7_NOGUIDE.h	/^  bool iniDone;$/;"	m	class:ULSA4b7_NOGUIDE
+isDetailOutputOn	ULSA4b7_NOGUIDE.h	/^  int isDetailOutputOn;$/;"	m	class:ULSA4b7_NOGUIDE
+isolateHeadSA	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::isolateHeadSA(int isoName,int IsolateCluI, int targetH){$/;"	f	class:ULSA4b7_NOGUIDE
+isolatedHeadIndex	ULSA4b7_NOGUIDE.h	/^  int  isolatedHeadIndex;$/;"	m	class:ULSA4b7_NOGUIDE
+join_fromHeadSA	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::join_fromHeadSA(int JoiningHeadIndex,int targetH){$/;"	f	class:ULSA4b7_NOGUIDE
+keepBestStructure	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::keepBestStructure()$/;"	f	class:ULSA4b7_NOGUIDE
+lastIsoPassAccu	ULSA4b7_NOGUIDE.h	/^  int lastIsoPassAccu;$/;"	m	class:ULSA4b7_NOGUIDE
+lastIsolateNodeName	ULSA4b7_NOGUIDE.h	/^  int lastIsolateNodeName;$/;"	m	class:ULSA4b7_NOGUIDE
+lastIsolatedClusterIndex	ULSA4b7_NOGUIDE.h	/^  int lastIsolatedClusterIndex;$/;"	m	class:ULSA4b7_NOGUIDE
+lastJoinPassAccu	ULSA4b7_NOGUIDE.h	/^  int lastJoinPassAccu;$/;"	m	class:ULSA4b7_NOGUIDE
+lastJoingingMachine	ULSA4b7_NOGUIDE.h	/^  vector<int> lastJoingingMachine;$/;"	m	class:ULSA4b7_NOGUIDE
+lastJoiningHead	ULSA4b7_NOGUIDE.h	/^  int lastJoiningHead;$/;"	m	class:ULSA4b7_NOGUIDE
+lastJoiningHeadIndex	ULSA4b7_NOGUIDE.h	/^  int lastJoiningHeadIndex;$/;"	m	class:ULSA4b7_NOGUIDE
+listCluMemBest	ULSA4b7_NOGUIDE.h	/^  list <list <int> > *listCluMemBest;$/;"	m	class:ULSA4b7_NOGUIDE
+maBestInterference	ULSA4b7_NOGUIDE.h	/^  double **maBestInterference;$/;"	m	class:ULSA4b7_NOGUIDE
+maBestInterfernceIndex	ULSA4b7_NOGUIDE.h	/^  int **maBestInterfernceIndex;$/;"	m	class:ULSA4b7_NOGUIDE
+maIndexSortDecGain	ULSA4b7_NOGUIDE.h	/^  int ** maIndexSortDecGain;$/;"	m	class:ULSA4b7_NOGUIDE
+maStrengthInterBest	ULSA4b7_NOGUIDE.h	/^  double ** maStrengthInterBest;$/;"	m	class:ULSA4b7_NOGUIDE
+main	main.cpp	/^int main(int argc, char* argv[])$/;"	f
+mapNodeName2DistanceRank	ULSA4b7_NOGUIDE.h	/^  map <int, int>  *mapNodeName2DistanceRank;$/;"	m	class:ULSA4b7_NOGUIDE
+matrixComputer	ULSA4b7_NOGUIDE.h	/^  CORRE_MA_OPE * matrixComputer;$/;"	m	class:ULSA4b7_NOGUIDE
+mySA	ULSA4b7_NOGUIDE.h	/^    const ULSA4b7_NOGUIDE& mySA;\/\/ data member$/;"	m	struct:ULSA4b7_NOGUIDE::compareDis
+next1st_Joule	ULSA4b7_NOGUIDE.h	/^  double next1st_Joule;$/;"	m	class:ULSA4b7_NOGUIDE
+next1st_ms	ULSA4b7_NOGUIDE.h	/^  double next1st_ms;$/;"	m	class:ULSA4b7_NOGUIDE
+next2nd_Joule	ULSA4b7_NOGUIDE.h	/^  double next2nd_Joule;$/;"	m	class:ULSA4b7_NOGUIDE
+next2nd_ms	ULSA4b7_NOGUIDE.h	/^  double next2nd_ms;$/;"	m	class:ULSA4b7_NOGUIDE
+nextChNum	ULSA4b7_NOGUIDE.h	/^  int nextChNum;$/;"	m	class:ULSA4b7_NOGUIDE
+nextEventFlag	ULSA4b7_NOGUIDE.h	/^  int  nextEventFlag;$/;"	m	class:ULSA4b7_NOGUIDE
+nextJEntropy	ULSA4b7_NOGUIDE.h	/^  double  nextJEntropy;$/;"	m	class:ULSA4b7_NOGUIDE
+nextNodePower	ULSA4b7_NOGUIDE.h	/^  double* nextNodePower;$/;"	m	class:ULSA4b7_NOGUIDE
+nextPayoff	ULSA4b7_NOGUIDE.h	/^  double nextPayoff;$/;"	m	class:ULSA4b7_NOGUIDE
+nextSupNum	ULSA4b7_NOGUIDE.h	/^  int  nextSupNum;$/;"	m	class:ULSA4b7_NOGUIDE
+nodes	ULSA4b7_NOGUIDE.h	/^  std::vector <ULAGENT> nodes;$/;"	m	class:ULSA4b7_NOGUIDE
+operator ()	ULSA4b7_NOGUIDE.h	/^    bool operator() (const int &i, const int &j)$/;"	f	struct:ULSA4b7_NOGUIDE::compareDis
+passNext2Cur	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::passNext2Cur() {$/;"	f	class:ULSA4b7_NOGUIDE
+power1st	ULSA4b7_NOGUIDE.h	/^  double power1st;$/;"	m	class:ULSA4b7_NOGUIDE
+powerBest	ULSA4b7_NOGUIDE.h	/^  double *powerBest;$/;"	m	class:ULSA4b7_NOGUIDE
+powerLastDiscard	ULSA4b7_NOGUIDE.h	/^  double powerLastDiscard;$/;"	m	class:ULSA4b7_NOGUIDE
+powerMax	ULSA4b7_NOGUIDE.h	/^  float powerMax;$/;"	m	class:ULSA4b7_NOGUIDE
+printClusterList	ULSA4b7_NOGUIDE.cpp	/^void printClusterList(ULCS1b *cSystem)$/;"	f
+printVecMatrix	ULSA4b7_NOGUIDE.cpp	/^void printVecMatrix(vector <vector<int> >& ma)$/;"	f
+print_addresses	main.cpp	/^int print_addresses(const int domain, string& ipAddr)$/;"	f
+ptrHeadLastDiscard	ULSA4b7_NOGUIDE.h	/^  int  *ptrHeadLastDiscard;$/;"	m	class:ULSA4b7_NOGUIDE
+quantizationBits	ULSA4b7_NOGUIDE.h	/^  int quantizationBits;$/;"	m	class:ULSA4b7_NOGUIDE
+radius	ULSA4b7_NOGUIDE.h	/^  double radius;$/;"	m	class:ULSA4b7_NOGUIDE
+rateibMax	ULSA4b7_NOGUIDE.h	/^  double *rateibMax; \/\/$/;"	m	class:ULSA4b7_NOGUIDE
+realNoise	ULSA4b7_NOGUIDE.h	/^  double realNoise;$/;"	m	class:ULSA4b7_NOGUIDE
+releaseMemory	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::releaseMemory()$/;"	f	class:ULSA4b7_NOGUIDE
+resetSA3iSystem	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::resetSA3iSystem() {$/;"	f	class:ULSA4b7_NOGUIDE
+return1stTotalNcal1stResors_HomoPower	ULSA4b7_NOGUIDE.cpp	/^double ULSA4b7_NOGUIDE::return1stTotalNcal1stResors_HomoPower() {$/;"	f	class:ULSA4b7_NOGUIDE
+returnClosetNodeIndexInGroup	ULSA4b7_NOGUIDE.cpp	/^int ULSA4b7_NOGUIDE::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<int> &inputGroup)$/;"	f	class:ULSA4b7_NOGUIDE
+returnComprRatio	ULSA4b7_NOGUIDE.cpp	/^double ULSA4b7_NOGUIDE::returnComprRatio()$/;"	f	class:ULSA4b7_NOGUIDE
+returnTransientAveragePower	ULSA4b7_NOGUIDE.cpp	/^double ULSA4b7_NOGUIDE::returnTransientAveragePower()$/;"	f	class:ULSA4b7_NOGUIDE
+returnTransientJoule	ULSA4b7_NOGUIDE.cpp	/^double ULSA4b7_NOGUIDE::returnTransientJoule() {$/;"	f	class:ULSA4b7_NOGUIDE
+reverseMoveSA	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::reverseMoveSA()$/;"	f	class:ULSA4b7_NOGUIDE
+rotateHeadSA	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::rotateHeadSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b7_NOGUIDE
+rotatedHeadNameLast	ULSA4b7_NOGUIDE.h	/^  int rotatedHeadNameLast;$/;"	m	class:ULSA4b7_NOGUIDE
+roundBest	ULSA4b7_NOGUIDE.h	/^  int  roundBest;;$/;"	m	class:ULSA4b7_NOGUIDE
+setIniHeadLimited	ULSA4b7_NOGUIDE.cpp	/^bool ULSA4b7_NOGUIDE::setIniHeadLimited()$/;"	f	class:ULSA4b7_NOGUIDE
+setIniStruDistanceKmedoids	ULSA4b7_NOGUIDE.cpp	/^bool ULSA4b7_NOGUIDE::setIniStruDistanceKmedoids() $/;"	f	class:ULSA4b7_NOGUIDE
+setIniStruFullResourceKmedoids	ULSA4b7_NOGUIDE.cpp	/^bool ULSA4b7_NOGUIDE::setIniStruFullResourceKmedoids()$/;"	f	class:ULSA4b7_NOGUIDE
+setIniStruHalfResourceKmedoids	ULSA4b7_NOGUIDE.cpp	/^bool ULSA4b7_NOGUIDE::setIniStruHalfResourceKmedoids()$/;"	f	class:ULSA4b7_NOGUIDE
+setIniStruKmeans	ULSA4b7_NOGUIDE.cpp	/^bool ULSA4b7_NOGUIDE::setIniStruKmeans()$/;"	f	class:ULSA4b7_NOGUIDE
+setInitialStucture	ULSA4b7_NOGUIDE.cpp	/^bool ULSA4b7_NOGUIDE::setInitialStucture(char* iniFlag)$/;"	f	class:ULSA4b7_NOGUIDE
+setSystem	ULSA4b7_NOGUIDE.cpp	/^bool ULSA4b7_NOGUIDE::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)$/;"	f	class:ULSA4b7_NOGUIDE
+sortIndex	ULSA4b7_NOGUIDE.h	/^  int sortIndex;$/;"	m	class:ULSA4b7_NOGUIDE
+startCool	ULSA4b7_NOGUIDE.cpp	/^bool ULSA4b7_NOGUIDE::startCool()$/;"	f	class:ULSA4b7_NOGUIDE
+strIpAddr	ULSA4b7_NOGUIDE.h	/^  string strIpAddr; $/;"	m	class:ULSA4b7_NOGUIDE
+sysComputing	ULSA4b7_NOGUIDE.h	/^  SimSystem *sysComputing;$/;"	m	class:ULSA4b7_NOGUIDE
+targetHeadIndex	ULSA4b7_NOGUIDE.h	/^  int  targetHeadIndex;$/;"	m	class:ULSA4b7_NOGUIDE
+targetNode	ULSA4b7_NOGUIDE.h	/^  int  targetNode;$/;"	m	class:ULSA4b7_NOGUIDE
+tempAddT	ULSA4b7_NOGUIDE.h	/^  double tempAddT;$/;"	m	class:ULSA4b7_NOGUIDE
+tempDisT	ULSA4b7_NOGUIDE.h	/^  double tempDisT;$/;"	m	class:ULSA4b7_NOGUIDE
+tempHRT	ULSA4b7_NOGUIDE.h	/^  double tempHRT;$/;"	m	class:ULSA4b7_NOGUIDE
+tempIsoT	ULSA4b7_NOGUIDE.h	/^  double tempIsoT;$/;"	m	class:ULSA4b7_NOGUIDE
+tempJoinT	ULSA4b7_NOGUIDE.h	/^  double tempJoinT;$/;"	m	class:ULSA4b7_NOGUIDE
+terminated	ULSA4b7_NOGUIDE.h	/^  bool terminated;$/;"	m	class:ULSA4b7_NOGUIDE
+thres2	ULSA4b7_NOGUIDE.h	/^  static const int thres2=200;$/;"	m	class:ULSA4b7_NOGUIDE
+thresholdd	ULSA4b7_NOGUIDE.h	/^  static const int thresholdd=5;$/;"	m	class:ULSA4b7_NOGUIDE
+updateIsolateEstimatedpower	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex){$/;"	f	class:ULSA4b7_NOGUIDE
+updateJoinEstimatedPower	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::updateJoinEstimatedPower(vector<double> &newPower, $/;"	f	class:ULSA4b7_NOGUIDE
+vecBestBpshz_forVerification	ULSA4b7_NOGUIDE.h	/^  vector<double> vecBestBpshz_forVerification;$/;"	m	class:ULSA4b7_NOGUIDE
+vecBestClusterBits	ULSA4b7_NOGUIDE.h	/^  vector<double> vecBestClusterBits;$/;"	m	class:ULSA4b7_NOGUIDE
+vecBestClusterHeadMS	ULSA4b7_NOGUIDE.h	/^  vector<double> vecBestClusterHeadMS;$/;"	m	class:ULSA4b7_NOGUIDE
+vecBestClusterHeadWatt	ULSA4b7_NOGUIDE.h	/^  vector<double> vecBestClusterHeadWatt;$/;"	m	class:ULSA4b7_NOGUIDE
+vecBestClusterSize	ULSA4b7_NOGUIDE.h	/^  vector<int> vecBestClusterSize;$/;"	m	class:ULSA4b7_NOGUIDE
+vecBestReceivedInterference	ULSA4b7_NOGUIDE.h	/^  vector<double> vecBestReceivedInterference;$/;"	m	class:ULSA4b7_NOGUIDE
+vecBestSINR_forVerification	ULSA4b7_NOGUIDE.h	/^  vector<double> vecBestSINR_forVerification;$/;"	m	class:ULSA4b7_NOGUIDE
+vecChooseIndex	ULSA4b7_NOGUIDE.h	/^  vector<double> vecChooseIndex;$/;"	m	class:ULSA4b7_NOGUIDE
+vecClusterHeadBits	ULSA4b7_NOGUIDE.h	/^  vector<double> vecClusterHeadBits;$/;"	m	class:ULSA4b7_NOGUIDE
+vecClusterHeadMS	ULSA4b7_NOGUIDE.h	/^  vector<double> vecClusterHeadMS;$/;"	m	class:ULSA4b7_NOGUIDE
+vecClusterHeadWatt	ULSA4b7_NOGUIDE.h	/^  vector<double> vecClusterHeadWatt;$/;"	m	class:ULSA4b7_NOGUIDE
+vecHeadCandidates	ULSA4b7_NOGUIDE.h	/^  vector<int> vecHeadCandidates;$/;"	m	class:ULSA4b7_NOGUIDE
+vecHeadNameBest	ULSA4b7_NOGUIDE.h	/^  vector <int> vecHeadNameBest;$/;"	m	class:ULSA4b7_NOGUIDE
+virtualCompression	ULSA4b7_NOGUIDE.h	/^  double virtualCompression;$/;"	m	class:ULSA4b7_NOGUIDE
+wholeSystemEntopy	ULSA4b7_NOGUIDE.h	/^  double wholeSystemEntopy;$/;"	m	class:ULSA4b7_NOGUIDE
+writePayoffEachRound_MinResors	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::writePayoffEachRound_MinResors(int round)$/;"	f	class:ULSA4b7_NOGUIDE
+writePayoffEachRound_MinResors_withHead	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::writePayoffEachRound_MinResors_withHead(int round,int head)$/;"	f	class:ULSA4b7_NOGUIDE
+writeStruSingleRound	ULSA4b7_NOGUIDE.cpp	/^void ULSA4b7_NOGUIDE::writeStruSingleRound(int round)$/;"	f	class:ULSA4b7_NOGUIDE
+~ULSA4b7_NOGUIDE	ULSA4b7_NOGUIDE.cpp	/^ULSA4b7_NOGUIDE::~ULSA4b7_NOGUIDE()$/;"	f	class:ULSA4b7_NOGUIDE

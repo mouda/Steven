@@ -447,9 +447,9 @@ template<class T> void ULSAOutputToolSet<T>::writePeformance_MinResors_with2ndPo
 
 
 template<class T> void ULSAOutputToolSet<T>::writePeformance_MinResors_with2ndPowerControl_4b(char *filename,T &myobj, double best2nd_ms, double fidelityRatio,int bestChNum) {
-    bestTotalJoule=0;
-    best2ndJoule=0;
-    bestTotal_ms=best2nd_ms+myobj.best1st_ms;
+    double localBestTotalJoule=0;
+    double localBest2ndJoule=0;
+    double localBestTotal_ms=best2nd_ms+myobj.best1st_ms;
     double density = -1;
     //Calculate 2nd-tier first
     list<list<int> >::iterator it1=myobj.listCluMemBest->begin();
@@ -461,12 +461,12 @@ template<class T> void ULSAOutputToolSet<T>::writePeformance_MinResors_with2ndPo
         for(; it2!=it1->end(); it2++)
         {
             if(myobj.powerBest[*it2]>0) {
-                bestTotalJoule+=(myobj.powerBest[*it2]*best2nd_ms/(tempSize-1))/1000;
-                best2ndJoule+=(myobj.powerBest[*it2]*best2nd_ms/(tempSize-1))/1000;
+                localBestTotalJoule+=(myobj.powerBest[*it2]*best2nd_ms/(tempSize-1))/1000;
+                localBest2ndJoule+=(myobj.powerBest[*it2]*best2nd_ms/(tempSize-1))/1000;
             }
         }
     }
-    bestTotalJoule +=myobj.best1st_Joule;
+    localBestTotalJoule +=myobj.best1st_Joule;
     FILE *fid=fopen(filename,"a");
     fprintf(fid,"%d %d %.2f %.2f %2f %d %.1f %d        %.3f %d %5e %5e %5e %5e %d     %5e %5e\n",  
             myobj.totalNodes, 
@@ -481,12 +481,12 @@ template<class T> void ULSAOutputToolSet<T>::writePeformance_MinResors_with2ndPo
             myobj.bestFeasibleJEntropy, 
             myobj.bestFeasibleSupNum, 
             myobj.best1st_Joule, 
-            best2ndJoule, 
+            localBest2ndJoule, 
             myobj.best1st_ms, 
             myobj.best2nd_ms, 
             bestChNum, 
-            bestTotalJoule, 
-            bestTotal_ms
+            localBestTotalJoule, 
+            localBestTotal_ms
             );
 
     fclose(fid);

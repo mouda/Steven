@@ -15,12 +15,12 @@ COMM_UTILITY= ../commonLibrary/CORRE_MA_OPE.o \
 	  ../commonLibrary/ULAGENT.o \
 	  ../commonLibrary/ULConstraintSolver.o \
 	  ../commonLibrary/ULCS1b.o 
-all: ULSA4b7_DC
+all: ULSA4b7_NOGUIDE
 
-ULSA4b7_DC: 	main.o ULSA4b7_DC.o 
+ULSA4b7_NOGUIDE: 	main.o ULSA4b7_NOGUIDE.o 
 	$(CPP)  $(COMM_UTILITY) $(CFLAGS) $(INCLUDE) $(LIB_PATH) $(LIB_FLAGS) `pkg-config opencv --cflags --libs` $^  -o $@ 
 
 %.o: %.cpp
 	$(CPP) -c $(CFLAGS) $(DFLAGS) $(INCLUDE) $(LIB_PATH) $(LIB_FLAGS) $< -o $@
 clean:
-	rm ULSA4b7_DC *.o
+	rm ULSA4b7_NOGUIDE *.o
