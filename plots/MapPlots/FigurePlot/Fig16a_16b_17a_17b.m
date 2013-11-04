@@ -10,9 +10,9 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-dpath = ['data/2013-11-01_00-15_Best4b2Struc2ndN195_m9_FR0.9_r500.0.txt'];
+dpath = ['data/2013-11-03_22-18_Best4b2Struc2ndN195_m9_FR0.9_r500.0.txt'];
 strtitle=['Two-Tier DC'];
-mapString = ['mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_4.txt'];
+mapString = ['mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_1.txt'];
 path=cellstr(dpath);
 strtitle2=cellstr(strtitle);
 for ii=1:length(path)
