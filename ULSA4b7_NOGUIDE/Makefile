@@ -1,8 +1,8 @@
 CPP= g++
 #CFLAGS=-O -O1 -O2 -O3
 DFLAGS= -D DEBUG -g
-PREFIX=/opt
-#PREFIX=/home/share
+#PREFIX=/opt
+PREFIX=/home/share
 INCLUDE= -I$(PREFIX)/armadillo39202/include/
 LIB_PATH = -L$(PREFIX)/armadillo39202/lib/ \
 	   -L$(PREFIX)/openblas/lib \

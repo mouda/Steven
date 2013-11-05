@@ -1467,7 +1467,7 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
   {
     decideDiscardRandom();
     //decideDiscard3b();
-    cout <<curSupNum <<' '<< targetHeadIndex << ' ' << targetNode << endl;
+    //cout <<curSupNum <<' '<< targetHeadIndex << ' ' << targetNode << endl;
     discardMemberSA(targetHeadIndex,targetNode);
     nextChNum=curChNum;
 
@@ -1475,7 +1475,8 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
   }
   else if (nextEventFlag ==3)
   {
-    decideHeadRotate2i_DC_HeadRanMemDet();
+    decideRotateRandom();
+    //decideHeadRotate2i_DC_HeadRanMemDet();
     //cout<<"HR "<<targetNode+1<<" to Replace "<<cSystem->vecHeadName[targetHeadIndex]+1<<endl;
     rotateHeadSA(targetHeadIndex,targetNode);
     nextJEntropy = curJEntropy;
@@ -1485,7 +1486,8 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
   }
   else if (nextEventFlag==4){
     JoiningHeadIndex=-1;
-    decideHeadJoining4b();
+    //decideHeadJoining4b();
+    decideJoinRandom();
     if (JoiningHeadIndex==-1 || targetHeadIndex==-1) {
       nextJEntropy = curJEntropy; // entropy unchanged
       nextSupNum = curSupNum; //support number unchanged
@@ -1498,6 +1500,8 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
   else if (nextEventFlag==5){
     isolatedHeadIndex=-1;
     IsolateNodeName=-1;
+    //decideDiscardRandom();
+    //IsolateNodeName = targetNode;
     decideIsolate4b();
     isolateHeadSA(IsolateNodeName,isolatedHeadIndex,targetHeadIndex);
     nextJEntropy = curJEntropy;
@@ -1696,13 +1700,14 @@ void ULSA4b7_NOGUIDE::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {
 
 void ULSA4b7_NOGUIDE::decideDiscardRandom() 
 {
+  /* we cannot discart cluster head */
   targetHeadIndex = -1;
   targetNode = -1;
   bool isHead = true;
   bool isSingleNodeCluster = true;
   for ( int idx = 0; idx < maxChNum; idx++) {
     /* code */
-    if (cSystem->vecClusterSize[idx] != 1 && cSystem->vecHeadName[idx] != -1) {
+    if (cSystem->vecClusterSize[idx] > 1 && cSystem->vecHeadName[idx] != -1) {
       targetHeadIndex = idx;
     }
   }
@@ -1768,6 +1773,28 @@ void ULSA4b7_NOGUIDE::decideHeadRotate2i_DC_HeadRanMemDet()
 		}
 	}
 	cSystem->vecHeadName[targetHeadIndex]=OriginalNode;
+}
+void ULSA4b7_NOGUIDE::decideRotateRandom()
+{
+  targetHeadIndex = -1;
+  targetNode = -1;
+  bool isHead = true;
+  bool isSingleNodeCluster = true;
+  for ( int idx = 0; idx < maxChNum; idx++) {
+    /* code */
+    if (cSystem->vecClusterSize[idx] > 1 && cSystem->vecHeadName[idx] != -1) {
+      targetHeadIndex = idx;
+    }
+  }
+  if (targetHeadIndex == -1 ) return; 
+
+  list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
+  for (int i = 0; i < targetHeadIndex; ++i ) ++iterRow;
+  int targetNodeListIdx = rand() % iterRow->size();
+  list<int>::iterator iterCol = iterRow->begin(); 
+  for (int j = 0; j < targetNodeListIdx; ++j) ++iterCol;
+  targetNode = *iterCol;
+  return;
 }
 
 
@@ -2069,6 +2096,30 @@ void ULSA4b7_NOGUIDE::computeNewInterference_FromNewTarHI(vector<double> &newInt
         }
         newInterf[i] = tmpRcvPower;
     }
+}
+
+void ULSA4b7_NOGUIDE::decideJoinRandom()
+{
+  JoiningHeadIndex = -1;
+  targetHeadIndex = -1;
+  for ( int idx = 0; idx < maxChNum; idx++) {
+    if (cSystem->vecClusterSize[idx] > 1 && cSystem->vecHeadName[idx] != -1) {
+      targetHeadIndex = idx;
+    }
+  }
+  if (targetHeadIndex == -1 ) return; 
+
+  for (int j = 0; j < maxChNum; j++) {
+    if (cSystem->vecClusterSize[j] > 1 && 
+        cSystem->vecHeadName[j] != -1 &&
+        targetHeadIndex != j) {
+      JoiningHeadIndex = j;
+    }
+  }
+  
+
+  
+  return;
 }
 
 

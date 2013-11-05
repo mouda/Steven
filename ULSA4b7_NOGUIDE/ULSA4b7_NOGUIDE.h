@@ -255,12 +255,11 @@ public:
   void decideDiscard3b();
   void decideDiscardRandom();
   void decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio();
-  void decideHeadRotate1();
-  void decideHeadRotate2f();
-  void decideHeadRotate3c();
   void decideHeadRotate2i_DC_HeadRanMemDet();
+  void decideRotateRandom();
 
   void decideHeadJoining4b();
+  void decideJoinRandom();
   void decideIsolation4b();
   double estimateJoin2ndTierCost(int JoiningHeadIndex, int testIndex);
   void computeOriInterference_GivenTarInJoinI(std::vector<double> &oriInterf,std::vector<double> &interfExcept,int JoiningI,int tarHead);
