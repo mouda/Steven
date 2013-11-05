@@ -266,10 +266,10 @@ bool ULSA4b7_NOGUIDE::setInitialStucture(char* iniFlag)
 */
 bool ULSA4b7_NOGUIDE::setIniStruKmeans()
 {
-  int retryTimes = 0;
+  int   retryTimes = 0;
   float tempHeadX [maxChNum];
   float tempHeadY [maxChNum];
-  int tempHeadList [maxChNum];
+  int   tempHeadList [maxChNum];
   vector <vector <int> > tempGroup;
   bool convergedFlag = false;
   bool sameHeadFlag = true;
@@ -1706,7 +1706,6 @@ void ULSA4b7_NOGUIDE::decideDiscardRandom()
   bool isHead = true;
   bool isSingleNodeCluster = true;
   for ( int idx = 0; idx < maxChNum; idx++) {
-    /* code */
     if (cSystem->vecClusterSize[idx] > 1 && cSystem->vecHeadName[idx] != -1) {
       targetHeadIndex = idx;
     }
@@ -2116,10 +2115,6 @@ void ULSA4b7_NOGUIDE::decideJoinRandom()
       JoiningHeadIndex = j;
     }
   }
-  
-
-  
-  return;
 }
 
 
