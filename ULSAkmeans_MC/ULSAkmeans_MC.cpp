@@ -1,6 +1,5 @@
 #include <iostream>
-#include <fstream>
-#include <iomanip>
+#include<iomanip>
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
@@ -13,10 +12,10 @@
 #include <armadillo>
 
 using namespace std;
-#include "ULSA4b7_NOGUIDE.h"
-ULSA4b7_NOGUIDE::ULSA4b7_NOGUIDE() {};
+#include "ULSAkmeans_MC.h"
+ULSAkmeans_MC::ULSAkmeans_MC() {};
 
-ULSA4b7_NOGUIDE::ULSA4b7_NOGUIDE(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \
+ULSAkmeans_MC::ULSAkmeans_MC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \
                      int inOutputControl,
                      int isStrucOuput,
                      double inputTemprature, double InputSaAlpha, \
@@ -105,6 +104,7 @@ ULSA4b7_NOGUIDE::ULSA4b7_NOGUIDE(FILE *fileReadCursor, int inputTotalNodes, int 
          cout<<setw(14)<<Gij[i][j]<<" ";
        cout<<endl;
      }*/
+    indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
     cSystem = new ULCS1b(inputTotalNodes, inputMaxChNum);
     powerBest = new double [totalNodes];
     nextNodePower = new double [totalNodes];
@@ -162,12 +162,12 @@ ULSA4b7_NOGUIDE::ULSA4b7_NOGUIDE(FILE *fileReadCursor, int inputTotalNodes, int 
     }
 
 }
-ULSA4b7_NOGUIDE::~ULSA4b7_NOGUIDE()
+ULSAkmeans_MC::~ULSAkmeans_MC()
 {
     if(!terminated)releaseMemory();
 }
 
-void ULSA4b7_NOGUIDE::releaseMemory()
+void ULSAkmeans_MC::releaseMemory()
 {
 
     //release distanceOf2Nodes
@@ -210,7 +210,7 @@ void ULSA4b7_NOGUIDE::releaseMemory()
 // @Purpose: Read Topology File and Calculate Gij,distanceOf2Nodes
 // @Called: by main
 //-------------------------------------------------------------------//
-bool ULSA4b7_NOGUIDE::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)
+bool ULSAkmeans_MC::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)
 {
     powerMax = inPowerMaxWatt;
     quantizationBits = inQuantizationBits;
@@ -229,7 +229,7 @@ bool ULSA4b7_NOGUIDE::setSystem(float inPowerMaxWatt, int inQuantizationBits,dou
     Flag: "kemans",..,
     and set the initial interference list for each node
 */
-bool ULSA4b7_NOGUIDE::setInitialStucture(char* iniFlag)
+bool ULSAkmeans_MC::setInitialStucture(char* iniFlag)
 {
     iniDone=false;
     bool normalFlag = true;
@@ -239,16 +239,27 @@ bool ULSA4b7_NOGUIDE::setInitialStucture(char* iniFlag)
         nodes[i].power=0;
         nodes[i].ptrHead=NULL;
     }
+    bool * arySupNodes;
+    arySupNodes = new bool [totalNodes];
+    for (int i = 0; i < totalNodes; i++) {
+      arySupNodes[i] = false; 
+    }
 
 
     if (!strcmp(iniFlag, "kmeans")) 
       normalFlag = setIniStruKmeans();
     else if (!strcmp(iniFlag, "kmedoids_distance")) 
-      normalFlag = setIniStruDistanceKmedoids();
+      normalFlag = setIniStruDistanceKmedoids(arySupNodes);
     else if (!strcmp(iniFlag, "kmedoids_resource_half"))
       normalFlag = setIniStruHalfResourceKmedoids();
     else if (!strcmp(iniFlag, "kmedoids_resource_full")) 
       normalFlag = setIniStruFullResourceKmedoids();
+    else if (!strcmp(iniFlag, "baselineKmedoidMC")) 
+      normalFlag = baselineKmedoidMC();
+    else if (!strcmp(iniFlag, "baselineKmedoidDC")) 
+      normalFlag = baselineKmedoidDC();
+    else if (!strcmp(iniFlag, "powerUpdateKmedoid")) 
+      normalFlag = powerUpdateKmedoid();
     else if (!strcmp(iniFlag, "HeadLimited")) 
       normalFlag = setIniHeadLimited();
 
@@ -265,12 +276,12 @@ bool ULSA4b7_NOGUIDE::setInitialStucture(char* iniFlag)
     @Purpose: Set the initial clustering stucture by kmeans algorithm
 
 */
-bool ULSA4b7_NOGUIDE::setIniStruKmeans()
+bool ULSAkmeans_MC::setIniStruKmeans()
 {
-  int   retryTimes = 0;
+  int retryTimes = 0;
   float tempHeadX [maxChNum];
   float tempHeadY [maxChNum];
-  int   tempHeadList [maxChNum];
+  int tempHeadList [maxChNum];
   vector <vector <int> > tempGroup;
   bool convergedFlag = false;
   bool sameHeadFlag = true;
@@ -406,7 +417,7 @@ bool ULSA4b7_NOGUIDE::setIniStruKmeans()
 }
 
 
-bool ULSA4b7_NOGUIDE::setIniHeadLimited()
+bool ULSAkmeans_MC::setIniHeadLimited()
 {
     double sortGib[totalNodes];
     for(int i=0; i<totalNodes; i++) {
@@ -451,7 +462,7 @@ bool ULSA4b7_NOGUIDE::setIniHeadLimited()
     return true;
 }
 
-bool ULSA4b7_NOGUIDE::setIniStruDistanceKmedoids() 
+bool ULSAkmeans_MC::setIniStruDistanceKmedoids( bool const * const arySupNodes) 
 {
   int retryTimes = 0;
   float tempHeadX [maxChNum];
@@ -567,7 +578,7 @@ bool ULSA4b7_NOGUIDE::setIniStruDistanceKmedoids()
 
   return true;
 }
-bool ULSA4b7_NOGUIDE::setIniStruHalfResourceKmedoids()
+bool ULSAkmeans_MC::setIniStruHalfResourceKmedoids()
 {
   int retryTimes = 0;
   float tempHeadX [maxChNum];
@@ -763,7 +774,7 @@ bool ULSA4b7_NOGUIDE::setIniStruHalfResourceKmedoids()
 
 }
 
-bool ULSA4b7_NOGUIDE::setIniStruFullResourceKmedoids()
+bool ULSAkmeans_MC::setIniStruFullResourceKmedoids()
 {
   int retryTimes = 0;
   float tempHeadX [maxChNum];
@@ -960,9 +971,52 @@ bool ULSA4b7_NOGUIDE::setIniStruFullResourceKmedoids()
   return true;
 }
 
+bool ULSAkmeans_MC::baselineKmedoidMC()
+{
+  arma::vec aVecRate = arma::zeros<arma::vec>(totalNodes);
+  bool *vecSupNodes;
+  vecSupNodes = new bool [totalNodes];
+  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
+  indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
+  bool inClu[totalNodes];
+  for(int i=0; i<totalNodes; i++)inClu[i]=true;
+  double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
+  wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
 
 
-void ULSA4b7_NOGUIDE::writeStruSingleRound(int round)
+  for (int i = 0; i < totalNodes; i++) vecSupNodes[i] = false;
+  int supNodes = 0;
+  double cumInfo = 0.0;
+  for (int i = 0; i < totalNodes; i++) {
+    aVecRate.at(i) = 
+      bandwidthKhz * 1e3 * log2( 1 + powerMax * Gib[i] / realNoise );
+  }
+  arma::vec aVecSortedRate = arma::sort(aVecRate,1);
+  arma::uvec aVecSortedindices = arma::sort_index(aVecRate,1);
+  
+  for (int i = 0; i < totalNodes; i++) {
+    ++supNodes;
+    vecSupNodes[aVecSortedindices.at(i)] = true;
+    cumInfo = supNodes * indEntropy + matrixComputer->computeLog2Det(1.0, vecSupNodes); 
+    if (cumInfo > fidelityRatio * wholeSystemEntopy ) break; 
+  }
+  setIniStruDistanceKmedoids(vecSupNodes);
+  return true;
+}
+
+bool ULSAkmeans_MC::baselineKmedoidDC()
+{
+  return true;
+}
+
+bool ULSAkmeans_MC::powerUpdateKmedoid()
+{
+  return true;
+}
+
+
+
+void ULSAkmeans_MC::writeStruSingleRound(int round)
 {
     FILE *fid;
     char str[50];
@@ -1008,85 +1062,25 @@ void ULSA4b7_NOGUIDE::writeStruSingleRound(int round)
 }
 
 
-void ULSA4b7_NOGUIDE::writePayoffEachRound_MinResors(int round)
+void ULSAkmeans_MC::writePayoffEachRound_MinResors(int round)
 {
-    char str[]="ULSA4b7_NOGUIDEEachR.txt";
+    char str[]="ULSAkmeans_MCEachR.txt";
     FILE* fid = fopen(str,"a");
     fprintf(fid,"%f %f %f %f %f %d\n", curJEntropy/wholeSystemEntopy,static_cast<double>(curSupNum)/static_cast<double>(totalNodes), curPayoff, cur1st_ms, cur2nd_ms,  round);
     fclose(fid);
 
 }
 
-void ULSA4b7_NOGUIDE::writePayoffEachRound_MinResors_withHead(int round,int head)
+void ULSAkmeans_MC::writePayoffEachRound_MinResors_withHead(int round,int head)
 {
-    char str[]="ULSA4b7_NOGUIDEEachR.txt";
+    char str[]="ULSAkmeans_MCEachR.txt";
     FILE* fid = fopen(str,"a");
     fprintf(fid,"%f %f %f %f %f %d %d\n", curJEntropy/wholeSystemEntopy,static_cast<double>(curSupNum)/static_cast<double>(totalNodes), curPayoff, cur1st_ms, cur2nd_ms,  round, head);
     fclose(fid);
 
 }
-void ULSA4b7_NOGUIDE::do1sttierPowerControlforNext_DataCentric() {
-// debug_CheckSizeCorrect();
-// cout<<endl;
-    //cout<<"Next1sttier PowerControl"<<endl;
 
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        double  groupRedundancy = matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[i]);
-        double  clusterInfo=cSystem->vecClusterSize[i]*indEntropy +  groupRedundancy;
-        vecClusterHeadBits[i]=clusterInfo;
-    }
-
-    consSol->Do1stTierPowerControl(next1st_Joule,next1st_ms,vecClusterHeadWatt,vecClusterHeadMS,vecClusterHeadBits,\
-                                   rateibMax,Gib);
-    //cout<<"Updated 1st tier energy "<<next1st_Joule<<" Joule "<<endl;
-
-}
-
-void ULSA4b7_NOGUIDE::do1sttierPowerControlforBest_DataCentric() {
-    //debug_CheckSizeCorrect();
-
-    for(unsigned int i=0; i<vecHeadNameBest.size(); i++) {
-        int tempCluSize=0;
-        for (int j=0; j<totalNodes; j++)
-            if (bestMaClusterStru[i][j]==1)tempCluSize++;
-        double groupRedundancy = matrixComputer->computeLog2Det(1.0,bestMaClusterStru[i]);
-        vecClusterHeadBits[i]=tempCluSize*indEntropy + groupRedundancy;
-        //cout<<"Cluster "<<i<<" With data: "<<vecClusterHeadBits[i]<<"bits"<<endl;
-    }
-
-    consSol->Do1stTierPowerControl_ForBest(best1st_Joule,best1st_ms,vecClusterHeadWatt,vecClusterHeadMS,vecClusterHeadBits,\
-                                           rateibMax,Gib,vecHeadNameBest);
-}
-
-void ULSA4b7_NOGUIDE::do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, double &temp1stMs) {
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        double  groupRedundancy = matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[i]);
-        double  clusterInfo=cSystem->vecClusterSize[i]*indEntropy +  groupRedundancy;
-        vecClusterHeadBits[i]=clusterInfo;
-    }
-    consSol->Do1stTierPowerControl(temp1stJoule,temp1stMs,vecClusterHeadWatt,vecClusterHeadMS,vecClusterHeadBits,\
-                                   rateibMax,Gib);
-
-
-}
-
-void ULSA4b7_NOGUIDE::do1sttierPowerMaxforBest_DataCentric() {
-
-    double power1st=powerMax;
-    list <list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-    best1st_Joule=0;
-    best1st_ms=0;
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        vecClusterHeadWatt[i]=power1st;
-        vecClusterHeadBits[i] = it_LiInt->size()*indEntropy+ matrixComputer->computeLog2Det(1.0, cSystem->clusterStru[i]);
-        vecClusterHeadMS[i]= vecClusterHeadBits[i]/(bandwidthKhz*log2(1+power1st*Gib[cSystem->vecHeadName[i]]/sysComputing->returnInBandThermalNoise(bandwidthKhz)));
-    }
-}
-
-
-
-
-void ULSA4b7_NOGUIDE::debug_CheckSizeCorrect() {
+void ULSAkmeans_MC::debug_CheckSizeCorrect() {
     for (unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
         int tempSize = 0;
         for(int j=0; j<totalNodes; j++) {
@@ -1098,7 +1092,7 @@ void ULSA4b7_NOGUIDE::debug_CheckSizeCorrect() {
 
 
 
-void ULSA4b7_NOGUIDE::computeBestTRR_DataCentric()
+void ULSAkmeans_MC::computeBestTRR_DataCentric()
 {
     best2ndTierTraffic = 0;
     best1stTierTraffic = 0;
@@ -1122,7 +1116,7 @@ void ULSA4b7_NOGUIDE::computeBestTRR_DataCentric()
 }
 
 
-void ULSA4b7_NOGUIDE::computeUpperResourceNoCodingNoPowerControl()
+void ULSAkmeans_MC::computeUpperResourceNoCodingNoPowerControl()
 {
     bestUpperLayerResource=0;
     double tempDataLoad[maxChNum];
@@ -1158,7 +1152,7 @@ void ULSA4b7_NOGUIDE::computeUpperResourceNoCodingNoPowerControl()
     fclose(fid);
 }
 
-void ULSA4b7_NOGUIDE::computeBestAvgInterference()
+void ULSAkmeans_MC::computeBestAvgInterference()
 {
     list<list <int> >::iterator itl = listCluMemBest->begin();
     for(int i=0; i<maxChNum; i++,itl++) //For each CH we will see there member 1-by-1
@@ -1206,7 +1200,7 @@ void ULSA4b7_NOGUIDE::computeBestAvgInterference()
 
 }
 
-void ULSA4b7_NOGUIDE::computeBestAvgPower()
+void ULSAkmeans_MC::computeBestAvgPower()
 {
     bestAvgPowerOFAllNodes=0;
     list<list<int> >::iterator it1=listCluMemBest->begin();
@@ -1225,7 +1219,7 @@ void ULSA4b7_NOGUIDE::computeBestAvgPower()
 }
 
 
-double ULSA4b7_NOGUIDE::returnComprRatio()
+double ULSAkmeans_MC::returnComprRatio()
 {
 
     bool tempAry2[totalNodes];
@@ -1237,7 +1231,7 @@ double ULSA4b7_NOGUIDE::returnComprRatio()
     return compressRatio;
 }
 
-bool ULSA4b7_NOGUIDE::startCool()
+bool ULSAkmeans_MC::startCool()
 {
   begin = clock();
   matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
@@ -1254,7 +1248,7 @@ bool ULSA4b7_NOGUIDE::startCool()
   consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
       nextNodePower,cSystem->listCluMember );
 
-  ULSAOutputToolSet<class ULSA4b7_NOGUIDE> resultShow;
+  ULSAOutputToolSet<class ULSAkmeans_MC> resultShow;
   flagAnsFound =false;
   //-----------------------------//
   //Initialize performance matrix//
@@ -1276,10 +1270,10 @@ bool ULSA4b7_NOGUIDE::startCool()
   bestAllServeFound=false;
 
   if ( checkBestClusterStructure_DataCentric(0) ) return true;
-  cout << "Compression Ratio " << returnComprRatio() 
-    << " indEntropy " << indEntropy << endl;
+  cout << "Compression Ratio " << returnComprRatio() << 
+    " indEntropy " << indEntropy << endl;
 #ifdef ITERATION 
-  fstream iterFile("noGuideIterObserve.out",ios::out);
+  fstream iterFile("guideIterObserve.out",ios::out);
 #endif
   for(int i=0; i<SAIter; i++)
   {
@@ -1378,7 +1372,7 @@ bool ULSA4b7_NOGUIDE::startCool()
     Movement Function
     use in setInitialStructure
 */
-void ULSA4b7_NOGUIDE::addMemberSAIni(int inputHeadIndex, int inputMemberName)
+void ULSAkmeans_MC::addMemberSAIni(int inputHeadIndex, int inputMemberName)
 {
     cSystem->addMemberCs(inputHeadIndex,inputMemberName,iniDone);
     nodes[inputMemberName].ptrHead = cSystem->returnHeadPtr(inputHeadIndex);
@@ -1386,7 +1380,7 @@ void ULSA4b7_NOGUIDE::addMemberSAIni(int inputHeadIndex, int inputMemberName)
 }
 
 //This function only used one time every SA
-void ULSA4b7_NOGUIDE::do1sttierPowerControlforCur_DataCentric() {
+void ULSAkmeans_MC::do1sttierPowerControlforCur_DataCentric() {
 // debug_CheckSizeCorrect();
 //  cout<<endl;
 //  cout<<"Cur1sttier PowerControl"<<endl;
@@ -1404,7 +1398,7 @@ void ULSA4b7_NOGUIDE::do1sttierPowerControlforCur_DataCentric() {
 /*
     do one step movement add/discard/
 */
-void ULSA4b7_NOGUIDE::coolOnce_minResors()
+void ULSAkmeans_MC::coolOnce_minResors()
 {
   int probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
   int probDiscard = ((curSupNum<(maxChNum+1)) ?0:30000);
@@ -1460,9 +1454,7 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
     if (cSystem->listUnSupport->size()==0) cout<<"Error, it should haven't come in here with empty addlist and add."<<endl;
     else
     {
-      //decideAddRandom(); //this will be too bad
       decideAdd3i_DC_HeadDetMemRan();
-//      cout << curSupNum << ' ' << targetHeadIndex << ' ' << targetNode << endl;
       if(targetHeadIndex!=-1&&targetNode!=-1){
         //cout<<"add "<<targetNode<<" to "<<cSystem->vecHeadName[targetHeadIndex]<<endl;
         addMemberSA(targetHeadIndex,targetNode);
@@ -1473,9 +1465,7 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
   }
   else if (nextEventFlag ==2)
   {
-    decideDiscardRandom();
-    //decideDiscard3b();
-    //cout <<curSupNum <<' '<< targetHeadIndex << ' ' << targetNode << endl;
+    decideDiscard3b();
     discardMemberSA(targetHeadIndex,targetNode);
     nextChNum=curChNum;
 
@@ -1483,8 +1473,7 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
   }
   else if (nextEventFlag ==3)
   {
-    decideRotateRandom();
-    //decideHeadRotate2i_DC_HeadRanMemDet();
+    decideHeadRotate2i_DC_HeadRanMemDet();
     //cout<<"HR "<<targetNode+1<<" to Replace "<<cSystem->vecHeadName[targetHeadIndex]+1<<endl;
     rotateHeadSA(targetHeadIndex,targetNode);
     nextJEntropy = curJEntropy;
@@ -1494,8 +1483,7 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
   }
   else if (nextEventFlag==4){
     JoiningHeadIndex=-1;
-    //decideHeadJoining4b();
-    decideJoinRandom();
+    decideHeadJoining4b();
     if (JoiningHeadIndex==-1 || targetHeadIndex==-1) {
       nextJEntropy = curJEntropy; // entropy unchanged
       nextSupNum = curSupNum; //support number unchanged
@@ -1508,8 +1496,6 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
   else if (nextEventFlag==5){
     isolatedHeadIndex=-1;
     IsolateNodeName=-1;
-    //decideDiscardRandom();
-    //IsolateNodeName = targetNode;
     decideIsolate4b();
     isolateHeadSA(IsolateNodeName,isolatedHeadIndex,targetHeadIndex);
     nextJEntropy = curJEntropy;
@@ -1528,7 +1514,7 @@ void ULSA4b7_NOGUIDE::coolOnce_minResors()
     targetNode: randomly proportional to the indepedent information compare to current set
 
 */
-void ULSA4b7_NOGUIDE::decideAdd3i_DC_HeadDetMemRan() {
+ void ULSAkmeans_MC::decideAdd3i_DC_HeadDetMemRan() {
     targetHeadIndex=-1;
     targetNode=-1;
 
@@ -1559,26 +1545,11 @@ void ULSA4b7_NOGUIDE::decideAdd3i_DC_HeadDetMemRan() {
         }
     }
 }
-
-void ULSA4b7_NOGUIDE::decideAddRandom() {
-    targetHeadIndex=-1;
-    targetNode =-1;
-    targetHeadIndex = rand()%maxChNum;
-    int targetUnSupportIdx = 0;
-
-    if (cSystem->listUnSupport->size() != 0) {
-      targetUnSupportIdx = rand() % cSystem->listUnSupport->size();
-    }
-
-    list<int>::iterator iter = cSystem->listUnSupport->begin();
-    for (int i = 0; i < targetUnSupportIdx; ++i ) ++iter;
-    targetNode = *iter;
-}
 /*
     targetHead: (Randomly) Choose a Head uniformly
     targetNode: (Deterministically) find The one cause strongest Interference to others
 */
-void ULSA4b7_NOGUIDE::decideDiscard3b()
+void ULSAkmeans_MC::decideDiscard3b()
 {
     //Compute the discardable size
     list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
@@ -1638,101 +1609,7 @@ void ULSA4b7_NOGUIDE::decideDiscard3b()
  * TargetNode: Determinisitcally find the node which provide lowest (side information)/power
  */
 
-void ULSA4b7_NOGUIDE::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {
-    //Choose targetHeadIndex Index//
-    targetNode=-1;
-    targetHeadIndex=-1;
-    double normalizedFactor=0;
-    double ary_CompressionRatio[cSystem->vecHeadName.size()];
-    list <list <int> >::iterator it_LiInt = cSystem->listCluMember->begin();
-    for(unsigned int i=0;i<cSystem->vecHeadName.size();i++,it_LiInt++){
-       int tempMemNum=it_LiInt->size();
-       double tempCompRatio=1-((tempMemNum*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[i]))/(tempMemNum*indEntropy));
-       ary_CompressionRatio[i]=tempCompRatio;
-       normalizedFactor+=tempCompRatio;
-       //cout<<tempMemNum<<" "<<tempCompRatio<<endl;
-    }
-    double randCursor=static_cast<double>(rand())/DBL_MAX;
-    double tempCursorMove=0;
-    for(unsigned int i=0;i<cSystem->vecHeadName.size();i++,it_LiInt++){
-        tempCursorMove+=(ary_CompressionRatio[i]/normalizedFactor);
-        if(tempCursorMove>randCursor){
-            targetHeadIndex=i;
-            break;
-        }
-    }
-    //-----------------------//
-    //cout<<"in dis "<<targetHeadIndex<<endl;
-    //choose targetnode      //
-    it_LiInt=cSystem->listCluMember->begin();
-    for(int i=0;i<targetHeadIndex;i++)it_LiInt++;
-
-    list<int>::iterator it_Int=it_LiInt->begin();
-    double ary_InterfHazard[it_LiInt->size()-1];
-    double ary_extraInfromation[it_LiInt->size()-1];
-    double ary_discardCandidate[it_LiInt->size()-1];
-
-    for(unsigned int i=0;it_Int!=it_LiInt->end();it_Int++){
-        int tempNode=*it_Int;
-        if(tempNode==cSystem->vecHeadName[targetHeadIndex])continue;
-        ary_discardCandidate[i]=tempNode;
-        double interferencHazard=0;
-        for(unsigned int j=0;j<cSystem->vecHeadName.size();j++){
-            if(j==(unsigned)targetHeadIndex)continue;
-            interferencHazard+=(nextNodePower[tempNode]*Gij[tempNode][cSystem->vecHeadName[j]]);
-        }
-        ary_InterfHazard[i]=interferencHazard;
-        double tempBeforeDisInfo=(curSupNum*indEntropy)+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-        cSystem->allSupStru[tempNode]=0;
-        double tempAfterDisInfo=((curSupNum-1)*indEntropy)+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-        cSystem->allSupStru[tempNode]=1;
-        ary_extraInfromation[i]=tempBeforeDisInfo-tempAfterDisInfo;
-
-        i++;
-    }
-     double ary_extInfoOverInterfHazard[it_LiInt->size()-1];
-     double min_extInfoOverInterfHazard=DBL_MAX;
-     int tmpFinalNodeindex=-1;
-     for(unsigned int i=0;i<it_LiInt->size()-1;i++){
-        ary_extInfoOverInterfHazard[i]=ary_extraInfromation[i];
-        assert(ary_extInfoOverInterfHazard>0);
-        if(ary_extInfoOverInterfHazard[i]<min_extInfoOverInterfHazard){
-            min_extInfoOverInterfHazard=ary_extInfoOverInterfHazard[i];
-            targetNode=ary_discardCandidate[i];
-            tmpFinalNodeindex=i;} }
-
-    cout<<"Information lose="<<ary_extraInfromation[tmpFinalNodeindex]<<" Reduce PowerInterference="<<ary_InterfHazard[tmpFinalNodeindex]<<endl;
-    //-----------------------//
-
-}
-
-void ULSA4b7_NOGUIDE::decideDiscardRandom() 
-{
-  /* we cannot discart cluster head */
-  targetHeadIndex = -1;
-  targetNode = -1;
-  bool isHead = true;
-  bool isSingleNodeCluster = true;
-  for ( int idx = 0; idx < maxChNum; idx++) {
-    if (cSystem->vecClusterSize[idx] > 1 && cSystem->vecHeadName[idx] != -1) {
-      targetHeadIndex = idx;
-    }
-  }
-  if (targetHeadIndex == -1 ) return; 
-
-  list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
-  for (int i = 0; i < targetHeadIndex; ++i ) ++iterRow;
-  while (isHead ) {
-    int targetNodeListIdx = rand() % iterRow->size();
-    list<int>::iterator iterCol = iterRow->begin(); 
-    for (int j = 0; j < targetNodeListIdx; ++j) ++iterCol;
-    if (*iterCol != cSystem->vecHeadName[targetHeadIndex] ) {
-      targetNode = *iterCol;
-      isHead = false;
-    }
-  }
-}
-void ULSA4b7_NOGUIDE::decideHeadRotate2i_DC_HeadRanMemDet()
+void ULSAkmeans_MC::decideHeadRotate2i_DC_HeadRanMemDet()
 {
 	//----Uniformly choosed
 	int rotateAbleSize=0;
@@ -1781,31 +1658,9 @@ void ULSA4b7_NOGUIDE::decideHeadRotate2i_DC_HeadRanMemDet()
 	}
 	cSystem->vecHeadName[targetHeadIndex]=OriginalNode;
 }
-void ULSA4b7_NOGUIDE::decideRotateRandom()
-{
-  targetHeadIndex = -1;
-  targetNode = -1;
-  bool isHead = true;
-  bool isSingleNodeCluster = true;
-  for ( int idx = 0; idx < maxChNum; idx++) {
-    /* code */
-    if (cSystem->vecClusterSize[idx] > 1 && cSystem->vecHeadName[idx] != -1) {
-      targetHeadIndex = idx;
-    }
-  }
-  if (targetHeadIndex == -1 ) return; 
-
-  list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
-  for (int i = 0; i < targetHeadIndex; ++i ) ++iterRow;
-  int targetNodeListIdx = rand() % iterRow->size();
-  list<int>::iterator iterCol = iterRow->begin(); 
-  for (int j = 0; j < targetNodeListIdx; ++j) ++iterCol;
-  targetNode = *iterCol;
-  return;
-}
 
 
-void ULSA4b7_NOGUIDE::decideHeadJoining4b(){
+void ULSAkmeans_MC::decideHeadJoining4b(){
     int threshold=thresholdd; // To determine the cluster size is large enough 
                               // to perform join operation 
     double usepower=powerMax; // No use
@@ -1941,7 +1796,7 @@ void ULSA4b7_NOGUIDE::decideHeadJoining4b(){
 
 }
 
-double ULSA4b7_NOGUIDE::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
+double ULSAkmeans_MC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
     //estimate the power increase of testIndex: assume interference the same;
     
     vector<double> originalInterf_FromTargetClu_JoiningClu;
@@ -2009,7 +1864,7 @@ double ULSA4b7_NOGUIDE::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
               cerr << "Current CH idx: " << i << endl;
               cerr << "Current CH name: " << cSystem->vecHeadName[i] << endl;
             }
-            //assert(ratio != numeric_limits<double>::infinity()); 
+            assert(ratio != numeric_limits<double>::infinity()); 
 #endif
 
             if( ratio > testMaxRatio ) testMaxRatio = ratio;
@@ -2020,7 +1875,7 @@ double ULSA4b7_NOGUIDE::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
     //(:=upper bound + lower nbound)/2 - lower bound
 }
 
-void ULSA4b7_NOGUIDE::computeOriInterference_GivenTarInJoinI(
+void ULSAkmeans_MC::computeOriInterference_GivenTarInJoinI(
     vector<double> &originalInterf_FromTargetClusterNJoinI,
     vector<double> &interference_Except_JoinI_TargetI,
     int joinCHIdx, 
@@ -2044,7 +1899,7 @@ void ULSA4b7_NOGUIDE::computeOriInterference_GivenTarInJoinI(
         interference_Except_JoinI_TargetI[i]=tempAllInterf;
     }
 }
-void ULSA4b7_NOGUIDE::updateJoinEstimatedPower(vector<double> &newPower, 
+void ULSAkmeans_MC::updateJoinEstimatedPower(vector<double> &newPower, 
     vector<int> &newMem,int joinCHIdx, int targetCHIdx){
 
     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
@@ -2084,7 +1939,7 @@ void ULSA4b7_NOGUIDE::updateJoinEstimatedPower(vector<double> &newPower,
         newMem.push_back(*it_Int);
     }
 }
-void ULSA4b7_NOGUIDE::computeNewInterference_FromNewTarHI(vector<double> &newInterf,
+void ULSAkmeans_MC::computeNewInterference_FromNewTarHI(vector<double> &newInterf,
     vector<double>&newPower, vector<int>&newMem, int joinCHIdx, 
     int targetCHIdx){
 
@@ -2105,30 +1960,10 @@ void ULSA4b7_NOGUIDE::computeNewInterference_FromNewTarHI(vector<double> &newInt
     }
 }
 
-void ULSA4b7_NOGUIDE::decideJoinRandom()
-{
-  JoiningHeadIndex = -1;
-  targetHeadIndex = -1;
-  for ( int idx = 0; idx < maxChNum; idx++) {
-    if (cSystem->vecClusterSize[idx] > 1 && cSystem->vecHeadName[idx] != -1) {
-      targetHeadIndex = idx;
-    }
-  }
-  if (targetHeadIndex == -1 ) return; 
-
-  for (int j = 0; j < maxChNum; j++) {
-    if (cSystem->vecClusterSize[j] > 1 && 
-        cSystem->vecHeadName[j] != -1 &&
-        targetHeadIndex != j) {
-      JoiningHeadIndex = j;
-    }
-  }
-}
 
 
 
-
-void ULSA4b7_NOGUIDE::decideIsolate4b(){
+void ULSAkmeans_MC::decideIsolate4b(){
     //calculate first tier cost
     vector<double>vecGain;
     vecGain.reserve(totalNodes);
@@ -2155,9 +1990,7 @@ void ULSA4b7_NOGUIDE::decideIsolate4b(){
     for (int i = 0; i < maxChNum; i++) {
       if (cSystem->vecClusterSize[i] > 0 ) count++;
     }
-#ifdef OBSERVE
     cout << count << endl;
-#endif
 
 
     //Calculate 2nd tier Gain
@@ -2230,7 +2063,7 @@ void ULSA4b7_NOGUIDE::decideIsolate4b(){
     //fclose(fid);
 }
 
-double ULSA4b7_NOGUIDE::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){
+double ULSAkmeans_MC::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){
     vector<double> originalInterf_FromIsolatedClu;
     vector<double> interference_Except_IsolatedClu;
     originalInterf_FromIsolatedClu.resize(maxChNum);
@@ -2257,12 +2090,10 @@ double ULSA4b7_NOGUIDE::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluInd
             double tmpRcvPW=nextNodePower[*it_Int]*Gij[*it_Int][cSystem->vecHeadName[i]];
             double ratio=log2(1+tmpRcvPW/(realNoise+originalInterf_FromIsolatedClu[i]+interference_Except_IsolatedClu[i])) \
             /log2(1+tmpRcvPW/(realNoise+newInterf_FromIsolatedClu[i]+interference_Except_IsolatedClu[i]));
-#ifdef OBSERVE
             if(ratio>1){
               cout<<i<<"-th new Interference="<<newInterf_FromIsolatedClu[i]<<endl;
               cout<<i<<"-th cluster Original Inteference="<<originalInterf_FromIsolatedClu[i]<<endl;
             }
-#endif
 
 
             if(ratio>testMaxRatio)testMaxRatio=ratio;
@@ -2275,7 +2106,7 @@ double ULSA4b7_NOGUIDE::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluInd
 
     return testMaxRatio*cur2nd_ms;
 }
-void ULSA4b7_NOGUIDE::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){
+void ULSAkmeans_MC::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){
     consSol->updateInterference();
     for(int i=0;i<maxChNum;i++){
         if(cSystem->vecHeadName[i]==-1)continue;
@@ -2292,7 +2123,7 @@ void ULSA4b7_NOGUIDE::computeOriInterference_GivenIsolate(vector<double> &oriInt
         interfExcept[i]=tempAllInterf;
     }
 }
-void ULSA4b7_NOGUIDE::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex){
+void ULSAkmeans_MC::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex){
     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
     for(int i=0;i<isoCluIndex;i++)it_LiInt++;
     list<int>::iterator it_Int=it_LiInt->begin();
@@ -2305,7 +2136,7 @@ void ULSA4b7_NOGUIDE::updateIsolateEstimatedpower(vector<double> &newPower,int I
         newPower[*it_Int]=tmpPower;
     }
 }
-void ULSA4b7_NOGUIDE::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex){
+void ULSAkmeans_MC::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex){
     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
     for(int i=0;i<isoCluIndex;i++)it_LiInt++;
 
@@ -2335,7 +2166,7 @@ void ULSA4b7_NOGUIDE::computeNewInterference_FromIsoCluster(vector<double> &newI
    add new member and adjust the "nodes" value
 
 */
-void ULSA4b7_NOGUIDE::addMemberSA(int inputHeadIndex, int inputMemberName)
+void ULSAkmeans_MC::addMemberSA(int inputHeadIndex, int inputMemberName)
 {
 	cSystem->addMemberCs(inputHeadIndex,inputMemberName,iniDone);
 	nodes[inputMemberName].ptrHead = cSystem->returnHeadPtr(inputHeadIndex);
@@ -2344,7 +2175,7 @@ void ULSA4b7_NOGUIDE::addMemberSA(int inputHeadIndex, int inputMemberName)
    Movement Function
    discard the node form the specific head(cluster)
    */
-void ULSA4b7_NOGUIDE::discardMemberSA(int inputHeadIndex, int inputMemberName)
+void ULSAkmeans_MC::discardMemberSA(int inputHeadIndex, int inputMemberName)
 {
 	cSystem->discardMemberCs(inputHeadIndex,inputMemberName);
 	ptrHeadLastDiscard = nodes[inputMemberName].ptrHead;
@@ -2357,13 +2188,13 @@ void ULSA4b7_NOGUIDE::discardMemberSA(int inputHeadIndex, int inputMemberName)
 /*
    Rotate Member SA
    */
-void ULSA4b7_NOGUIDE::rotateHeadSA(int inputHeadIndex, int inputMemberName)
+void ULSAkmeans_MC::rotateHeadSA(int inputHeadIndex, int inputMemberName)
 {
 	rotatedHeadNameLast = cSystem->vecHeadName[inputHeadIndex];
 	cSystem->vecHeadName[inputHeadIndex] = inputMemberName;
 }
 
-void ULSA4b7_NOGUIDE::isolateHeadSA(int isoName,int IsolateCluI, int targetH){
+void ULSAkmeans_MC::isolateHeadSA(int isoName,int IsolateCluI, int targetH){
     //cout<<"doing isolation: iso-"<<isoName<<" From "<<IsolateCluI<<" to "<<targetH<<endl;
 
 
@@ -2378,7 +2209,7 @@ void ULSA4b7_NOGUIDE::isolateHeadSA(int isoName,int IsolateCluI, int targetH){
 }
 
 
-void ULSA4b7_NOGUIDE::join_fromHeadSA(int JoiningHeadIndex,int targetH){
+void ULSAkmeans_MC::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 
      lastJoingingMachine.clear();
      lastJoiningHeadIndex=JoiningHeadIndex;
@@ -2397,7 +2228,7 @@ void ULSA4b7_NOGUIDE::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 }
 
 
-void ULSA4b7_NOGUIDE::calculateMatrics_minResors()//Calculate next performance matircs
+void ULSAkmeans_MC::calculateMatrics_minResors()//Calculate next performance matircs
 {
 	next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
 	next1st_ms = return1stTotalNcal1stResors_HomoPower();
@@ -2444,7 +2275,7 @@ void ULSA4b7_NOGUIDE::calculateMatrics_minResors()//Calculate next performance m
    -confirm3c add reset some metric if structure change(add,discard)
    by"if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();"
    */
-void ULSA4b7_NOGUIDE::confirmNeighbor3i()
+void ULSAkmeans_MC::confirmNeighbor3i()
 {
     /*cout<<"By "<<nextEventFlag<<endl;
     cout<<"Next Payoff="<<nextPayoff<<"; From CurPayoff="<<curPayoff <<endl;
@@ -2505,7 +2336,7 @@ void ULSA4b7_NOGUIDE::confirmNeighbor3i()
 	temparature*=alpha;
 }
 
-void ULSA4b7_NOGUIDE::passNext2Cur() {
+void ULSAkmeans_MC::passNext2Cur() {
 
 
     curJEntropy = nextJEntropy;
@@ -2555,7 +2386,7 @@ void ULSA4b7_NOGUIDE::passNext2Cur() {
 /*
     reverse the last move in Csystem and node
 */
-void ULSA4b7_NOGUIDE::reverseMoveSA()
+void ULSAkmeans_MC::reverseMoveSA()
 {
     //cout<<"reverse"<<endl;
     if (nextEventFlag == 1)//reverse the add previously did
@@ -2619,7 +2450,7 @@ void ULSA4b7_NOGUIDE::reverseMoveSA()
   Metrics update after structure changed
   -reset "aryFlagHRDone"
 */
-void ULSA4b7_NOGUIDE::confirmStructureChange()
+void ULSAkmeans_MC::confirmStructureChange()
 {
     //cout<<"Structure Change"<<endl;
     for(int i=0; i<maxChNum; i++)aryFlagHRDone[i]=false;
@@ -2630,14 +2461,13 @@ void ULSA4b7_NOGUIDE::confirmStructureChange()
 /*
     Check if this structure is the best
 */
-bool ULSA4b7_NOGUIDE::checkBestClusterStructure_DataCentric(int inputRound)
+bool ULSAkmeans_MC::checkBestClusterStructure_DataCentric(int inputRound)
 {
     bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
     if(curAllServe)bestAllServeFound=true;
     //cout<<"In check Best"<<endl;
     if ((curJEntropy>bestFeasibleJEntropy)&&!curAllServe&&!bestAllServeFound)
     {
-        //do1sttierPowerMaxforBest_DataCentric();
         roundBest = inputRound;
         bestFeasibleJEntropy=curJEntropy;
         bestFeasibleSupNum=curSupNum ;
@@ -2654,7 +2484,6 @@ bool ULSA4b7_NOGUIDE::checkBestClusterStructure_DataCentric(int inputRound)
     else if ((curPayoff<bestFeasiblePayoff)&&curAllServe)
     {
         //cout<<"Find new best"<<endl;
-        //do1sttierPowerMaxforBest_DataCentric();
         roundBest = inputRound;
         bestFeasibleJEntropy=curJEntropy;
         bestFeasibleSupNum=curSupNum ;
@@ -2672,7 +2501,7 @@ bool ULSA4b7_NOGUIDE::checkBestClusterStructure_DataCentric(int inputRound)
 }
 
 
-void ULSA4b7_NOGUIDE::keepBestStructure()
+void ULSAkmeans_MC::keepBestStructure()
 {
     vecHeadNameBest.assign(cSystem->vecHeadName.begin(),cSystem->vecHeadName.end());
     listCluMemBest->assign(cSystem->listCluMember->begin(), cSystem->listCluMember->end());
@@ -2701,7 +2530,7 @@ void ULSA4b7_NOGUIDE::keepBestStructure()
     Purpose: return the closet node index from a certain (X,Y)
 
 */
-int ULSA4b7_NOGUIDE::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<int> &inputGroup)
+int ULSAkmeans_MC::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<int> &inputGroup)
 {
     float closetNodeDistance =  numeric_limits<float>::max( );
     float tempD = 0;
@@ -2723,7 +2552,7 @@ int ULSA4b7_NOGUIDE::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<in
   Internal tool
   -Calculate the average power of each node
 */
-double ULSA4b7_NOGUIDE::returnTransientAveragePower()
+double ULSAkmeans_MC::returnTransientAveragePower()
 {
     list <list<int> >::iterator itlist1=cSystem->listCluMember->begin();
     double accuPower=0;
@@ -2740,7 +2569,7 @@ double ULSA4b7_NOGUIDE::returnTransientAveragePower()
     return (accuPower/NodeNHeadNum);
 }
 
-double ULSA4b7_NOGUIDE::returnTransientJoule() {
+double ULSAkmeans_MC::returnTransientJoule() {
     list <list<int> >::iterator itlist1=cSystem->listCluMember->begin();
     double accuJoule=0;
     for(int i =0; itlist1!=cSystem->listCluMember->end(); itlist1++,i++)
@@ -2761,7 +2590,7 @@ double ULSA4b7_NOGUIDE::returnTransientJoule() {
     return (accuJoule);
 }
 
-double ULSA4b7_NOGUIDE::return1stTotalNcal1stResors_HomoPower() {
+double ULSAkmeans_MC::return1stTotalNcal1stResors_HomoPower() {
     power1st=powerMax;
     double T1=0;
     list <list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
@@ -2777,7 +2606,7 @@ double ULSA4b7_NOGUIDE::return1stTotalNcal1stResors_HomoPower() {
     }
     return T1;
 }
-void ULSA4b7_NOGUIDE::resetSA3iSystem() {
+void ULSAkmeans_MC::resetSA3iSystem() {
     iniDone = false;
     bestFeasibleJEntropy = -1;
     bestFeasibleSupNum = -1;
@@ -2816,10 +2645,10 @@ void ULSA4b7_NOGUIDE::resetSA3iSystem() {
 
 
 /* Not finishied
-void ULSA4b7_NOGUIDE::writePayoffEachRound_MinResors(int inputRound)
+void ULSAkmeans_MC::writePayoffEachRound_MinResors(int inputRound)
 {
   FILE *fid1;
-  fid1=fopen("ULSA4b7_NOGUIDE_iterPayoff.txt","a");
+  fid1=fopen("ULSAkmeans_MC_iterPayoff.txt","a");
   //           1   2  3  4  5 6  7  8  9  10 11 12 13
   fprintf(fid1,"%f %d %f %f %f %f %f %d %f %f %d %e %e\n",curJEntropy, curSupNum-maxChNum, bestTrafficReductionRatio,best2ndTierTraffic, best1stTierTraffic, cur2nd_ms, bestUpperLayerResource \
           ,maxChNum, C2, wholeSystemEntopy,roundBest, bestAvgInterference, bestAvgPowerOFAllNodes);

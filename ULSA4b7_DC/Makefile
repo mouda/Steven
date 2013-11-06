@@ -1,6 +1,7 @@
 CPP= g++
 #CFLAGS=-O -O1 -O2 -O3
-DFLAGS= -D DEBUG -g
+CFLAGS= -D ITERATION
+#DFLAGS= -D DEBUG -g
 #PREFIX=/opt
 PREFIX=/home/share
 INCLUDE= -I$(PREFIX)/armadillo39202/include/

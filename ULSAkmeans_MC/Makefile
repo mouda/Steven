@@ -1,7 +1,6 @@
 CPP= g++
 CFLAGS=-O -O1 -O2 -O3
-#CFLAGS= -D OBSERVE
-CFLAGS= -D ITERATION
+#CFLAGS= -D ITERATION
 #DFLAGS= -D DEBUG -g
 #PREFIX=/opt
 PREFIX=/home/share
@@ -17,12 +16,12 @@ COMM_UTILITY= ../commonLibrary/CORRE_MA_OPE.o \
 	  ../commonLibrary/ULAGENT.o \
 	  ../commonLibrary/ULConstraintSolver.o \
 	  ../commonLibrary/ULCS1b.o 
-all: ULSA4b7_NOGUIDE
+all: ULSAkmeans_MC
 
-ULSA4b7_NOGUIDE: 	main.o ULSA4b7_NOGUIDE.o 
+ULSAkmeans_MC: 	main.o ULSAkmeans_MC.o 
 	$(CPP)  $(COMM_UTILITY) $(CFLAGS) $(INCLUDE) $(LIB_PATH) $(LIB_FLAGS) `pkg-config opencv --cflags --libs` $^  -o $@ 
 
 %.o: %.cpp
 	$(CPP) -c $(CFLAGS) $(DFLAGS) $(INCLUDE) $(LIB_PATH) $(LIB_FLAGS) $< -o $@
 clean:
-	rm ULSA4b7_NOGUIDE *.o
+	rm ULSAkmeans_MC *.o
