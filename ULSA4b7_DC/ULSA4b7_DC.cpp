@@ -1282,7 +1282,11 @@ bool ULSA4b7_DC::startCool()
   bestAllServeFound=false;
 
   if ( checkBestClusterStructure_DataCentric(0) ) return true;
-  cout << "Compression Ratio " << returnComprRatio() <<" indEntropy " << indEntropy << endl;
+  cout << "Compression Ratio " << returnComprRatio() << 
+    " indEntropy " << indEntropy << endl;
+#ifdef ITERATION 
+  fstream iterFile("guideIterObserve.out",ios::out);
+#endif
   for(int i=0; i<SAIter; i++)
   {
     coolOnce_minResors();
@@ -1315,10 +1319,13 @@ bool ULSA4b7_DC::startCool()
     int tempche=(signed)cSystem->listUnSupport->size();
 
     assert(( curSupNum + tempche) == totalNodes);
-    //cout<<"======================"<<endl;
-    //writeStruSingleRound(i);
-    //cout<<cur1st_ms<<" +  "<<cur2nd_ms<<" = "<<curPayoff<<"; with InfoR "<<curJEntropy/wholeSystemEntopy<<" and "<<curSupNum<<endl;
+#ifdef ITERATION
+    iterFile << curPayoff << endl;
+#endif
   }
+#ifdef ITERATION
+  iterFile.close();
+#endif
 
   end = clock();
   computingTimes = ((float)(end-begin))/CLOCKS_PER_SEC;

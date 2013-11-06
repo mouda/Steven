@@ -1,0 +1,193 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+CFLAGS	Makefile	/^CFLAGS=-O -O1 -O2 -O3$/;"	m
+COMM_UTILITY	Makefile	/^COMM_UTILITY= ..\/commonLibrary\/CORRE_MA_OPE.o \\$/;"	m
+CPP	Makefile	/^CPP= g++$/;"	m
+Gib	ULSAkmeans_MC.h	/^  float *Gib; \/\/ channel gain from node i to base station$/;"	m	class:ULSAkmeans_MC
+Gij	ULSAkmeans_MC.h	/^  float **Gij;\/\/ channel gain from node i to node j$/;"	m	class:ULSAkmeans_MC
+INCLUDE	Makefile	/^INCLUDE= -I$(PREFIX)\/armadillo39202\/include\/$/;"	m
+IsolateNodeName	ULSAkmeans_MC.h	/^  int  IsolateNodeName;$/;"	m	class:ULSAkmeans_MC
+JoiningHeadIndex	ULSAkmeans_MC.h	/^  int  JoiningHeadIndex;$/;"	m	class:ULSAkmeans_MC
+LIB_FLAGS	Makefile	/^LIB_FLAGS= -larmadillo -lopenblas -llapack  $/;"	m
+LIB_PATH	Makefile	/^LIB_PATH = -L$(PREFIX)\/armadillo39202\/lib\/ \\$/;"	m
+PREFIX	Makefile	/^PREFIX=\/home\/share$/;"	m
+SA_FIN_TEMP	main.cpp	12;"	d	file:
+SA_INI_TEMP	main.cpp	11;"	d	file:
+ULSAkmeans_MC	ULSAkmeans_MC.cpp	/^ULSAkmeans_MC::ULSAkmeans_MC() {};$/;"	f	class:ULSAkmeans_MC
+ULSAkmeans_MC	ULSAkmeans_MC.cpp	/^ULSAkmeans_MC::ULSAkmeans_MC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \\$/;"	f	class:ULSAkmeans_MC
+ULSAkmeans_MC	ULSAkmeans_MC.h	/^class ULSAkmeans_MC :public SABASE$/;"	c
+ULSAkmeans_MC_H	ULSAkmeans_MC.h	17;"	d
+addMemberSA	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::addMemberSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSAkmeans_MC
+addMemberSAIni	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::addMemberSAIni(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSAkmeans_MC
+aryFlagHRDone	ULSAkmeans_MC.h	/^  bool *aryFlagHRDone; \/\/If it is true means Head Rotate have been done in this structure, starrt from ULSAkmeans_MC$/;"	m	class:ULSAkmeans_MC
+bandwidthKhz	ULSAkmeans_MC.h	/^  double bandwidthKhz;$/;"	m	class:ULSAkmeans_MC
+baselineKmedoidDC	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::baselineKmedoidDC()$/;"	f	class:ULSAkmeans_MC
+baselineKmedoidMC	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::baselineKmedoidMC()$/;"	f	class:ULSAkmeans_MC
+begin	ULSAkmeans_MC.h	/^  clock_t begin, end;$/;"	m	class:ULSAkmeans_MC
+best1stTierTraffic	ULSAkmeans_MC.h	/^  double best1stTierTraffic;$/;"	m	class:ULSAkmeans_MC
+best1st_Joule	ULSAkmeans_MC.h	/^  double best1st_Joule;$/;"	m	class:ULSAkmeans_MC
+best1st_ms	ULSAkmeans_MC.h	/^  double best1st_ms;$/;"	m	class:ULSAkmeans_MC
+best2ndTierTraffic	ULSAkmeans_MC.h	/^  double best2ndTierTraffic;$/;"	m	class:ULSAkmeans_MC
+best2nd_Joule	ULSAkmeans_MC.h	/^  double best2nd_Joule;$/;"	m	class:ULSAkmeans_MC
+best2nd_ms	ULSAkmeans_MC.h	/^  double best2nd_ms;$/;"	m	class:ULSAkmeans_MC
+bestAllServeFound	ULSAkmeans_MC.h	/^  bool   bestAllServeFound;$/;"	m	class:ULSAkmeans_MC
+bestAllSupStru	ULSAkmeans_MC.h	/^  bool *bestAllSupStru;$/;"	m	class:ULSAkmeans_MC
+bestAvgInterference	ULSAkmeans_MC.h	/^  double bestAvgInterference;$/;"	m	class:ULSAkmeans_MC
+bestAvgPowerOFAllNodes	ULSAkmeans_MC.h	/^  double bestAvgPowerOFAllNodes;$/;"	m	class:ULSAkmeans_MC
+bestChNum	ULSAkmeans_MC.h	/^  int    bestChNum;$/;"	m	class:ULSAkmeans_MC
+bestFeasibleJEntropy	ULSAkmeans_MC.h	/^  double bestFeasibleJEntropy;$/;"	m	class:ULSAkmeans_MC
+bestFeasiblePayoff	ULSAkmeans_MC.h	/^  double bestFeasiblePayoff;$/;"	m	class:ULSAkmeans_MC
+bestFeasibleSupNum	ULSAkmeans_MC.h	/^  int    bestFeasibleSupNum;$/;"	m	class:ULSAkmeans_MC
+bestMaClusterStru	ULSAkmeans_MC.h	/^  bool** bestMaClusterStru;$/;"	m	class:ULSAkmeans_MC
+bestTrafficReductionRatio	ULSAkmeans_MC.h	/^  double bestTrafficReductionRatio;$/;"	m	class:ULSAkmeans_MC
+bestUpperLayerResource	ULSAkmeans_MC.h	/^  double bestUpperLayerResource;$/;"	m	class:ULSAkmeans_MC
+cSystem	ULSAkmeans_MC.h	/^  ULCS1b*  cSystem;   \/\/ system cluseter structure$/;"	m	class:ULSAkmeans_MC
+calculateMatrics_minResors	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::calculateMatrics_minResors()\/\/Calculate next performance matircs$/;"	f	class:ULSAkmeans_MC
+checkBestClusterStructure_DataCentric	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::checkBestClusterStructure_DataCentric(int inputRound)$/;"	f	class:ULSAkmeans_MC
+compRatio	ULSAkmeans_MC.h	/^  double compRatio;$/;"	m	class:ULSAkmeans_MC
+compareDis	ULSAkmeans_MC.h	/^    compareDis(const ULSAkmeans_MC& sa) : mySA(sa) {} \/\/ constructor$/;"	f	struct:ULSAkmeans_MC::compareDis
+compareDis	ULSAkmeans_MC.h	/^  struct compareDis$/;"	s	class:ULSAkmeans_MC
+computeBestAvgInterference	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::computeBestAvgInterference()$/;"	f	class:ULSAkmeans_MC
+computeBestAvgPower	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::computeBestAvgPower()$/;"	f	class:ULSAkmeans_MC
+computeBestTRR_DataCentric	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::computeBestTRR_DataCentric()$/;"	f	class:ULSAkmeans_MC
+computeNewInterference_FromIsoCluster	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex){$/;"	f	class:ULSAkmeans_MC
+computeNewInterference_FromNewTarHI	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::computeNewInterference_FromNewTarHI(vector<double> &newInterf,$/;"	f	class:ULSAkmeans_MC
+computeOriInterference_GivenIsolate	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){$/;"	f	class:ULSAkmeans_MC
+computeOriInterference_GivenTarInJoinI	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::computeOriInterference_GivenTarInJoinI($/;"	f	class:ULSAkmeans_MC
+computeUpperResourceNoCodingNoPowerControl	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::computeUpperResourceNoCodingNoPowerControl()$/;"	f	class:ULSAkmeans_MC
+computingTimes	ULSAkmeans_MC.h	/^  float computingTimes;$/;"	m	class:ULSAkmeans_MC
+confirmNeighbor3i	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::confirmNeighbor3i()$/;"	f	class:ULSAkmeans_MC
+confirmStructureChange	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::confirmStructureChange()$/;"	f	class:ULSAkmeans_MC
+consSol	ULSAkmeans_MC.h	/^  ULConstraintSolver* consSol;$/;"	m	class:ULSAkmeans_MC
+coolOnce_minResors	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::coolOnce_minResors()$/;"	f	class:ULSAkmeans_MC
+correlationFactor	ULSAkmeans_MC.h	/^  double correlationFactor;$/;"	m	class:ULSAkmeans_MC
+cur1st_Joule	ULSAkmeans_MC.h	/^  double cur1st_Joule;$/;"	m	class:ULSAkmeans_MC
+cur1st_ms	ULSAkmeans_MC.h	/^  double cur1st_ms;$/;"	m	class:ULSAkmeans_MC
+cur2nd_Joule	ULSAkmeans_MC.h	/^  double cur2nd_Joule;$/;"	m	class:ULSAkmeans_MC
+cur2nd_ms	ULSAkmeans_MC.h	/^  double cur2nd_ms;$/;"	m	class:ULSAkmeans_MC
+curChNum	ULSAkmeans_MC.h	/^  int curChNum;$/;"	m	class:ULSAkmeans_MC
+curJEntropy	ULSAkmeans_MC.h	/^  double  curJEntropy;$/;"	m	class:ULSAkmeans_MC
+curPayoff	ULSAkmeans_MC.h	/^  double curPayoff;$/;"	m	class:ULSAkmeans_MC
+curSupNum	ULSAkmeans_MC.h	/^  int  curSupNum;$/;"	m	class:ULSAkmeans_MC
+dataBits	ULSAkmeans_MC.h	/^  double dataBits;$/;"	m	class:ULSAkmeans_MC
+debug_CheckSizeCorrect	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::debug_CheckSizeCorrect() {$/;"	f	class:ULSAkmeans_MC
+decideAdd3i_DC_HeadDetMemRan	ULSAkmeans_MC.cpp	/^ void ULSAkmeans_MC::decideAdd3i_DC_HeadDetMemRan() {$/;"	f	class:ULSAkmeans_MC
+decideDiscard3b	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::decideDiscard3b()$/;"	f	class:ULSAkmeans_MC
+decideHeadJoining4b	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::decideHeadJoining4b(){$/;"	f	class:ULSAkmeans_MC
+decideHeadRotate2i_DC_HeadRanMemDet	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::decideHeadRotate2i_DC_HeadRanMemDet()$/;"	f	class:ULSAkmeans_MC
+decideIsolate4b	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::decideIsolate4b(){$/;"	f	class:ULSAkmeans_MC
+discardMemberSA	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::discardMemberSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSAkmeans_MC
+distanceOf2Nodes	ULSAkmeans_MC.h	/^  float **distanceOf2Nodes;$/;"	m	class:ULSAkmeans_MC
+do1sttierPowerControlforCur_DataCentric	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::do1sttierPowerControlforCur_DataCentric() {$/;"	f	class:ULSAkmeans_MC
+end	ULSAkmeans_MC.h	/^  clock_t begin, end;$/;"	m	class:ULSAkmeans_MC
+estimateIsolate2ndTierGain	ULSAkmeans_MC.cpp	/^double ULSAkmeans_MC::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){$/;"	f	class:ULSAkmeans_MC
+estimateJoin2ndTierCost	ULSAkmeans_MC.cpp	/^double ULSAkmeans_MC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){$/;"	f	class:ULSAkmeans_MC
+fidelityRatio	ULSAkmeans_MC.h	/^  double fidelityRatio;\/\/ Temporary set by here 2013\/02\/21$/;"	m	class:ULSAkmeans_MC
+flagAnsFound	ULSAkmeans_MC.h	/^  bool flagAnsFound;$/;"	m	class:ULSAkmeans_MC
+headCandidatesNum	ULSAkmeans_MC.h	/^  int headCandidatesNum;$/;"	m	class:ULSAkmeans_MC
+indEntropy	ULSAkmeans_MC.h	/^  double indEntropy;$/;"	m	class:ULSAkmeans_MC
+iniDone	ULSAkmeans_MC.h	/^  bool iniDone;$/;"	m	class:ULSAkmeans_MC
+isDetailOutputOn	ULSAkmeans_MC.h	/^  int isDetailOutputOn;$/;"	m	class:ULSAkmeans_MC
+isolateHeadSA	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::isolateHeadSA(int isoName,int IsolateCluI, int targetH){$/;"	f	class:ULSAkmeans_MC
+isolatedHeadIndex	ULSAkmeans_MC.h	/^  int  isolatedHeadIndex;$/;"	m	class:ULSAkmeans_MC
+join_fromHeadSA	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::join_fromHeadSA(int JoiningHeadIndex,int targetH){$/;"	f	class:ULSAkmeans_MC
+keepBestStructure	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::keepBestStructure()$/;"	f	class:ULSAkmeans_MC
+lastIsoPassAccu	ULSAkmeans_MC.h	/^  int lastIsoPassAccu;$/;"	m	class:ULSAkmeans_MC
+lastIsolateNodeName	ULSAkmeans_MC.h	/^  int lastIsolateNodeName;$/;"	m	class:ULSAkmeans_MC
+lastIsolatedClusterIndex	ULSAkmeans_MC.h	/^  int lastIsolatedClusterIndex;$/;"	m	class:ULSAkmeans_MC
+lastJoinPassAccu	ULSAkmeans_MC.h	/^  int lastJoinPassAccu;$/;"	m	class:ULSAkmeans_MC
+lastJoingingMachine	ULSAkmeans_MC.h	/^  vector<int> lastJoingingMachine;$/;"	m	class:ULSAkmeans_MC
+lastJoiningHead	ULSAkmeans_MC.h	/^  int lastJoiningHead;$/;"	m	class:ULSAkmeans_MC
+lastJoiningHeadIndex	ULSAkmeans_MC.h	/^  int lastJoiningHeadIndex;$/;"	m	class:ULSAkmeans_MC
+listCluMemBest	ULSAkmeans_MC.h	/^  list <list <int> > *listCluMemBest;$/;"	m	class:ULSAkmeans_MC
+maBestInterference	ULSAkmeans_MC.h	/^  double **maBestInterference;$/;"	m	class:ULSAkmeans_MC
+maBestInterfernceIndex	ULSAkmeans_MC.h	/^  int **maBestInterfernceIndex;$/;"	m	class:ULSAkmeans_MC
+maIndexSortDecGain	ULSAkmeans_MC.h	/^  int ** maIndexSortDecGain;$/;"	m	class:ULSAkmeans_MC
+maStrengthInterBest	ULSAkmeans_MC.h	/^  double ** maStrengthInterBest;$/;"	m	class:ULSAkmeans_MC
+main	main.cpp	/^int main(int argc, char* argv[])$/;"	f
+mapNodeName2DistanceRank	ULSAkmeans_MC.h	/^  map <int, int>  *mapNodeName2DistanceRank;$/;"	m	class:ULSAkmeans_MC
+matrixComputer	ULSAkmeans_MC.h	/^  CORRE_MA_OPE * matrixComputer;$/;"	m	class:ULSAkmeans_MC
+mySA	ULSAkmeans_MC.h	/^    const ULSAkmeans_MC& mySA;\/\/ data member$/;"	m	struct:ULSAkmeans_MC::compareDis
+next1st_Joule	ULSAkmeans_MC.h	/^  double next1st_Joule;$/;"	m	class:ULSAkmeans_MC
+next1st_ms	ULSAkmeans_MC.h	/^  double next1st_ms;$/;"	m	class:ULSAkmeans_MC
+next2nd_Joule	ULSAkmeans_MC.h	/^  double next2nd_Joule;$/;"	m	class:ULSAkmeans_MC
+next2nd_ms	ULSAkmeans_MC.h	/^  double next2nd_ms;$/;"	m	class:ULSAkmeans_MC
+nextChNum	ULSAkmeans_MC.h	/^  int nextChNum;$/;"	m	class:ULSAkmeans_MC
+nextEventFlag	ULSAkmeans_MC.h	/^  int  nextEventFlag;$/;"	m	class:ULSAkmeans_MC
+nextJEntropy	ULSAkmeans_MC.h	/^  double  nextJEntropy;$/;"	m	class:ULSAkmeans_MC
+nextNodePower	ULSAkmeans_MC.h	/^  double* nextNodePower;$/;"	m	class:ULSAkmeans_MC
+nextPayoff	ULSAkmeans_MC.h	/^  double nextPayoff;$/;"	m	class:ULSAkmeans_MC
+nextSupNum	ULSAkmeans_MC.h	/^  int  nextSupNum;$/;"	m	class:ULSAkmeans_MC
+nodes	ULSAkmeans_MC.h	/^  std::vector <ULAGENT> nodes;$/;"	m	class:ULSAkmeans_MC
+operator ()	ULSAkmeans_MC.h	/^    bool operator() (const int &i, const int &j)$/;"	f	struct:ULSAkmeans_MC::compareDis
+passNext2Cur	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::passNext2Cur() {$/;"	f	class:ULSAkmeans_MC
+power1st	ULSAkmeans_MC.h	/^  double power1st;$/;"	m	class:ULSAkmeans_MC
+powerBest	ULSAkmeans_MC.h	/^  double *powerBest;$/;"	m	class:ULSAkmeans_MC
+powerLastDiscard	ULSAkmeans_MC.h	/^  double powerLastDiscard;$/;"	m	class:ULSAkmeans_MC
+powerMax	ULSAkmeans_MC.h	/^  float powerMax;$/;"	m	class:ULSAkmeans_MC
+powerUpdateKmedoid	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::powerUpdateKmedoid()$/;"	f	class:ULSAkmeans_MC
+printClusterList	ULSAkmeans_MC.cpp	/^void printClusterList(ULCS1b *cSystem)$/;"	f
+printVecMatrix	ULSAkmeans_MC.cpp	/^void printVecMatrix(vector <vector<int> >& ma)$/;"	f
+print_addresses	main.cpp	/^int print_addresses(const int domain, string& ipAddr)$/;"	f
+ptrHeadLastDiscard	ULSAkmeans_MC.h	/^  int  *ptrHeadLastDiscard;$/;"	m	class:ULSAkmeans_MC
+quantizationBits	ULSAkmeans_MC.h	/^  int quantizationBits;$/;"	m	class:ULSAkmeans_MC
+radius	ULSAkmeans_MC.h	/^  double radius;$/;"	m	class:ULSAkmeans_MC
+rateibMax	ULSAkmeans_MC.h	/^  double *rateibMax; \/\/$/;"	m	class:ULSAkmeans_MC
+realNoise	ULSAkmeans_MC.h	/^  double realNoise;$/;"	m	class:ULSAkmeans_MC
+releaseMemory	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::releaseMemory()$/;"	f	class:ULSAkmeans_MC
+resetSA3iSystem	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::resetSA3iSystem() {$/;"	f	class:ULSAkmeans_MC
+return1stTotalNcal1stResors_HomoPower	ULSAkmeans_MC.cpp	/^double ULSAkmeans_MC::return1stTotalNcal1stResors_HomoPower() {$/;"	f	class:ULSAkmeans_MC
+returnClosetNodeIndexInGroup	ULSAkmeans_MC.cpp	/^int ULSAkmeans_MC::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<int> &inputGroup)$/;"	f	class:ULSAkmeans_MC
+returnComprRatio	ULSAkmeans_MC.cpp	/^double ULSAkmeans_MC::returnComprRatio()$/;"	f	class:ULSAkmeans_MC
+returnTransientAveragePower	ULSAkmeans_MC.cpp	/^double ULSAkmeans_MC::returnTransientAveragePower()$/;"	f	class:ULSAkmeans_MC
+returnTransientJoule	ULSAkmeans_MC.cpp	/^double ULSAkmeans_MC::returnTransientJoule() {$/;"	f	class:ULSAkmeans_MC
+reverseMoveSA	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::reverseMoveSA()$/;"	f	class:ULSAkmeans_MC
+rotateHeadSA	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::rotateHeadSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSAkmeans_MC
+rotatedHeadNameLast	ULSAkmeans_MC.h	/^  int rotatedHeadNameLast;$/;"	m	class:ULSAkmeans_MC
+roundBest	ULSAkmeans_MC.h	/^  int  roundBest;;$/;"	m	class:ULSAkmeans_MC
+setIniHeadLimited	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::setIniHeadLimited()$/;"	f	class:ULSAkmeans_MC
+setIniStruDistanceKmedoids	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::setIniStruDistanceKmedoids() $/;"	f	class:ULSAkmeans_MC
+setIniStruFullResourceKmedoids	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::setIniStruFullResourceKmedoids()$/;"	f	class:ULSAkmeans_MC
+setIniStruHalfResourceKmedoids	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::setIniStruHalfResourceKmedoids()$/;"	f	class:ULSAkmeans_MC
+setIniStruKmeans	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::setIniStruKmeans()$/;"	f	class:ULSAkmeans_MC
+setInitialStucture	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::setInitialStucture(char* iniFlag)$/;"	f	class:ULSAkmeans_MC
+setSystem	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)$/;"	f	class:ULSAkmeans_MC
+sortIndex	ULSAkmeans_MC.h	/^  int sortIndex;$/;"	m	class:ULSAkmeans_MC
+startCool	ULSAkmeans_MC.cpp	/^bool ULSAkmeans_MC::startCool()$/;"	f	class:ULSAkmeans_MC
+strIpAddr	ULSAkmeans_MC.h	/^  string strIpAddr; $/;"	m	class:ULSAkmeans_MC
+sysComputing	ULSAkmeans_MC.h	/^  SimSystem *sysComputing;$/;"	m	class:ULSAkmeans_MC
+targetHeadIndex	ULSAkmeans_MC.h	/^  int  targetHeadIndex;$/;"	m	class:ULSAkmeans_MC
+targetNode	ULSAkmeans_MC.h	/^  int  targetNode;$/;"	m	class:ULSAkmeans_MC
+tempAddT	ULSAkmeans_MC.h	/^  double tempAddT;$/;"	m	class:ULSAkmeans_MC
+tempDisT	ULSAkmeans_MC.h	/^  double tempDisT;$/;"	m	class:ULSAkmeans_MC
+tempHRT	ULSAkmeans_MC.h	/^  double tempHRT;$/;"	m	class:ULSAkmeans_MC
+tempIsoT	ULSAkmeans_MC.h	/^  double tempIsoT;$/;"	m	class:ULSAkmeans_MC
+tempJoinT	ULSAkmeans_MC.h	/^  double tempJoinT;$/;"	m	class:ULSAkmeans_MC
+terminated	ULSAkmeans_MC.h	/^  bool terminated;$/;"	m	class:ULSAkmeans_MC
+thres2	ULSAkmeans_MC.h	/^  static const int thres2=200;$/;"	m	class:ULSAkmeans_MC
+thresholdd	ULSAkmeans_MC.h	/^  static const int thresholdd=5;$/;"	m	class:ULSAkmeans_MC
+updateIsolateEstimatedpower	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex){$/;"	f	class:ULSAkmeans_MC
+updateJoinEstimatedPower	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::updateJoinEstimatedPower(vector<double> &newPower, $/;"	f	class:ULSAkmeans_MC
+vecBestBpshz_forVerification	ULSAkmeans_MC.h	/^  vector<double> vecBestBpshz_forVerification;$/;"	m	class:ULSAkmeans_MC
+vecBestClusterBits	ULSAkmeans_MC.h	/^  vector<double> vecBestClusterBits;$/;"	m	class:ULSAkmeans_MC
+vecBestClusterHeadMS	ULSAkmeans_MC.h	/^  vector<double> vecBestClusterHeadMS;$/;"	m	class:ULSAkmeans_MC
+vecBestClusterHeadWatt	ULSAkmeans_MC.h	/^  vector<double> vecBestClusterHeadWatt;$/;"	m	class:ULSAkmeans_MC
+vecBestClusterSize	ULSAkmeans_MC.h	/^  vector<int> vecBestClusterSize;$/;"	m	class:ULSAkmeans_MC
+vecBestReceivedInterference	ULSAkmeans_MC.h	/^  vector<double> vecBestReceivedInterference;$/;"	m	class:ULSAkmeans_MC
+vecBestSINR_forVerification	ULSAkmeans_MC.h	/^  vector<double> vecBestSINR_forVerification;$/;"	m	class:ULSAkmeans_MC
+vecChooseIndex	ULSAkmeans_MC.h	/^  vector<double> vecChooseIndex;$/;"	m	class:ULSAkmeans_MC
+vecClusterHeadBits	ULSAkmeans_MC.h	/^  vector<double> vecClusterHeadBits;$/;"	m	class:ULSAkmeans_MC
+vecClusterHeadMS	ULSAkmeans_MC.h	/^  vector<double> vecClusterHeadMS;$/;"	m	class:ULSAkmeans_MC
+vecClusterHeadWatt	ULSAkmeans_MC.h	/^  vector<double> vecClusterHeadWatt;$/;"	m	class:ULSAkmeans_MC
+vecHeadCandidates	ULSAkmeans_MC.h	/^  vector<int> vecHeadCandidates;$/;"	m	class:ULSAkmeans_MC
+vecHeadNameBest	ULSAkmeans_MC.h	/^  vector <int> vecHeadNameBest;$/;"	m	class:ULSAkmeans_MC
+virtualCompression	ULSAkmeans_MC.h	/^  double virtualCompression;$/;"	m	class:ULSAkmeans_MC
+wholeSystemEntopy	ULSAkmeans_MC.h	/^  double wholeSystemEntopy;$/;"	m	class:ULSAkmeans_MC
+writePayoffEachRound_MinResors	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::writePayoffEachRound_MinResors(int round)$/;"	f	class:ULSAkmeans_MC
+writePayoffEachRound_MinResors_withHead	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::writePayoffEachRound_MinResors_withHead(int round,int head)$/;"	f	class:ULSAkmeans_MC
+writeStruSingleRound	ULSAkmeans_MC.cpp	/^void ULSAkmeans_MC::writeStruSingleRound(int round)$/;"	f	class:ULSAkmeans_MC
+~ULSAkmeans_MC	ULSAkmeans_MC.cpp	/^ULSAkmeans_MC::~ULSAkmeans_MC()$/;"	f	class:ULSAkmeans_MC
