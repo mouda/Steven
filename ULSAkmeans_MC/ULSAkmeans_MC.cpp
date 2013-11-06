@@ -1072,9 +1072,41 @@ bool ULSAkmeans_MC::baselineKmedoidDC()
 bool ULSAkmeans_MC::powerUpdateKmedoid()
 {
   bool * arySupNodes;
-  arySupNodes = new bool [totalNodes];
+  arySupNodes = new bool[totalNodes];
+  consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
+      nextNodePower,cSystem->listCluMember );
+  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
+  for (int i = 0; i < totalNodes; i++) arySupNodes[i] = true; 
+  setIniStruDistanceKmedoids(arySupNodes);
+  list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
+  arma::vec aVecPayoff = arma::zeros<arma::vec>(totalNodes);
+  iniDone = true;
+  list<list<int> > copyListCluMember = *(cSystem->listCluMember);
+  iterRow = copyListCluMember.begin();
+  for (int i = 0; iterRow != copyListCluMember.end(); ++i, ++iterRow) {
+    list<int>::iterator iterCol = iterRow->begin();
+    for (; iterCol != iterRow->end(); iterCol++) {
+      if (cSystem->vecHeadName[i] == *iterCol){
+        aVecPayoff.at(*iterCol) = DBL_MAX;
+      } 
+      else {
+	double temp1st_ms = 0;
+	double temp2nd_ms = 0;
+        discardMemberSA(i, *iterCol);
+        temp2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+        temp1st_ms = return1stTotalNcal1stResors_HomoPower();
+        cout << temp1st_ms + temp2nd_ms << endl;
+        aVecPayoff.at(*iterCol) =  temp1st_ms + temp2nd_ms;
+        addMemberSA(i, *iterCol);
+      }
+    }
+  }
 
-
+  
+  cout << aVecPayoff << endl;
+  
+  delete consSol;
+  delete matrixComputer;
   return true;
 }
 
@@ -1330,7 +1362,7 @@ bool ULSAkmeans_MC::startCool()
   curJEntropy = curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
   curPayoff=cur1st_ms+cur2nd_ms;
 
-  cout << "curPayoff: " << curPayoff << endl;
+  cout << "curPayoff: " << curPayoff <<' '<< cur1st_ms <<' '<<cur2nd_ms<< endl;
   bestAllServeFound=false;
 
   if ( checkBestClusterStructure_DataCentric(0) ) return true;
