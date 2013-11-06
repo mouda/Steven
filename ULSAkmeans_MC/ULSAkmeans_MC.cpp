@@ -242,7 +242,7 @@ bool ULSAkmeans_MC::setInitialStucture(char* iniFlag)
     bool * arySupNodes;
     arySupNodes = new bool [totalNodes];
     for (int i = 0; i < totalNodes; i++) {
-      arySupNodes[i] = false; 
+      arySupNodes[i] = true; 
     }
 
 
@@ -468,7 +468,7 @@ bool ULSAkmeans_MC::setIniStruDistanceKmedoids( bool const * const arySupNodes)
   float tempHeadX [maxChNum];
   float tempHeadY [maxChNum];
   int tempHeadList [maxChNum];
-  vector <vector <int> > tempGroup;
+  vector <vector <int> > tempGroup(maxChNum);
   bool convergedFlag = false;
   bool sameHeadFlag = true;
   while(sameHeadFlag)
@@ -483,29 +483,43 @@ bool ULSAkmeans_MC::setIniStruDistanceKmedoids( bool const * const arySupNodes)
     for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
     tempGroup.clear();
 
-    for (int i=0; i<maxChNum; i++)
-    {
-      vector <int> tempV;
-      tempGroup.push_back(tempV);
-      tempHeadX[i] = nodes[i+retryTimes].locX;
-      tempHeadY[i] = nodes[i+retryTimes].locY;
-      tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
+//    for (int i=0; i<maxChNum; i++)
+//    {
+//      vector <int> tempV;
+//      tempGroup.push_back(tempV);
+//      tempHeadX[i] = nodes[i+retryTimes].locX;
+//      tempHeadY[i] = nodes[i+retryTimes].locY;
+//      tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
+//    }
+    int countDown = maxChNum;
+    int idx = 0;
+    while( countDown ) {
+      if (arySupNodes[idx] != false) {
+        vector <int> tempV;
+        tempGroup.push_back(tempV);
+        --countDown;
+        tempHeadX[countDown] = nodes[idx].locX;
+        tempHeadY[countDown] = nodes[idx].locY;
+        tempHeadList[countDown] = nodes[idx].nodeIndex;
+      }
+      idx++;
     }
     while(!convergedFlag) // This loop want to find a new K-means coordinate
     {
-      //choose "maxChNum" nember of node to use as the intial Cluster head
-      //Find the closet head to form a cluster
-
-      //Same number cluster head but clear in the converge process
-      for (unsigned int i=0 ; i<tempGroup.size(); i++) tempGroup[i].clear(); //clear all the eixsted group members
+      for (unsigned int i=0 ; i<tempGroup.size(); i++) tempGroup[i].clear(); 
+      //clear all the eixsted group members
       for (int i=0; i<totalNodes; i++)
       {
+        if (arySupNodes[i] == false) continue;
         float closetDistance = numeric_limits<float>::max( );
         int closetHeadIndex = -1;
         for(int j=0; j<maxChNum; j++)
         {
-          float tempDistance = (tempHeadX[j] - nodes[i].locX)*(tempHeadX[j] - nodes[i].locX)
-                               +(tempHeadY[j] - nodes[i].locY)*(tempHeadY[j] - nodes[i].locY);
+          float tempDistance = 
+            (tempHeadX[j] - nodes[i].locX) * 
+            (tempHeadX[j] - nodes[i].locX) + 
+            (tempHeadY[j] - nodes[i].locY) * 
+            (tempHeadY[j] - nodes[i].locY);
           if (closetDistance > tempDistance )
           {
             closetDistance = tempDistance;
@@ -545,10 +559,7 @@ bool ULSAkmeans_MC::setIniStruDistanceKmedoids( bool const * const arySupNodes)
         tempHeadList[i] = tempGroup[i][idx];
       }
     }
-    // leave this loop if 'converged = 1;'
-//    for (int i=0; i<maxChNum; i++) tempHeadList[i] = \
-//      tempGroup[i][returnClosetNodeIndexInGroup(tempHeadX[i], tempHeadY[i], tempGroup[i])];
-    //check there is same head exist
+
     for (int i=0; i<maxChNum; i++)
       for (int j=i+1; j<maxChNum; j++)if (tempHeadList[i] == tempHeadList[j]) sameHeadFlag = true;
 
@@ -997,7 +1008,8 @@ bool ULSAkmeans_MC::baselineKmedoidMC()
   for (int i = 0; i < totalNodes; i++) {
     ++supNodes;
     vecSupNodes[aVecSortedindices.at(i)] = true;
-    cumInfo = supNodes * indEntropy + matrixComputer->computeLog2Det(1.0, vecSupNodes); 
+    cumInfo = 
+      supNodes * indEntropy + matrixComputer->computeLog2Det(1.0, vecSupNodes); 
     if (cumInfo > fidelityRatio * wholeSystemEntopy ) break; 
   }
   setIniStruDistanceKmedoids(vecSupNodes);
@@ -1006,11 +1018,63 @@ bool ULSAkmeans_MC::baselineKmedoidMC()
 
 bool ULSAkmeans_MC::baselineKmedoidDC()
 {
+  arma::vec aVecRate = arma::zeros<arma::vec>(totalNodes);
+  bool *vecSupNodes;
+  vecSupNodes = new bool [totalNodes];
+  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
+  indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
+  bool inClu[totalNodes];
+  for(int i=0; i<totalNodes; i++)inClu[i]=true;
+  double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
+  wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
+
+
+  for (int i = 0; i < totalNodes; i++) vecSupNodes[i] = false;
+  int supNodes = 0;
+  double cumInfo = 0.0;
+  for (int i = 0; i < totalNodes; i++) {
+    aVecRate.at(i) = 
+      bandwidthKhz * 1e3 * log2( 1 + powerMax * Gib[i] / realNoise );
+  }
+  arma::vec aVecSortedRate = arma::sort(aVecRate,1);
+  arma::uvec aVecSortedindices = arma::sort_index(aVecRate,1);
+  
+  ++supNodes;
+  vecSupNodes[aVecSortedindices.at(0)] = true;
+  cumInfo =
+        supNodes * indEntropy + matrixComputer->computeLog2Det(1.0, vecSupNodes); 
+  for (int i = 1; i < totalNodes; i++) {
+    ++supNodes;
+    double maxDiffInfo = 0.0;
+    int idx = -1;
+    for (int j = 0; j < totalNodes; j++) {
+      if (vecSupNodes[j] == true) continue; 
+      vecSupNodes[j] = true;
+      double newInfo = 
+        supNodes * indEntropy + matrixComputer->computeLog2Det(1.0, vecSupNodes); 
+      double diffInfo = newInfo - cumInfo;
+      if (maxDiffInfo < diffInfo) {
+        maxDiffInfo = diffInfo;
+        idx = j;
+      }
+      vecSupNodes[j] = false;
+    }
+    vecSupNodes[idx] = true;
+    cumInfo =
+        supNodes * indEntropy + matrixComputer->computeLog2Det(1.0, vecSupNodes); 
+    if (cumInfo > fidelityRatio * wholeSystemEntopy ) break; 
+  }
+  setIniStruDistanceKmedoids(vecSupNodes);
+  return true;
   return true;
 }
 
 bool ULSAkmeans_MC::powerUpdateKmedoid()
 {
+  bool * arySupNodes;
+  arySupNodes = new bool [totalNodes];
+
+
   return true;
 }
 

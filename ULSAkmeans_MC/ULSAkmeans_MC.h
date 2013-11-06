@@ -69,6 +69,7 @@ public:
   bool baselineKmedoidDC(); 
   bool powerUpdateKmedoid();
   bool setIniStruDistanceKmedoids( bool const * const);
+  //bool RealDistanceKmedoids(bool const * const);
   bool setIniStruHalfResourceKmedoids();
   bool setIniStruFullResourceKmedoids();
   bool setIniHeadLimited();
