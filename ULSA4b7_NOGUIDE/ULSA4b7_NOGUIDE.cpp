@@ -1301,6 +1301,7 @@ bool ULSA4b7_NOGUIDE::startCool()
       cout<<"Congratulation All nodes are served"<<endl;
       break;
     }
+    cout << curPayoff << endl;
 
     if (isDetailOutputOn) {
       writePayoffEachRound_MinResors_withHead(i,curChNum);
@@ -1821,7 +1822,9 @@ void ULSA4b7_NOGUIDE::decideHeadJoining4b(){
         }
     }
 
+#ifdef OBSERVE
     cout<<"Cand Size="<<vecJoinCandHeadIndex.size()<<" " << count <<  endl;
+#endif
     vector<double> firtGainRecord;
     //only for check
     firtGainRecord.resize(maxChNum);
@@ -2147,7 +2150,10 @@ void ULSA4b7_NOGUIDE::decideIsolate4b(){
     for (int i = 0; i < maxChNum; i++) {
       if (cSystem->vecClusterSize[i] > 0 ) count++;
     }
+
+#ifdef OBSERVE
     cout << count << endl;
+#endif 
 
 
     //Calculate 2nd tier Gain
@@ -2247,10 +2253,12 @@ double ULSA4b7_NOGUIDE::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluInd
             double tmpRcvPW=nextNodePower[*it_Int]*Gij[*it_Int][cSystem->vecHeadName[i]];
             double ratio=log2(1+tmpRcvPW/(realNoise+originalInterf_FromIsolatedClu[i]+interference_Except_IsolatedClu[i])) \
             /log2(1+tmpRcvPW/(realNoise+newInterf_FromIsolatedClu[i]+interference_Except_IsolatedClu[i]));
+#ifdef OBSERVE
             if(ratio>1){
               cout<<i<<"-th new Interference="<<newInterf_FromIsolatedClu[i]<<endl;
               cout<<i<<"-th cluster Original Inteference="<<originalInterf_FromIsolatedClu[i]<<endl;
             }
+#endif
 
 
             if(ratio>testMaxRatio)testMaxRatio=ratio;
