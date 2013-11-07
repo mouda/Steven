@@ -1306,8 +1306,6 @@ bool ULSA4b7_NOGUIDE::startCool()
       cout<<"Congratulation All nodes are served"<<endl;
       break;
     }
-    cout << curPayoff << endl;
-
     if (isDetailOutputOn) {
       writePayoffEachRound_MinResors_withHead(i,curChNum);
     }
