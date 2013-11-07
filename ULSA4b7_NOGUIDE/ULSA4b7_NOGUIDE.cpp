@@ -2158,16 +2158,9 @@ void ULSA4b7_NOGUIDE::decideIsolate4b(){
     for (int i = 0; i < maxChNum; i++) {
       if (cSystem->vecClusterSize[i] > 0 ) count++;
     }
-<<<<<<< HEAD
-
-#ifdef OBSERVE
-    cout << count << endl;
-#endif 
-=======
 #ifdef OBSERVE
     cout << count << endl;
 #endif
->>>>>>> d50d5fdade072b873ae63dd31897480a42700b8c
 
 
     //Calculate 2nd tier Gain
