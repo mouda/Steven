@@ -1071,40 +1071,82 @@ bool ULSAkmeans_MC::baselineKmedoidDC()
 
 bool ULSAkmeans_MC::powerUpdateKmedoid()
 {
+  /* must be initialized */
+  indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
+  consSol = 
+    new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,
+        indEntropy, cSystem->vecHeadName, Gij, nextNodePower,cSystem->listCluMember );
+  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
+  bool inClu[totalNodes];
+  for(int i=0; i<totalNodes; i++)inClu[i]=true;
+  double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
+  wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
+  /* end initialization */
+
+  /* initialize support node vector */
   bool * arySupNodes;
   arySupNodes = new bool[totalNodes];
-  consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
-      nextNodePower,cSystem->listCluMember );
-  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
   for (int i = 0; i < totalNodes; i++) arySupNodes[i] = true; 
+  int supNodes = totalNodes;
+  double cumInfo; 
+
+  /* k-medoid method */
   setIniStruDistanceKmedoids(arySupNodes);
-  list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
-  arma::vec aVecPayoff = arma::zeros<arma::vec>(totalNodes);
   iniDone = true;
-  list<list<int> > copyListCluMember = *(cSystem->listCluMember);
-  iterRow = copyListCluMember.begin();
-  for (int i = 0; iterRow != copyListCluMember.end(); ++i, ++iterRow) {
-    list<int>::iterator iterCol = iterRow->begin();
-    for (; iterCol != iterRow->end(); iterCol++) {
-      if (cSystem->vecHeadName[i] == *iterCol){
-        aVecPayoff.at(*iterCol) = DBL_MAX;
-      } 
-      else {
-	double temp1st_ms = 0;
-	double temp2nd_ms = 0;
-        discardMemberSA(i, *iterCol);
-        temp2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
-        temp1st_ms = return1stTotalNcal1stResors_HomoPower();
-        cout << temp1st_ms + temp2nd_ms << endl;
-        aVecPayoff.at(*iterCol) =  temp1st_ms + temp2nd_ms;
-        addMemberSA(i, *iterCol);
+
+  list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
+
+  double minResource = DBL_MAX;
+  int minHeadIdx = -1;
+  int minNodeName = -1;
+  double tmpResource = 0.0;
+  bool flagFeasible = true;
+  while (flagFeasible) {
+    list<list<int> > copyListCluMember = *(cSystem->listCluMember);
+    iterRow = copyListCluMember.begin();
+    for (int i = 0; iterRow != copyListCluMember.end(); ++i, ++iterRow) {
+      list<int>::iterator iterCol = iterRow->begin();
+      for (; iterCol != iterRow->end(); iterCol++) {
+        if (cSystem->vecHeadName[i] == *iterCol){
+          tmpResource = DBL_MAX;
+        } 
+        else {
+          double temp1st_ms = 0;
+          double temp2nd_ms = 0;
+          discardMemberSA(i, *iterCol);
+          temp2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+          temp1st_ms = return1stTotalNcal1stResors_HomoPower();
+          tmpResource =  temp1st_ms + temp2nd_ms;
+          addMemberSA(i, *iterCol);
+        }
+
+        if (minResource > tmpResource) {
+          minResource = tmpResource;
+          minHeadIdx = i;
+          minNodeName = *iterCol;
+        }
       }
     }
-  }
+    arySupNodes[minNodeName] = false;
+    --supNodes;
+    cumInfo = 
+      supNodes * indEntropy + matrixComputer->computeLog2Det(1.0, arySupNodes); 
+    if (cumInfo > fidelityRatio * wholeSystemEntopy) {
+      discardMemberSA(minHeadIdx,minNodeName);
+    }
+    else {
+      flagFeasible = false;
+      arySupNodes[minNodeName] = true;
+      ++supNodes;
+    }
+  } 
 
   
-  cout << aVecPayoff << endl;
+
+
   
+  
+  iniDone = false;
   delete consSol;
   delete matrixComputer;
   return true;
@@ -1542,6 +1584,7 @@ void ULSAkmeans_MC::coolOnce_minResors()
     cout<<sumProb<<endl;
     cout<<eventCursor<<endl;
   }
+  nextEventFlag = 3;
   //-------------------------------------//
   // Start the movement                  //
   //-------------------------------------//  if (nextEventFlag==1)//Add
