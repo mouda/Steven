@@ -379,40 +379,6 @@ bool ULSAkmeans_MC::setIniStruKmeans()
         nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
     }
   }
-  /*
-     for(int i=0; i<maxChNum; i++)
-     {
-     cSystem->allSupStru[i]=false;
-
-     for(int j=0; j<totalNodes; j++) {
-     cSystem->clusterStru[i][j]=false;
-
-     }
-     }
-
-
-  //----------------------------------------------------------
-  //Intial Structure: Head Only and :no connection set at all
-  for (int i=0; i<maxChNum; i++)
-  {
-  cSystem->addNewHeadCs(tempHeadList[i]);
-  for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
-  {
-  if(tempGroup[i][j]==tempHeadList[i])
-  addMemberSAIni(i, tempGroup[i][j]);
-  else
-  {
-  cSystem->listUnSupport->push_back(tempGroup[i][j]);
-  //cout<<"Push in list "<<tempGroup[i][j]<<" listSize "<<cSystem->listUnSupport->size()<<endl;
-  }
-  }
-  }
-  for (int i=0; i<maxChNum; i++)
-  {
-  nodes[cSystem->vecHeadName[i]].ptrHead = &(cSystem->vecHeadName[i]);
-  //cout<<cSystem->vecHeadName[i]<<" "<<nodes[cSystem->vecHeadName[i]].ptrHead<<endl;
-  }
-  */
   return true;
 }
 

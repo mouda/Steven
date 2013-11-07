@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
   //User-assigned parameters                    //
   //********************************************//
 
-  if(argc!=14)
+  if(argc!=15)
   {
     cout <<"Usage: ULSA_DC_Estimate "         << endl;
     cout <<"\t 1 [ totalNodes         ]" << endl;
@@ -36,6 +36,7 @@ int main(int argc, char* argv[])
     cout <<"\t 11[ Fidelity Ratio     ]" << endl;
     cout <<"\t 12[ Structure and Detail: 0 to turn off; 1 to turn on ]" << endl;
     cout <<"\t 13[ Number of Iteration]"  << endl;
+    cout <<"\t 14[ initial structure  ]" << endl;
 
 
     cout<<"Example:Usage: winULSAkmeans_MC 195 10 10 10 180 mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_2.txt 10000 2 2 3"<<endl;
@@ -66,7 +67,7 @@ int main(int argc, char* argv[])
   //---------------------//
   // Control Constant    //
   //---------------------//
-  char iniFlag[]="powerUpdateKmedoid";
+  char *iniFlag= argv[14];
   const float powerMaxWatt = pow(10,((float)powerMaxDbm)/10) /1000;//we don't need to divide the BW(bandwidthKhz*1000);//Unit := Watt
   const int SAIter=atoi(argv[13]);
   //****************************//

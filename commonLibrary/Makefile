@@ -1,6 +1,6 @@
 CPP=g++
-#CFLAGS = -O -O1 -O2 -O3
-CFLAGS = -g
+CFLAGS = -O -O1 -O2 -O3
+#CFLAGS = -g
 all: CORRE_MA_OPE.o SimSystem.o timesearch.o TimeStamp.o ULAGENT.o ULConstraintSolver.o ULCS1b.o
 
 CORRE_MA_OPE.o:		CORRE_MA_OPE.cpp CORRE_MA_OPE.h 
