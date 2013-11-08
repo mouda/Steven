@@ -25,7 +25,7 @@ scatter(vecJoinEstiGain,vecJoinRealGain,'*');
 title('Joining Operation');
 xlabel('Estimated Saved Time (ms)');
 ylabel('Real Saved Time (ms)');
-%axis([-3 3 -4 1 ])
+axis([-3 3 -4 1 ])
 
 grid on;
 
