@@ -47,7 +47,7 @@ a=mean(FinalRatio2i);
 b=std(FinalRatio2i);
 
 [ totalNum totalInfo MapCR FidRatio  QuantiBits Density BestRound gatherInfo supNum firstEnergy SecondEnergy firstResors secondResors CRx]...
-    = parseResorsToMatrixByCR_assignedHead( 'data/UULSAkmeans_DC_All_N195_BW180.0PW0.001_FR0.95_r500.0.txt',hn(2));
+    = parseResorsToMatrixByCR_assignedHead( 'data/ULSAkmeans_DC_All_N195_BW180.0PW0.001_FR0.95_r500.0.txt',hn(2));
 mincolsize=returnColNonZeroSize(firstResors);
 secondResorsKM4b=secondResors([1:1:mincolsize],[1:1:size(secondResors,2)]);
 firstResorsKM4b=firstResors([1:1:mincolsize],[1:1:size(secondResors,2)]);

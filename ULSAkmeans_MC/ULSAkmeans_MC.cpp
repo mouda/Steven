@@ -1048,6 +1048,8 @@ bool ULSAkmeans_MC::powerUpdateKmedoid()
     new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,
         indEntropy, cSystem->vecHeadName, Gij, nextNodePower,cSystem->listCluMember );
   matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
+  double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
+                    (compRatio,indEntropy,static_cast<double>(totalNodes));
   bool inClu[totalNodes];
   for(int i=0; i<totalNodes; i++)inClu[i]=true;
   double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
