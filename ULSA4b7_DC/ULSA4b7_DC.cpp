@@ -1269,7 +1269,7 @@ bool ULSA4b7_DC::startCool()
   else{ cur2nd_ms = 0; }
   cur1st_ms = return1stTotalNcal1stResors_HomoPower();
   cur2nd_Joule = returnTransientJoule();
-  cur1st_Joule = power1st*cur1st_ms;
+  cur1st_Joule = power1st*cur1st_ms/1000.0;
 
 
   curSupNum=cSystem->calSupNodes();
