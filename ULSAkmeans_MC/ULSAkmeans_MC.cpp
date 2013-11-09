@@ -955,6 +955,8 @@ bool ULSAkmeans_MC::baselineKmedoidMC()
   vecSupNodes = new bool [totalNodes];
   matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
   indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
+  double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
+                    (compRatio,indEntropy,static_cast<double>(totalNodes));
   bool inClu[totalNodes];
   for(int i=0; i<totalNodes; i++)inClu[i]=true;
   double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
@@ -978,6 +980,7 @@ bool ULSAkmeans_MC::baselineKmedoidMC()
       supNodes * indEntropy + matrixComputer->computeLog2Det(1.0, vecSupNodes); 
     if (cumInfo > fidelityRatio * wholeSystemEntopy ) break; 
   }
+
   setIniStruDistanceKmedoids(vecSupNodes);
   delete [] vecSupNodes;
   delete matrixComputer;
