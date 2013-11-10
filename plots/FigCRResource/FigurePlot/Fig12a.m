@@ -19,7 +19,7 @@ hFig=figure(1);
 set(hFig, 'Position', [1 1 600 450 ]);
 for i=1:1
  [ totalNum totalInfo MapCR FidRatio  QuantiBits Density BestRound gatherInfo supNum firstEnergy SecondEnergy firstResors secondResors CRx] ...
-   = parseResorsToMatrixByCR_assignedHead( 'data/ULSA4b2_All_N195_BW180.0PW0.001_FR0.95_r500.0.txt',15);
+   = parseResorsToMatrixByCR_assignedHead( 'data/ULSA4b7_All_N195_BW180.0PW0.001_FR0.95_r500.0.txt',11);
 mincolsize=returnColNonZeroSize(firstResors);
 Info4b=gatherInfo([1:1:mincolsize],[1:1:size(gatherInfo,2)]);
 firR4b=firstResors([1:1:mincolsize],[1:1:size(firstResors,2)]);
@@ -75,7 +75,7 @@ errorbar(CRx,mean(FinalRatioKM4b),std(FinalRatioKM4b),'^--','LineWidth',1.5,'Col
 %str=sprintf('Two-Tier MC SA');
 %errorbar(CRx,a,b,'o-','LineWidth',1.5,'Color',MC_colorMap(i,:),'DisplayName',str,'MarkerSize',10); hold on;
 str=sprintf('Two-Tier DC SA');
-errorbar(CRx,mean(FinalRatio4b),std(FinalRatio4b),'^-','LineWidth',2.5,'Color',DC_colorMap(i,:),'DisplayName',str,'MarkerSize',10); hold on;
+errorbar(CRx,mean(FinalRatio4b),std(FinalRatio4b),'^-','LineWidth',1.5,'Color',DC_colorMap(i,:),'DisplayName',str,'MarkerSize',10); hold on;
 
 %errorbar(CRx,mean(Final1stRatio2i),std(Final1stRatio2i),'o--','LineWidth',2.5,'Color',MC_colorMap(i+1,:),'DisplayName','MC:1st'); hold on;
 %errorbar(CRx,mean(Final2ndRatio2i),std(Final2ndRatio2i),'o-.','LineWidth',2.5,'Color',MC_colorMap(i+2,:),'DisplayName','MC:2nd'); hold on;
