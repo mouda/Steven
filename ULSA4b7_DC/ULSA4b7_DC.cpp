@@ -2715,16 +2715,6 @@ void ULSA4b7_DC::resetSA3iSystem() {
     vecBestClusterSize.resize(maxChNum);
 }
 
-
-
-
-
-
-
-
-
-
-
 /* Not finishied
 void ULSA4b7_DC::writePayoffEachRound_MinResors(int inputRound)
 {

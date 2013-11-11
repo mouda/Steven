@@ -10,7 +10,7 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-dpath = ['data/2013-11-06_14-43_Best4b2Struc2ndN195_m9_FR0.9_r500.0.txt'];
+dpath = ['data/2013-11-11_18-18_Best4b2Struc2ndN195_m19_FR0.9_r500.0.txt-KMMC'];
 strtitle=['Two-Tier DC'];
 mapString = ['mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_1.txt'];
 path=cellstr(dpath);
@@ -108,7 +108,7 @@ for i=1:maxChNum
   if (headName(i)==j && clusterStru(i,j)==1)
      %str = sprintf('H %d', headName(i));
      %text(x(j)+10,y(j)-10,str,'FontSize',12);
-     str = sprintf('|S%d|=%d',i, clusterSize(i)-1);
+     str = sprintf('|D%d|=%d',i, clusterSize(i)-1);
      text(x(j)+10,y(j)-10,str,'FontSize',10);
   
   elseif clusterStru(i,j)==1
