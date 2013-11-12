@@ -1033,7 +1033,8 @@ void ULSAEstimate::writePayoffEachRound_MinResors_withHead(int round,int head)
 
 }
 
-void ULSAEstimate::debug_CheckSizeCorrect() {
+void ULSAEstimate::debug_CheckSizeCorrect() 
+{
     for (unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
         int tempSize = 0;
         for(int j=0; j<totalNodes; j++) {
@@ -1042,9 +1043,6 @@ void ULSAEstimate::debug_CheckSizeCorrect() {
         assert(tempSize == cSystem->vecClusterSize[i]);
     }
 }
-
-
-
 void ULSAEstimate::computeBestTRR_DataCentric()
 {
     best2ndTierTraffic = 0;
@@ -2225,7 +2223,7 @@ void ULSAEstimate::decideIsolate4b(){
     for (int i = 0; i < maxChNum; i++) {
       if (cSystem->vecClusterSize[i] > 0 ) count++;
     }
-    cout << count << endl;
+    //cout << count << endl;
 
 
     //Calculate 2nd tier Gain
@@ -2489,7 +2487,8 @@ void ULSAEstimate::calculateMatrics_minResors()//Calculate next performance mati
   else if (nextEventFlag==4)  //Do Nothing
   {
     //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
-    cout << estimaptePayOff << ' ' << 
+    cout << curPayoff << ' ' <<
+      estimaptePayOff << ' ' << 
       next1st_ms+next2nd_ms << ' ' << 
       ((next1st_ms+next2nd_ms)-estimaptePayOff)*100/(next1st_ms+next2nd_ms) << endl;
 
