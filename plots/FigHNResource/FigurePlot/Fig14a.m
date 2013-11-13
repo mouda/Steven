@@ -16,7 +16,7 @@ hFig = figure(1);
 set(hFig, 'Position', [1 1 600 450 ]);
 [ totalNum totalInfo MapCR FidRatio  QuantiBits Density BestRound gatherInfo supNum firstEnergy...
     SecondEnergy firstResors secondResors headx] = parseResorsToMatrixByHead...
-    ('data/ULSA4b7_All_N195_BW180.0PW0.001_FR0.95_r500.0.txt-10000iters-noisojoin-v2');
+    ('data/ULSA4b7_All_N195_BW180.0PW0.001_FR0.95_r500.0.txt-10000iters-noisojoin-v3');
 mincolsize=returnColNonZeroSize(firstResors);
 secondResors3i=secondResors([1:1:mincolsize],[1:1:size(secondResors,2)]);%Compensate
 firstResors3i=firstResors([1:1:mincolsize],[1:1:size(firstResors,2)]);
@@ -43,13 +43,13 @@ gatherInfo4b=gatherInfo([1:1:mincolsize],[1:1:size(gatherInfo,2)]);
 %plot(headx,mean(gatherInfo4b./(firstResors4b+secondResors4b)),'xk--','LineWidth',2.5,'DisplayName','Tier-1 Resource(T_1)');hold on;
 
 
-plot(headx3,mean(secondResors3i+firstResors3i)./noclu,'*-.','LineWidth',1.5,'DisplayName','Two Tiers: Head = m','Color',DC_colorMap(i+17,:),'MarkerSize',10);hold on;
-plot(headx3,mean(firstResors3i)./noclu,'x-.','LineWidth',1.5,'DisplayName','Tier-1: Head = m','Color',DC_colorMap(i,:),'MarkerSize',10);hold on;
-plot(headx3,mean(secondResors3i)./noclu,'d-.','LineWidth',1.5,'DisplayName','Tier-2: Head = m','Color',DC_colorMap(i+2,:),'MarkerSize',10); hold on;
+plot(headx3,mean(secondResors3i+firstResors3i)./noclu,'*-.','LineWidth',1.5,'DisplayName','Two Tiers: Head = m','Color','r','MarkerSize',10);hold on;
+plot(headx3,mean(firstResors3i)./noclu,'x-.','LineWidth',1.5,'DisplayName','Tier-1: Head = m','Color','k','MarkerSize',10);hold on;
+plot(headx3,mean(secondResors3i)./noclu,'d-.','LineWidth',1.5,'DisplayName','Tier-2: Head = m','Color','b','MarkerSize',10); hold on;
 
-plot(headx,mean(secondResors4b+firstResors4b)./noclu,'*-','LineWidth',1.5,'DisplayName','Two Tiers: Head \leq m','Color',MC_colorMap(i+17,:),'MarkerSize',10);hold on;
-plot(headx,mean(secondResors4b)./noclu,'d-','LineWidth',1.5,'DisplayName','Tier-2: Head \leq m','Color',MC_colorMap(i+6,:),'MarkerSize',10); hold on;
-plot(headx,mean(firstResors4b)./noclu,'x-','LineWidth',1.5,'DisplayName','Tier-1: Head \leq m','Color',MC_colorMap(i,:),'MarkerSize',10);
+plot(headx,mean(secondResors4b+firstResors4b)./noclu,'*-','LineWidth',1.5,'DisplayName','Two Tiers: Head \leq m','Color','r','MarkerSize',10);hold on;
+plot(headx,mean(firstResors4b)./noclu,'x-','LineWidth',1.5,'DisplayName','Tier-1: Head \leq m','Color','k','MarkerSize',10);
+plot(headx,mean(secondResors4b)./noclu,'d-','LineWidth',1.5,'DisplayName','Tier-2: Head \leq m','Color','b','MarkerSize',10); hold on;
 
 title('195 Machines;180 Khz;\lambda=0.95;\eta=0.48');
 ylabel('Resource Usage Ratio (R)');

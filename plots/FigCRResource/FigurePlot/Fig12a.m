@@ -69,13 +69,13 @@ end
 str=sprintf('Direct Access-DC');
 %plot(CRx,DDC./noclu,'ro-','LineWidth',2.5,'Color',DC_colorMap(i+4,:),'DisplayName',str,'MarkerSize',10); hold on;
 str=sprintf('MC Kmeans (m=%d)',hn(2));
-errorbar(CRx,mean(FinalRatioKM2i),std(FinalRatioKM2i),'o--','LineWidth',1.5,'Color',MC_colorMap(i+2,:),'DisplayName',str,'MarkerSize',10); hold on;
+errorbar(CRx,mean(FinalRatioKM2i),std(FinalRatioKM2i),'o-.','LineWidth',1.5,'Color','r','DisplayName',str,'MarkerSize',10); hold on;
 str=sprintf('DC Kmeans (m=%d)',hn(2));
-errorbar(CRx,mean(FinalRatioKM4b),std(FinalRatioKM4b),'^--','LineWidth',1.5,'Color',DC_colorMap(2+i,:),'DisplayName',str,'MarkerSize',10); hold on;
+errorbar(CRx,mean(FinalRatioKM4b),std(FinalRatioKM4b),'^--','LineWidth',1.5,'Color','k','DisplayName',str,'MarkerSize',10); hold on;
 %str=sprintf('Two-Tier MC SA');
 %errorbar(CRx,a,b,'o-','LineWidth',1.5,'Color',MC_colorMap(i,:),'DisplayName',str,'MarkerSize',10); hold on;
 str=sprintf('Two-Tier DC SA');
-errorbar(CRx,mean(FinalRatio4b),std(FinalRatio4b),'^-','LineWidth',1.5,'Color',DC_colorMap(i,:),'DisplayName',str,'MarkerSize',10); hold on;
+errorbar(CRx,mean(FinalRatio4b),std(FinalRatio4b),'^-','LineWidth',1.5,'Color','b','DisplayName',str,'MarkerSize',10); hold on;
 
 %errorbar(CRx,mean(Final1stRatio2i),std(Final1stRatio2i),'o--','LineWidth',2.5,'Color',MC_colorMap(i+1,:),'DisplayName','MC:1st'); hold on;
 %errorbar(CRx,mean(Final2ndRatio2i),std(Final2ndRatio2i),'o-.','LineWidth',2.5,'Color',MC_colorMap(i+2,:),'DisplayName','MC:2nd'); hold on;

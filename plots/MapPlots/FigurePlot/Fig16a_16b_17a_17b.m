@@ -10,10 +10,11 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-dpath = ['data/2013-11-11_18-04_Best4b2Struc2ndN195_m19_FR0.9_r500.0.txt-SA20000iters'];
-strtitle=['Two-Tier DC'];
+path = {'data/2013-11-11_21-37_Best4b2Struc2ndN195_m8_FR0.9_r500.0.txt-KMMC';'data/2013-11-11_21-41_Best4b2Struc2ndN195_m8_FR0.9_r500.0.txt-KMDC';'data/2013-11-11_18-04_Best4b2Struc2ndN195_m19_FR0.9_r500.0.txt-SA20000iters'};
+
+strtitle=['K-means  MC';'K-means  DC';'Two-Tier DC'];
 mapString = ['mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_1.txt'];
-path=cellstr(dpath);
+%path=cellstr(dpath);
 strtitle2=cellstr(strtitle);
 for ii=1:length(path)
 % 
@@ -45,20 +46,6 @@ supSet = setdiff(B, headList);
 
 Binary_Unsupset=ones(1,totalNodes)-sum(clusterStru);
 index_unsupset=find(Binary_Unsupset);
-plot(x(index_unsupset),y(index_unsupset),'LineWidth',0.01,'MarkerFaceColor',[0.2 1 0],'MarkerEdgeColor',[0.3 0.3 0.3],...
-    'MarkerSize',7,...
-    'Marker','d',...
-    'LineStyle','none', 'DisplayName','Unsupported Machine');
-plot(x(supSet),y(supSet),'MarkerFaceColor',[0 0 1],'MarkerEdgeColor',[0 0 1],'Marker','o',...
-   'LineStyle','none', 'MarkerSize', 7, 'DisplayName','Member');
-plot(x(headList(find(headList>0))),y(headList(find(headList>0))),'MarkerFaceColor',[0.3 0.3 0.3],'MarkerEdgeColor',[0.3 0.3 0.3],'Marker','s',...
-   'LineStyle','none','MarkerSize',5, 'DisplayName','Head');
-
-%plot node topology
-plot(0,0,'^','MarkerSize',6,'MarkerFaceColor','r','DisplayName','BS','LineStyle','none');%Base Station
-
-
-
 
 circle(0,0,radius);
 grid on;
@@ -71,7 +58,7 @@ for i=1:maxChNum
   if(headName(i)==0)continue;end
   firstTierX(2)=x(headName(i));
   firstTiery(2)=y(headName(i));
-  hLine=plot(firstTierX,firstTiery,'k--');
+  hLine=plot(firstTierX,firstTiery,'k-','LineWidth',1.7);
   set(get(get(hLine,'Annotation'),'LegendInformation'),...
   'IconDisplayStyle','off');
   for j=1:totalNodes
@@ -80,7 +67,7 @@ for i=1:maxChNum
      Y(1) = y(headName(i));
      X(2) = x(j);
      Y(2) = y(j);
-     hLine = plot(X,Y,'Color','k');
+     hLine = plot(X,Y,'k--','Color',[0.001 0.001 0.001],'LineWidth',1);
      set(get(get(hLine,'Annotation'),'LegendInformation'),...
     'IconDisplayStyle','off');
      clusterSize(i) = clusterSize(i)+1;
@@ -108,7 +95,7 @@ for i=1:maxChNum
   if (headName(i)==j && clusterStru(i,j)==1)
      %str = sprintf('H %d', headName(i));
      %text(x(j)+10,y(j)-10,str,'FontSize',12);
-     str = sprintf('|D%d|=%d',i, clusterSize(i)-1);
+     str = sprintf('|C%d|=%d',i, clusterSize(i)-1);
      text(x(j)+10,y(j)-10,str,'FontSize',10);
   
   elseif clusterStru(i,j)==1
@@ -117,6 +104,20 @@ for i=1:maxChNum
   end
   end
 end
+plot(x(index_unsupset),y(index_unsupset),'LineWidth',3,'MarkerFaceColor',[0.2 1 0],'MarkerEdgeColor',[0 0 0],...
+    'MarkerSize',10,...
+    'Marker','X',...
+    'LineStyle','none', 'DisplayName','Unsupported Machine');
+plot(x(supSet),y(supSet),'MarkerFaceColor',[0 0 1],'MarkerEdgeColor',[0 0 1],'Marker','o',...
+   'LineStyle','none', 'MarkerSize', 5, 'DisplayName','Member');
+plot(x(headList(find(headList>0))),y(headList(find(headList>0))),'MarkerFaceColor',[0.3 1 0.3],'MarkerEdgeColor',[0.3 0.3 0.3],'Marker','s',...
+   'LineStyle','none','MarkerSize',7, 'DisplayName','Head');
+
+%plot node topology
+plot(0,0,'^','MarkerSize',12,'MarkerFaceColor','r','MarkerEdgeColor','k','DisplayName','BS','LineStyle','none');%Base Station
+
+
+
 
 
 %format
