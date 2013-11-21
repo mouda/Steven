@@ -254,6 +254,8 @@ bool ULSAkmeans_MC::setInitialStucture(char* iniFlag)
       normalFlag = setIniStruHalfResourceKmedoids();
     else if (!strcmp(iniFlag, "kmedoids_resource_full")) 
       normalFlag = setIniStruFullResourceKmedoids();
+    else if (!strcmp(iniFlag, "baselineKmeansMC")) 
+      normalFlag = baselineKmeansMC();
     else if (!strcmp(iniFlag, "baselineKmedoidMC")) 
       normalFlag = baselineKmedoidMC();
     else if (!strcmp(iniFlag, "baselineKmedoidDC")) 
@@ -555,6 +557,120 @@ bool ULSAkmeans_MC::setIniStruDistanceKmedoids( bool const * const arySupNodes)
 
   return true;
 }
+
+bool ULSAkmeans_MC::setIniStruDistanceKmeans( bool const * const arySupNodes )
+{
+  int retryTimes = 0;
+  float tempHeadX [maxChNum];
+  float tempHeadY [maxChNum];
+  int tempHeadList [maxChNum];
+  vector <vector <int> > tempGroup(maxChNum);
+  bool convergedFlag = false;
+  bool sameHeadFlag = true;
+  while(sameHeadFlag)
+  {
+    sameHeadFlag = false;
+    convergedFlag = false;
+    //Clear before added members
+    if (retryTimes>(totalNodes-maxChNum+1))
+    {
+      return false;
+    }
+    for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
+    tempGroup.clear();
+
+    int countDown = maxChNum;
+    int idx = 0;
+    while( countDown ) {
+      if (arySupNodes[idx] != false) {
+        vector <int> tempV;
+        tempGroup.push_back(tempV);
+        --countDown;
+        tempHeadX[countDown] = nodes[idx].locX;
+        tempHeadY[countDown] = nodes[idx].locY;
+        tempHeadList[countDown] = nodes[idx].nodeIndex;
+      }
+      idx++;
+    }
+    while(!convergedFlag) // This loop want to find a new K-means coordinate
+    {
+      for (unsigned int i=0 ; i<tempGroup.size(); i++) tempGroup[i].clear(); 
+      //clear all the eixsted group members
+      for (int i=0; i<totalNodes; i++)
+      {
+        if (arySupNodes[i] == false) continue;
+        float closetDistance = numeric_limits<float>::max( );
+        int closetHeadIndex = -1;
+        for(int j=0; j<maxChNum; j++)
+        {
+          float tempDistance = 
+            (tempHeadX[j] - nodes[i].locX) * 
+            (tempHeadX[j] - nodes[i].locX) + 
+            (tempHeadY[j] - nodes[i].locY) * 
+            (tempHeadY[j] - nodes[i].locY);
+          if (closetDistance > tempDistance )
+          {
+            closetDistance = tempDistance;
+            closetHeadIndex = j;
+          }
+        }
+        tempGroup[closetHeadIndex].push_back(i);
+      }
+      convergedFlag = true;
+      //find the k-means coordinate of each cluster ( means way )
+      for(int i=0; i<maxChNum; i++)
+      {
+        float newHx = 0;
+        float newHy = 0;
+        for(unsigned int j=0; j<tempGroup[i].size(); j++)
+        {
+          newHx += nodes[tempGroup[i][j]].locX;
+          newHy += nodes[tempGroup[i][j]].locY;
+        }
+        newHx /= tempGroup[i].size();
+        newHy /= tempGroup[i].size();
+        if ( (abs(newHx-tempHeadX[i]) > 0.01) || (abs(newHy-tempHeadY[i])>0.01) ) convergedFlag = false; 
+        // checkcheck if the original head close enough
+        //find the new approriate location of the head
+        tempHeadX[i] = newHx;
+        tempHeadY[i] = newHy;
+        tempHeadList[i] = tempGroup[i][idx];
+      }
+    }
+
+    for (int i=0; i<maxChNum; i++) tempHeadList[i] = \
+      tempGroup[i][returnClosetNodeIndexInGroup(tempHeadX[i], tempHeadY[i], tempGroup[i])];
+
+    for (int i=0; i<maxChNum; i++)
+      for (int j=i+1; j<maxChNum; j++)if (tempHeadList[i] == tempHeadList[j]) sameHeadFlag = true;
+    retryTimes++;
+  }
+// -------------------------------------------------------------------------- //
+// @Description: confirm initialization of structure
+// @Provides: 
+// -------------------------------------------------------------------------- //
+  for (int i=0; i<maxChNum; i++)
+  {
+    cSystem->addNewHeadCs(tempHeadList[i]);
+    for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
+    {
+      addMemberSAIni(i, tempGroup[i][j]);//we correct the ptrHead later, Because the address will change
+    }
+  }
+  //Re assign the ptrHead NOW
+  for (int i=0; i<maxChNum; i++)
+  {
+    for(int j=0; j<totalNodes; j++)
+    {
+      if(cSystem->clusterStru[i][j]==true)
+        nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
+    }
+  }
+
+
+  return true;
+}
+
 bool ULSAkmeans_MC::setIniStruHalfResourceKmedoids()
 {
   int retryTimes = 0;
@@ -948,6 +1064,46 @@ bool ULSAkmeans_MC::setIniStruFullResourceKmedoids()
   return true;
 }
 
+bool ULSAkmeans_MC::baselineKmeansMC()
+{
+  arma::vec aVecRate = arma::zeros<arma::vec>(totalNodes);
+  bool *vecSupNodes;
+  vecSupNodes = new bool [totalNodes];
+  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
+  indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
+  double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
+                    (compRatio,indEntropy,static_cast<double>(totalNodes));
+  bool inClu[totalNodes];
+  for(int i=0; i<totalNodes; i++)inClu[i]=true;
+  double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
+  wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
+
+
+  for (int i = 0; i < totalNodes; i++) vecSupNodes[i] = false;
+  int supNodes = 0;
+  double cumInfo = 0.0;
+  for (int i = 0; i < totalNodes; i++) {
+    aVecRate.at(i) = 
+      bandwidthKhz * 1e3 * log2( 1 + powerMax * Gib[i] / realNoise );
+  }
+  arma::vec aVecSortedRate = arma::sort(aVecRate,1);
+  arma::uvec aVecSortedindices = arma::sort_index(aVecRate,1);
+  
+  for (int i = 0; i < totalNodes; i++) {
+    ++supNodes;
+    vecSupNodes[aVecSortedindices.at(i)] = true;
+    cumInfo = 
+      supNodes * indEntropy + matrixComputer->computeLog2Det(1.0, vecSupNodes); 
+    if (cumInfo > fidelityRatio * wholeSystemEntopy ) break; 
+  }
+
+  setIniStruDistanceKmeans(vecSupNodes);
+  delete[] vecSupNodes;
+  delete matrixComputer;
+
+  return true;
+}
+
 bool ULSAkmeans_MC::baselineKmedoidMC()
 {
   arma::vec aVecRate = arma::zeros<arma::vec>(totalNodes);
@@ -1191,7 +1347,8 @@ void ULSAkmeans_MC::writePayoffEachRound_MinResors_withHead(int round,int head)
 
 }
 
-void ULSAkmeans_MC::debug_CheckSizeCorrect() {
+void ULSAkmeans_MC::debug_CheckSizeCorrect() 
+{
     for (unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
         int tempSize = 0;
         for(int j=0; j<totalNodes; j++) {
@@ -1499,7 +1656,8 @@ void ULSAkmeans_MC::addMemberSAIni(int inputHeadIndex, int inputMemberName)
 }
 
 //This function only used one time every SA
-void ULSAkmeans_MC::do1sttierPowerControlforCur_DataCentric() {
+void ULSAkmeans_MC::do1sttierPowerControlforCur_DataCentric() 
+{
 // debug_CheckSizeCorrect();
 //  cout<<endl;
 //  cout<<"Cur1sttier PowerControl"<<endl;
@@ -1634,7 +1792,8 @@ void ULSAkmeans_MC::coolOnce_minResors()
     targetNode: randomly proportional to the indepedent information compare to current set
 
 */
- void ULSAkmeans_MC::decideAdd3i_DC_HeadDetMemRan() {
+void ULSAkmeans_MC::decideAdd3i_DC_HeadDetMemRan() 
+{
     targetHeadIndex=-1;
     targetNode=-1;
 
@@ -1780,7 +1939,8 @@ void ULSAkmeans_MC::decideHeadRotate2i_DC_HeadRanMemDet()
 }
 
 
-void ULSAkmeans_MC::decideHeadJoining4b(){
+void ULSAkmeans_MC::decideHeadJoining4b()
+{
     int threshold=thresholdd; // To determine the cluster size is large enough 
                               // to perform join operation 
     double usepower=powerMax; // No use
@@ -1916,7 +2076,8 @@ void ULSAkmeans_MC::decideHeadJoining4b(){
 
 }
 
-double ULSAkmeans_MC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
+double ULSAkmeans_MC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx)
+{
     //estimate the power increase of testIndex: assume interference the same;
     
     vector<double> originalInterf_FromTargetClu_JoiningClu;
@@ -1999,7 +2160,8 @@ void ULSAkmeans_MC::computeOriInterference_GivenTarInJoinI(
     vector<double> &originalInterf_FromTargetClusterNJoinI,
     vector<double> &interference_Except_JoinI_TargetI,
     int joinCHIdx, 
-    int targetCHIdx){
+    int targetCHIdx)
+{
 
 
     consSol->updateInterference();
@@ -2020,7 +2182,8 @@ void ULSAkmeans_MC::computeOriInterference_GivenTarInJoinI(
     }
 }
 void ULSAkmeans_MC::updateJoinEstimatedPower(vector<double> &newPower, 
-    vector<int> &newMem,int joinCHIdx, int targetCHIdx){
+    vector<int> &newMem,int joinCHIdx, int targetCHIdx)
+{
 
     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
     for(int i=0;i<targetCHIdx;i++)it_LiInt++;
@@ -2061,7 +2224,8 @@ void ULSAkmeans_MC::updateJoinEstimatedPower(vector<double> &newPower,
 }
 void ULSAkmeans_MC::computeNewInterference_FromNewTarHI(vector<double> &newInterf,
     vector<double>&newPower, vector<int>&newMem, int joinCHIdx, 
-    int targetCHIdx){
+    int targetCHIdx)
+{
 
     for(unsigned int i=0;i<maxChNum;i++){
         if(i==joinCHIdx||i==targetCHIdx||cSystem->vecHeadName[i]==-1){
@@ -2083,7 +2247,8 @@ void ULSAkmeans_MC::computeNewInterference_FromNewTarHI(vector<double> &newInter
 
 
 
-void ULSAkmeans_MC::decideIsolate4b(){
+void ULSAkmeans_MC::decideIsolate4b()
+{
     //calculate first tier cost
     vector<double>vecGain;
     vecGain.reserve(totalNodes);
@@ -2183,7 +2348,8 @@ void ULSAkmeans_MC::decideIsolate4b(){
     //fclose(fid);
 }
 
-double ULSAkmeans_MC::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){
+double ULSAkmeans_MC::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex)
+{
     vector<double> originalInterf_FromIsolatedClu;
     vector<double> interference_Except_IsolatedClu;
     originalInterf_FromIsolatedClu.resize(maxChNum);
@@ -2226,7 +2392,8 @@ double ULSAkmeans_MC::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex
 
     return testMaxRatio*cur2nd_ms;
 }
-void ULSAkmeans_MC::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){
+void ULSAkmeans_MC::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex)
+{
     consSol->updateInterference();
     for(int i=0;i<maxChNum;i++){
         if(cSystem->vecHeadName[i]==-1)continue;
@@ -2243,7 +2410,8 @@ void ULSAkmeans_MC::computeOriInterference_GivenIsolate(vector<double> &oriInter
         interfExcept[i]=tempAllInterf;
     }
 }
-void ULSAkmeans_MC::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex){
+void ULSAkmeans_MC::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex)
+{
     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
     for(int i=0;i<isoCluIndex;i++)it_LiInt++;
     list<int>::iterator it_Int=it_LiInt->begin();
@@ -2256,7 +2424,8 @@ void ULSAkmeans_MC::updateIsolateEstimatedpower(vector<double> &newPower,int Iso
         newPower[*it_Int]=tmpPower;
     }
 }
-void ULSAkmeans_MC::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex){
+void ULSAkmeans_MC::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex)
+{
     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
     for(int i=0;i<isoCluIndex;i++)it_LiInt++;
 
@@ -2314,7 +2483,8 @@ void ULSAkmeans_MC::rotateHeadSA(int inputHeadIndex, int inputMemberName)
 	cSystem->vecHeadName[inputHeadIndex] = inputMemberName;
 }
 
-void ULSAkmeans_MC::isolateHeadSA(int isoName,int IsolateCluI, int targetH){
+void ULSAkmeans_MC::isolateHeadSA(int isoName,int IsolateCluI, int targetH)
+{
     //cout<<"doing isolation: iso-"<<isoName<<" From "<<IsolateCluI<<" to "<<targetH<<endl;
 
 
@@ -2329,7 +2499,8 @@ void ULSAkmeans_MC::isolateHeadSA(int isoName,int IsolateCluI, int targetH){
 }
 
 
-void ULSAkmeans_MC::join_fromHeadSA(int JoiningHeadIndex,int targetH){
+void ULSAkmeans_MC::join_fromHeadSA(int JoiningHeadIndex,int targetH)
+{
 
      lastJoingingMachine.clear();
      lastJoiningHeadIndex=JoiningHeadIndex;
@@ -2456,7 +2627,8 @@ void ULSAkmeans_MC::confirmNeighbor3i()
 	temparature*=alpha;
 }
 
-void ULSAkmeans_MC::passNext2Cur() {
+void ULSAkmeans_MC::passNext2Cur() 
+{
 
 
     curJEntropy = nextJEntropy;
@@ -2689,7 +2861,8 @@ double ULSAkmeans_MC::returnTransientAveragePower()
     return (accuPower/NodeNHeadNum);
 }
 
-double ULSAkmeans_MC::returnTransientJoule() {
+double ULSAkmeans_MC::returnTransientJoule() 
+{
     list <list<int> >::iterator itlist1=cSystem->listCluMember->begin();
     double accuJoule=0;
     for(int i =0; itlist1!=cSystem->listCluMember->end(); itlist1++,i++)
@@ -2710,7 +2883,8 @@ double ULSAkmeans_MC::returnTransientJoule() {
     return (accuJoule);
 }
 
-double ULSAkmeans_MC::return1stTotalNcal1stResors_HomoPower() {
+double ULSAkmeans_MC::return1stTotalNcal1stResors_HomoPower() 
+{
     power1st=powerMax;
     double T1=0;
     list <list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
@@ -2726,7 +2900,8 @@ double ULSAkmeans_MC::return1stTotalNcal1stResors_HomoPower() {
     }
     return T1;
 }
-void ULSAkmeans_MC::resetSA3iSystem() {
+void ULSAkmeans_MC::resetSA3iSystem() 
+{
     iniDone = false;
     bestFeasibleJEntropy = -1;
     bestFeasibleSupNum = -1;
@@ -2753,30 +2928,6 @@ void ULSAkmeans_MC::resetSA3iSystem() {
     vecBestClusterSize.clear();
     vecBestClusterSize.resize(maxChNum);
 }
-
-
-
-
-
-
-
-
-
-
-
-/* Not finishied
-void ULSAkmeans_MC::writePayoffEachRound_MinResors(int inputRound)
-{
-  FILE *fid1;
-  fid1=fopen("ULSAkmeans_MC_iterPayoff.txt","a");
-  //           1   2  3  4  5 6  7  8  9  10 11 12 13
-  fprintf(fid1,"%f %d %f %f %f %f %f %d %f %f %d %e %e\n",curJEntropy, curSupNum-maxChNum, bestTrafficReductionRatio,best2ndTierTraffic, best1stTierTraffic, cur2nd_ms, bestUpperLayerResource \
-          ,maxChNum, C2, wholeSystemEntopy,roundBest, bestAvgInterference, bestAvgPowerOFAllNodes);
-  fprintf(fid1,"%d %f %d %d\n", curSupNum, curJEntropy, curFeasible, inputRound);
-  fclose(fid1);
-}
-*/
-
 
 //----------------------------//
 //Debug tool                  //

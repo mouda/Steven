@@ -26,9 +26,9 @@ firR4b=firstResors([1:1:mincolsize],[1:1:size(firstResors,2)]);
 secR4b=secondResors([1:1:mincolsize],[1:1:size(secondResors,2)]);
 totalR4b=firR4b+secR4b;
 for j=1:size(totalR4b,2)
-FinalRatio4b(:,j)=totalR4b(:,j)./noclu(j);
-Final1stRatio4b(:,j)=firR4b(:,j)./noclu(j);
-Final2ndRatio4b(:,j)=secR4b(:,j)./noclu(j);
+FinalRatio4b(:,j)=totalR4b(:,j)./noclu(:,j);
+Final1stRatio4b(:,j)=firR4b(:,j)./noclu(:,j);
+Final2ndRatio4b(:,j)=secR4b(:,j)./noclu(:,j);
 end
 % errorbar(CRx,mean(Final1stRatio3i),std(Final1stRatio3i),'^--','LineWidth',2.5,'Color',DC_colorMap(i+1,:),'DisplayName','Data-Centric: Tier-1'); hold on;
 % errorbar(CRx,mean(Final2ndRatio3i),std(Final2ndRatio3i),'^-.','LineWidth',2.5,'Color',DC_colorMap(i+2,:),'DisplayName','Data-Centric: Tier-2'); hold on;
@@ -65,6 +65,19 @@ for j=1:size(totalRKM2i,2)
     Final2ndRatioKM2i(:,j)=secondResorsKM2i(:,j)./noclu(:,j);
 end
 
+[ totalNum totalInfo MapCR FidRatio  QuantiBits Density BestRound gatherInfo supNum firstEnergy SecondEnergy firstResors secondResors CRx]...
+    = parseResorsToMatrixByCR_assignedHead( 'data/ULSA4b7_All_N195_BW180.0PW0.001_FR0.95_r500.0.txt-KMs_MC',hn(2));
+mincolsize=returnColNonZeroSize(firstResors);
+secondResorsKM2i=secondResors([1:1:mincolsize],[1:1:size(secondResors,2)]);
+firstResorsKM2i=firstResors([1:1:mincolsize],[1:1:size(secondResors,2)]);
+gatherInfoKM2i=gatherInfo([1:1:mincolsize],[1:1:size(gatherInfo,2)]);
+totalRKM2i=firstResorsKM2i+secondResorsKM2i;
+for j=1:size(totalRKM2i,2)
+    FinalRatioKMs(:,j)=totalRKM2i(:,j)./noclu(:,j);
+    Final1stRatioKMs(:,j)=firstResorsKM2i(:,j)./noclu(:,j);
+    Final2ndRatioKMs(:,j)=secondResorsKM2i(:,j)./noclu(:,j);
+end
+
 
 str=sprintf('Direct Access-DC');
 %plot(CRx,DDC./noclu,'ro-','LineWidth',2.5,'Color',DC_colorMap(i+4,:),'DisplayName',str,'MarkerSize',10); hold on;
@@ -72,8 +85,8 @@ str=sprintf('MC Kmeans (m=%d)',hn(2));
 errorbar(CRx,mean(FinalRatioKM2i),std(FinalRatioKM2i),'o-.','LineWidth',1.5,'Color','r','DisplayName',str,'MarkerSize',10); hold on;
 str=sprintf('DC Kmeans (m=%d)',hn(2));
 errorbar(CRx,mean(FinalRatioKM4b),std(FinalRatioKM4b),'^--','LineWidth',1.5,'Color','k','DisplayName',str,'MarkerSize',10); hold on;
-%str=sprintf('Two-Tier MC SA');
-%errorbar(CRx,a,b,'o-','LineWidth',1.5,'Color',MC_colorMap(i,:),'DisplayName',str,'MarkerSize',10); hold on;
+str=sprintf('Distance kmeans (m=%d)',hn(2));
+errorbar(CRx,mean(FinalRatioKMs),std(FinalRatioKMs),'*-','LineWidth',1.5,'Color',[0.5 0.5 1],'DisplayName',str,'MarkerSize',10); hold on;
 str=sprintf('Two-Tier DC SA');
 errorbar(CRx,mean(FinalRatio4b),std(FinalRatio4b),'^-','LineWidth',1.5,'Color','b','DisplayName',str,'MarkerSize',10); hold on;
 

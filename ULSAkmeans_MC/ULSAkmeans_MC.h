@@ -65,10 +65,12 @@ public:
 
   bool setInitialStucture(char* inputFlag);
   bool setIniStruKmeans();//not public but related to setIniStrucKmeans
+  bool baselineKmeansMC();
   bool baselineKmedoidMC();
   bool baselineKmedoidDC(); 
   bool powerUpdateKmedoid();
-  bool setIniStruDistanceKmedoids( bool const * const);
+  bool setIniStruDistanceKmedoids( bool const * const); // for flexible assign support machine
+  bool setIniStruDistanceKmeans( bool const * const); // for flexible assign support machine
   //bool RealDistanceKmedoids(bool const * const);
   bool setIniStruHalfResourceKmedoids();
   bool setIniStruFullResourceKmedoids();
