@@ -1,10 +1,16 @@
-#include<iostream>
-#include<cv.h>
-#include<cmath>
-#include<cfloat>
-#include<cassert>
+#include <iostream>
+#include <cv.h>
+#include <cmath>
+#include <cfloat>
+#include <cassert>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
+
 #include "CORRE_MA_OPE.h"
+#include "../lib/cholesky.hpp"
 using namespace std;
+using namespace boost::numeric::ublas;
+
 CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double inCorrelationFactor, float **inDijSQ)
 {
   DijSQ = inDijSQ;
@@ -34,20 +40,23 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru)
   int matrixLength = covMaSize * covMaSize;
   double covAry[matrixLength];
   computeCovMa(covAry,covMaSize ,supSet);
-  CvMat covarianceMatrix;
-  cvInitMatHeader(&covarianceMatrix, covMaSize,covMaSize,CV_64F,covAry);
+  
+//  CvMat covarianceMatrix;
+//  cvInitMatHeader(&covarianceMatrix, covMaSize,covMaSize,CV_64F,covAry);
 
 
-  double det = cvDet(&covarianceMatrix);
-  //printf("Correlation = %.15f\n",correlationFac);
-  //printf("Determinant = %.15f\n",det);
-  //printf("log2det = %.15f\n",log2(det));
-  assert ((log2(det) <= DBL_MAX && log2(det)>= -DBL_MAX));
+//  double det = cvDet(&covarianceMatrix);
 
-  return log2(det);
+//  assert ((log2(det) <= DBL_MAX && log2(det)>= -DBL_MAX));
+//  cout << "origin: " << log2(det) << endl;
+//  cout << "new   : " << choleskyLogDet(covAry,covMaSize) << endl;
+
+//  return log2(det);
+  return choleskyLogDet(covAry,covMaSize);
 }
 
-double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int totalNodes){
+double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int totalNodes)
+{
     double step =10;
     double start=0;
     bool inClu[totalNodes];
@@ -87,4 +96,26 @@ void CORRE_MA_OPE::computeCovMa(double* covAry,int covMaSize, int* supSet)
       }
     }
   }
+}
+
+double CORRE_MA_OPE::choleskyLogDet( double const * const aryCovariance, const int& dimSize) 
+{
+  matrix<double> covMatrix(dimSize,dimSize);
+  for (int i = 0; i < dimSize; ++i) {
+    for (int j = 0; j < dimSize; ++j) {
+      covMatrix(i,j) = aryCovariance[ i * dimSize + j ];  
+    }
+  }
+  matrix<double> TRM (dimSize, dimSize);
+  cholesky_decompose(covMatrix, TRM);
+  double logDet = 0.0;
+  for (int i = 0; i < dimSize; ++i) {
+    for (int j = 0; j < dimSize; ++j) {
+      if (i == j) {
+        logDet += log2(TRM(i,j));
+      }
+    }
+  }
+  return 2*logDet;
+
 }

@@ -1,5 +1,6 @@
 #ifndef CORRE_MAOPERATION_H
 #define CORRE_MAOPERATION_H
+#include "../lib/cholesky.hpp"
 class CORRE_MA_OPE
 {
 public:
@@ -14,6 +15,7 @@ public:
 
 private:
   void computeCovMa(double* inCovAry, int inCovMaSize, int* inSupSet);//inCovAry is output of function
+  double choleskyLogDet( double const * const aryCovariance, const int& dimSize);
 
 };
 
