@@ -1,15 +1,16 @@
 #include <iostream>
-#include <cv.h>
 #include <cmath>
 #include <cfloat>
 #include <cassert>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
+#include <armadillo>
+#include <eigen3/Eigen/Cholesky>
 
 #include "CORRE_MA_OPE.h"
 #include "../lib/cholesky.hpp"
 using namespace std;
-using namespace boost::numeric::ublas;
+//using namespace boost::numeric;
 
 CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double inCorrelationFactor, float **inDijSQ)
 {
@@ -50,9 +51,11 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru)
 //  assert ((log2(det) <= DBL_MAX && log2(det)>= -DBL_MAX));
 //  cout << "origin: " << log2(det) << endl;
 //  cout << "new   : " << choleskyLogDet(covAry,covMaSize) << endl;
+//  cout << "arma  : " << armaLogDet(covAry, covMaSize) << endl;
 
 //  return log2(det);
-  return choleskyLogDet(covAry,covMaSize);
+//  return choleskyLogDet(covAry,covMaSize);
+    return armaLogDet(covAry, covMaSize);
 }
 
 double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int totalNodes)
@@ -100,13 +103,13 @@ void CORRE_MA_OPE::computeCovMa(double* covAry,int covMaSize, int* supSet)
 
 double CORRE_MA_OPE::choleskyLogDet( double const * const aryCovariance, const int& dimSize) 
 {
-  matrix<double> covMatrix(dimSize,dimSize);
+  boost::numeric::ublas::matrix<double> covMatrix(dimSize,dimSize);
   for (int i = 0; i < dimSize; ++i) {
     for (int j = 0; j < dimSize; ++j) {
       covMatrix(i,j) = aryCovariance[ i * dimSize + j ];  
     }
   }
-  matrix<double> TRM (dimSize, dimSize);
+  boost::numeric::ublas::matrix<double> TRM (dimSize, dimSize);
   cholesky_decompose(covMatrix, TRM);
   double logDet = 0.0;
   for (int i = 0; i < dimSize; ++i) {
@@ -118,4 +121,23 @@ double CORRE_MA_OPE::choleskyLogDet( double const * const aryCovariance, const i
   }
   return 2*logDet;
 
+}
+
+double CORRE_MA_OPE::armaLogDet( double const * const aryCovariance, const int& dimSize)
+{
+  arma::Mat<double> covMatrix(dimSize, dimSize);
+  for (int i = 0; i < dimSize; ++i) {
+    for (int j = 0; j < dimSize; ++j) {
+      covMatrix(i,j) = aryCovariance[ i * dimSize + j ];  
+    }
+  }
+  return log2(arma::det(covMatrix));
+  
+
+}
+
+double CORRE_MA_OPE::eigenCholeskyLogDet( double const * const aryCovariance, const int& dimSize)
+{
+
+  return 0.0;
 }

@@ -10,12 +10,12 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-path = {'data/2013-11-21_11-20_Best4b2Struc2ndN195_m8_FR0.9_r500.0.txt';'data/2013-11-11_21-41_Best4b2Struc2ndN195_m8_FR0.9_r500.0.txt-KMDC';'data/2013-11-11_18-04_Best4b2Struc2ndN195_m19_FR0.9_r500.0.txt-SA20000iters'};
+path = {'data/2013-11-11_21-37_Best4b2Struc2ndN195_m8_FR0.9_r500.0.txt-KMMC';'data/2013-11-11_21-41_Best4b2Struc2ndN195_m8_FR0.9_r500.0.txt-KMDC';'data/2013-11-11_18-04_Best4b2Struc2ndN195_m19_FR0.9_r500.0.txt-SA20000iters'};
 
-strtitle=['K-means  MC';'K-means  DC';'Two-Tier DC'];
+strtitle2={'K-medoids';'Advanced k-medoids';'Data-centric'};
 mapString = ['mapFile/mapFile_uni_195_r500/mapFile_uniR500_N195_1.txt'];
 %path=cellstr(dpath);
-strtitle2=cellstr(strtitle);
+%strtitle2=cellstr(strtitle);
 for ii=1:length(path)
 % 
 hFig = figure(ii);
@@ -133,7 +133,10 @@ title(str);
 temp = -(radius+10):0.01:(radius+10);
 %plot (temp,zeros(1,length(temp)),'k');     
 %plot (zeros(1,length(temp)),temp),'k';
-
+set(gca,'XTick',[]);
+set(gca,'YTick',[]);
+set(gca,'YColor','w');
+set(gca,'XColor','w');
 set(gca,'XTickLabel',['']);
 set(gca,'YTickLabel',['']);
 % xlabel({'x-axis(m)'});

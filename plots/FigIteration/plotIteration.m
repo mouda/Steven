@@ -10,6 +10,6 @@ plot(iteration,vecNoGuidePayoff(1:numOfIteration),'LineWidth',3,'DisplayName','N
 plot(iteration,vecGuidePayoff(1:numOfIteration),'LineWidth',1.5,'DisplayName','Guided Local Search','Color','b','MarkerSize',10);
 title('195 Machines;180 Khz;\lambda=0.95;\eta=0.48');
 ylabel('Objective Function (Resource Usage)');
-xlabel({'Iteration','Two-Tier Data Gathering'});
+xlabel('Iteration');
 legend('show');
 grid on;

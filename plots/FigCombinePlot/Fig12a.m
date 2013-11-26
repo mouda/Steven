@@ -65,25 +65,26 @@ for j=1:size(totalRKM2i,2)
     Final2ndRatioKM2i(:,j)=secondResorsKM2i(:,j)./noclu(:,j);
 end
 
-fig = figure(1);
-figH = subplot(2,1,1,'Parent',fig);
+fig = figure;
+subPlotFig(1) = subplot(2,1,1,'Parent',fig);
 str=sprintf('Direct Access-DC');
-str=sprintf('MC Kmeans (M=%d)',hn(2));
-errorbar(figH, CRx,mean(FinalRatioKM2i),std(FinalRatioKM2i),'o-.','LineWidth',1.5,'Color','r','DisplayName',str,'MarkerSize',10); hold(figH,'on');
-str=sprintf('DC Kmeans (M=%d)',hn(2));
-errorbar(figH, CRx,mean(FinalRatioKM4b),std(FinalRatioKM4b),'^--','LineWidth',1.5,'Color','k','DisplayName',str,'MarkerSize',10); hold(figH,'on');
-str=sprintf('Two-Tier DC SA');
-errorbar(figH,CRx,mean(FinalRatio4b),std(FinalRatio4b),'^-','LineWidth',1.5,'Color','b','DisplayName',str,'MarkerSize',10); 
+str=sprintf('Data-centric');
+errorbar(subPlotFig(1),CRx,mean(FinalRatio4b),std(FinalRatio4b),'^-','LineWidth',1.5,'Color','b','DisplayName',str,'MarkerSize',10); hold(subPlotFig(1),'on');
+str=sprintf('Advanced k-medoids (M = %d)',hn(2));
+errorbar(subPlotFig(1), CRx,mean(FinalRatioKM4b),std(FinalRatioKM4b),'^--','LineWidth',1.5,'Color','k','DisplayName',str,'MarkerSize',10); hold(subPlotFig(1),'on');
+str=sprintf('K-medoids (M = %d)',hn(2));
+errorbar(subPlotFig(1), CRx,mean(FinalRatioKM2i),std(FinalRatioKM2i),'o-.','LineWidth',1.5,'Color','r','DisplayName',str,'MarkerSize',10); 
+
 
 
 
 grid on;
 legend('show');
-ylabel('Resource Usage Ratio (R)');
+ylabel('Resource Usage Ratio');
 title('195 Machines;180 Khz;\lambda=0.95');
-hold off
 ylim([0.15 1.0]);
-xlim([0.2 0.5]);
+
+hold off;
 rawData = dlmread('data/DirectAcessPowerMax195_R500_2_MC.txt');
 x = 1;
 for i = 1:50
@@ -133,13 +134,13 @@ end
 
 
 
-figL = subplot(2,1,2,'Parent',fig);
+subPlotFig(2) = subplot(2,1,2,'Parent',fig);
 
 target(:,1)=mean(FinalRatio4b);
 target(:,2)=mean(FinalRatioKM4b);
 target(:,3)=mean(FinalRatioKM2i);
 index=[1 2 3 4 5];
-Obar = bar(figL, index,target,'hist');
+Obar = bar(subPlotFig(2), index,target,'hist');
 %axis([0.2 0.5 0.1 1.2]);
 ylim([0.1 1.0]);
 %xlim([0.2 0.5]);
@@ -147,12 +148,13 @@ set(Obar(1),'FaceColor',[1 0.35 0.35]);
 set(Obar(2),'FaceColor',[0 1 0.7]);
 set(Obar(3),'FaceColor',[1 1 0.9]);
 
-xlabel({'Compression Ratio (\eta)','Two-Tier Data Gathering'});
+xlabel('Compression Ratio (\eta)');
 ylabel('Energy Consumption Ratio');
-legend('Two-Tier Data Gathering','DC Kmeans (M=11)','MC Kmeans (M=11)');
+legend('Data-centric','Advanced k-medoids (M = 11)','K-medoids (M = 11)');
 set(gca,'XTickLabel',{'0.25';'0.3';'0.35';'0.4';'0.48'});
 grid on;
-set(gca,'XTick',index);%axis([0.2 0.5 0.1 1.2]);
-hold off;
+set(gca,'XTick',index);
+
+
 
 
