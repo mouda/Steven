@@ -41,20 +41,11 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru)
   int matrixLength = covMaSize * covMaSize;
   double covAry[matrixLength];
   computeCovMa(covAry,covMaSize ,supSet);
-  
-//  CvMat covarianceMatrix;
-//  cvInitMatHeader(&covarianceMatrix, covMaSize,covMaSize,CV_64F,covAry);
 
+//  cout << "new   : " << choleskyLogDet(covAry,covMaSize) << endl;
+//  cout << "arma  : " << armaLogDet(covAry, covMaSize) << endl;
+//  cout << "Eigen : " << eigenCholeskyLogDet(covAry, covMaSize) << endl;
 
-//  double det = cvDet(&covarianceMatrix);
-
-//  assert ((log2(det) <= DBL_MAX && log2(det)>= -DBL_MAX));
-//  cout << "origin: " << log2(det) << endl;
-//    cout << "new   : " << choleskyLogDet(covAry,covMaSize) << endl;
-//    cout << "arma  : " << armaLogDet(covAry, covMaSize) << endl;
-//    cout << "Eigen : " << eigenCholeskyLogDet(covAry, covMaSize) << endl;
-
-//  return log2(det);
 //  return choleskyLogDet(covAry,covMaSize);
 //  return armaLogDet(covAry, covMaSize);
     return eigenCholeskyLogDet(covAry, covMaSize);
