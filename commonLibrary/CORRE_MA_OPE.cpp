@@ -50,12 +50,14 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru)
 
 //  assert ((log2(det) <= DBL_MAX && log2(det)>= -DBL_MAX));
 //  cout << "origin: " << log2(det) << endl;
-//  cout << "new   : " << choleskyLogDet(covAry,covMaSize) << endl;
-//  cout << "arma  : " << armaLogDet(covAry, covMaSize) << endl;
+//    cout << "new   : " << choleskyLogDet(covAry,covMaSize) << endl;
+//    cout << "arma  : " << armaLogDet(covAry, covMaSize) << endl;
+//    cout << "Eigen : " << eigenCholeskyLogDet(covAry, covMaSize) << endl;
 
 //  return log2(det);
 //  return choleskyLogDet(covAry,covMaSize);
-    return armaLogDet(covAry, covMaSize);
+//  return armaLogDet(covAry, covMaSize);
+    return eigenCholeskyLogDet(covAry, covMaSize);
 }
 
 double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int totalNodes)
@@ -138,6 +140,21 @@ double CORRE_MA_OPE::armaLogDet( double const * const aryCovariance, const int& 
 
 double CORRE_MA_OPE::eigenCholeskyLogDet( double const * const aryCovariance, const int& dimSize)
 {
+  Eigen::MatrixXd covMatrix(dimSize,dimSize);
+  for (int i = 0; i < dimSize; ++i) {
+    for (int j = 0; j < dimSize; ++j) {
+      covMatrix(i,j) = aryCovariance[ i * dimSize + j ];  
+    }
+  }
+  Eigen::MatrixXd TRM( covMatrix.llt().matrixL() );
+  double logDet = 0.0;
+  for (int i = 0; i < dimSize; ++i) {
+    for (int j = 0; j < dimSize; ++j) {
+      if (i == j) {
+        logDet += log2(TRM(i,j));
+      }
+    }
+  }
 
-  return 0.0;
+  return 2*logDet;
 }
