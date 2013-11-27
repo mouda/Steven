@@ -1,4 +1,4 @@
-SUBDIRS = commonLibrary winULSA2g_MC winULSA2gx_MC winULSA2i2_MC winULSA3g_DC winULSA3gx_DC winULSA3i2_DC winULSA4b2_DC winULSAkmeans2i_MC winULSAkmeans4b2_DC DirectAcessPowerMax_MC
+SUBDIRS = commonLibrary  DirectAcessPowerMax_MC ULSA4b7_DC
 export CFLAGS=-O -O1 -O2 -O3
 
 all: $(SUBDIRS)

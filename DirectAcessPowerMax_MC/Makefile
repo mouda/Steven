@@ -1,7 +1,7 @@
 CPP= g++
 
-PREFIX=/home/share
-#PREFIX=/opt
+#PREFIX=/home/share
+PREFIX=/opt
 INCLUDE_PATH=-I$(PREFIX)/boost1550/include \
 	     -I$(PREFIX)/armadillo39202/include
 LIB_PATH=-L$(PREFIX)/boost1550/lib \
