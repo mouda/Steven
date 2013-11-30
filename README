@@ -25,3 +25,7 @@ COMMAND TOOL RMEMIND
 4. sed 
 5. grep
 6. ctags
+
+NEW PROBLEM
+
+node selection by given cluster structure
