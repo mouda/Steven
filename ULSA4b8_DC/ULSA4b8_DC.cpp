@@ -13,13 +13,13 @@
 
 using namespace std;
 #include "ULSA4b8_DC.h"
-ULSA4b8_DC::ULSA4b8_DC() {};
+ULSA4b8_DC::ULSA4b8_DC(){};
 
 ULSA4b8_DC::ULSA4b8_DC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \
                      int inOutputControl,
                      int isStrucOuput,
                      double inputTemprature, double InputSaAlpha, \
-                     double inCorrelationFactor, string ipAddr)
+                     double inCorrelationFactor, string ipAddr):m_bestStructure(inputTotalNodes,inputMaxChNum)
 {
 
     sysComputing = new SimSystem;
@@ -228,7 +228,7 @@ bool ULSA4b8_DC::setSystem(float inPowerMaxWatt, int inQuantizationBits,double i
     Flag: "kemans",..,
     and set the initial interference list for each node
 */
-bool ULSA4b8_DC::setInitialStucture(char* iniFlag)
+bool ULSA4b8_DC::setInitialStucture(const string& iniFlag)
 {
     iniDone=false;
     bool normalFlag = true;
@@ -240,15 +240,15 @@ bool ULSA4b8_DC::setInitialStucture(char* iniFlag)
     }
 
 
-    if (!strcmp(iniFlag, "kmeans")) 
+    if ( iniFlag == "kmeans") 
       normalFlag = setIniStruKmeans();
-    else if (!strcmp(iniFlag, "kmedoids_distance")) 
+    else if ( iniFlag == "kmedoids_distance") 
       normalFlag = setIniStruDistanceKmedoids();
-    else if (!strcmp(iniFlag, "kmedoids_resource_half"))
+    else if ( iniFlag == "kmedoids_resource_half")
       normalFlag = setIniStruHalfResourceKmedoids();
-    else if (!strcmp(iniFlag, "kmedoids_resource_full")) 
+    else if ( iniFlag == "kmedoids_resource_full")
       normalFlag = setIniStruFullResourceKmedoids();
-    else if (!strcmp(iniFlag, "HeadLimited")) 
+    else if ( iniFlag == "HeadLimited")
       normalFlag = setIniHeadLimited();
 
 
@@ -367,40 +367,6 @@ bool ULSA4b8_DC::setIniStruKmeans()
         nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
     }
   }
-  /*
-     for(int i=0; i<maxChNum; i++)
-     {
-     cSystem->allSupStru[i]=false;
-
-     for(int j=0; j<totalNodes; j++) {
-     cSystem->clusterStru[i][j]=false;
-
-     }
-     }
-
-
-  //----------------------------------------------------------
-  //Intial Structure: Head Only and :no connection set at all
-  for (int i=0; i<maxChNum; i++)
-  {
-  cSystem->addNewHeadCs(tempHeadList[i]);
-  for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
-  {
-  if(tempGroup[i][j]==tempHeadList[i])
-  addMemberSAIni(i, tempGroup[i][j]);
-  else
-  {
-  cSystem->listUnSupport->push_back(tempGroup[i][j]);
-  //cout<<"Push in list "<<tempGroup[i][j]<<" listSize "<<cSystem->listUnSupport->size()<<endl;
-  }
-  }
-  }
-  for (int i=0; i<maxChNum; i++)
-  {
-  nodes[cSystem->vecHeadName[i]].ptrHead = &(cSystem->vecHeadName[i]);
-  //cout<<cSystem->vecHeadName[i]<<" "<<nodes[cSystem->vecHeadName[i]].ptrHead<<endl;
-  }
-  */
   return true;
 }
 
@@ -1030,63 +996,6 @@ void ULSA4b8_DC::writePayoffEachRound_MinResors_withHead(int round,int head)
     fprintf(fid,"%f %f %f %f %f %d %d\n", curJEntropy/wholeSystemEntopy,static_cast<double>(curSupNum)/static_cast<double>(totalNodes), curPayoff, cur1st_ms, cur2nd_ms,  round, head);
     fclose(fid);
 
-}
-void ULSA4b8_DC::do1sttierPowerControlforNext_DataCentric() {
-// debug_CheckSizeCorrect();
-// cout<<endl;
-    //cout<<"Next1sttier PowerControl"<<endl;
-
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        double  groupRedundancy = matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[i]);
-        double  clusterInfo=cSystem->vecClusterSize[i]*indEntropy +  groupRedundancy;
-        vecClusterHeadBits[i]=clusterInfo;
-    }
-
-    consSol->Do1stTierPowerControl(next1st_Joule,next1st_ms,vecClusterHeadWatt,vecClusterHeadMS,vecClusterHeadBits,\
-                                   rateibMax,Gib);
-    //cout<<"Updated 1st tier energy "<<next1st_Joule<<" Joule "<<endl;
-
-}
-
-void ULSA4b8_DC::do1sttierPowerControlforBest_DataCentric() {
-    //debug_CheckSizeCorrect();
-
-    for(unsigned int i=0; i<vecHeadNameBest.size(); i++) {
-        int tempCluSize=0;
-        for (int j=0; j<totalNodes; j++)
-            if (bestMaClusterStru[i][j]==1)tempCluSize++;
-        double groupRedundancy = matrixComputer->computeLog2Det(1.0,bestMaClusterStru[i]);
-        vecClusterHeadBits[i]=tempCluSize*indEntropy + groupRedundancy;
-        //cout<<"Cluster "<<i<<" With data: "<<vecClusterHeadBits[i]<<"bits"<<endl;
-    }
-
-    consSol->Do1stTierPowerControl_ForBest(best1st_Joule,best1st_ms,vecClusterHeadWatt,vecClusterHeadMS,vecClusterHeadBits,\
-                                           rateibMax,Gib,vecHeadNameBest);
-}
-
-void ULSA4b8_DC::do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, double &temp1stMs) {
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        double  groupRedundancy = matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[i]);
-        double  clusterInfo=cSystem->vecClusterSize[i]*indEntropy +  groupRedundancy;
-        vecClusterHeadBits[i]=clusterInfo;
-    }
-    consSol->Do1stTierPowerControl(temp1stJoule,temp1stMs,vecClusterHeadWatt,vecClusterHeadMS,vecClusterHeadBits,\
-                                   rateibMax,Gib);
-
-
-}
-
-void ULSA4b8_DC::do1sttierPowerMaxforBest_DataCentric() {
-
-    double power1st=powerMax;
-    list <list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-    best1st_Joule=0;
-    best1st_ms=0;
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        vecClusterHeadWatt[i]=power1st;
-        vecClusterHeadBits[i] = it_LiInt->size()*indEntropy+ matrixComputer->computeLog2Det(1.0, cSystem->clusterStru[i]);
-        vecClusterHeadMS[i]= vecClusterHeadBits[i]/(bandwidthKhz*log2(1+power1st*Gib[cSystem->vecHeadName[i]]/sysComputing->returnInBandThermalNoise(bandwidthKhz)));
-    }
 }
 
 
@@ -2549,7 +2458,6 @@ bool ULSA4b8_DC::checkBestClusterStructure_DataCentric(int inputRound)
     //cout<<"In check Best"<<endl;
     if ((curJEntropy>bestFeasibleJEntropy)&&!curAllServe&&!bestAllServeFound)
     {
-        //do1sttierPowerMaxforBest_DataCentric();
         roundBest = inputRound;
         bestFeasibleJEntropy=curJEntropy;
         bestFeasibleSupNum=curSupNum ;
@@ -2566,7 +2474,6 @@ bool ULSA4b8_DC::checkBestClusterStructure_DataCentric(int inputRound)
     else if ((curPayoff<bestFeasiblePayoff)&&curAllServe)
     {
         //cout<<"Find new best"<<endl;
-        //do1sttierPowerMaxforBest_DataCentric();
         roundBest = inputRound;
         bestFeasibleJEntropy=curJEntropy;
         bestFeasibleSupNum=curSupNum ;
@@ -2593,6 +2500,9 @@ void ULSA4b8_DC::keepBestStructure()
     vecBestClusterSize.assign(cSystem->vecClusterSize.begin(),cSystem->vecClusterSize.end());
     vecBestClusterHeadMS.assign(vecClusterHeadMS.begin(),vecClusterHeadMS.end());
     vecBestClusterHeadWatt.assign(vecClusterHeadWatt.begin(),vecClusterHeadWatt.end());
+
+    m_bestStructure.SetRecord(vecHeadNameBest,*listCluMemBest);
+
     for(int i=0; i<maxChNum; i++)
     {
         for(int j=0; j<totalNodes; j++)
@@ -2603,7 +2513,6 @@ void ULSA4b8_DC::keepBestStructure()
     for(int i =0; i<totalNodes; i++)
     {
         powerBest[i] = nextNodePower[i];
-        // cout<<"InKEEP "<<i<<" Power"<< powerBest[i]<<endl;
     }
     for(int i=0; i<totalNodes; i++)
         bestAllSupStru[i]=cSystem->allSupStru[i];
@@ -2742,12 +2651,15 @@ double ULSA4b8_DC::SchedulingOneShut()
   for (int i = 0; i < totalNodes; i++) {
     for (int j = 0; j < totalNodes; j++) {
       if (i == j) {
+        matAij(i,j) = OmegaValue(i);
       } else if (/* i in cluster M, j in another */
           matRelation(i,j) == 1) {
         matAij(i,j) == (rate/bandwidthKhz/best2nd_ms-1)*powerMax*Gij[i][j];
       } 
     }
   }
+  cout << matAij << endl;
+
   /* construct equality construct */
   Eigen::MatrixXd matDij = Eigen::MatrixXd::Zero(maxChNum, totalNodes);
 
@@ -2768,7 +2680,7 @@ double ULSA4b8_DC::BranchBound( const Eigen::MatrixXd& )
 double ULSA4b8_DC::OmegaValue( const int& nodeName)
 {
   Eigen::MatrixXd matOwnership = Eigen::MatrixXd::Zero(maxChNum, totalNodes);
-  list<list<int> >::iterator iterRow = listCluMemBest->begin();
+  list<list<int> >::const_iterator iterRow = m_bestStructure.GetListCluMemeber().begin();
   for (int i = 0; i < maxChNum; ++i, ++iterRow) {
     list<int>::const_iterator iterCol= iterRow->begin();
     for (; iterCol != iterRow->end(); ++iterCol) {
@@ -2785,17 +2697,23 @@ double ULSA4b8_DC::OmegaValue( const int& nodeName)
   int index = 0;
   double rate = pow(2.0,static_cast<double>(quantizationBits));
   for (int i = 0; i < maxChNum; i++) {
-    /* need to get head by node*/
-//    if (vecHeadNameBest[i] == ) {
-//      /* code */
-//    }
+    if ( m_bestStructure.GetChIdxByName(nodeName) == i ) continue; 
     Eigen::Matrix<double,Eigen::Dynamic,1> vecTmp(totalNodes,1);
-    vecTmp = matOwnership.col(i).cwiseProduct(matGij.col(i));
+    vecTmp = matOwnership.row(i).cwiseProduct(matGij.row(i));
     interference += vecTmp.maxCoeff();
   }
-  double lhs = (rate/bandwidthKhz/best2nd_ms-1)*(bandwidthKhz*realNoise+interference);
-//  double rhs = powerMax*()
-  return 0.0;
+  double lhs = (pow(2.0,static_cast<double>(quantizationBits)/bandwidthKhz/best2nd_ms) - 1 ) * 
+    (bandwidthKhz*realNoise+interference);
+  double rhs = powerMax * 
+    matGij(nodeName, m_bestStructure.GetChNameByName(nodeName)) * 
+    matGij(nodeName, m_bestStructure.GetChNameByName(nodeName));
+
+  if (lhs > rhs ) {
+    return -1*lhs;
+  }
+  else {
+    return 0.0;
+  }
 }
 
 

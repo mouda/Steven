@@ -34,6 +34,8 @@
 #include "../commonLibrary/TimeStamp.h"
 #include "../lib/SA/SABASE.h"
 
+#include "ClusterStructure.h"
+
 template class ULSAOutputToolSet<class ULSA4b8_DC>;
 
 class ULCS1b;
@@ -64,7 +66,7 @@ public:
 //-------------------------------------------------------------------//
   bool setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double fidelity);
 
-  bool setInitialStucture(char* inputFlag);
+  bool setInitialStucture(const string& inputFlag);
   bool setIniStruKmeans();//not public but related to setIniStrucKmeans
   bool setIniStruDistanceKmedoids();
   bool setIniStruHalfResourceKmedoids();
@@ -75,14 +77,6 @@ public:
   void writeStruSingleRound(int round);
   void writePayoffEachRound_MinResors(int round);
   void writePayoffEachRound_MinResors_withHead(int round,int head);
-
-  //Incomplete!!!
-
-  void do1sttierPowerControlforNext_DataCentric();
-  void do1sttierPowerControlforBest_DataCentric();
-  void do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, double &temp1sMS);
-  void do1sttierPowerMaxforBest_DataCentric();
-  //
 
   void debug_CheckSizeCorrect();
   void computeBestTRR_DataCentric();
@@ -101,10 +95,10 @@ public:
 //-------------------------------------------------------------------//
 
   //@Set by setSystem();
-  double bandwidthKhz;
-  float powerMax;
-  double power1st;
-  int quantizationBits;
+  double  bandwidthKhz;
+  double  powerMax;
+  double  power1st;
+  int     quantizationBits;
   double dataBits;
   double virtualCompression;
   int headCandidatesNum;
@@ -214,6 +208,8 @@ public:
   double best1stTierTraffic;
   double best2ndTierTraffic;
   double bestTrafficReductionRatio;
+
+  ClusterStructure m_bestStructure; 
 
 
 
