@@ -298,6 +298,7 @@ public:
   // Scheduling Algorithm (Node selection)
   double SchedulingOneShut();
   double BranchBound(const Eigen::MatrixXd& );
+  double OmegaValue(const int& nodeName);
 
 
   // Internal Aid Function
