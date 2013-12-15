@@ -153,15 +153,15 @@ ylabel('Energy Consumption Ratio');
 legend('Data-centric','Advanced k-medoids (M = 11)','K-medoids (M = 11)');
 set(gca,'XTickLabel',{'0.25';'0.3';'0.35';'0.4';'0.48'});
 grid on;
-set(gca,'XTick',index);
+%set(gca,'XTick',index);
 
-set(gca, 'xcolor', [0 0 0],...
-         'ycolor', [0 0 0],...
-         'color', 'none');
+%set(gca, 'xcolor', [0 0 0],...
+%         'ycolor', [0 0 0],...
+%         'color', 'none');
 %det(gcf, 'color', 'none',...
 %         'inverthardcopy', 'off');
 
 %set(gcf,'InvertHardcopy','off')
 %export_fig test.png
-imwrite(F.cdata,'test1.png','png');
+%imwrite(F.cdata,'test1.png','png');
 
