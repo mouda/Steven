@@ -4,31 +4,42 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BranchBound	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::BranchBound( const Eigen::MatrixXd& )$/;"	f	class:ULSA4b8_DC
 COMM_UTILITY	Makefile	/^COMM_UTILITY= ..\/commonLibrary\/CORRE_MA_OPE.o \\$/;"	m
 CPP	Makefile	/^CPP= g++$/;"	m
-DFLAGS	Makefile	/^DFLAGS= -D DEBUG -g$/;"	m
+ClusterStructure	ClusterStructure.h	/^    ClusterStructure():m_numNode(0),m_maxNumCh(0){};$/;"	f	class:ClusterStructure
+ClusterStructure	ClusterStructure.h	/^    ClusterStructure(const int& totalNodes, const int& maxChNum):$/;"	f	class:ClusterStructure
+ClusterStructure	ClusterStructure.h	/^class ClusterStructure $/;"	c
+DFLAGS	Makefile	/^DFLAGS=-g$/;"	m
+GetChIdxByName	ClusterStructure.cpp	/^ClusterStructure::GetChIdxByName( const int& nodeName )$/;"	f	class:ClusterStructure
+GetChNameByName	ClusterStructure.cpp	/^ClusterStructure::GetChNameByName( const int& nodeName)$/;"	f	class:ClusterStructure
+GetListCluMemeber	ClusterStructure.h	/^    const list<list<int> >& GetListCluMemeber(){return m_listCluMember; }$/;"	f	class:ClusterStructure
+GetVecHeadName	ClusterStructure.h	/^    const vector<int>&  GetVecHeadName(){ return m_vecHeadName; }$/;"	f	class:ClusterStructure
 Gib	ULSA4b8_DC.h	/^  float *Gib; \/\/ channel gain from node i to base station$/;"	m	class:ULSA4b8_DC
 Gij	ULSA4b8_DC.h	/^  float **Gij;\/\/ channel gain from node i to node j$/;"	m	class:ULSA4b8_DC
-INCLUDE	Makefile	/^INCLUDE= -I$(PREFIX)\/armadillo39202\/include\/$/;"	m
+INCLUDE_PATH	Makefile	/^INCLUDE_PATH=-I$(PREFIX)\/boost1550\/include \\$/;"	m
 IsolateNodeName	ULSA4b8_DC.h	/^  int  IsolateNodeName;$/;"	m	class:ULSA4b8_DC
 JoiningHeadIndex	ULSA4b8_DC.h	/^  int  JoiningHeadIndex;$/;"	m	class:ULSA4b8_DC
-LIB_FLAGS	Makefile	/^LIB_FLAGS= -larmadillo -lopenblas -llapack  $/;"	m
-LIB_PATH	Makefile	/^LIB_PATH = -L$(PREFIX)\/armadillo39202\/lib\/ \\$/;"	m
+LIB_FLAGS	Makefile	/^LIB_FLAGS=-lboost_math_c99 \\$/;"	m
+LIB_PATH	Makefile	/^LIB_PATH=-L$(PREFIX)\/boost1550\/lib \\$/;"	m
+OBJECTS	Makefile	/^OBJECTS=$(SOURCES:.cpp=.o)$/;"	m
+OmegaValue	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::OmegaValue( const int& nodeName)$/;"	f	class:ULSA4b8_DC
 PREFIX	Makefile	/^PREFIX=\/opt$/;"	m
 SA_FIN_TEMP	main.cpp	12;"	d	file:
 SA_INI_TEMP	main.cpp	11;"	d	file:
-ULSA4b8_DC	ULSA4b8_DC.cpp	/^ULSA4b8_DC::ULSA4b8_DC() {};$/;"	f	class:ULSA4b8_DC
+SOURCES	Makefile	/^SOURCES=main.o ULSA4b8_DC.o ClusterStructure.o $/;"	m
+SchedulingOneShut	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::SchedulingOneShut() $/;"	f	class:ULSA4b8_DC
+SetListCluMember	ClusterStructure.h	/^    void SetListCluMember( const list<list<int> >& inListCluMember)$/;"	f	class:ClusterStructure
+SetRecord	ClusterStructure.cpp	/^ClusterStructure::SetRecord( $/;"	f	class:ClusterStructure
+SetVecHeadName	ClusterStructure.h	/^    void SetVecHeadName( const vector<int>& inVecHeadName)$/;"	f	class:ClusterStructure
+ULSA4b8_DC	ULSA4b8_DC.cpp	/^ULSA4b8_DC::ULSA4b8_DC(){};$/;"	f	class:ULSA4b8_DC
 ULSA4b8_DC	ULSA4b8_DC.cpp	/^ULSA4b8_DC::ULSA4b8_DC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \\$/;"	f	class:ULSA4b8_DC
 ULSA4b8_DC	ULSA4b8_DC.h	/^class ULSA4b8_DC :public SABASE$/;"	c
-ULSA4b8_DC	ULSA4b8_DC_new.cpp	/^ULSA4b8_DC::ULSA4b8_DC() {};$/;"	f	class:ULSA4b8_DC
-ULSA4b8_DC	ULSA4b8_DC_new.cpp	/^ULSA4b8_DC::ULSA4b8_DC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \\$/;"	f	class:ULSA4b8_DC
 ULSA4b8_DC_H	ULSA4b8_DC.h	17;"	d
 addMemberSA	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::addMemberSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b8_DC
-addMemberSA	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::addMemberSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b8_DC
 addMemberSAIni	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::addMemberSAIni(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b8_DC
-addMemberSAIni	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::addMemberSAIni(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b8_DC
 aryFlagHRDone	ULSA4b8_DC.h	/^  bool *aryFlagHRDone; \/\/If it is true means Head Rotate have been done in this structure, starrt from ULSA4b8_DC$/;"	m	class:ULSA4b8_DC
-bandwidthKhz	ULSA4b8_DC.h	/^  double bandwidthKhz;$/;"	m	class:ULSA4b8_DC
+bandwidthKhz	ULSA4b8_DC.h	/^  double  bandwidthKhz;$/;"	m	class:ULSA4b8_DC
 begin	ULSA4b8_DC.h	/^  clock_t begin, end;$/;"	m	class:ULSA4b8_DC
 best1stTierTraffic	ULSA4b8_DC.h	/^  double best1stTierTraffic;$/;"	m	class:ULSA4b8_DC
 best1st_Joule	ULSA4b8_DC.h	/^  double best1st_Joule;$/;"	m	class:ULSA4b8_DC
@@ -49,36 +60,23 @@ bestTrafficReductionRatio	ULSA4b8_DC.h	/^  double bestTrafficReductionRatio;$/;"
 bestUpperLayerResource	ULSA4b8_DC.h	/^  double bestUpperLayerResource;$/;"	m	class:ULSA4b8_DC
 cSystem	ULSA4b8_DC.h	/^  ULCS1b*  cSystem;   \/\/ system cluseter structure$/;"	m	class:ULSA4b8_DC
 calculateMatrics_minResors	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::calculateMatrics_minResors()\/\/Calculate next performance matircs$/;"	f	class:ULSA4b8_DC
-calculateMatrics_minResors	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::calculateMatrics_minResors()\/\/Calculate next performance matircs$/;"	f	class:ULSA4b8_DC
 checkBestClusterStructure_DataCentric	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::checkBestClusterStructure_DataCentric(int inputRound)$/;"	f	class:ULSA4b8_DC
-checkBestClusterStructure_DataCentric	ULSA4b8_DC_new.cpp	/^bool ULSA4b8_DC::checkBestClusterStructure_DataCentric(int inputRound)$/;"	f	class:ULSA4b8_DC
 compRatio	ULSA4b8_DC.h	/^  double compRatio;$/;"	m	class:ULSA4b8_DC
 compareDis	ULSA4b8_DC.h	/^    compareDis(const ULSA4b8_DC& sa) : mySA(sa) {} \/\/ constructor$/;"	f	struct:ULSA4b8_DC::compareDis
 compareDis	ULSA4b8_DC.h	/^  struct compareDis$/;"	s	class:ULSA4b8_DC
 computeBestAvgInterference	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::computeBestAvgInterference()$/;"	f	class:ULSA4b8_DC
-computeBestAvgInterference	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::computeBestAvgInterference()$/;"	f	class:ULSA4b8_DC
 computeBestAvgPower	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::computeBestAvgPower()$/;"	f	class:ULSA4b8_DC
-computeBestAvgPower	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::computeBestAvgPower()$/;"	f	class:ULSA4b8_DC
 computeBestTRR_DataCentric	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::computeBestTRR_DataCentric()$/;"	f	class:ULSA4b8_DC
-computeBestTRR_DataCentric	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::computeBestTRR_DataCentric()$/;"	f	class:ULSA4b8_DC
 computeNewInterference_FromIsoCluster	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex){$/;"	f	class:ULSA4b8_DC
-computeNewInterference_FromIsoCluster	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex){$/;"	f	class:ULSA4b8_DC
 computeNewInterference_FromNewTarHI	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::computeNewInterference_FromNewTarHI(vector<double> &newInterf,$/;"	f	class:ULSA4b8_DC
-computeNewInterference_FromNewTarHI	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::computeNewInterference_FromNewTarHI(vector<double> &newInterf,$/;"	f	class:ULSA4b8_DC
 computeOriInterference_GivenIsolate	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){$/;"	f	class:ULSA4b8_DC
-computeOriInterference_GivenIsolate	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){$/;"	f	class:ULSA4b8_DC
 computeOriInterference_GivenTarInJoinI	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::computeOriInterference_GivenTarInJoinI($/;"	f	class:ULSA4b8_DC
-computeOriInterference_GivenTarInJoinI	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::computeOriInterference_GivenTarInJoinI($/;"	f	class:ULSA4b8_DC
 computeUpperResourceNoCodingNoPowerControl	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::computeUpperResourceNoCodingNoPowerControl()$/;"	f	class:ULSA4b8_DC
-computeUpperResourceNoCodingNoPowerControl	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::computeUpperResourceNoCodingNoPowerControl()$/;"	f	class:ULSA4b8_DC
 computingTimes	ULSA4b8_DC.h	/^  float computingTimes;$/;"	m	class:ULSA4b8_DC
 confirmNeighbor3i	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::confirmNeighbor3i()$/;"	f	class:ULSA4b8_DC
-confirmNeighbor3i	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::confirmNeighbor3i()$/;"	f	class:ULSA4b8_DC
 confirmStructureChange	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::confirmStructureChange()$/;"	f	class:ULSA4b8_DC
-confirmStructureChange	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::confirmStructureChange()$/;"	f	class:ULSA4b8_DC
 consSol	ULSA4b8_DC.h	/^  ULConstraintSolver* consSol;$/;"	m	class:ULSA4b8_DC
 coolOnce_minResors	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::coolOnce_minResors()$/;"	f	class:ULSA4b8_DC
-coolOnce_minResors	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::coolOnce_minResors()$/;"	f	class:ULSA4b8_DC
 correlationFactor	ULSA4b8_DC.h	/^  double correlationFactor;$/;"	m	class:ULSA4b8_DC
 cur1st_Joule	ULSA4b8_DC.h	/^  double cur1st_Joule;$/;"	m	class:ULSA4b8_DC
 cur1st_ms	ULSA4b8_DC.h	/^  double cur1st_ms;$/;"	m	class:ULSA4b8_DC
@@ -90,37 +88,18 @@ curPayoff	ULSA4b8_DC.h	/^  double curPayoff;$/;"	m	class:ULSA4b8_DC
 curSupNum	ULSA4b8_DC.h	/^  int  curSupNum;$/;"	m	class:ULSA4b8_DC
 dataBits	ULSA4b8_DC.h	/^  double dataBits;$/;"	m	class:ULSA4b8_DC
 debug_CheckSizeCorrect	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::debug_CheckSizeCorrect() {$/;"	f	class:ULSA4b8_DC
-debug_CheckSizeCorrect	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::debug_CheckSizeCorrect() {$/;"	f	class:ULSA4b8_DC
 decideAdd3i_DC_HeadDetMemRan	ULSA4b8_DC.cpp	/^ void ULSA4b8_DC::decideAdd3i_DC_HeadDetMemRan() {$/;"	f	class:ULSA4b8_DC
-decideAdd3i_DC_HeadDetMemRan	ULSA4b8_DC_new.cpp	/^ void ULSA4b8_DC::decideAdd3i_DC_HeadDetMemRan() {$/;"	f	class:ULSA4b8_DC
 decideDiscard3b	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::decideDiscard3b()$/;"	f	class:ULSA4b8_DC
-decideDiscard3b	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::decideDiscard3b()$/;"	f	class:ULSA4b8_DC
 decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {$/;"	f	class:ULSA4b8_DC
-decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {$/;"	f	class:ULSA4b8_DC
 decideHeadJoining4b	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::decideHeadJoining4b(){$/;"	f	class:ULSA4b8_DC
-decideHeadJoining4b	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::decideHeadJoining4b(){$/;"	f	class:ULSA4b8_DC
 decideHeadRotate2i_DC_HeadRanMemDet	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::decideHeadRotate2i_DC_HeadRanMemDet()$/;"	f	class:ULSA4b8_DC
-decideHeadRotate2i_DC_HeadRanMemDet	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::decideHeadRotate2i_DC_HeadRanMemDet()$/;"	f	class:ULSA4b8_DC
 decideIsolate4b	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::decideIsolate4b(){$/;"	f	class:ULSA4b8_DC
-decideIsolate4b	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::decideIsolate4b(){$/;"	f	class:ULSA4b8_DC
 discardMemberSA	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::discardMemberSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b8_DC
-discardMemberSA	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::discardMemberSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b8_DC
 distanceOf2Nodes	ULSA4b8_DC.h	/^  float **distanceOf2Nodes;$/;"	m	class:ULSA4b8_DC
-do1sttierPowerControlforBest_DataCentric	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::do1sttierPowerControlforBest_DataCentric() {$/;"	f	class:ULSA4b8_DC
-do1sttierPowerControlforBest_DataCentric	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::do1sttierPowerControlforBest_DataCentric() {$/;"	f	class:ULSA4b8_DC
 do1sttierPowerControlforCur_DataCentric	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::do1sttierPowerControlforCur_DataCentric() {$/;"	f	class:ULSA4b8_DC
-do1sttierPowerControlforCur_DataCentric	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::do1sttierPowerControlforCur_DataCentric() {$/;"	f	class:ULSA4b8_DC
-do1sttierPowerControlforNext_DataCentric	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::do1sttierPowerControlforNext_DataCentric() {$/;"	f	class:ULSA4b8_DC
-do1sttierPowerControlforNext_DataCentric	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::do1sttierPowerControlforNext_DataCentric() {$/;"	f	class:ULSA4b8_DC
-do1sttierPowerControlforTEMP_DataCentric	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, double &temp1stMs) {$/;"	f	class:ULSA4b8_DC
-do1sttierPowerControlforTEMP_DataCentric	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, double &temp1stMs) {$/;"	f	class:ULSA4b8_DC
-do1sttierPowerMaxforBest_DataCentric	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::do1sttierPowerMaxforBest_DataCentric() {$/;"	f	class:ULSA4b8_DC
-do1sttierPowerMaxforBest_DataCentric	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::do1sttierPowerMaxforBest_DataCentric() {$/;"	f	class:ULSA4b8_DC
 end	ULSA4b8_DC.h	/^  clock_t begin, end;$/;"	m	class:ULSA4b8_DC
 estimateIsolate2ndTierGain	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){$/;"	f	class:ULSA4b8_DC
-estimateIsolate2ndTierGain	ULSA4b8_DC_new.cpp	/^double ULSA4b8_DC::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){$/;"	f	class:ULSA4b8_DC
 estimateJoin2ndTierCost	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){$/;"	f	class:ULSA4b8_DC
-estimateJoin2ndTierCost	ULSA4b8_DC_new.cpp	/^double ULSA4b8_DC::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){$/;"	f	class:ULSA4b8_DC
 fidelityRatio	ULSA4b8_DC.h	/^  double fidelityRatio;\/\/ Temporary set by here 2013\/02\/21$/;"	m	class:ULSA4b8_DC
 flagAnsFound	ULSA4b8_DC.h	/^  bool flagAnsFound;$/;"	m	class:ULSA4b8_DC
 headCandidatesNum	ULSA4b8_DC.h	/^  int headCandidatesNum;$/;"	m	class:ULSA4b8_DC
@@ -128,12 +107,9 @@ indEntropy	ULSA4b8_DC.h	/^  double indEntropy;$/;"	m	class:ULSA4b8_DC
 iniDone	ULSA4b8_DC.h	/^  bool iniDone;$/;"	m	class:ULSA4b8_DC
 isDetailOutputOn	ULSA4b8_DC.h	/^  int isDetailOutputOn;$/;"	m	class:ULSA4b8_DC
 isolateHeadSA	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::isolateHeadSA(int isoName,int IsolateCluI, int targetH){$/;"	f	class:ULSA4b8_DC
-isolateHeadSA	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::isolateHeadSA(int isoName,int IsolateCluI, int targetH){$/;"	f	class:ULSA4b8_DC
 isolatedHeadIndex	ULSA4b8_DC.h	/^  int  isolatedHeadIndex;$/;"	m	class:ULSA4b8_DC
 join_fromHeadSA	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::join_fromHeadSA(int JoiningHeadIndex,int targetH){$/;"	f	class:ULSA4b8_DC
-join_fromHeadSA	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::join_fromHeadSA(int JoiningHeadIndex,int targetH){$/;"	f	class:ULSA4b8_DC
 keepBestStructure	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::keepBestStructure()$/;"	f	class:ULSA4b8_DC
-keepBestStructure	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::keepBestStructure()$/;"	f	class:ULSA4b8_DC
 lastIsoPassAccu	ULSA4b8_DC.h	/^  int lastIsoPassAccu;$/;"	m	class:ULSA4b8_DC
 lastIsolateNodeName	ULSA4b8_DC.h	/^  int lastIsolateNodeName;$/;"	m	class:ULSA4b8_DC
 lastIsolatedClusterIndex	ULSA4b8_DC.h	/^  int lastIsolatedClusterIndex;$/;"	m	class:ULSA4b8_DC
@@ -142,6 +118,13 @@ lastJoingingMachine	ULSA4b8_DC.h	/^  vector<int> lastJoingingMachine;$/;"	m	clas
 lastJoiningHead	ULSA4b8_DC.h	/^  int lastJoiningHead;$/;"	m	class:ULSA4b8_DC
 lastJoiningHeadIndex	ULSA4b8_DC.h	/^  int lastJoiningHeadIndex;$/;"	m	class:ULSA4b8_DC
 listCluMemBest	ULSA4b8_DC.h	/^  list <list <int> > *listCluMemBest;$/;"	m	class:ULSA4b8_DC
+m_bestStructure	ULSA4b8_DC.h	/^  ClusterStructure m_bestStructure; $/;"	m	class:ULSA4b8_DC
+m_listCluMember	ClusterStructure.h	/^    list<list<int> >  m_listCluMember;$/;"	m	class:ClusterStructure
+m_maxNumCh	ClusterStructure.h	/^    const int         m_maxNumCh;$/;"	m	class:ClusterStructure
+m_numNode	ClusterStructure.h	/^    const int         m_numNode;$/;"	m	class:ClusterStructure
+m_vecCHIdxForNodes	ClusterStructure.h	/^    vector<int>       m_vecCHIdxForNodes;$/;"	m	class:ClusterStructure
+m_vecCHNameForNodes	ClusterStructure.h	/^    vector<int>       m_vecCHNameForNodes;$/;"	m	class:ClusterStructure
+m_vecHeadName	ClusterStructure.h	/^    vector<int>       m_vecHeadName;$/;"	m	class:ClusterStructure
 maBestInterference	ULSA4b8_DC.h	/^  double **maBestInterference;$/;"	m	class:ULSA4b8_DC
 maBestInterfernceIndex	ULSA4b8_DC.h	/^  int **maBestInterfernceIndex;$/;"	m	class:ULSA4b8_DC
 maIndexSortDecGain	ULSA4b8_DC.h	/^  int ** maIndexSortDecGain;$/;"	m	class:ULSA4b8_DC
@@ -163,58 +146,38 @@ nextSupNum	ULSA4b8_DC.h	/^  int  nextSupNum;$/;"	m	class:ULSA4b8_DC
 nodes	ULSA4b8_DC.h	/^  std::vector <ULAGENT> nodes;$/;"	m	class:ULSA4b8_DC
 operator ()	ULSA4b8_DC.h	/^    bool operator() (const int &i, const int &j)$/;"	f	struct:ULSA4b8_DC::compareDis
 passNext2Cur	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::passNext2Cur() {$/;"	f	class:ULSA4b8_DC
-passNext2Cur	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::passNext2Cur() {$/;"	f	class:ULSA4b8_DC
-power1st	ULSA4b8_DC.h	/^  double power1st;$/;"	m	class:ULSA4b8_DC
+power1st	ULSA4b8_DC.h	/^  double  power1st;$/;"	m	class:ULSA4b8_DC
 powerBest	ULSA4b8_DC.h	/^  double *powerBest;$/;"	m	class:ULSA4b8_DC
 powerLastDiscard	ULSA4b8_DC.h	/^  double powerLastDiscard;$/;"	m	class:ULSA4b8_DC
-powerMax	ULSA4b8_DC.h	/^  float powerMax;$/;"	m	class:ULSA4b8_DC
+powerMax	ULSA4b8_DC.h	/^  double  powerMax;$/;"	m	class:ULSA4b8_DC
 printClusterList	ULSA4b8_DC.cpp	/^void printClusterList(ULCS1b *cSystem)$/;"	f
-printClusterList	ULSA4b8_DC_new.cpp	/^void printClusterList(ULCS1b *cSystem)$/;"	f
 printVecMatrix	ULSA4b8_DC.cpp	/^void printVecMatrix(vector <vector<int> >& ma)$/;"	f
-printVecMatrix	ULSA4b8_DC_new.cpp	/^void printVecMatrix(vector <vector<int> >& ma)$/;"	f
 print_addresses	main.cpp	/^int print_addresses(const int domain, string& ipAddr)$/;"	f
 ptrHeadLastDiscard	ULSA4b8_DC.h	/^  int  *ptrHeadLastDiscard;$/;"	m	class:ULSA4b8_DC
-quantizationBits	ULSA4b8_DC.h	/^  int quantizationBits;$/;"	m	class:ULSA4b8_DC
+quantizationBits	ULSA4b8_DC.h	/^  int     quantizationBits;$/;"	m	class:ULSA4b8_DC
 radius	ULSA4b8_DC.h	/^  double radius;$/;"	m	class:ULSA4b8_DC
 rateibMax	ULSA4b8_DC.h	/^  double *rateibMax; \/\/$/;"	m	class:ULSA4b8_DC
 realNoise	ULSA4b8_DC.h	/^  double realNoise;$/;"	m	class:ULSA4b8_DC
 releaseMemory	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::releaseMemory()$/;"	f	class:ULSA4b8_DC
-releaseMemory	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::releaseMemory()$/;"	f	class:ULSA4b8_DC
 resetSA3iSystem	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::resetSA3iSystem() {$/;"	f	class:ULSA4b8_DC
-resetSA3iSystem	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::resetSA3iSystem() {$/;"	f	class:ULSA4b8_DC
 return1stTotalNcal1stResors_HomoPower	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::return1stTotalNcal1stResors_HomoPower() {$/;"	f	class:ULSA4b8_DC
-return1stTotalNcal1stResors_HomoPower	ULSA4b8_DC_new.cpp	/^double ULSA4b8_DC::return1stTotalNcal1stResors_HomoPower() {$/;"	f	class:ULSA4b8_DC
 returnClosetNodeIndexInGroup	ULSA4b8_DC.cpp	/^int ULSA4b8_DC::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<int> &inputGroup)$/;"	f	class:ULSA4b8_DC
-returnClosetNodeIndexInGroup	ULSA4b8_DC_new.cpp	/^int ULSA4b8_DC::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<int> &inputGroup)$/;"	f	class:ULSA4b8_DC
 returnComprRatio	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::returnComprRatio()$/;"	f	class:ULSA4b8_DC
-returnComprRatio	ULSA4b8_DC_new.cpp	/^double ULSA4b8_DC::returnComprRatio()$/;"	f	class:ULSA4b8_DC
 returnTransientAveragePower	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::returnTransientAveragePower()$/;"	f	class:ULSA4b8_DC
-returnTransientAveragePower	ULSA4b8_DC_new.cpp	/^double ULSA4b8_DC::returnTransientAveragePower()$/;"	f	class:ULSA4b8_DC
 returnTransientJoule	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::returnTransientJoule() {$/;"	f	class:ULSA4b8_DC
-returnTransientJoule	ULSA4b8_DC_new.cpp	/^double ULSA4b8_DC::returnTransientJoule() {$/;"	f	class:ULSA4b8_DC
 reverseMoveSA	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::reverseMoveSA()$/;"	f	class:ULSA4b8_DC
-reverseMoveSA	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::reverseMoveSA()$/;"	f	class:ULSA4b8_DC
 rotateHeadSA	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::rotateHeadSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b8_DC
-rotateHeadSA	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::rotateHeadSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b8_DC
 rotatedHeadNameLast	ULSA4b8_DC.h	/^  int rotatedHeadNameLast;$/;"	m	class:ULSA4b8_DC
 roundBest	ULSA4b8_DC.h	/^  int  roundBest;;$/;"	m	class:ULSA4b8_DC
 setIniHeadLimited	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setIniHeadLimited()$/;"	f	class:ULSA4b8_DC
-setIniHeadLimited	ULSA4b8_DC_new.cpp	/^bool ULSA4b8_DC::setIniHeadLimited()$/;"	f	class:ULSA4b8_DC
 setIniStruDistanceKmedoids	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setIniStruDistanceKmedoids() $/;"	f	class:ULSA4b8_DC
-setIniStruDistanceKmedoids	ULSA4b8_DC_new.cpp	/^bool ULSA4b8_DC::setIniStruDistanceKmedoids() $/;"	f	class:ULSA4b8_DC
 setIniStruFullResourceKmedoids	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setIniStruFullResourceKmedoids()$/;"	f	class:ULSA4b8_DC
-setIniStruFullResourceKmedoids	ULSA4b8_DC_new.cpp	/^bool ULSA4b8_DC::setIniStruFullResourceKmedoids()$/;"	f	class:ULSA4b8_DC
 setIniStruHalfResourceKmedoids	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setIniStruHalfResourceKmedoids()$/;"	f	class:ULSA4b8_DC
-setIniStruHalfResourceKmedoids	ULSA4b8_DC_new.cpp	/^bool ULSA4b8_DC::setIniStruHalfResourceKmedoids()$/;"	f	class:ULSA4b8_DC
 setIniStruKmeans	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setIniStruKmeans()$/;"	f	class:ULSA4b8_DC
-setIniStruKmeans	ULSA4b8_DC_new.cpp	/^bool ULSA4b8_DC::setIniStruKmeans()$/;"	f	class:ULSA4b8_DC
-setInitialStucture	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setInitialStucture(char* iniFlag)$/;"	f	class:ULSA4b8_DC
-setInitialStucture	ULSA4b8_DC_new.cpp	/^bool ULSA4b8_DC::setInitialStucture(char* iniFlag)$/;"	f	class:ULSA4b8_DC
+setInitialStucture	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setInitialStucture(const string& iniFlag)$/;"	f	class:ULSA4b8_DC
 setSystem	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)$/;"	f	class:ULSA4b8_DC
-setSystem	ULSA4b8_DC_new.cpp	/^bool ULSA4b8_DC::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)$/;"	f	class:ULSA4b8_DC
 sortIndex	ULSA4b8_DC.h	/^  int sortIndex;$/;"	m	class:ULSA4b8_DC
 startCool	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::startCool()$/;"	f	class:ULSA4b8_DC
-startCool	ULSA4b8_DC_new.cpp	/^bool ULSA4b8_DC::startCool()$/;"	f	class:ULSA4b8_DC
 strIpAddr	ULSA4b8_DC.h	/^  string strIpAddr; $/;"	m	class:ULSA4b8_DC
 sysComputing	ULSA4b8_DC.h	/^  SimSystem *sysComputing;$/;"	m	class:ULSA4b8_DC
 targetHeadIndex	ULSA4b8_DC.h	/^  int  targetHeadIndex;$/;"	m	class:ULSA4b8_DC
@@ -228,9 +191,7 @@ terminated	ULSA4b8_DC.h	/^  bool terminated;$/;"	m	class:ULSA4b8_DC
 thres2	ULSA4b8_DC.h	/^  static const int thres2=200;$/;"	m	class:ULSA4b8_DC
 thresholdd	ULSA4b8_DC.h	/^  static const int thresholdd=5;$/;"	m	class:ULSA4b8_DC
 updateIsolateEstimatedpower	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex){$/;"	f	class:ULSA4b8_DC
-updateIsolateEstimatedpower	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex){$/;"	f	class:ULSA4b8_DC
 updateJoinEstimatedPower	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::updateJoinEstimatedPower(vector<double> &newPower, $/;"	f	class:ULSA4b8_DC
-updateJoinEstimatedPower	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::updateJoinEstimatedPower(vector<double> &newPower, $/;"	f	class:ULSA4b8_DC
 vecBestBpshz_forVerification	ULSA4b8_DC.h	/^  vector<double> vecBestBpshz_forVerification;$/;"	m	class:ULSA4b8_DC
 vecBestClusterBits	ULSA4b8_DC.h	/^  vector<double> vecBestClusterBits;$/;"	m	class:ULSA4b8_DC
 vecBestClusterHeadMS	ULSA4b8_DC.h	/^  vector<double> vecBestClusterHeadMS;$/;"	m	class:ULSA4b8_DC
@@ -247,10 +208,7 @@ vecHeadNameBest	ULSA4b8_DC.h	/^  vector <int> vecHeadNameBest;$/;"	m	class:ULSA4
 virtualCompression	ULSA4b8_DC.h	/^  double virtualCompression;$/;"	m	class:ULSA4b8_DC
 wholeSystemEntopy	ULSA4b8_DC.h	/^  double wholeSystemEntopy;$/;"	m	class:ULSA4b8_DC
 writePayoffEachRound_MinResors	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::writePayoffEachRound_MinResors(int round)$/;"	f	class:ULSA4b8_DC
-writePayoffEachRound_MinResors	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::writePayoffEachRound_MinResors(int round)$/;"	f	class:ULSA4b8_DC
 writePayoffEachRound_MinResors_withHead	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::writePayoffEachRound_MinResors_withHead(int round,int head)$/;"	f	class:ULSA4b8_DC
-writePayoffEachRound_MinResors_withHead	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::writePayoffEachRound_MinResors_withHead(int round,int head)$/;"	f	class:ULSA4b8_DC
 writeStruSingleRound	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::writeStruSingleRound(int round)$/;"	f	class:ULSA4b8_DC
-writeStruSingleRound	ULSA4b8_DC_new.cpp	/^void ULSA4b8_DC::writeStruSingleRound(int round)$/;"	f	class:ULSA4b8_DC
+~ClusterStructure	ClusterStructure.cpp	/^ClusterStructure::~ClusterStructure()$/;"	f	class:ClusterStructure
 ~ULSA4b8_DC	ULSA4b8_DC.cpp	/^ULSA4b8_DC::~ULSA4b8_DC()$/;"	f	class:ULSA4b8_DC
-~ULSA4b8_DC	ULSA4b8_DC_new.cpp	/^ULSA4b8_DC::~ULSA4b8_DC()$/;"	f	class:ULSA4b8_DC

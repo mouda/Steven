@@ -2645,16 +2645,17 @@ double ULSA4b8_DC::SchedulingOneShut()
 
   /* construct inequality construct */
   Eigen::MatrixXd matAij = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
-  Eigen::MatrixXd vecBj = Eigen::MatrixXd::Zero(totalNodes,1);
+  Eigen::MatrixXd vecBj = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
 
-  double rate = pow(2.0,static_cast<double>(quantizationBits));
+  double exponent = pow(2.0,static_cast<double>(quantizationBits)/bandwidthKhz/best2nd_ms);
   for (int i = 0; i < totalNodes; i++) {
     for (int j = 0; j < totalNodes; j++) {
       if (i == j) {
         matAij(i,j) = OmegaValue(i);
       } else if (/* i in cluster M, j in another */
-          matRelation(i,j) == 1) {
-        matAij(i,j) == (rate/bandwidthKhz/best2nd_ms-1)*powerMax*Gij[i][j];
+          matRelation(i,j) != 1) {
+        matAij(i,j) = (exponent-1)*powerMax*
+          Gij[j][m_bestStructure.GetChNameByName(i)];
       } 
     }
   }
@@ -2662,6 +2663,14 @@ double ULSA4b8_DC::SchedulingOneShut()
 
   /* construct equality construct */
   Eigen::MatrixXd matDij = Eigen::MatrixXd::Zero(maxChNum, totalNodes);
+  list<list<int> >::const_iterator iterRow1 = m_bestStructure.GetListCluMemeber().begin();
+  for (int i = 0; i < maxChNum; ++i, ++iterRow1) {
+    list<int>::const_iterator iterCol_1= iterRow1->begin();
+    for (; iterCol_1 != iterRow1->end(); ++iterCol_1) {
+      matDij(i,*iterCol_1) = 1;
+    }
+  }
+  cout << matDij << endl;
 
 
   /* BB algorithm */
@@ -2672,6 +2681,15 @@ double ULSA4b8_DC::SchedulingOneShut()
 
 double ULSA4b8_DC::BranchBound( const Eigen::MatrixXd& )
 {
+  /* optimal value z_ip */
+  /* construct a pair <int,int> first:nodeIdx, second:solution */
+
+  /* divide from the first one */
+  /* select another idx "PUSH BACK" */
+  /* POP_OUT */
+  /* check is leavenode  */
+    /* check optimality (zrp > zip)*/
+    /* if so: select another idx "PUSH BACK" */
 
 
   return 0.0;
@@ -2700,12 +2718,11 @@ double ULSA4b8_DC::OmegaValue( const int& nodeName)
     if ( m_bestStructure.GetChIdxByName(nodeName) == i ) continue; 
     Eigen::Matrix<double,Eigen::Dynamic,1> vecTmp(totalNodes,1);
     vecTmp = matOwnership.row(i).cwiseProduct(matGij.row(i));
-    interference += vecTmp.maxCoeff();
+    interference += vecTmp.maxCoeff()*powerMax;
   }
   double lhs = (pow(2.0,static_cast<double>(quantizationBits)/bandwidthKhz/best2nd_ms) - 1 ) * 
     (bandwidthKhz*realNoise+interference);
   double rhs = powerMax * 
-    matGij(nodeName, m_bestStructure.GetChNameByName(nodeName)) * 
     matGij(nodeName, m_bestStructure.GetChNameByName(nodeName));
 
   if (lhs > rhs ) {
