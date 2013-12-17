@@ -293,7 +293,7 @@ public:
 
   // Scheduling Algorithm (Node selection)
   double SchedulingOneShut();
-  double BranchBound(const Eigen::MatrixXd& );
+  double BranchBound(Eigen::MatrixXd& matSelec, const Eigen::MatrixXd& ,const Eigen::MatrixXd&, const Eigen::MatrixXd& );
   double OmegaValue(const int& nodeName);
 
 

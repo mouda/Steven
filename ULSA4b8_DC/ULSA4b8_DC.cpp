@@ -2645,7 +2645,7 @@ double ULSA4b8_DC::SchedulingOneShut()
 
   /* construct inequality construct */
   Eigen::MatrixXd matAij = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
-  Eigen::MatrixXd vecBj = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
+  Eigen::MatrixXd matBij = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
 
   double exponent = pow(2.0,static_cast<double>(quantizationBits)/bandwidthKhz/best2nd_ms);
   for (int i = 0; i < totalNodes; i++) {
@@ -2659,7 +2659,16 @@ double ULSA4b8_DC::SchedulingOneShut()
       } 
     }
   }
-  cout << matAij << endl;
+
+  for (int i = 0; i < totalNodes; i++) {
+    for (int j = 0; j < totalNodes; j++) {
+      if (i == j ) {
+        matBij(i,j) = 
+          powerMax*Gij[i][m_bestStructure.GetChNameByName(i)] -
+          (exponent -1)* bandwidthKhz* realNoise;
+      }
+    }
+  }
 
   /* construct equality construct */
   Eigen::MatrixXd matDij = Eigen::MatrixXd::Zero(maxChNum, totalNodes);
@@ -2670,17 +2679,21 @@ double ULSA4b8_DC::SchedulingOneShut()
       matDij(i,*iterCol_1) = 1;
     }
   }
-  cout << matDij << endl;
 
 
   /* BB algorithm */
-  //BranchBound(matSelec);
+  Eigen::MatrixXd matSelec = Eigen::MatrixXd::Zero(maxChNum, totalNodes); 
+  BranchBound(matSelec, matAij, matBij, matDij);
   
   return 0.0;
 }
 
-double ULSA4b8_DC::BranchBound( const Eigen::MatrixXd& )
+double ULSA4b8_DC::BranchBound( Eigen::MatrixXd&, 
+    const Eigen::MatrixXd& matAij, const Eigen::MatrixXd& matBij, 
+    const Eigen::MatrixXd& matDij)
 {
+
+  vector<pair<int, int> > L; 
   /* optimal value z_ip */
   /* construct a pair <int,int> first:nodeIdx, second:solution */
 
