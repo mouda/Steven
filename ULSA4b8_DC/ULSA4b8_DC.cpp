@@ -107,6 +107,7 @@ ULSA4b8_DC::ULSA4b8_DC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxCh
     cSystem = new ULCS1b(inputTotalNodes, inputMaxChNum);
     powerBest = new double [totalNodes];
     nextNodePower = new double [totalNodes];
+    bestNextNodePower = new double [totalNodes];
     for (int i=0; i<maxChNum; i++ )
         for(int j=0; j<totalNodes; j++)
             cSystem->clusterStru[i][j] = false;
@@ -197,6 +198,7 @@ void ULSA4b8_DC::releaseMemory()
     //delete  cSystem and  share same pointer we ony need to delete once.
     delete [] powerBest;
     delete [] nextNodePower;
+    delete [] bestNextNodePower;
     delete listCluMemBest;
     delete []  mapNodeName2DistanceRank;
     delete [] aryFlagHRDone;
@@ -1180,6 +1182,9 @@ bool ULSA4b8_DC::startCool()
   cur2nd_Joule = returnTransientJoule();
   cur1st_Joule = power1st*cur1st_ms/1000.0;
 
+  for (int i = 0; i < totalNodes; i++) {
+    bestNextNodePower[i] = nextNodePower[i]; 
+  }
 
   curSupNum=cSystem->calSupNodes();
   curChNum=maxChNum;
@@ -2469,6 +2474,9 @@ bool ULSA4b8_DC::checkBestClusterStructure_DataCentric(int inputRound)
         keepBestStructure();
         consSol->showVerificationResult(vecBestReceivedInterference,vecBestSINR_forVerification,vecBestBpshz_forVerification);
         bestChNum=curChNum;
+        for (int i = 0; i < totalNodes; i++) {
+          bestNextNodePower[i] = nextNodePower[i]; 
+        }
 
     }
     else if ((curPayoff<bestFeasiblePayoff)&&curAllServe)
@@ -2485,6 +2493,9 @@ bool ULSA4b8_DC::checkBestClusterStructure_DataCentric(int inputRound)
         bestChNum=curChNum;
         keepBestStructure();
         consSol->showVerificationResult(vecBestReceivedInterference,vecBestSINR_forVerification,vecBestBpshz_forVerification);
+        for (int i = 0; i < totalNodes; i++) {
+          bestNextNodePower[i] = nextNodePower[i]; 
+        }
     }
     //cout<<"best FeasiblePayoff="<<bestFeasiblePayoff<<" with headNum="<<bestChNum<<";Info Ratio="<<bestFeasibleJEntropy/wholeSystemEntopy<<endl;
     return false;
@@ -2650,11 +2661,13 @@ double ULSA4b8_DC::SchedulingOneShut()
   double exponent = pow(2.0,static_cast<double>(quantizationBits)/bandwidthKhz/best2nd_ms);
   for (int i = 0; i < totalNodes; i++) {
     for (int j = 0; j < totalNodes; j++) {
+      if (m_bestStructure.GetChNameByName(j) == j ) continue;
+      if (m_bestStructure.GetChNameByName(i) == i ) continue;
       if (i == j) {
-        matAij(i,j) = OmegaValue(i);
+        matAij(i,j) = -1*OmegaValue(i);
       } else if (/* i in cluster M, j in another */
           matRelation(i,j) != 1) {
-        matAij(i,j) = (exponent-1)*powerMax*
+        matAij(i,j) = (exponent-1)*bestNextNodePower[j]*
           Gij[j][m_bestStructure.GetChNameByName(i)];
       } 
     }
@@ -2663,9 +2676,9 @@ double ULSA4b8_DC::SchedulingOneShut()
   for (int i = 0; i < totalNodes; i++) {
     for (int j = 0; j < totalNodes; j++) {
       if (i == j ) {
-        matBij(i,j) = 
-          powerMax*Gij[i][m_bestStructure.GetChNameByName(i)] -
-          (exponent -1)* bandwidthKhz* realNoise;
+        matBij(i,j) =  
+          bestNextNodePower[i]*Gij[i][m_bestStructure.GetChNameByName(i)] -
+          (exponent -1)* realNoise - OmegaValue(i);
       }
     }
   }
@@ -2679,33 +2692,108 @@ double ULSA4b8_DC::SchedulingOneShut()
       matDij(i,*iterCol_1) = 1;
     }
   }
-
+  Eigen::MatrixXd matOnes = Eigen::MatrixXd::Zero(maxChNum, totalNodes);
+  matOnes.fill(1.0);
 
   /* BB algorithm */
   Eigen::MatrixXd matSelec = Eigen::MatrixXd::Zero(maxChNum, totalNodes); 
-  BranchBound(matSelec, matAij, matBij, matDij);
+  BranchBound(matSelec, matAij, matBij, matDij, matOnes);
   
   return 0.0;
 }
 
-double ULSA4b8_DC::BranchBound( Eigen::MatrixXd&, 
-    const Eigen::MatrixXd& matAij, const Eigen::MatrixXd& matBij, 
-    const Eigen::MatrixXd& matDij)
+double ULSA4b8_DC::MaxSNR()
 {
+  bool * supStru = new bool [totalNodes];
+  for (int i = 0; i < maxChNum; i++) {
+    for (int j = 0; j < totalNodes; j++) {
+      double maxSNR = 0.0;
+      if (m_bestStructure.GetChNameByName(j) == j ) continue; 
+      if (m_bestStructure.GetChIdxByName(j) == i) {
+        int headName = m_bestStructure.GetChNameByName(j);
+      }
+    }
+  }
+
+  delete supStru;
+  return 0.0;
+}
+void ULSA4b8_DC::Perm(const Eigen::MatrixXd& matAij,
+    const Eigen::MatrixXd& matBij,
+    Eigen::MatrixXd& matSelec, 
+    bool *supStru,
+    const int& chIdx,
+    double& maxValue,
+    bool *solution )
+{
+  if (chIdx == maxChNum ) {
+    Eigen::MatrixXd neqMatTmp = matAij*matSelec.transpose()*matSelec;
+    if( EigenMatrixIsSmaller(neqMatTmp,matBij) ){
+      double value = 
+        maxChNum * indEntropy + matrixComputer->computeLog2Det(1.0, supStru);
+      if ( value > maxValue ) {
+        maxValue = value;
+        for (int i = 0; i < totalNodes; i++) {
+          supStru[i] = solution[i];
+        }
+      }
+    }
+    return;
+  }
+  for (int i = 0; i < totalNodes; i++) {
+    if (m_bestStructure.GetChIdxByName(i) == chIdx && i != chIdx) {
+      matSelec(chIdx,i) = 1.0;
+      supStru[i] = true;
+      Perm(matAij, matBij, matSelec, supStru, chIdx+1, maxValue, solution);
+      matSelec(chIdx,i) = 0.0;
+      supStru[i] = false;
+    }
+  }
+}
+
+double ULSA4b8_DC::BranchBound( Eigen::MatrixXd& matSelec, 
+    const Eigen::MatrixXd& matAij, const Eigen::MatrixXd& matBij, 
+    const Eigen::MatrixXd& matDij, const Eigen::MatrixXd& ones)
+{
+
+  bool *supStru  = new bool [totalNodes];  
+  bool *solution = new bool [totalNodes];
+  fill(supStru, supStru+sizeof(supStru), false);
+  fill(solution, solution +sizeof(solution), false);
 
   vector<pair<int, int> > L; 
   /* optimal value z_ip */
-  /* construct a pair <int,int> first:nodeIdx, second:solution */
+  double z_ip = -DBL_MAX;
 
-  /* divide from the first one */
-  /* select another idx "PUSH BACK" */
-  /* POP_OUT */
-  /* check is leavenode  */
-    /* check optimality (zrp > zip)*/
-    /* if so: select another idx "PUSH BACK" */
+  Perm(matAij, matBij, matSelec, supStru, 0, z_ip, solution);
 
-
+  cout << z_ip << endl;
+  for (int i = 0; i < totalNodes; i++) {
+    if ( solution[0] == false) cout << 0 << ' ';
+    else cout << 1 << ' ';
+  }
+  cout << endl;
+  delete supStru;
+  delete solution;
   return 0.0;
+}
+bool ULSA4b8_DC::EigenMatrixIsSmaller( const Eigen::MatrixXd& lhs, 
+    const Eigen::MatrixXd& rhs)
+{
+  int rhsRows = rhs.rows();
+  int rhsCols = rhs.cols();
+  int lhsRows = lhs.rows();
+  int lhsCols = rhs.cols();
+  if (rhsRows != lhsRows) return false; 
+  if (rhsCols != lhsCols) return false; 
+  for (int i = 0; i < rhsRows ; i++) {
+    for (int j = 0; j < rhsCols; j++) {
+      if ( i == j && lhs(i,j) > rhs(i,j)) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 double ULSA4b8_DC::OmegaValue( const int& nodeName)
@@ -2731,11 +2819,14 @@ double ULSA4b8_DC::OmegaValue( const int& nodeName)
     if ( m_bestStructure.GetChIdxByName(nodeName) == i ) continue; 
     Eigen::Matrix<double,Eigen::Dynamic,1> vecTmp(totalNodes,1);
     vecTmp = matOwnership.row(i).cwiseProduct(matGij.row(i));
-    interference += vecTmp.maxCoeff()*powerMax;
+    double maxValue = vecTmp.maxCoeff(&index);
+    interference += maxValue * 
+      bestNextNodePower[m_bestStructure.GetChNameByName(index)];
+
   }
   double lhs = (pow(2.0,static_cast<double>(quantizationBits)/bandwidthKhz/best2nd_ms) - 1 ) * 
-    (bandwidthKhz*realNoise+interference);
-  double rhs = powerMax * 
+    (realNoise+interference);
+  double rhs = bestNextNodePower[nodeName] * 
     matGij(nodeName, m_bestStructure.GetChNameByName(nodeName));
 
   if (lhs > rhs ) {

@@ -22,6 +22,7 @@
 #include <list>
 #include <ctime>
 #include <map>
+#include <algorithm>
 #include <eigen3/Eigen/Dense>
 
 #include "../commonLibrary/ULAGENT.h"
@@ -188,6 +189,7 @@ public:
   //@BEST KPI
   bool   bestAllServeFound;
   double best1st_Joule;
+  double* bestNextNodePower;
   double best2nd_Joule;
   double best1st_ms;
   double best2nd_ms;
@@ -293,8 +295,17 @@ public:
 
   // Scheduling Algorithm (Node selection)
   double SchedulingOneShut();
-  double BranchBound(Eigen::MatrixXd& matSelec, const Eigen::MatrixXd& ,const Eigen::MatrixXd&, const Eigen::MatrixXd& );
+  double BranchBound(Eigen::MatrixXd& matSelec, 
+      const Eigen::MatrixXd&,
+      const Eigen::MatrixXd&, 
+      const Eigen::MatrixXd&,
+      const Eigen::MatrixXd& );
   double OmegaValue(const int& nodeName);
+  void Perm(const Eigen::MatrixXd&, const Eigen::MatrixXd&
+      , Eigen::MatrixXd&, bool* supStru, const int& ChIdx, double& maxValue, 
+      bool* solution );
+  bool EigenMatrixIsSmaller(const Eigen::MatrixXd&, const Eigen::MatrixXd& );
+  double MaxSNR();
 
 
   // Internal Aid Function

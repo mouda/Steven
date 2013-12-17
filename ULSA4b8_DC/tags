@@ -4,13 +4,14 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-BranchBound	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::BranchBound( const Eigen::MatrixXd& )$/;"	f	class:ULSA4b8_DC
+BranchBound	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::BranchBound( Eigen::MatrixXd& matSelec, $/;"	f	class:ULSA4b8_DC
 COMM_UTILITY	Makefile	/^COMM_UTILITY= ..\/commonLibrary\/CORRE_MA_OPE.o \\$/;"	m
 CPP	Makefile	/^CPP= g++$/;"	m
 ClusterStructure	ClusterStructure.h	/^    ClusterStructure():m_numNode(0),m_maxNumCh(0){};$/;"	f	class:ClusterStructure
 ClusterStructure	ClusterStructure.h	/^    ClusterStructure(const int& totalNodes, const int& maxChNum):$/;"	f	class:ClusterStructure
 ClusterStructure	ClusterStructure.h	/^class ClusterStructure $/;"	c
 DFLAGS	Makefile	/^DFLAGS=-g$/;"	m
+EigenMatrixIsSmaller	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::EigenMatrixIsSmaller( const Eigen::MatrixXd& lhs, $/;"	f	class:ULSA4b8_DC
 GetChIdxByName	ClusterStructure.cpp	/^ClusterStructure::GetChIdxByName( const int& nodeName )$/;"	f	class:ClusterStructure
 GetChNameByName	ClusterStructure.cpp	/^ClusterStructure::GetChNameByName( const int& nodeName)$/;"	f	class:ClusterStructure
 GetListCluMemeber	ClusterStructure.h	/^    const list<list<int> >& GetListCluMemeber(){return m_listCluMember; }$/;"	f	class:ClusterStructure
