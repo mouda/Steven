@@ -2697,7 +2697,8 @@ double ULSA4b8_DC::SchedulingOneShut()
 
   /* BB algorithm */
   Eigen::MatrixXd matSelec = Eigen::MatrixXd::Zero(maxChNum, totalNodes); 
-  BranchBound(matSelec, matAij, matBij, matDij, matOnes);
+  //BranchBound(matSelec, matAij, matBij, matDij, matOnes);
+  MaxSNR();
   
   return 0.0;
 }
@@ -2705,16 +2706,25 @@ double ULSA4b8_DC::SchedulingOneShut()
 double ULSA4b8_DC::MaxSNR()
 {
   bool * supStru = new bool [totalNodes];
+  fill(supStru, supStru+sizeof(supStru), false);
   for (int i = 0; i < maxChNum; i++) {
+    double maxRxPower = 0.0;
+    int headName = m_bestStructure.GetVecHeadName()[i];
+    int maxRxPowerNode = -1;
     for (int j = 0; j < totalNodes; j++) {
-      double maxSNR = 0.0;
       if (m_bestStructure.GetChNameByName(j) == j ) continue; 
       if (m_bestStructure.GetChIdxByName(j) == i) {
-        int headName = m_bestStructure.GetChNameByName(j);
+        if (Gij[headName][j]*bestNextNodePower[j] > maxRxPower) {
+          maxRxPower = Gij[headName][j]*bestNextNodePower[j]; 
+          maxRxPowerNode = j;
+        }
       }
     }
+    supStru[maxRxPowerNode] = true; 
   }
 
+  double result = maxChNum * indEntropy + matrixComputer->computeLog2Det(1.0, supStru);
+  cout << "MaxSNR: " << result << endl;
   delete supStru;
   return 0.0;
 }
@@ -2769,7 +2779,7 @@ double ULSA4b8_DC::BranchBound( Eigen::MatrixXd& matSelec,
 
   cout << z_ip << endl;
   for (int i = 0; i < totalNodes; i++) {
-    if ( solution[0] == false) cout << 0 << ' ';
+    if ( solution[i] == false) cout << 0 << ' ';
     else cout << 1 << ' ';
   }
   cout << endl;
