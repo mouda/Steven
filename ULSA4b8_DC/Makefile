@@ -1,10 +1,10 @@
 CPP= g++
-#CFLAGS=-O -O1 -O2 -O3
+CFLAGS=-O -O1 -O2 -O3
 #CFLAGS= -D ITERATION
 #DFLAGS= -D DEBUG -g
-DFLAGS=-g
-PREFIX=/opt
-#PREFIX=/home/share
+#DFLAGS=-g
+#PREFIX=/opt
+PREFIX=/home/share
 
 SOURCES=main.o ULSA4b8_DC.o ClusterStructure.o 
 OBJECTS=$(SOURCES:.cpp=.o)

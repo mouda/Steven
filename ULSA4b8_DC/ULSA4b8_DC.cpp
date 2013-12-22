@@ -2744,7 +2744,7 @@ void ULSA4b8_DC::Perm(const Eigen::MatrixXd& matAij,
       if ( value > maxValue ) {
         maxValue = value;
         for (int i = 0; i < totalNodes; i++) {
-          supStru[i] = solution[i];
+           solution[i] = supStru[i];
         }
       }
     }
