@@ -2697,8 +2697,8 @@ double ULSA4b8_DC::SchedulingOneShut()
 
   /* BB algorithm */
   Eigen::MatrixXd matSelec = Eigen::MatrixXd::Zero(maxChNum, totalNodes); 
-  //BranchBound(matSelec, matAij, matBij, matDij, matOnes);
   MaxSNR();
+  BranchBound(matSelec, matAij, matBij, matDij, matOnes);
   
   return 0.0;
 }
@@ -2706,7 +2706,11 @@ double ULSA4b8_DC::SchedulingOneShut()
 double ULSA4b8_DC::MaxSNR()
 {
   bool * supStru = new bool [totalNodes];
-  fill(supStru, supStru+sizeof(supStru), false);
+  //fill(supStru, supStru+sizeof(supStru), false);
+  for (int i = 0; i < totalNodes; i++) {
+    supStru[i] = false;
+  }
+  cout << endl;
   for (int i = 0; i < maxChNum; i++) {
     double maxRxPower = 0.0;
     int headName = m_bestStructure.GetVecHeadName()[i];
@@ -2720,16 +2724,17 @@ double ULSA4b8_DC::MaxSNR()
         }
       }
     }
+    cout << maxRxPowerNode << ' ' << endl;
     supStru[maxRxPowerNode] = true; 
   }
 
-  double result = maxChNum * indEntropy + matrixComputer->computeLog2Det(1.0, supStru);
   for (int i = 0; i < totalNodes; i++) {
     if ( supStru[i] == false) cout << 0 << ' ';
     else cout << 1 << ' ';
   }
-  cout << "MaxSNR: " << result << endl;
-  delete supStru;
+  double result = maxChNum * indEntropy + matrixComputer->computeLog2Det(1.0, supStru);
+  cout << "MaxSNR: " << result << " " <<matrixComputer->computeLog2Det(1.0, supStru) <<endl;
+  delete [] supStru;
   return 0.0;
 }
 void ULSA4b8_DC::Perm(const Eigen::MatrixXd& matAij,
@@ -2772,8 +2777,12 @@ double ULSA4b8_DC::BranchBound( Eigen::MatrixXd& matSelec,
 
   bool *supStru  = new bool [totalNodes];  
   bool *solution = new bool [totalNodes];
-  fill(supStru, supStru+sizeof(supStru), false);
-  fill(solution, solution +sizeof(solution), false);
+//  fill(supStru, supStru+sizeof(supStru), false);
+//  fill(solution, solution +sizeof(solution), false);
+  for (int i = 0; i < totalNodes; i++) {
+    supStru[i] = false;
+    solution[i] = false;
+  }
 
   vector<pair<int, int> > L; 
   /* optimal value z_ip */
@@ -2787,8 +2796,8 @@ double ULSA4b8_DC::BranchBound( Eigen::MatrixXd& matSelec,
     else cout << 1 << ' ';
   }
   cout << endl;
-  delete supStru;
-  delete solution;
+  delete [] supStru;
+  delete [] solution;
   return 0.0;
 }
 bool ULSA4b8_DC::EigenMatrixIsSmaller( const Eigen::MatrixXd& lhs, 
