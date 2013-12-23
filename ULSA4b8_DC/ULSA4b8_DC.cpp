@@ -2724,6 +2724,10 @@ double ULSA4b8_DC::MaxSNR()
   }
 
   double result = maxChNum * indEntropy + matrixComputer->computeLog2Det(1.0, supStru);
+  for (int i = 0; i < totalNodes; i++) {
+    if ( supStru[i] == false) cout << 0 << ' ';
+    else cout << 1 << ' ';
+  }
   cout << "MaxSNR: " << result << endl;
   delete supStru;
   return 0.0;
