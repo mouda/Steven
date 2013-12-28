@@ -2640,6 +2640,7 @@ void ULSA4b8_DC::resetSA3iSystem() {
 
 double ULSA4b8_DC::SchedulingOneShut( double txTime2nd ) 
 {
+
   /* construct common cluster relationship */
   Eigen::MatrixXi matRelation = Eigen::MatrixXi::Zero(totalNodes,totalNodes);
   list<list<int> >::iterator iterRow = listCluMemBest->begin();
@@ -2698,17 +2699,27 @@ double ULSA4b8_DC::SchedulingOneShut( double txTime2nd )
 
   /* BB algorithm */
   Eigen::MatrixXd matSelec = Eigen::MatrixXd::Zero(maxChNum, totalNodes); 
-  MaxSNR( 0.01 );
-  BranchBound(matSelec, matAij, matBij, matDij, matOnes);
+  double maxSNREntropy = MaxSNR( 0.01 );
+  double bbEntropy = BranchBound(matSelec, matAij, matBij, matDij, matOnes);
+
+  char scheduleResultFileName[500]; 
+  sprintf(scheduleResultFileName, 
+      "tmpAll/ULSA4b8_Schedule_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",
+      totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius, strIpAddr.c_str());
+  fstream scheduleResultFile;
+  scheduleResultFile.open(scheduleResultFileName, ios::out);
+  scheduleResultFile << maxSNREntropy << ' ' << bbEntropy << endl;
+  scheduleResultFile.close();
   
   return 0.0;
 }
 
 double ULSA4b8_DC::MaxSNR( double txTime2nd )
 {
-  bool * supStru = new bool [totalNodes];
+  bool * mySupStru;
+  mySupStru = new bool [totalNodes];
   for (int i = 0; i < totalNodes; i++) {
-    supStru[i] = false;
+    mySupStru[i] = false;
   }
   for (int i = 0; i < maxChNum; i++) {
     double maxRxPower = 0.0;
@@ -2723,33 +2734,31 @@ double ULSA4b8_DC::MaxSNR( double txTime2nd )
         }
       }
     }
-    supStru[maxRxPowerNode] = true; 
+    mySupStru[maxRxPowerNode] = true; 
   }
 
-  cout << endl;
   /* test the Interference */
-  while(!CheckFeasible(supStru, txTime2nd)){
+  while(!CheckFeasible(mySupStru, txTime2nd)){
     for (int i = 0; i < totalNodes; i++) {
-      if (supStru[i] == true) {
-        supStru[i] = false;
+      if (mySupStru[i] == true) {
+        mySupStru[i] = false;
         break;
       }
     }
   }
   int activeNodes = 0;
   for (int i = 0; i < totalNodes; i++) {
-    if (supStru[i] == true) ++activeNodes;
+    if (mySupStru[i] == true) ++activeNodes;
   }
-  for (int i = 0; i < totalNodes; i++) {
-    if ( supStru[i] == false) cout << 0 << ' ';
-    else cout << 1 << ' ';
-  }
-  cout << endl;
+//  for (int i = 0; i < totalNodes; i++) {
+//    if ( mySupStru[i] == false) cout << 0 << ' ';
+//    else cout << 1 << ' ';
+//  }
+//  cout << endl;
 
-  double result = activeNodes * indEntropy + matrixComputer->computeLog2Det(1.0, supStru);
-  cout << "MaxSNR: " << result << " " <<matrixComputer->computeLog2Det(1.0, supStru) <<endl;
-  delete [] supStru;
-  return 0.0;
+  double result = activeNodes * indEntropy + matrixComputer->computeLog2Det(1.0, mySupStru);
+//  cout << "MaxSNR: " << result << " " <<matrixComputer->computeLog2Det(1.0, mySupStru) <<endl;
+  return result;
 }
 
 bool 
@@ -2832,15 +2841,15 @@ double ULSA4b8_DC::BranchBound( Eigen::MatrixXd& matSelec,
 
   Perm(matAij, matBij, matSelec, supStru, 0, z_ip, solution);
 
-  cout << z_ip << endl;
-  for (int i = 0; i < totalNodes; i++) {
-    if ( solution[i] == false) cout << 0 << ' ';
-    else cout << 1 << ' ';
-  }
-  cout << endl;
-  delete [] supStru;
-  delete [] solution;
-  return 0.0;
+//  cout <<"BranchBound: "  <<z_ip << endl;
+//  for (int i = 0; i < totalNodes; i++) {
+//    if ( solution[i] == false) cout << 0 << ' ';
+//    else cout << 1 << ' ';
+//  }
+//  cout << endl;
+//  delete [] supStru;
+//  delete [] solution;
+  return z_ip;
 }
 bool ULSA4b8_DC::EigenMatrixIsSmaller( const Eigen::MatrixXd& lhs, 
     const Eigen::MatrixXd& rhs)

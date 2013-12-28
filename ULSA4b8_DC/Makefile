@@ -1,8 +1,8 @@
 CPP= g++
-CFLAGS=-O -O1 -O2 -O3
+#CFLAGS=-O -O1 -O2 -O3
 #CFLAGS= -D ITERATION
 #DFLAGS= -D DEBUG -g
-#DFLAGS=-g
+DFLAGS=-g
 #PREFIX=/opt
 PREFIX=/home/share
 
