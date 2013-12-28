@@ -294,18 +294,20 @@ public:
 
 
   // Scheduling Algorithm (Node selection)
-  double SchedulingOneShut();
+  double SchedulingOneShut( double txTime2nd );
   double BranchBound(Eigen::MatrixXd& matSelec, 
       const Eigen::MatrixXd&,
       const Eigen::MatrixXd&, 
       const Eigen::MatrixXd&,
       const Eigen::MatrixXd& );
-  double OmegaValue(const int& nodeName);
+  double OmegaValue(const int& nodeName, double txTime2nd);
   void Perm(const Eigen::MatrixXd&, const Eigen::MatrixXd&
       , Eigen::MatrixXd&, bool* supStru, const int& ChIdx, double& maxValue, 
       bool* solution );
   bool EigenMatrixIsSmaller(const Eigen::MatrixXd&, const Eigen::MatrixXd& );
-  double MaxSNR();
+  double MaxSNR( double txTime2nd );
+  bool CheckFeasible( bool const * const supStru, double txTime2nd);
+
 
 
   // Internal Aid Function

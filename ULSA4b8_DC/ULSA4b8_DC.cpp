@@ -10,6 +10,7 @@
 #include <list>
 #include <cassert>
 #include <armadillo>
+#include <numeric>
 
 using namespace std;
 #include "ULSA4b8_DC.h"
@@ -1259,7 +1260,7 @@ bool ULSA4b8_DC::startCool()
   TimeStamp obj_time;
   obj_time.returnRealWordTime(timeBuf,32);
 
-  double oneShutEntropy = SchedulingOneShut() ;
+  double oneShutEntropy = SchedulingOneShut( 0.01 ) ;
 
   char str[500];
   char str2[500];
@@ -2637,7 +2638,7 @@ void ULSA4b8_DC::resetSA3iSystem() {
     vecBestClusterSize.resize(maxChNum);
 }
 
-double ULSA4b8_DC::SchedulingOneShut() 
+double ULSA4b8_DC::SchedulingOneShut( double txTime2nd ) 
 {
   /* construct common cluster relationship */
   Eigen::MatrixXi matRelation = Eigen::MatrixXi::Zero(totalNodes,totalNodes);
@@ -2658,16 +2659,16 @@ double ULSA4b8_DC::SchedulingOneShut()
   Eigen::MatrixXd matAij = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
   Eigen::MatrixXd matBij = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
 
-  double exponent = pow(2.0,static_cast<double>(quantizationBits)/bandwidthKhz/best2nd_ms);
+  double exponent = pow(2.0,indEntropy/bandwidthKhz/txTime2nd);
   for (int i = 0; i < totalNodes; i++) {
     for (int j = 0; j < totalNodes; j++) {
       if (m_bestStructure.GetChNameByName(j) == j ) continue;
       if (m_bestStructure.GetChNameByName(i) == i ) continue;
       if (i == j) {
-        matAij(i,j) = -1*OmegaValue(i);
+        matAij(i,j) = -1*OmegaValue(i, txTime2nd);
       } else if (/* i in cluster M, j in another */
           matRelation(i,j) != 1) {
-        matAij(i,j) = (exponent-1)*bestNextNodePower[j]*
+        matAij(i,j) = (exponent-1)*powerMax*
           Gij[j][m_bestStructure.GetChNameByName(i)];
       } 
     }
@@ -2677,8 +2678,8 @@ double ULSA4b8_DC::SchedulingOneShut()
     for (int j = 0; j < totalNodes; j++) {
       if (i == j ) {
         matBij(i,j) =  
-          bestNextNodePower[i]*Gij[i][m_bestStructure.GetChNameByName(i)] -
-          (exponent -1)* realNoise - OmegaValue(i);
+          powerMax*Gij[i][m_bestStructure.GetChNameByName(i)] -
+          (exponent -1)* realNoise - OmegaValue(i, txTime2nd);
       }
     }
   }
@@ -2697,20 +2698,18 @@ double ULSA4b8_DC::SchedulingOneShut()
 
   /* BB algorithm */
   Eigen::MatrixXd matSelec = Eigen::MatrixXd::Zero(maxChNum, totalNodes); 
-  MaxSNR();
+  MaxSNR( 0.01 );
   BranchBound(matSelec, matAij, matBij, matDij, matOnes);
   
   return 0.0;
 }
 
-double ULSA4b8_DC::MaxSNR()
+double ULSA4b8_DC::MaxSNR( double txTime2nd )
 {
   bool * supStru = new bool [totalNodes];
-  //fill(supStru, supStru+sizeof(supStru), false);
   for (int i = 0; i < totalNodes; i++) {
     supStru[i] = false;
   }
-  cout << endl;
   for (int i = 0; i < maxChNum; i++) {
     double maxRxPower = 0.0;
     int headName = m_bestStructure.GetVecHeadName()[i];
@@ -2718,25 +2717,65 @@ double ULSA4b8_DC::MaxSNR()
     for (int j = 0; j < totalNodes; j++) {
       if (m_bestStructure.GetChNameByName(j) == j ) continue; 
       if (m_bestStructure.GetChIdxByName(j) == i) {
-        if (Gij[headName][j]*bestNextNodePower[j] > maxRxPower) {
-          maxRxPower = Gij[headName][j]*bestNextNodePower[j]; 
+        if (Gij[headName][j]*powerMax > maxRxPower) {
+          maxRxPower = Gij[headName][j]*powerMax; 
           maxRxPowerNode = j;
         }
       }
     }
-    cout << maxRxPowerNode << ' ' << endl;
     supStru[maxRxPowerNode] = true; 
   }
 
+  cout << endl;
+  /* test the Interference */
+  while(!CheckFeasible(supStru, txTime2nd)){
+    for (int i = 0; i < totalNodes; i++) {
+      if (supStru[i] == true) {
+        supStru[i] = false;
+        break;
+      }
+    }
+  }
+  int activeNodes = 0;
+  for (int i = 0; i < totalNodes; i++) {
+    if (supStru[i] == true) ++activeNodes;
+  }
   for (int i = 0; i < totalNodes; i++) {
     if ( supStru[i] == false) cout << 0 << ' ';
     else cout << 1 << ' ';
   }
-  double result = maxChNum * indEntropy + matrixComputer->computeLog2Det(1.0, supStru);
+  cout << endl;
+
+  double result = activeNodes * indEntropy + matrixComputer->computeLog2Det(1.0, supStru);
   cout << "MaxSNR: " << result << " " <<matrixComputer->computeLog2Det(1.0, supStru) <<endl;
   delete [] supStru;
   return 0.0;
 }
+
+bool 
+ULSA4b8_DC::CheckFeasible( bool const * const supStru, double txTime2nd)
+{
+  for (int i = 0; i < maxChNum; i++) {
+    int headName = m_bestStructure.GetVecHeadName()[i];
+    int member = -1;
+    double interference = 0.0;
+    for (int j = 0; j < totalNodes; j++) {
+      if (supStru[j] == true && headName != m_bestStructure.GetChNameByName(j) ) {
+        interference += Gij[headName][j] * powerMax;
+      }
+      else if(supStru[j] == true && headName == m_bestStructure.GetChNameByName(j) ){
+        member = j;
+      }
+    }
+    if (member == -1) continue; 
+    if (indEntropy > bandwidthKhz*txTime2nd*log2(1.0+powerMax*Gij[headName][member]/(realNoise+interference))) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 void ULSA4b8_DC::Perm(const Eigen::MatrixXd& matAij,
     const Eigen::MatrixXd& matBij,
     Eigen::MatrixXd& matSelec, 
@@ -2748,8 +2787,12 @@ void ULSA4b8_DC::Perm(const Eigen::MatrixXd& matAij,
   if (chIdx == maxChNum ) {
     Eigen::MatrixXd neqMatTmp = matAij*matSelec.transpose()*matSelec;
     if( EigenMatrixIsSmaller(neqMatTmp,matBij) ){
+      int numNodes = 0;
+      for (int i = 0; i < totalNodes; i++) {
+        if (supStru[i] == true) ++numNodes;
+      }
       double value = 
-        maxChNum * indEntropy + matrixComputer->computeLog2Det(1.0, supStru);
+        numNodes * indEntropy + matrixComputer->computeLog2Det(1.0, supStru);
       if ( value > maxValue ) {
         maxValue = value;
         for (int i = 0; i < totalNodes; i++) {
@@ -2759,6 +2802,7 @@ void ULSA4b8_DC::Perm(const Eigen::MatrixXd& matAij,
     }
     return;
   }
+  Perm(matAij, matBij, matSelec, supStru, chIdx+1, maxValue, solution);
   for (int i = 0; i < totalNodes; i++) {
     if (m_bestStructure.GetChIdxByName(i) == chIdx && i != chIdx) {
       matSelec(chIdx,i) = 1.0;
@@ -2777,8 +2821,6 @@ double ULSA4b8_DC::BranchBound( Eigen::MatrixXd& matSelec,
 
   bool *supStru  = new bool [totalNodes];  
   bool *solution = new bool [totalNodes];
-//  fill(supStru, supStru+sizeof(supStru), false);
-//  fill(solution, solution +sizeof(solution), false);
   for (int i = 0; i < totalNodes; i++) {
     supStru[i] = false;
     solution[i] = false;
@@ -2819,7 +2861,7 @@ bool ULSA4b8_DC::EigenMatrixIsSmaller( const Eigen::MatrixXd& lhs,
   return true;
 }
 
-double ULSA4b8_DC::OmegaValue( const int& nodeName)
+double ULSA4b8_DC::OmegaValue( const int& nodeName, double txTime2nd )
 {
   Eigen::MatrixXd matOwnership = Eigen::MatrixXd::Zero(maxChNum, totalNodes);
   list<list<int> >::const_iterator iterRow = m_bestStructure.GetListCluMemeber().begin();
@@ -2837,19 +2879,18 @@ double ULSA4b8_DC::OmegaValue( const int& nodeName)
   }
   double interference = 0.0;
   int index = 0;
-  double rate = pow(2.0,static_cast<double>(quantizationBits));
+  double rate = pow(2.0,indEntropy);
   for (int i = 0; i < maxChNum; i++) {
     if ( m_bestStructure.GetChIdxByName(nodeName) == i ) continue; 
     Eigen::Matrix<double,Eigen::Dynamic,1> vecTmp(totalNodes,1);
     vecTmp = matOwnership.row(i).cwiseProduct(matGij.row(i));
     double maxValue = vecTmp.maxCoeff(&index);
-    interference += maxValue * 
-      bestNextNodePower[m_bestStructure.GetChNameByName(index)];
+    interference += maxValue * powerMax;
 
   }
-  double lhs = (pow(2.0,static_cast<double>(quantizationBits)/bandwidthKhz/best2nd_ms) - 1 ) * 
+  double lhs = (pow(2.0,indEntropy/bandwidthKhz/txTime2nd) - 1 ) * 
     (realNoise+interference);
-  double rhs = bestNextNodePower[nodeName] * 
+  double rhs = powerMax * 
     matGij(nodeName, m_bestStructure.GetChNameByName(nodeName));
 
   if (lhs > rhs ) {
