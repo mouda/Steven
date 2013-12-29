@@ -1,5 +1,5 @@
-PREFIX=/home/share
-#PREFIX=/opt
+#PREFIX=/home/share
+PREFIX=/opt
 
 CPP=@-g++
 CFLAGS = -O -O1 -O2 -O3 -Wall
@@ -23,6 +23,8 @@ LIB_PATH=-L$(PREFIX)/boost1550/lib \
 	 -L$(PREFIX)/lpack342/lib 
 LIB_FLAGS=-lboost_math_c99 \
 	  -lboost_math_tr1 \
+	  -lboost_filesystem \
+	  -lboost_system \
 	  -larmadillo
 
 all: $(OBJECTS)

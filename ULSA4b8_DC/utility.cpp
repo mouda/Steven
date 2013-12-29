@@ -1,6 +1,7 @@
 #include "utility.h"
 #include <limits>
 #include <sstream>
+#include <boost/filesystem.hpp>
 
 bool FileExist( const std::string& Name)
 {

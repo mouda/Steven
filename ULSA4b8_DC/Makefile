@@ -3,8 +3,8 @@ CFLAGS=-O -O1 -O2 -O3
 #CFLAGS= -D ITERATION
 #DFLAGS= -D DEBUG -g
 #DFLAGS=-g
-#PREFIX=/opt
-PREFIX=/home/share
+PREFIX=/opt
+#PREFIX=/home/share
 
 SOURCES=main.o ULSA4b8_DC.o ClusterStructure.o utility.o 
 OBJECTS=$(SOURCES:.cpp=.o)
@@ -17,13 +17,16 @@ LIB_PATH=-L$(PREFIX)/boost1550/lib \
 	 -L$(PREFIX)/armadillo39202/lib \
 	 -L$(PREFIX)/openblas/lib \
 	 -L$(PREFIX)/lpack342/lib 
-LIB_FLAGS=-lboost_math_c99 \
-	  -lboost_math_tr1 \
-	  -lboost_system \
-	  -lboost_filesystem \
-	  -larmadillo \
+LIB_FLAGS=-larmadillo \
 	  -lopenblas \
-	  -llapack  
+	  -llapack \
+	  -lboost_regex \
+	  -lboost_system \
+	  -lboost_filesystem\
+	  -lboost_filesystem-mt\
+	  -lboost_math_c99 \
+	  -lboost_math_tr1 
+
 
 COMM_UTILITY= ../commonLibrary/CORRE_MA_OPE.o \
 	  ../commonLibrary/SimSystem.o \
@@ -36,10 +39,10 @@ all: ULSA4b8_DC
 
 ULSA4b8_DC: $(OBJECTS)
 	@echo Building $@
-	@-$(CPP)  $(COMM_UTILITY) $(CFLAGS) $(INCLUDE_PATH) $(LIB_PATH) $(LIB_FLAGS) $^  -o $@ 
+	@-$(CPP)  $(COMM_UTILITY) $(CFLAGS) $(INCLUDE_PATH) $(LIB_PATH)  $^  -o $@ $(LIB_FLAGS)
 
 %.o: %.cpp
 	@echo Making $@
-	@-$(CPP) -c $(CFLAGS) $(DFLAGS) $(INCLUDE_PATH) $(LIB_PATH) $(LIB_FLAGS) $< -o $@
+	@-$(CPP) -c $(CFLAGS) $(DFLAGS) $(INCLUDE_PATH) $(LIB_PATH) $< -o $@ $(LIB_FLAGS) 
 clean:
 	rm ULSA4b8_DC *.o
