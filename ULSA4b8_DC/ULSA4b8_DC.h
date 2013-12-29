@@ -23,7 +23,7 @@
 #include <ctime>
 #include <map>
 #include <algorithm>
-#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/Core>
 
 #include "../commonLibrary/ULAGENT.h"
 #include "../commonLibrary/ULCS1b.h"
@@ -50,7 +50,7 @@ public:
                int inOutputControl,
                int isStrucOuput,
                double inputTemprature, double InputSaAlpha, 
-               double inCorrelationFactor, string ipAddr);
+               double inCorrelationFactor, string ipAddr, const int& mapId);
 
   ~ULSA4b8_DC();
 
@@ -294,7 +294,7 @@ public:
 
 
   // Scheduling Algorithm (Node selection)
-  double SchedulingOneShut( double txTime2nd );
+  double SchedulingOneShut( double txTime2nd, bool const * const aryBoolSched, bool * aryBoolReport);
   double BranchBound(Eigen::MatrixXd& matSelec, 
       const Eigen::MatrixXd&,
       const Eigen::MatrixXd&, 
@@ -306,8 +306,15 @@ public:
       bool* solution );
   bool EigenMatrixIsSmaller(const Eigen::MatrixXd&, const Eigen::MatrixXd& );
   double MaxSNR( double txTime2nd );
+  bool CheckAllScheduled( bool const * const aryBoolSched);
   bool CheckFeasible( bool const * const supStru, double txTime2nd);
 
+  Eigen::MatrixXd m_matAij ;
+  Eigen::MatrixXd m_matBij ;
+  Eigen::MatrixXd m_matDij ;
+  Eigen::MatrixXd m_matOnes ;
+  Eigen::MatrixXd m_matSelec;
+  Eigen::MatrixXi m_matRelation;
 
 
   // Internal Aid Function
@@ -351,5 +358,6 @@ public:
   // display control
   int isDetailOutputOn;
   string strIpAddr; 
+  int m_mapId;
 };
 #endif

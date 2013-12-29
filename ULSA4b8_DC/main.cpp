@@ -7,6 +7,7 @@
 #include<cassert>
 
 #include "ULSA4b8_DC.h"
+#include "utility.h"
 
 #define SA_INI_TEMP 3.0
 #define SA_FIN_TEMP 0.5
@@ -83,6 +84,10 @@ int main(int argc, char* argv[])
   //@Data Parsing              //
   //---------------------------//
   FILE *fid;
+  string mapFileName(argv[6]);
+  vector<string> macroTokens = split(mapFileName,'_'); 
+  vector<string> microTokens = split(macroTokens[6], '.');
+  cout << atoi(microTokens[0].c_str()) << endl;
   fid = fopen(argv[6], "r");
   if(fid==NULL)
   {
@@ -112,7 +117,7 @@ int main(int argc, char* argv[])
 
   //ULSA4b8_DC *toolSA = new ULSA4b8_DC(fid, totalNodes, maxChNum, SAIter,outputControl, SA_INI_TEMP, alpha, correlationFactor);
   //ULSA4b8_DC toolSA(fid, totalNodes, maxChNum, SAIter,outputControl, SA_INI_TEMP, alpha, correlationFactor);
-  ULSA4b8_DC toolSA(fid, totalNodes, maxChNum, SAIter,outputControl, isDetailOn,SA_INI_TEMP, alpha, compressionRatio,ipAddr );
+  ULSA4b8_DC toolSA(fid, totalNodes, maxChNum, SAIter,outputControl, isDetailOn,SA_INI_TEMP, alpha, compressionRatio,ipAddr, atoi(microTokens[0].c_str()));
 
 
   toolSA.radius=radius;

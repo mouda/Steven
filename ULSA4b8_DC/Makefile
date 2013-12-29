@@ -3,10 +3,10 @@ CFLAGS=-O -O1 -O2 -O3
 #CFLAGS= -D ITERATION
 #DFLAGS= -D DEBUG -g
 #DFLAGS=-g
-PREFIX=/opt
-#PREFIX=/home/share
+#PREFIX=/opt
+PREFIX=/home/share
 
-SOURCES=main.o ULSA4b8_DC.o ClusterStructure.o 
+SOURCES=main.o ULSA4b8_DC.o ClusterStructure.o utility.o 
 OBJECTS=$(SOURCES:.cpp=.o)
 
 INCLUDE_PATH=-I$(PREFIX)/boost1550/include \
@@ -19,6 +19,8 @@ LIB_PATH=-L$(PREFIX)/boost1550/lib \
 	 -L$(PREFIX)/lpack342/lib 
 LIB_FLAGS=-lboost_math_c99 \
 	  -lboost_math_tr1 \
+	  -lboost_system \
+	  -lboost_filesystem \
 	  -larmadillo \
 	  -lopenblas \
 	  -llapack  

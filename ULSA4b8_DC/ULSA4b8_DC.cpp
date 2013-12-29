@@ -20,7 +20,8 @@ ULSA4b8_DC::ULSA4b8_DC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxCh
                      int inOutputControl,
                      int isStrucOuput,
                      double inputTemprature, double InputSaAlpha, \
-                     double inCorrelationFactor, string ipAddr):m_bestStructure(inputTotalNodes,inputMaxChNum)
+                     double inCorrelationFactor, string ipAddr,const int& mapId )
+                      :m_bestStructure(inputTotalNodes,inputMaxChNum),m_mapId(mapId)
 {
 
     sysComputing = new SimSystem;
@@ -1260,8 +1261,18 @@ bool ULSA4b8_DC::startCool()
   TimeStamp obj_time;
   obj_time.returnRealWordTime(timeBuf,32);
 
-  double oneShutEntropy = SchedulingOneShut( 0.01 ) ;
+  bool * myAryScheduled = new bool [totalNodes];
+  bool * myAryReport = new bool [totalNodes];
+  for (int i = 0; i < totalNodes; i++) {
+    myAryReport[i] = false;
+    myAryScheduled[i] = false;
+  }
+//  while (!CheckAllScheduled(myAryScheduled)) {
+    double oneShutEntropy = SchedulingOneShut( 0.01, myAryScheduled, myAryReport) ;
+//  }
 
+  delete [] myAryScheduled;
+  delete [] myAryReport;
   char str[500];
   char str2[500];
   char str3[500];
@@ -2638,27 +2649,37 @@ void ULSA4b8_DC::resetSA3iSystem() {
     vecBestClusterSize.resize(maxChNum);
 }
 
-double ULSA4b8_DC::SchedulingOneShut( double txTime2nd ) 
+bool ULSA4b8_DC::CheckAllScheduled( bool const * const aryBoolSched)
+{
+  for (int i = 0; i < totalNodes; i++) {
+    if (aryBoolSched[i] == false) {
+      return false;
+    }
+  }
+  return true;
+}
+
+double ULSA4b8_DC::SchedulingOneShut( double txTime2nd, bool const * const aryBoolSched, bool * aryBoolReport) 
 {
 
   /* construct common cluster relationship */
-  Eigen::MatrixXi matRelation = Eigen::MatrixXi::Zero(totalNodes,totalNodes);
+  m_matRelation = Eigen::MatrixXi::Zero(totalNodes,totalNodes);
   list<list<int> >::iterator iterRow = listCluMemBest->begin();
   for (int i = 0; i < maxChNum; ++i, ++iterRow) {
     list<int>::const_iterator iterCol1= iterRow->begin();
     for (; iterCol1 != iterRow->end(); ++iterCol1) {
       list<int>::const_iterator iterCol2 = iterRow->begin();
       for (; iterCol2 != iterRow->end(); ++iterCol2) {
-        matRelation(*iterCol1,*iterCol2) = 1 ;
-        matRelation(*iterCol2,*iterCol1) = 1 ;
+        m_matRelation(*iterCol1,*iterCol2) = 1 ;
+        m_matRelation(*iterCol2,*iterCol1) = 1 ;
       }
     }
   }
   
 
   /* construct inequality construct */
-  Eigen::MatrixXd matAij = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
-  Eigen::MatrixXd matBij = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
+  m_matAij = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
+  m_matBij = Eigen::MatrixXd::Zero(totalNodes,totalNodes);
 
   double exponent = pow(2.0,indEntropy/bandwidthKhz/txTime2nd);
   for (int i = 0; i < totalNodes; i++) {
@@ -2666,10 +2687,10 @@ double ULSA4b8_DC::SchedulingOneShut( double txTime2nd )
       if (m_bestStructure.GetChNameByName(j) == j ) continue;
       if (m_bestStructure.GetChNameByName(i) == i ) continue;
       if (i == j) {
-        matAij(i,j) = -1*OmegaValue(i, txTime2nd);
+        m_matAij(i,j) = -1*OmegaValue(i, txTime2nd);
       } else if (/* i in cluster M, j in another */
-          matRelation(i,j) != 1) {
-        matAij(i,j) = (exponent-1)*powerMax*
+          m_matRelation(i,j) != 1) {
+        m_matAij(i,j) = (exponent-1)*powerMax*
           Gij[j][m_bestStructure.GetChNameByName(i)];
       } 
     }
@@ -2678,7 +2699,7 @@ double ULSA4b8_DC::SchedulingOneShut( double txTime2nd )
   for (int i = 0; i < totalNodes; i++) {
     for (int j = 0; j < totalNodes; j++) {
       if (i == j ) {
-        matBij(i,j) =  
+        m_matBij(i,j) =  
           powerMax*Gij[i][m_bestStructure.GetChNameByName(i)] -
           (exponent -1)* realNoise - OmegaValue(i, txTime2nd);
       }
@@ -2686,26 +2707,26 @@ double ULSA4b8_DC::SchedulingOneShut( double txTime2nd )
   }
 
   /* construct equality construct */
-  Eigen::MatrixXd matDij = Eigen::MatrixXd::Zero(maxChNum, totalNodes);
+  m_matDij = Eigen::MatrixXd::Zero(maxChNum, totalNodes);
   list<list<int> >::const_iterator iterRow1 = m_bestStructure.GetListCluMemeber().begin();
   for (int i = 0; i < maxChNum; ++i, ++iterRow1) {
     list<int>::const_iterator iterCol_1= iterRow1->begin();
     for (; iterCol_1 != iterRow1->end(); ++iterCol_1) {
-      matDij(i,*iterCol_1) = 1;
+      m_matDij(i,*iterCol_1) = 1;
     }
   }
-  Eigen::MatrixXd matOnes = Eigen::MatrixXd::Zero(maxChNum, totalNodes);
-  matOnes.fill(1.0);
+  m_matOnes = Eigen::MatrixXd::Zero(maxChNum, totalNodes);
+  m_matOnes.fill(1.0);
 
   /* BB algorithm */
-  Eigen::MatrixXd matSelec = Eigen::MatrixXd::Zero(maxChNum, totalNodes); 
+  m_matSelec = Eigen::MatrixXd::Zero(maxChNum, totalNodes); 
   double maxSNREntropy = MaxSNR( 0.01 );
-  double bbEntropy = BranchBound(matSelec, matAij, matBij, matDij, matOnes);
+  double bbEntropy = BranchBound(m_matSelec, m_matAij, m_matBij, m_matDij, m_matOnes);
 
   char scheduleResultFileName[500]; 
   sprintf(scheduleResultFileName, 
-      "tmpAll/ULSA4b8_Schedule_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",
-      totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius, strIpAddr.c_str());
+      "tmpAll/ULSA4b8_Schedule_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.map_%d.txt",
+      totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius, m_mapId);
   fstream scheduleResultFile;
   scheduleResultFile.open(scheduleResultFileName, ios::out);
   scheduleResultFile << maxSNREntropy << ' ' << bbEntropy << endl;

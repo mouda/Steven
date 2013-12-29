@@ -3,33 +3,40 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+!_TAG_PROGRAM_VERSION	5.8	//
 BranchBound	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::BranchBound( Eigen::MatrixXd& matSelec, $/;"	f	class:ULSA4b8_DC
+CFLAGS	Makefile	/^CFLAGS=-O -O1 -O2 -O3$/;"	m
 COMM_UTILITY	Makefile	/^COMM_UTILITY= ..\/commonLibrary\/CORRE_MA_OPE.o \\$/;"	m
 CPP	Makefile	/^CPP= g++$/;"	m
+CheckAllScheduled	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::CheckAllScheduled( bool const * const aryBoolSched)$/;"	f	class:ULSA4b8_DC
+CheckFeasible	ULSA4b8_DC.cpp	/^ULSA4b8_DC::CheckFeasible( bool const * const supStru, double txTime2nd)$/;"	f	class:ULSA4b8_DC
 ClusterStructure	ClusterStructure.h	/^    ClusterStructure():m_numNode(0),m_maxNumCh(0){};$/;"	f	class:ClusterStructure
 ClusterStructure	ClusterStructure.h	/^    ClusterStructure(const int& totalNodes, const int& maxChNum):$/;"	f	class:ClusterStructure
 ClusterStructure	ClusterStructure.h	/^class ClusterStructure $/;"	c
-DFLAGS	Makefile	/^DFLAGS=-g$/;"	m
 EigenMatrixIsSmaller	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::EigenMatrixIsSmaller( const Eigen::MatrixXd& lhs, $/;"	f	class:ULSA4b8_DC
+FileExist	utility.cpp	/^bool FileExist( const std::string& Name)$/;"	f
 GetChIdxByName	ClusterStructure.cpp	/^ClusterStructure::GetChIdxByName( const int& nodeName )$/;"	f	class:ClusterStructure
 GetChNameByName	ClusterStructure.cpp	/^ClusterStructure::GetChNameByName( const int& nodeName)$/;"	f	class:ClusterStructure
+GetLastLine	utility.cpp	/^std::string GetLastLine(std::ifstream& in)$/;"	f
 GetListCluMemeber	ClusterStructure.h	/^    const list<list<int> >& GetListCluMemeber(){return m_listCluMember; }$/;"	f	class:ClusterStructure
 GetVecHeadName	ClusterStructure.h	/^    const vector<int>&  GetVecHeadName(){ return m_vecHeadName; }$/;"	f	class:ClusterStructure
 Gib	ULSA4b8_DC.h	/^  float *Gib; \/\/ channel gain from node i to base station$/;"	m	class:ULSA4b8_DC
 Gij	ULSA4b8_DC.h	/^  float **Gij;\/\/ channel gain from node i to node j$/;"	m	class:ULSA4b8_DC
 INCLUDE_PATH	Makefile	/^INCLUDE_PATH=-I$(PREFIX)\/boost1550\/include \\$/;"	m
+Ignoreline	utility.cpp	/^std::istream& Ignoreline(std::ifstream& in, std::ifstream::pos_type& pos)$/;"	f
 IsolateNodeName	ULSA4b8_DC.h	/^  int  IsolateNodeName;$/;"	m	class:ULSA4b8_DC
 JoiningHeadIndex	ULSA4b8_DC.h	/^  int  JoiningHeadIndex;$/;"	m	class:ULSA4b8_DC
 LIB_FLAGS	Makefile	/^LIB_FLAGS=-lboost_math_c99 \\$/;"	m
 LIB_PATH	Makefile	/^LIB_PATH=-L$(PREFIX)\/boost1550\/lib \\$/;"	m
+MaxSNR	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::MaxSNR( double txTime2nd )$/;"	f	class:ULSA4b8_DC
 OBJECTS	Makefile	/^OBJECTS=$(SOURCES:.cpp=.o)$/;"	m
-OmegaValue	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::OmegaValue( const int& nodeName)$/;"	f	class:ULSA4b8_DC
-PREFIX	Makefile	/^PREFIX=\/opt$/;"	m
-SA_FIN_TEMP	main.cpp	12;"	d	file:
-SA_INI_TEMP	main.cpp	11;"	d	file:
-SOURCES	Makefile	/^SOURCES=main.o ULSA4b8_DC.o ClusterStructure.o $/;"	m
-SchedulingOneShut	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::SchedulingOneShut() $/;"	f	class:ULSA4b8_DC
+OmegaValue	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::OmegaValue( const int& nodeName, double txTime2nd )$/;"	f	class:ULSA4b8_DC
+PREFIX	Makefile	/^PREFIX=\/home\/share$/;"	m
+Perm	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::Perm(const Eigen::MatrixXd& matAij,$/;"	f	class:ULSA4b8_DC
+SA_FIN_TEMP	main.cpp	13;"	d	file:
+SA_INI_TEMP	main.cpp	12;"	d	file:
+SOURCES	Makefile	/^SOURCES=main.o ULSA4b8_DC.o ClusterStructure.o utility.o $/;"	m
+SchedulingOneShut	ULSA4b8_DC.cpp	/^double ULSA4b8_DC::SchedulingOneShut( double txTime2nd, bool const * const aryBoolSched, bool * aryBoolReport) $/;"	f	class:ULSA4b8_DC
 SetListCluMember	ClusterStructure.h	/^    void SetListCluMember( const list<list<int> >& inListCluMember)$/;"	f	class:ClusterStructure
 SetRecord	ClusterStructure.cpp	/^ClusterStructure::SetRecord( $/;"	f	class:ClusterStructure
 SetVecHeadName	ClusterStructure.h	/^    void SetVecHeadName( const vector<int>& inVecHeadName)$/;"	f	class:ClusterStructure
@@ -37,6 +44,7 @@ ULSA4b8_DC	ULSA4b8_DC.cpp	/^ULSA4b8_DC::ULSA4b8_DC(){};$/;"	f	class:ULSA4b8_DC
 ULSA4b8_DC	ULSA4b8_DC.cpp	/^ULSA4b8_DC::ULSA4b8_DC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \\$/;"	f	class:ULSA4b8_DC
 ULSA4b8_DC	ULSA4b8_DC.h	/^class ULSA4b8_DC :public SABASE$/;"	c
 ULSA4b8_DC_H	ULSA4b8_DC.h	17;"	d
+_UTILITY_	utility.h	2;"	d
 addMemberSA	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::addMemberSA(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b8_DC
 addMemberSAIni	ULSA4b8_DC.cpp	/^void ULSA4b8_DC::addMemberSAIni(int inputHeadIndex, int inputMemberName)$/;"	f	class:ULSA4b8_DC
 aryFlagHRDone	ULSA4b8_DC.h	/^  bool *aryFlagHRDone; \/\/If it is true means Head Rotate have been done in this structure, starrt from ULSA4b8_DC$/;"	m	class:ULSA4b8_DC
@@ -57,6 +65,7 @@ bestFeasibleJEntropy	ULSA4b8_DC.h	/^  double bestFeasibleJEntropy;$/;"	m	class:U
 bestFeasiblePayoff	ULSA4b8_DC.h	/^  double bestFeasiblePayoff;$/;"	m	class:ULSA4b8_DC
 bestFeasibleSupNum	ULSA4b8_DC.h	/^  int    bestFeasibleSupNum;$/;"	m	class:ULSA4b8_DC
 bestMaClusterStru	ULSA4b8_DC.h	/^  bool** bestMaClusterStru;$/;"	m	class:ULSA4b8_DC
+bestNextNodePower	ULSA4b8_DC.h	/^  double* bestNextNodePower;$/;"	m	class:ULSA4b8_DC
 bestTrafficReductionRatio	ULSA4b8_DC.h	/^  double bestTrafficReductionRatio;$/;"	m	class:ULSA4b8_DC
 bestUpperLayerResource	ULSA4b8_DC.h	/^  double bestUpperLayerResource;$/;"	m	class:ULSA4b8_DC
 cSystem	ULSA4b8_DC.h	/^  ULCS1b*  cSystem;   \/\/ system cluseter structure$/;"	m	class:ULSA4b8_DC
@@ -121,6 +130,7 @@ lastJoiningHeadIndex	ULSA4b8_DC.h	/^  int lastJoiningHeadIndex;$/;"	m	class:ULSA
 listCluMemBest	ULSA4b8_DC.h	/^  list <list <int> > *listCluMemBest;$/;"	m	class:ULSA4b8_DC
 m_bestStructure	ULSA4b8_DC.h	/^  ClusterStructure m_bestStructure; $/;"	m	class:ULSA4b8_DC
 m_listCluMember	ClusterStructure.h	/^    list<list<int> >  m_listCluMember;$/;"	m	class:ClusterStructure
+m_mapId	ULSA4b8_DC.h	/^  int m_mapId;$/;"	m	class:ULSA4b8_DC
 m_maxNumCh	ClusterStructure.h	/^    const int         m_maxNumCh;$/;"	m	class:ClusterStructure
 m_numNode	ClusterStructure.h	/^    const int         m_numNode;$/;"	m	class:ClusterStructure
 m_vecCHIdxForNodes	ClusterStructure.h	/^    vector<int>       m_vecCHIdxForNodes;$/;"	m	class:ClusterStructure
@@ -178,6 +188,8 @@ setIniStruKmeans	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setIniStruKmeans()$/;"	f	clas
 setInitialStucture	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setInitialStucture(const string& iniFlag)$/;"	f	class:ULSA4b8_DC
 setSystem	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)$/;"	f	class:ULSA4b8_DC
 sortIndex	ULSA4b8_DC.h	/^  int sortIndex;$/;"	m	class:ULSA4b8_DC
+split	utility.cpp	/^std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {$/;"	f
+split	utility.cpp	/^std::vector<std::string> split(const std::string &s, char delim) {$/;"	f
 startCool	ULSA4b8_DC.cpp	/^bool ULSA4b8_DC::startCool()$/;"	f	class:ULSA4b8_DC
 strIpAddr	ULSA4b8_DC.h	/^  string strIpAddr; $/;"	m	class:ULSA4b8_DC
 sysComputing	ULSA4b8_DC.h	/^  SimSystem *sysComputing;$/;"	m	class:ULSA4b8_DC
