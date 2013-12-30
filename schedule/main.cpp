@@ -71,8 +71,7 @@ int main(int argc, char *argv[])
   Scheduler* myScheduler = mySchedFactory.CreateScheduler();
 
   Simulator mySimulator(*myMap, *myCS, *myScheduler);
-
-
+  mySimulator.Run();
   
   return 0;
 }
