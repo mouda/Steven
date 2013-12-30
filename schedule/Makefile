@@ -6,7 +6,18 @@ DFLAGS=-g
 #PREFIX=/opt
 PREFIX=/home/share
 
-SOURCES=main.o ULSA4b8_DC.o ClusterStructure.o utility.o 
+SOURCES= main.o \
+	 map.o \
+	 simSystem.o \
+	 ULAGENT.o \
+	 CORRE_MA_OPE.o\
+	 clusterStructure.o \
+	 mapFactory.o \
+	 csFactory.o \
+	 utility.o \
+	 scheduler.o \
+	 schedFactory.o \
+	 simulator.o 
 OBJECTS=$(SOURCES:.cpp=.o)
 
 INCLUDE_PATH=-I$(PREFIX)/boost1550/include \
@@ -17,6 +28,7 @@ LIB_PATH=-L$(PREFIX)/boost1550/lib \
 	 -L$(PREFIX)/armadillo39202/lib \
 	 -L$(PREFIX)/openblas/lib \
 	 -L$(PREFIX)/lpack342/lib 
+
 LIB_FLAGS=-larmadillo \
 	  -lopenblas \
 	  -llapack \
@@ -27,22 +39,14 @@ LIB_FLAGS=-larmadillo \
 	  -lboost_math_c99 \
 	  -lboost_math_tr1 
 
+all: simulator 
 
-COMM_UTILITY= ../commonLibrary/CORRE_MA_OPE.o \
-	  ../commonLibrary/SimSystem.o \
-	  ../commonLibrary/timesearch.o \
-	  ../commonLibrary/TimeStamp.o \
-	  ../commonLibrary/ULAGENT.o \
-	  ../commonLibrary/ULConstraintSolver.o \
-	  ../commonLibrary/ULCS1b.o 
-all: ULSA4b8_DC
-
-ULSA4b8_DC: $(OBJECTS)
+simulator: $(OBJECTS)
 	@echo Building $@
-	@-$(CPP)  $(COMM_UTILITY) $(CFLAGS) $(INCLUDE_PATH) $(LIB_PATH)  $^  -o $@ $(LIB_FLAGS)
+	@-$(CPP)  $(CFLAGS) $(INCLUDE_PATH) $(LIB_PATH)  $^ -o $@ $(LIB_FLAGS)
 
 %.o: %.cpp
 	@echo Making $@
 	@-$(CPP) -c $(CFLAGS) $(DFLAGS) $(INCLUDE_PATH) $(LIB_PATH) $< -o $@ $(LIB_FLAGS) 
 clean:
-	rm ULSA4b8_DC *.o
+	rm simulator *.o
