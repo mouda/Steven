@@ -63,8 +63,8 @@ int main(int argc, char *argv[])
 
   MapFactory myMapFactory(mapFileName, powerMaxWatt, compressionRatio, maxChNum, totalNodes);
   Map* myMap = myMapFactory.CreateMap();
-  CORRE_MA_OPE* myMatrxComputer = myMapFactory.CreateMatrixComputer();
-  CsFactory myCsFactory;
+  CORRE_MA_OPE* myMatrixComputer = myMapFactory.CreateMatrixComputer();
+  CsFactory myCsFactory(myMap, myMatrixComputer);
   SchedulerFactory mySchedFactory;
 
   ClusterStructure* myCS = myCsFactory.CreateClusterStructure();

@@ -26,17 +26,21 @@ class Map
     void SetChannelByXYPair(const vector<pair<double,double> >& );
     const vector<vector<double> >& GetGij();
     double** const GetMatDistance(){ return m_matDistance;}
+    int GetMapId() const { return m_mapId; }
+    int GetNumNodes() const { return m_numNodes; }
+    int GetNumInitHeads() const { return m_numInitHeads; }
 
   private:
-    const int               m_mapId;
-    const int               m_numNodes;
-    const int               m_numInitHeads;
-    const double            m_maxPower;
-    const double            m_corrFactor;
-    vector<vector<double> > m_matGij;
-    double**                m_matDistance;
-    vector<double>          m_vecPower;
-    SimSystem*              m_systemComputer;
+    const int                     m_mapId;
+    const int                     m_numNodes;
+    const int                     m_numInitHeads;
+    const double                  m_maxPower;
+    const double                  m_corrFactor;
+    vector<vector<double> >       m_matGij;
+    vector<pair<double, double> > m_vecNodePos;
+    double**                      m_matDistance;
+    vector<double>                m_vecPower;
+    SimSystem*                    m_systemComputer;
 
     
 
