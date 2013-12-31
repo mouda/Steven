@@ -1,11 +1,15 @@
 #include "map.h"
 
 Map::Map(const int numNodes, const int numHeads, const double maxPower, 
-    const double corrFactor,const int mapId):
+    const double corrFactor, const double quantizationBits, 
+    const double bandwidthKhz, const int mapId):
   m_numNodes(numNodes), m_numInitHeads(numHeads), m_maxPower(maxPower), m_mapId(mapId),
-  m_corrFactor(corrFactor), m_systemComputer(0)
+  m_corrFactor(corrFactor), m_quantizationBits(quantizationBits), 
+  m_bandwidthKhz(bandwidthKhz), m_systemComputer(0)
 {
   m_systemComputer = new SimSystem;
+  m_idtEntropy = 0.5*log2(2*3.1415*exp(1)) + quantizationBits;
+  m_realNoise = m_systemComputer->returnInBandThermalNoise(bandwidthKhz);
 }
 
 Map::~Map()
@@ -34,6 +38,7 @@ Map::SetChannelByXYPair(const vector<pair<double, double> >& vecPosPair)
 #endif
   m_matDistance = new double* [m_numNodes]; 
   m_matGij.resize(m_numNodes, vector<double>(m_numNodes,0.0));
+  m_vecPairNodePos = vecPosPair;
   for (int i = 0; i < m_numNodes; i++) {
     m_matDistance[i] = new double [m_numNodes];
     for (int j = 0; j < m_numNodes; j++) {

@@ -3,8 +3,8 @@ CPP= g++
 #CFLAGS= -D ITERATION
 #DFLAGS= -D DEBUG -g
 DFLAGS=-g
-PREFIX=/opt
-#PREFIX=/home/share
+#PREFIX=/opt
+PREFIX=/home/share
 
 SOURCES= main.o \
 	 map.o \
@@ -16,6 +16,8 @@ SOURCES= main.o \
 	 csFactory.o \
 	 utility.o \
 	 scheduler.o \
+	 branchBoundScheduler.o \
+	 maxSNRScheduler.o \
 	 schedFactory.o \
 	 simulator.o 
 OBJECTS=$(SOURCES:.cpp=.o)

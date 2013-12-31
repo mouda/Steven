@@ -19,9 +19,9 @@ CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double inCorrelationFactor, double 
   correlationFac = inCorrelationFactor;
 }
 
-double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru)
+double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) const
 {
-  variance = inVariance;
+  //m_variance = inVariance;
   //Read information from cluster structure array
   int covMaSize = 0;
   for(int i=0;i<totalNodes;i++)
@@ -40,7 +40,8 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru)
   //-----------------------------------------------
   int matrixLength = covMaSize * covMaSize;
   double covAry[matrixLength];
-  computeCovMa(covAry,covMaSize ,supSet);
+  //computeCovMa(covAry,covMaSize ,supSet);
+  constComputeCovMa(covAry,covMaSize ,supSet, inVariance);
 
 //  cout << "new   : " << choleskyLogDet(covAry,covMaSize) << endl;
 //  cout << "arma  : " << armaLogDet(covAry, covMaSize) << endl;
@@ -84,11 +85,27 @@ void CORRE_MA_OPE::computeCovMa(double* covAry,int covMaSize, int* supSet)
   {
     for(int j=0;j<covMaSize;j++)
     {
-      if(i==j)covAry[i*covMaSize+j] = variance;
+      if(i==j)covAry[i*covMaSize+j] = m_variance;
       else if(i>j)covAry[i*covMaSize+j] = covAry[j*covMaSize+i];
       else
       {
-        covAry[i*covMaSize+j] = variance * exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/correlationFac);
+        covAry[i*covMaSize+j] = m_variance * exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/correlationFac);
+      }
+    }
+  }
+}
+
+void CORRE_MA_OPE::constComputeCovMa(double* covAry,int covMaSize, int* supSet, const double variance ) const 
+{
+  for(int i=0;i<covMaSize;i++)
+  {
+    for(int j=0;j<covMaSize;j++)
+    {
+      if(i==j)covAry[i*covMaSize+j] = m_variance;
+      else if(i>j)covAry[i*covMaSize+j] = covAry[j*covMaSize+i];
+      else
+      {
+        covAry[i*covMaSize+j] = m_variance * exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/correlationFac);
       }
     }
   }
@@ -129,7 +146,7 @@ double CORRE_MA_OPE::armaLogDet( double const * const aryCovariance, const int& 
 
 }
 
-double CORRE_MA_OPE::eigenCholeskyLogDet( double const * const aryCovariance, const int& dimSize)
+double CORRE_MA_OPE::eigenCholeskyLogDet( double const * const aryCovariance, const int& dimSize) const
 {
   Eigen::MatrixXd covMatrix(dimSize,dimSize);
   for (int i = 0; i < dimSize; ++i) {

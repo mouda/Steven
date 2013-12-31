@@ -61,14 +61,31 @@ int main(int argc, char *argv[])
   string mapFileName(argv[6]);
 
 
-  MapFactory myMapFactory(mapFileName, powerMaxWatt, compressionRatio, maxChNum, totalNodes);
-  Map* myMap = myMapFactory.CreateMap();
-  CORRE_MA_OPE* myMatrixComputer = myMapFactory.CreateMatrixComputer();
-  CsFactory myCsFactory(myMap, myMatrixComputer);
-  SchedulerFactory mySchedFactory;
+  MapFactory myMapFactory(mapFileName, powerMaxWatt, 
+      compressionRatio, quantizationBits, bandwidthKhz, maxChNum, totalNodes);
+  Map* myMap = 0;
+  CORRE_MA_OPE* myMatComputer  = 0;
+  myMap = myMapFactory.CreateMap();
+  myMatComputer = myMapFactory.CreateMatrixComputer();
+  if (!myMap ) {
+    cerr << "Error: Failed to initialize map" << endl;
+    return 1;
+  }
+  if (!myMatComputer) {
+    cerr << "Error: Failed to initialize correlation comulter" << endl;
+    return 1;
+  }
+  ClusterStructure* myCS = 0;
+  CsFactory myCsFactory(myMap, myMatComputer);
+  myCS = myCsFactory.CreateClusterStructure();
+  
+  if (!myCS) {
+    cerr << "Error: Failed to initalize cluster structure" << endl;
+    return 1;
+  }
 
-  ClusterStructure* myCS = myCsFactory.CreateClusterStructure();
-  Scheduler* myScheduler = mySchedFactory.CreateScheduler();
+  SchedulerFactory mySchedFactory(0.01, bandwidthKhz, myMap, myMatComputer, myCS);
+  Scheduler* myScheduler = mySchedFactory.CreateScheduler("Baseline");
 
   Simulator mySimulator(*myMap, *myCS, *myScheduler);
   mySimulator.Run();

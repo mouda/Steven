@@ -2,10 +2,14 @@
 #include "utility.h"
 #include <cstdio>
 
-MapFactory::MapFactory(const string& mapFileName, const double maxPower, const double corrFactor, 
-    const int maxChNum, const int numNodes):
-  m_ptrMap(0), m_ptrMatComputer(0), m_maxPower(maxPower), m_corrFactor(corrFactor), 
-  m_maxNumHead(maxChNum), m_numNodes(numNodes)
+MapFactory::MapFactory(const string& mapFileName, const double maxPower, 
+    const double corrFactor, const double quantizationBits,
+    const double bandwidthKhz,  
+    const int maxNumHead, const int numNodes):
+  m_ptrMap(0), m_ptrMatComputer(0), m_maxPower(maxPower), 
+  m_corrFactor(corrFactor), m_quantizationBits(quantizationBits),
+  m_bandwidthKhz(bandwidthKhz), 
+  m_maxNumHead(maxNumHead), m_numNodes(numNodes)
 {
   
 #ifdef DEBUG
@@ -55,7 +59,7 @@ MapFactory::CreateMap()
     return NULL;
   }
   mapFile.close();
-  m_ptrMap = new Map(numNodes, m_maxNumHead, m_maxPower, m_corrFactor, m_mapId);
+  m_ptrMap = new Map(numNodes, m_maxNumHead, m_maxPower, m_corrFactor, m_quantizationBits, m_bandwidthKhz, m_mapId);
   m_ptrMap->SetChannelByXYPair(m_vecPairPos);
   return m_ptrMap;
 }

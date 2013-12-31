@@ -8,16 +8,17 @@ public:
   int totalNodes;
   double **DijSQ;
   double correlationFac;
-  double variance;
+  double m_variance;
 
-  double computeLog2Det(double inVariance, bool* inClusterStru );
+  double computeLog2Det(double inVariance, bool* inClusterStru ) const;
   double returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int totalNodes);
 
 private:
   void computeCovMa(double* inCovAry, int inCovMaSize, int* inSupSet);//inCovAry is output of function
+  void constComputeCovMa(double* inCovAry, int inCovMaSize, int* inSupSet, const double variance) const;
   double choleskyLogDet( double const * const aryCovariance, const int& dimSize);
   double armaLogDet( double const * const aryCovariance, const int& dimSize);
-  double eigenCholeskyLogDet( double const * const aryCovariance, const int& dimSize);
+  double eigenCholeskyLogDet( double const * const aryCovariance, const int& dimSize) const;
 
 };
 

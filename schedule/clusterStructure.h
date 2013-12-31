@@ -12,8 +12,14 @@ class ClusterStructure
     ClusterStructure( const int numNodes, const int maxNumHeads);
     ~ClusterStructure();
 
-    int GetChIdxByName( const int& nodeName );
-    int GetChNameByName( const int& nodeName );
+    void SetRecord( const vector<int>& invecheadname, 
+        const list<list<int> >& inlistclumember);
+
+    int GetChIdxByName( const int& nodeName ) const;
+    int GetChNameByName( const int& nodeName ) const;
+
+    const vector<int>&  GetVecHeadName() const { return m_vecHeadName; }
+    const list<list<int> >& GetListCluMemeber() const{return m_listCluMember; }
 
   private:
     const int   m_numNodes;

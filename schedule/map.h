@@ -21,7 +21,9 @@ using std::make_pair;
 class Map 
 {
   public:
-    Map(const int numNodes, const int numHeads, const double maxPower, const double corrFactor, const int mapId);
+    Map(const int numNodes, const int numHeads, const double maxPower, 
+        const double corrFactor, const double quantizationBits,
+        const double bandwidthKhz, const int mapId);
     ~Map();
     void SetChannelByXYPair(const vector<pair<double,double> >& );
     const vector<vector<double> >& GetGij();
@@ -29,6 +31,12 @@ class Map
     int GetMapId() const { return m_mapId; }
     int GetNumNodes() const { return m_numNodes; }
     int GetNumInitHeads() const { return m_numInitHeads; }
+    double GetNodeXPos(const int idx) const { return m_vecPairNodePos[idx].first;}
+    double GetNodeYPos(const int idx) const { return m_vecPairNodePos[idx].second;}
+    double GetGijByPair( const int lhs, const int rhs) const {return m_matGij[lhs][rhs]; } 
+    double GetMaxPower() const {return m_maxPower; }
+    double GetIdtEntropy() const { return m_idtEntropy; }
+    double GetNoise() const { return m_realNoise; } 
 
   private:
     const int                     m_mapId;
@@ -36,13 +44,15 @@ class Map
     const int                     m_numInitHeads;
     const double                  m_maxPower;
     const double                  m_corrFactor;
+    const double                  m_bandwidthKhz;
+    double                        m_quantizationBits;
+    double                        m_idtEntropy;
+    double                        m_realNoise;
     vector<vector<double> >       m_matGij;
-    vector<pair<double, double> > m_vecNodePos;
+    vector<pair<double, double> > m_vecPairNodePos;
     double**                      m_matDistance;
     vector<double>                m_vecPower;
     SimSystem*                    m_systemComputer;
-
-    
 
 };
 #endif
