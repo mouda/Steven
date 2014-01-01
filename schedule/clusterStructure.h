@@ -1,8 +1,12 @@
 #ifndef _CLUSTERSTRUCTURE_
 #define _CLUSTERSTRUCTURE_ 
+#include <iostream>
 #include <vector>
 #include <list>
 
+using std::cout;
+using std::cerr;
+using std::endl;
 using std::vector;
 using std::list;
 
@@ -20,6 +24,8 @@ class ClusterStructure
 
     const vector<int>&  GetVecHeadName() const { return m_vecHeadName; }
     const list<list<int> >& GetListCluMemeber() const{return m_listCluMember; }
+
+    void Print() const;
 
   private:
     const int   m_numNodes;

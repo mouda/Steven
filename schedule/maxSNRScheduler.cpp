@@ -88,6 +88,5 @@ MaxSNRScheduler::CheckFeasible( bool const * const supStru, double txTime2nd)
       return false;
     }
   }
-
   return true;
 }

@@ -35,6 +35,20 @@ ClusterStructure::SetRecord(
 
 }
 
+void
+ClusterStructure::Print() const
+{
+  list<list<int> >::const_iterator iterRows = m_listCluMember.begin();
+  for (int i = 0;iterRows != m_listCluMember.end(); ++iterRows, ++i) {
+    cout << "cluster: " << i <<"-th ";
+    list<int>::const_iterator iterCols = iterRows->begin();
+    for (;iterCols != iterRows->end(); ++iterCols) {
+      cout << *iterCols << ' ';
+    }
+    cout << endl;
+  }
+}
+
 int 
 ClusterStructure::GetChIdxByName( const int& nodeName ) const 
 {

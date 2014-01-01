@@ -91,7 +91,8 @@ int main(int argc, char *argv[])
     cerr << "Error: Failed to initialize scheduler" << endl;
     return 1;
   }
-  Simulator mySimulator(*myMap, *myCS, *myScheduler);
+  Simulator mySimulator(myMap, myCS, myScheduler);
+  mySimulator.SelfCheck();
   mySimulator.Run();
   
   return 0;
