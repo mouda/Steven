@@ -85,8 +85,12 @@ int main(int argc, char *argv[])
   }
 
   SchedulerFactory mySchedFactory(0.01, bandwidthKhz, myMap, myMatComputer, myCS);
-  Scheduler* myScheduler = mySchedFactory.CreateScheduler("Baseline");
-
+  Scheduler* myScheduler = 0;
+  myScheduler = mySchedFactory.CreateScheduler("Baseline");
+  if (!myScheduler) {
+    cerr << "Error: Failed to initialize scheduler" << endl;
+    return 1;
+  }
   Simulator mySimulator(*myMap, *myCS, *myScheduler);
   mySimulator.Run();
   
