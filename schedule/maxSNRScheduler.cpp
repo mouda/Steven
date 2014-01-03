@@ -4,10 +4,12 @@ MaxSNRScheduler::MaxSNRScheduler( const double txTime,
     const double bandwidthKhz, 
     Map const * const ptrMap, 
     CORRE_MA_OPE const * const ptrMatComputer, 
-    ClusterStructure const * const ptrCS): 
+    ClusterStructure const * const ptrCS,
+    const string type): 
     m_txTimePerSlot(txTime), m_bandwidthKhz(bandwidthKhz),
     m_ptrMap(ptrMap), 
-    m_ptrCS(ptrCS), m_ptrMatComputer(ptrMatComputer)
+    m_ptrCS(ptrCS), m_ptrMatComputer(ptrMatComputer),
+    m_type(type)
 {
   m_numNodes = m_ptrMap->GetNumNodes();
   m_numMaxHeads =  m_ptrMap->GetNumInitHeads();
@@ -58,10 +60,9 @@ MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
     if (mySupStru[i] == true) ++activeNodes;
   }
 
+  cout << "activeNodes: " << activeNodes << endl;
   double result = activeNodes * m_ptrMap->GetIdtEntropy() + m_ptrMatComputer->computeLog2Det(1.0, mySupStru);
-#ifdef DEBUG
   cout << "MaxSNR: " << result << " " <<m_ptrMatComputer->computeLog2Det(1.0, mySupStru) <<endl;
-#endif
   delete [] mySupStru;
   return result;
 
@@ -90,3 +91,4 @@ MaxSNRScheduler::CheckFeasible( bool const * const supStru, double txTime2nd)
   }
   return true;
 }
+

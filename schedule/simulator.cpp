@@ -65,5 +65,6 @@ void
 Simulator::Run()
 {
   vector<int> vecSupport;
+  cout << m_ptrSched->PrintSelf() << endl;
   cout << m_ptrSched->ScheduleOneSlot(vecSupport) << endl;
 }

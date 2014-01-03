@@ -14,6 +14,7 @@ class Scheduler
         ClusterStructure const * const);
     virtual ~Scheduler();
     virtual double ScheduleOneSlot( vector<int>& ) = 0;
+    virtual string PrintSelf() = 0;
   private:
 };
 #endif

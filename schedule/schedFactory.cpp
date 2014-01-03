@@ -26,7 +26,7 @@ SchedulerFactory::CreateScheduler( const string& scheduleType)
   }
   if (scheduleType == "Baseline") {
     m_ptrSched = new MaxSNRScheduler(m_txTimePerSlot, m_bandwidthKhz, 
-        m_ptrMap, m_ptrMatComputer, m_ptrCS  ); 
+        m_ptrMap, m_ptrMatComputer, m_ptrCS, "MaxSNR"); 
     return m_ptrSched; 
   }
   else{

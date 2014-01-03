@@ -9,9 +9,11 @@ class MaxSNRScheduler: public Scheduler
         const double bandwidthKhz, 
         Map const * const, 
         CORRE_MA_OPE const * const, 
-        ClusterStructure const * const);
+        ClusterStructure const * const,
+        const string );
     ~MaxSNRScheduler();
     double ScheduleOneSlot( vector<int>& );
+    string PrintSelf(){ return m_type; }
   private:
     bool CheckFeasible( bool const * const supStru, double txTime2nd);
 
@@ -24,6 +26,7 @@ class MaxSNRScheduler: public Scheduler
     ClusterStructure const * const  m_ptrCS;
     CORRE_MA_OPE const * const      m_ptrMatComputer;
     vector<double>                  m_vecNodePower;
+    const string                    m_type;
 
 };
 
