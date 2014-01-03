@@ -1,5 +1,5 @@
-#PREFIX=/home/share
-PREFIX=/opt
+PREFIX=/home/share
+#PREFIX=/opt
 
 CPP=@-g++
 CFLAGS = -O -O1 -O2 -O3 -Wall

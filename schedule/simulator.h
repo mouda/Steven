@@ -8,6 +8,7 @@
 #include "map.h"
 #include "clusterStructure.h"
 #include "scheduler.h"
+#include "CORRE_MA_OPE.h"
 
 using std::string;
 using std::pair;
@@ -26,6 +27,7 @@ class Simulator
   public:
     Simulator();
     Simulator(Map* myMap,ClusterStructure* myCS, Scheduler* myScheduler );
+    Simulator(Map* myMap,ClusterStructure* myCS, Scheduler* myScheduler, CORRE_MA_OPE* myField);
     ~Simulator();
 
     void Run();
@@ -35,6 +37,7 @@ class Simulator
     Map*                m_ptrMap;
     ClusterStructure*   m_ptrCS;
     Scheduler*          m_ptrSched;
+    CORRE_MA_OPE*       m_ptrGaussianField;
     
 
 };

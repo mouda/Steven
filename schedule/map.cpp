@@ -65,11 +65,12 @@ Map::SetChannelByXYPair(const vector<pair<double, double> >& vecPosPair)
 #ifdef DEBUG 
   for (int i = 0; i < m_numNodes; i++) {
     for (int j = 0; j < m_numNodes; j++) {
-      cout << m_matGij[i][j] << ' ';
+      //cout << m_matGij[i][j] << ' ';
+      cout << m_matDistance[i][j] << ' ';
     }
     cout << endl;
   }
-#endif
+#endif 
 }
 
 const vector<vector<double> >&

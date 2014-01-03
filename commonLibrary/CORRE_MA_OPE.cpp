@@ -61,8 +61,8 @@ double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compre
         correlationFac=start;
 
         double tmpCompR=1-(totalNodes*indEntropy+computeLog2Det(1.0, inClu))/(totalNodes*indEntropy);
-        //cout<<"Correlation Factor="<<correlationFac<<"; Compression Ratio="<<tmpCompR<<endl;
-        //cout<<"total Entropy = "<<(totalNodes*indEntropy)<<";redundancy="<<computeLog2Det(1.0, inClu)<<endl;
+        cout<<"Correlation Factor="<<correlationFac<<"; Compression Ratio="<<tmpCompR<<endl;
+        cout<<"total Entropy = "<<(totalNodes*indEntropy)<<";redundancy="<<computeLog2Det(1.0, inClu)<<endl;
         if(tmpCompR>compressionRatio)
             return tmpCompR;
         else
@@ -135,7 +135,9 @@ double CORRE_MA_OPE::eigenCholeskyLogDet( double const * const aryCovariance, co
   for (int i = 0; i < dimSize; ++i) {
     for (int j = 0; j < dimSize; ++j) {
       covMatrix(i,j) = aryCovariance[ i * dimSize + j ];  
+      cout << aryCovariance[i*dimSize +j] << ' ';
     }
+    cout << endl;
   }
   Eigen::MatrixXd TRM( covMatrix.llt().matrixL() );
   double logDet = 0.0;
