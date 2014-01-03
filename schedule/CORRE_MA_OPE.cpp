@@ -64,12 +64,12 @@ double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compre
       inClu[i]=true;
     while(1){
         correlationFac=start;
-
-        double tmpCompR=1-(totalNodes*indEntropy+computeLog2Det(1.0, inClu))/(totalNodes*indEntropy);
-//        cout << "Compression Ration: " << compressionRatio << endl;
-//        cout <<" Correlation Factor: " << correlationFac<<"; Compression Ratio="<<tmpCompR<<endl;
-//        cout << "total Entropy: "<<(totalNodes*indEntropy)<<";redundancy="<<computeLog2Det(1.0, inClu)<<endl;
-        cout << computeLog2Det(1.0,inClu) << endl;
+        double redundancy = computeLog2Det(1.0, inClu);
+        redundancy = computeLog2Det(1.0, inClu);
+        double tmpCompR=1-(totalNodes*indEntropy+redundancy)/(totalNodes*indEntropy);
+        cout << "Compression Ration: " << compressionRatio << endl;
+        cout <<" Correlation Factor: " << correlationFac<<"; Compression Ratio="<<tmpCompR<<endl;
+        cout << "total Entropy: "<<(totalNodes*indEntropy)<<";redundancy="<<redundancy<<endl;
         if(tmpCompR>compressionRatio){
 //          cerr << tmpCompR << endl;
           return tmpCompR;
