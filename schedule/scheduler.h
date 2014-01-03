@@ -13,7 +13,7 @@ class Scheduler
     Scheduler(const double txTime, Map const * const, CORRE_MA_OPE const * const, 
         ClusterStructure const * const);
     virtual ~Scheduler();
-    virtual double ScheduleOneSlot( vector<vector<int> >& ) = 0;
+    virtual double ScheduleOneSlot( vector<int>& ) = 0;
   private:
 };
 #endif

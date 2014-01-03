@@ -68,7 +68,6 @@ CORRE_MA_OPE*
 MapFactory::CreateMatrixComputer()
 {
   m_ptrMatComputer = new CORRE_MA_OPE(m_numNodes, m_corrFactor, m_ptrMap->GetMatDistance());
-  cout << m_numNodes << endl;
   m_ptrMatComputer->returnNSetCorrelationFactorByCompressionRatio(m_corrFactor , m_ptrMap->GetIdtEntropy() ,static_cast<double>(m_numNodes));
   return m_ptrMatComputer;
 }

@@ -19,6 +19,11 @@ CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double inCorrelationFactor, double 
   correlationFac = inCorrelationFactor;
 }
 
+CORRE_MA_OPE::~CORRE_MA_OPE()
+{
+
+}
+
 double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) const
 {
   //m_variance = inVariance;
@@ -40,25 +45,26 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) co
   //-----------------------------------------------
   int matrixLength = covMaSize * covMaSize;
   double *covAry = new double [matrixLength];
+  vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
   //computeCovMa(covAry,covMaSize ,supSet);
-  constComputeCovMa(covAry,covMaSize ,supSet, inVariance);
+  matConstComputeCovMa(covMat, covMaSize ,supSet, inVariance);
 
 //  cout << "new   : " << choleskyLogDet(covAry,covMaSize) << endl;
 //  cout << "arma  : " << armaLogDet(covAry, covMaSize) << endl;
 //  cout << "Eigen : " << eigenCholeskyLogDet(covAry, covMaSize) << endl;
 
-//  return choleskyLogDet(covAry,covMaSize);
 //  return armaLogDet(covAry, covMaSize);
-//
     delete [] covAry;
     delete [] supSet;
-    return eigenCholeskyLogDet(covAry, covMaSize);
+    
+    return matEigenCholeskyLogDet(covMat, covMaSize);
+    //return choleskyLogDet(covAry,covMaSize);
 }
 
 double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int totalNodes)
 {
     double step =100;
-    double start=10;
+    double start=0;
     bool* inClu = new bool [totalNodes];
     for(int i = 0; i < totalNodes; ++i )
       inClu[i]=true;
@@ -67,10 +73,11 @@ double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compre
         double redundancy = computeLog2Det(1.0, inClu);
         redundancy = computeLog2Det(1.0, inClu);
         double tmpCompR=1-(totalNodes*indEntropy+redundancy)/(totalNodes*indEntropy);
-        cout << "Compression Ration: " << compressionRatio << endl;
-        cout <<" Correlation Factor: " << correlationFac<<"; Compression Ratio="<<tmpCompR<<endl;
-        cout << "total Entropy: "<<(totalNodes*indEntropy)<<";redundancy="<<redundancy<<endl;
-        if(tmpCompR>compressionRatio){
+//        cout << "Compression Ration: " << compressionRatio << endl;
+//        cout << "Correlation Factor: " << correlationFac <<  ";Compression Ratio=" << tmpCompR <<endl;
+//        cout << "total Entropy: " << (totalNodes * indEntropy) << ";redundancy=" << redundancy <<endl;
+//        cout << "Ratio: " << endl;
+        if( tmpCompR > compressionRatio ){
 //          cerr << tmpCompR << endl;
           return tmpCompR;
         }
@@ -82,7 +89,7 @@ double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compre
             assert(0);
         }
     }
-    cout << correlationFac << endl;
+//    cout << correlationFac << endl;
 
     delete [] inClu;
 
@@ -125,7 +132,26 @@ void CORRE_MA_OPE::constComputeCovMa(double* covAry,int covMaSize, int* supSet, 
   }
 }
 
-double CORRE_MA_OPE::choleskyLogDet( double const * const aryCovariance, const int& dimSize) 
+void CORRE_MA_OPE::matConstComputeCovMa(vector<vector<double> >& covMat, int covMaSize ,int* supSet, const double inVariance) const
+{
+  for(int i=0;i<covMaSize;i++)
+  {
+    for(int j=0;j<covMaSize;j++)
+    {
+      if( i == j ) {
+        covMat[i][j] = inVariance;
+      }
+      else if( i > j ) {
+        covMat[i][j] = covMat[j][i];
+      }
+      else {
+        covMat[i][j] = inVariance * exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/correlationFac);
+      }
+    }
+  }
+
+}
+double CORRE_MA_OPE::choleskyLogDet( double const * const aryCovariance, const int& dimSize) const  
 {
   boost::numeric::ublas::matrix<double> covMatrix(dimSize,dimSize);
   for (int i = 0; i < dimSize; ++i) {
@@ -166,6 +192,29 @@ double CORRE_MA_OPE::eigenCholeskyLogDet( double const * const aryCovariance, co
   for (int i = 0; i < dimSize; ++i) {
     for (int j = 0; j < dimSize; ++j) {
       covMatrix(i,j) = aryCovariance[ i * dimSize + j ];  
+  //    cout << aryCovariance[i*dimSize +j] << ' ';
+    }
+  //  cout << endl;
+  }
+  Eigen::MatrixXd TRM( covMatrix.llt().matrixL() );
+  double logDet = 0.0;
+  for (int i = 0; i < dimSize; ++i) {
+    for (int j = 0; j < dimSize; ++j) {
+      if (i == j) {
+        logDet += log2(TRM(i,j));
+      }
+    }
+  }
+
+  return 2*logDet;
+}
+
+double CORRE_MA_OPE::matEigenCholeskyLogDet( const vector<vector<double> >& covMat, const int& dimSize) const
+{
+  Eigen::MatrixXd covMatrix(dimSize,dimSize);
+  for (int i = 0; i < dimSize; ++i) {
+    for (int j = 0; j < dimSize; ++j) {
+      covMatrix(i,j) = covMat[ i][ j ];  
   //    cout << aryCovariance[i*dimSize +j] << ' ';
     }
   //  cout << endl;

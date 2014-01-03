@@ -11,7 +11,7 @@ class MaxSNRScheduler: public Scheduler
         CORRE_MA_OPE const * const, 
         ClusterStructure const * const);
     ~MaxSNRScheduler();
-    double ScheduleOneSlot( vector<vector<int> >& );
+    double ScheduleOneSlot( vector<int>& );
   private:
     bool CheckFeasible( bool const * const supStru, double txTime2nd);
 

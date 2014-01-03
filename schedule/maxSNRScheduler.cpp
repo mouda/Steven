@@ -21,7 +21,7 @@ MaxSNRScheduler::~MaxSNRScheduler()
 }
 
 double
-MaxSNRScheduler::ScheduleOneSlot( vector<vector<int> >& matSelec )
+MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
 {
   bool * mySupStru;
   mySupStru = new bool [m_numNodes];
