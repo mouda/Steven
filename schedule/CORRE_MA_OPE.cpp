@@ -58,7 +58,7 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) co
 double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int totalNodes)
 {
     double step =100;
-    double start=0;
+    double start=10;
     bool* inClu = new bool [totalNodes];
     for(int i = 0; i < totalNodes; ++i )
       inClu[i]=true;
@@ -69,6 +69,7 @@ double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compre
 //        cout << "Compression Ration: " << compressionRatio << endl;
 //        cout <<" Correlation Factor: " << correlationFac<<"; Compression Ratio="<<tmpCompR<<endl;
 //        cout << "total Entropy: "<<(totalNodes*indEntropy)<<";redundancy="<<computeLog2Det(1.0, inClu)<<endl;
+        cout << computeLog2Det(1.0,inClu) << endl;
         if(tmpCompR>compressionRatio){
 //          cerr << tmpCompR << endl;
           return tmpCompR;
