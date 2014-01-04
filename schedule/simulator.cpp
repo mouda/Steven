@@ -18,7 +18,6 @@ Simulator::Simulator(Map* myMap, ClusterStructure* myCS,
   m_ptrGaussianField(myField)
 {
   m_vecSupport = new vector<int>(m_ptrMap->GetNumNodes());
-  cout << m_vecSupport->size() << m_ptrMap->GetNumNodes() << endl;
 
 }
 
