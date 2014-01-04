@@ -16,6 +16,7 @@ class MaxSNRScheduler: public Scheduler
     string PrintSelf(){ return m_type; }
   private:
     bool CheckFeasible( bool const * const supStru, double txTime2nd);
+    bool CheckFeasible( const vector<int>& supStru, double txTime2nd);
 
     int                             m_numNodes;
     int                             m_numMaxHeads;

@@ -1,10 +1,11 @@
-CPP= g++-4.5
+#CPP= g++-4.5
+CPP= g++
 #CFLAGS=-O -O1 -O2 -O3
 #CFLAGS= -D ITERATION
 #DFLAGS= -D DEBUG -g
 DFLAGS=-g
-PREFIX=/opt
-#PREFIX=/home/share
+#PREFIX=/opt
+PREFIX=/home/share
 
 SOURCES= main.o \
 	 map.o \

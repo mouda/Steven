@@ -64,7 +64,38 @@ Simulator::SelfCheck()
 void
 Simulator::Run()
 {
-  vector<int> vecSupport;
+  vector<int> vecSupport(m_ptrMap->GetNumNodes());
+  fill(vecSupport.begin(), vecSupport.end(), 0);
   cout << m_ptrSched->PrintSelf() << endl;
   cout << m_ptrSched->ScheduleOneSlot(vecSupport) << endl;
+}
+void 
+Simulator::Run(const int numSlots)
+{
+
+  vector<int> vecSupport(m_ptrMap->GetNumNodes());
+  fill(vecSupport.begin(), vecSupport.end(), 0);
+  for (int i = 0; i < numSlots; ++i) {
+    cout << m_ptrSched->ScheduleOneSlot(vecSupport)<< ' ';
+    cout << toString(vecSupport) << endl;
+  }
+
+}
+
+void
+Simulator::Print( const vector<int>& vec)
+{
+  for (int i = 0; i < vec.size(); ++i) {
+    cout << vec[i] << ' ';
+  }
+}
+
+string
+Simulator::toString( const vector<int>& vec)
+{
+  stringstream ss;
+  for (int i = 0; i < vec.size(); ++i) {
+    ss << vec[i] << ' ';
+  }
+  return ss.str();
 }

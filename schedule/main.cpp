@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
   }
   Simulator mySimulator(myMap, myCS, myScheduler, myMatComputer);
   mySimulator.SelfCheck();
-  mySimulator.Run();
+  mySimulator.Run(10);
   
   return 0;
 }

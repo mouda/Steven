@@ -61,6 +61,30 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) co
     //return choleskyLogDet(covAry,covMaSize);
 }
 
+double CORRE_MA_OPE::computeLog2Det( double inVariance, const vector<int>& vecClusterStru) const
+{
+  int covMaSize = 0;
+  for(int i = 0; i < totalNodes; ++i) {
+    if(vecClusterStru[i] == true) ++covMaSize;
+  }
+  int* supSet= new int [covMaSize];
+  int cursor = 0;
+  for(int i=0;i<totalNodes;i++)
+  {
+    if (vecClusterStru[i]== true )
+    {
+      supSet[cursor]=i;
+      cursor++;
+    }
+  }
+  int matrixLength = covMaSize * covMaSize;
+  vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
+  matConstComputeCovMa(covMat, covMaSize ,supSet, inVariance);
+  delete [] supSet;
+
+  return matEigenCholeskyLogDet(covMat, covMaSize);
+}
+
 double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int totalNodes)
 {
     double step =100;

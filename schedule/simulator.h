@@ -31,9 +31,12 @@ class Simulator
     ~Simulator();
 
     void Run();
+    void Run(const int numSlots);
     bool SelfCheck();
 
   private:
+    void Print(const vector<int>& );
+    string toString( const vector<int>& );
     Map*                m_ptrMap;
     ClusterStructure*   m_ptrCS;
     Scheduler*          m_ptrSched;

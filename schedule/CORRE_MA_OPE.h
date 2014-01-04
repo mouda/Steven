@@ -16,6 +16,7 @@ public:
   double GetVariance() const { return  m_variance;}
   double GetCorrationFactor() const { return correlationFac; }
   double computeLog2Det(double inVariance, bool* inClusterStru ) const;
+  double computeLog2Det(double inVariance, const vector<int>& vecClusterStru) const;
   double returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int totalNodes);
 
 private:
