@@ -13,6 +13,10 @@ MaxSNRScheduler::MaxSNRScheduler( const double txTime,
   m_numNodes = m_ptrMap->GetNumNodes();
   m_numMaxHeads =  m_ptrMap->GetNumInitHeads();
   m_maxPower = m_ptrMap->GetMaxPower();
+  m_vecNodePower.resize(m_numNodes);
+  fill(m_vecNodePower.begin(), m_vecNodePower.end(), m_maxPower);
+  m_vecSched.resize(m_numNodes);
+  fill(m_vecSched.begin(), m_vecSched.end(), 0);
 
 }
 
@@ -35,19 +39,19 @@ MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
     int maxRxPowerNode = -1;
     for (int j = 0; j < m_numNodes; j++) {
       if (m_ptrCS->GetChNameByName(j) == j ) continue; 
-      if (m_ptrCS->GetChIdxByName(j) == i ) {
-        if (vecSupport[j] == 1) {
-          vecSupport[j] = 0;
-          continue;
-        }
+      if (m_ptrCS->GetChIdxByName(j) == i && m_vecSched[j] == 0 ) {
         if (m_ptrMap->GetGijByPair(headName,j) * m_maxPower > maxRxPower) {
           maxRxPower = m_ptrMap->GetGijByPair(headName,j) * m_maxPower; 
           maxRxPowerNode = j;
         }
       }
     }
-//    mySupStru[maxRxPowerNode] = true; 
-    vecSupport[maxRxPowerNode] = 1;
+    if (maxRxPowerNode >= 0) {
+      /* code */
+      m_vecSched.at(maxRxPowerNode) = 1;
+      vecSupport.at(maxRxPowerNode) = 1;
+      //    mySupStru[maxRxPowerNode] = true; 
+    }
 
   }
 
@@ -58,6 +62,7 @@ MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
       if (vecSupport[i] == 1) {
 //        mySupStru[i] = false;
         vecSupport[i] = 0;
+        m_vecSched[i] = 0;
         break;
       }
     }

@@ -17,6 +17,8 @@ Simulator::Simulator(Map* myMap, ClusterStructure* myCS,
   m_ptrMap(myMap), m_ptrCS(myCS), m_ptrSched(myScheduler),
   m_ptrGaussianField(myField)
 {
+  m_vecSupport = new vector<int>(m_ptrMap->GetNumNodes());
+  cout << m_vecSupport->size() << m_ptrMap->GetNumNodes() << endl;
 
 }
 
@@ -73,13 +75,12 @@ void
 Simulator::Run(const int numSlots)
 {
 
-  vector<int> vecSupport(m_ptrMap->GetNumNodes());
-  fill(vecSupport.begin(), vecSupport.end(), 0);
+  fill(m_vecSupport->begin(), m_vecSupport->end(), 0);
   for (int i = 0; i < numSlots; ++i) {
-    cout << m_ptrSched->ScheduleOneSlot(vecSupport)<< ' ';
-    cout << toString(vecSupport) << endl;
+    fill(m_vecSupport->begin(), m_vecSupport->end(), 0);
+    cout <<"Entropy: " << setw(8) <<m_ptrSched->ScheduleOneSlot(*m_vecSupport)<< ' ';
+    cout <<"Solution: " << toString(*m_vecSupport) << endl;
   }
-
 }
 
 void

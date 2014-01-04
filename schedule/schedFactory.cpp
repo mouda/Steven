@@ -7,14 +7,16 @@ SchedulerFactory::SchedulerFactory(const double txTime,
   ClusterStructure const * const ptrCS): 
   m_txTimePerSlot(txTime), m_bandwidthKhz(bandwidthKhz),
   m_ptrMap(ptrMap), m_maxPower(0),
-  m_ptrCS(ptrCS), m_ptrMatComputer(ptrMatComputer)
+  m_ptrCS(ptrCS), m_ptrMatComputer(ptrMatComputer),m_ptrSched(0)
 {
 
 }
 
 SchedulerFactory::~SchedulerFactory()
 {
-
+  if (m_ptrSched != 0) {
+    delete m_ptrSched;
+  }
 }
 
 

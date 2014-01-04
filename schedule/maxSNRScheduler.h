@@ -1,6 +1,8 @@
 #ifndef _MAXSNRSCHEDULER_
 #define _MAXSNRSCHEDULER_ 
 #include "scheduler.h"
+#include <vector>
+using std::vector;
 
 class MaxSNRScheduler: public Scheduler
 {
@@ -26,6 +28,7 @@ class MaxSNRScheduler: public Scheduler
     ClusterStructure const * const  m_ptrCS;
     CORRE_MA_OPE const * const      m_ptrMatComputer;
     vector<double>                  m_vecNodePower;
+    vector<int>                     m_vecSched;
     const string                    m_type;
 
 };

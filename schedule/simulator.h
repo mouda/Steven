@@ -8,6 +8,7 @@
 #include "map.h"
 #include "clusterStructure.h"
 #include "scheduler.h"
+#include "maxSNRScheduler.h"
 #include "CORRE_MA_OPE.h"
 
 using std::string;
@@ -41,6 +42,7 @@ class Simulator
     ClusterStructure*   m_ptrCS;
     Scheduler*          m_ptrSched;
     CORRE_MA_OPE*       m_ptrGaussianField;
+    vector<int>*         m_vecSupport;
     
 
 };

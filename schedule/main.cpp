@@ -9,6 +9,7 @@
 #include "clusterStructure.h"
 #include "csFactory.h"
 #include "scheduler.h"
+#include "maxSNRScheduler.h"
 #include "schedFactory.h"
 #include "simulator.h"
 
@@ -84,10 +85,10 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  SchedulerFactory mySchedFactory(0.01, bandwidthKhz, myMap, myMatComputer, myCS);
+  SchedulerFactory mySchedFactory(0.05, bandwidthKhz, myMap, myMatComputer, myCS);
   Scheduler* myScheduler = 0;
-  //myScheduler = mySchedFactory.CreateScheduler("Baseline");
-  myScheduler = mySchedFactory.CreateScheduler("Branchbound");
+  myScheduler = mySchedFactory.CreateScheduler("Baseline");
+  //myScheduler = mySchedFactory.CreateScheduler("Branchbound");
   if (!myScheduler) {
     cerr << "Error: Failed to initialize scheduler" << endl;
     return 1;
