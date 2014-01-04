@@ -9,8 +9,7 @@ class MaxSNRScheduler: public Scheduler
         const double bandwidthKhz, 
         Map const * const, 
         CORRE_MA_OPE const * const, 
-        ClusterStructure const * const,
-        const string );
+        ClusterStructure const * const);
     ~MaxSNRScheduler();
     double ScheduleOneSlot( vector<int>& );
     string PrintSelf(){ return m_type; }

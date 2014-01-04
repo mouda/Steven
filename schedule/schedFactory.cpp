@@ -26,7 +26,12 @@ SchedulerFactory::CreateScheduler( const string& scheduleType)
   }
   if (scheduleType == "Baseline") {
     m_ptrSched = new MaxSNRScheduler(m_txTimePerSlot, m_bandwidthKhz, 
-        m_ptrMap, m_ptrMatComputer, m_ptrCS, "MaxSNR"); 
+        m_ptrMap, m_ptrMatComputer, m_ptrCS); 
+    return m_ptrSched; 
+  }
+  if (scheduleType == "Branchbound") {
+    m_ptrSched = new BranchBoundScheduler(m_txTimePerSlot, m_bandwidthKhz, 
+        m_ptrMap, m_ptrMatComputer, m_ptrCS); 
     return m_ptrSched; 
   }
   else{

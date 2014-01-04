@@ -4,12 +4,11 @@ MaxSNRScheduler::MaxSNRScheduler( const double txTime,
     const double bandwidthKhz, 
     Map const * const ptrMap, 
     CORRE_MA_OPE const * const ptrMatComputer, 
-    ClusterStructure const * const ptrCS,
-    const string type): 
+    ClusterStructure const * const ptrCS): 
     m_txTimePerSlot(txTime), m_bandwidthKhz(bandwidthKhz),
     m_ptrMap(ptrMap), 
     m_ptrCS(ptrCS), m_ptrMatComputer(ptrMatComputer),
-    m_type(type)
+    m_type("MaxSNR")
 {
   m_numNodes = m_ptrMap->GetNumNodes();
   m_numMaxHeads =  m_ptrMap->GetNumInitHeads();
