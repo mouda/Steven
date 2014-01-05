@@ -32,7 +32,8 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
   for (int i = 0; i < m_numMaxHeads; ++i) {
     for (int j = 0; j < m_numNodes; ++j) {
      if (i != m_ptrCS->GetChIdxByName(j)) {
-       m_B(i,j) = (exponent-1)*m_maxPower*m_ptrMap->GetGijByPair(m_ptrCS->GetVecHeadName()[i],j);
+       m_B(i,j) = (exponent-1) * m_maxPower * 
+         m_ptrMap->GetGijByPair(m_ptrCS->GetVecHeadName()[i],j);
      }  
     }
   }
