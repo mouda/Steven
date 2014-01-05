@@ -67,8 +67,8 @@ Simulator::Run()
 {
   vector<int> vecSupport(m_ptrMap->GetNumNodes());
   fill(vecSupport.begin(), vecSupport.end(), 0);
-  cout << m_ptrSched->PrintSelf() << endl;
-  cout << m_ptrSched->ScheduleOneSlot(vecSupport) << endl;
+//  cout << m_ptrSched->PrintSelf() << endl;
+//  cout << m_ptrSched->ScheduleOneSlot(vecSupport) << endl;
 }
 void 
 Simulator::Run(const int numSlots)

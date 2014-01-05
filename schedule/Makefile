@@ -17,6 +17,7 @@ SOURCES= main.o \
 	 csFactory.o \
 	 utility.o \
 	 scheduler.o \
+	 MyNLP.o \
 	 branchBoundScheduler.o \
 	 maxSNRScheduler.o \
 	 schedFactory.o \
@@ -25,12 +26,14 @@ OBJECTS=$(SOURCES:.cpp=.o)
 
 INCLUDE_PATH=-I$(PREFIX)/boost1550/include \
 	     -I$(PREFIX)/armadillo39202/include \
-	     -I$(PREFIX)/eigen320/include
+	     -I$(PREFIX)/eigen320/include\
+	     -I$(PREFIX)/CoinIpopt3117/include
 
 LIB_PATH=-L$(PREFIX)/boost1550/lib \
 	 -L$(PREFIX)/armadillo39202/lib \
 	 -L$(PREFIX)/openblas/lib \
-	 -L$(PREFIX)/lpack342/lib 
+	 -L$(PREFIX)/lpack342/lib \
+	 -L$(PREFIX)/CoinIpopt3117/lib
 
 LIB_FLAGS=-larmadillo \
 	  -lopenblas \
@@ -40,7 +43,14 @@ LIB_FLAGS=-larmadillo \
 	  -lboost_filesystem\
 	  -lboost_filesystem-mt\
 	  -lboost_math_c99 \
-	  -lboost_math_tr1 
+	  -lboost_math_tr1 \
+	  -ldl\
+	  -lcoinhsl\
+	  -lcoinmumps\
+	  -lcoinmetis\
+	  -lcoinblas\
+	  -lcoinlapack\
+	  -lipopt
 
 all: simulator 
 
