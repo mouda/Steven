@@ -2,7 +2,6 @@
 #define _MAXSNRSCHEDULER_ 
 #include "scheduler.h"
 #include <vector>
-using std::vector;
 
 class MaxSNRScheduler: public Scheduler
 {
@@ -13,11 +12,11 @@ class MaxSNRScheduler: public Scheduler
         CORRE_MA_OPE const * const, 
         ClusterStructure const * const);
     ~MaxSNRScheduler();
-    double ScheduleOneSlot( vector<int>& );
+    double ScheduleOneSlot( std::vector<int>& );
     string PrintSelf(){ return m_type; }
   private:
     bool CheckFeasible( bool const * const supStru, double txTime2nd);
-    bool CheckFeasible( const vector<int>& supStru, double txTime2nd);
+    bool CheckFeasible( const std::vector<int>& supStru, double txTime2nd);
 
     int                             m_numNodes;
     int                             m_numMaxHeads;
@@ -27,8 +26,8 @@ class MaxSNRScheduler: public Scheduler
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;
     CORRE_MA_OPE const * const      m_ptrMatComputer;
-    vector<double>                  m_vecNodePower;
-    vector<int>                     m_vecSched;
+    std::vector<double>                  m_vecNodePower;
+    std::vector<int>                     m_vecSched;
     const string                    m_type;
 
 };

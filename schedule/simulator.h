@@ -36,13 +36,13 @@ class Simulator
     bool SelfCheck();
 
   private:
-    void Print(const vector<int>& );
-    string toString( const vector<int>& );
+    void Print(const std::vector<int>& );
+    string toString( const std::vector<int>& );
     Map*                m_ptrMap;
     ClusterStructure*   m_ptrCS;
     Scheduler*          m_ptrSched;
     CORRE_MA_OPE*       m_ptrGaussianField;
-    vector<int>*         m_vecSupport;
+    std::vector<int>*         m_vecSupport;
     
 
 };

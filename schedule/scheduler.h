@@ -5,7 +5,6 @@
 #include "CORRE_MA_OPE.h"
 #include "clusterStructure.h"
 
-using std::vector;
 class Scheduler
 {
   public:
@@ -13,8 +12,8 @@ class Scheduler
     Scheduler(const double txTime, Map const * const, CORRE_MA_OPE const * const, 
         ClusterStructure const * const);
     virtual ~Scheduler();
-    virtual double ScheduleOneSlot(vector<int>& ) = 0;
-    virtual string PrintSelf() = 0;
+    virtual double ScheduleOneSlot(std::vector<int>& solution) = 0;
+    virtual std::string PrintSelf() = 0;
   private:
 };
 #endif

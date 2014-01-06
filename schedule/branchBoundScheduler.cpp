@@ -1,5 +1,6 @@
 #include "branchBoundScheduler.h"
 
+using Ipopt::Index;
 BranchBoundScheduler::BranchBoundScheduler( const double txTime, 
     const double bandwidthKhz, 
     Map const * const ptrMap, 
@@ -18,6 +19,7 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
   m_B = Eigen::MatrixXd::Zero(m_numMaxHeads, m_numNodes); 
   m_C = Eigen::MatrixXd::Zero(m_numMaxHeads, m_numNodes);
   m_X = Eigen::MatrixXd::Zero(m_numMaxHeads, m_numNodes);
+  cout << "================ m_A ================" << endl;
   for (int i = 0; i < m_numMaxHeads; ++i) {
     for (int j = 0; j < m_numNodes; ++j) {
      if (i == m_ptrCS->GetChIdxByName(j)) {
@@ -25,7 +27,6 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
      }  
     }
   }
-  cout << "================ m_A ================" << endl;
   cout << m_A.format(CleanFmt) << endl;
   cout << "================ m_B ================" << endl;
   double exponent = pow(2.0,m_ptrMap->GetIdtEntropy()/m_bandwidthKhz/m_txTimePerSlot);
@@ -39,8 +40,34 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
   }
   cout << m_B.format(CleanFmt) << endl;
   cout << "================ m_C ================" << endl;
-  
+  for (int i = 0; i < m_numMaxHeads; ++i) {
+    for (int j = 0; j < m_numNodes; ++j) {
+      if (i == m_ptrCS->GetChIdxByName(j)) {
+        int headName = m_ptrCS->GetVecHeadName()[i];
+        m_C(i,j) = m_maxPower * m_ptrMap->GetGijByPair(headName,j) - (exponent -1)*m_bandwidthKhz * m_ptrMap->GetNoise() - OmegaValue(j) ;
+      }
+    }
+  }
+  cout << m_C.format(CleanFmt) << endl;
 
+  cout << "================ m_A + m_B-m_C ================" << endl;
+  Eigen::MatrixXd tmp = m_A+m_B-m_C;
+
+  cout << tmp.format(CleanFmt) << endl;
+  
+  cout << "Varince: " << m_ptrMatComputer->GetCorrationFactor() << endl;
+  double corrFactor = m_ptrMatComputer->GetCorrationFactor();
+  double variance = 1.0;
+  m_Signma = Eigen::MatrixXd::Zero(m_numNodes, m_numNodes);
+  for (int i = 0; i < m_numNodes; ++i) {
+    for (int j = 0; j < m_numNodes; ++j) {
+      m_Signma(i,j) = variance * exp(-1*(m_ptrMatComputer->GetDijSQByPair(i,j))/corrFactor) ;
+    }
+  }
+//  cout << TRM.diagonal().format(CleanFmt) << endl;
+//  cout << m_Signma.format(CleanFmt) << endl;
+//  cout << 2*log2(TRM.determinant()) << endl;
+//  cout << log2(m_Signma.determinant()) << endl;
 }
 
 BranchBoundScheduler::~BranchBoundScheduler()
@@ -49,11 +76,61 @@ BranchBoundScheduler::~BranchBoundScheduler()
 }
 
 double
-BranchBoundScheduler::ScheduleOneSlot( vector<int>& vecSupport )
+BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 {
-  SmartPtr<TNLP> mynlp = new MyNLP(m_numNodes*m_numMaxHeads, m_numMaxHeads, 
-      m_numNodes*m_numMaxHeads, m_numNodes*(m_numNodes-1)/2 );
-  SmartPtr<IpoptApplication> app = IpoptApplicationFactory();
+  Index numVariables = m_numNodes;
+  Index numConstraints = m_numMaxHeads;
+  Index numNz_jac_g = m_numMaxHeads * m_numNodes;
+  Index numNz_h_lag = 0;
+//  Index numVariables = 4;
+//  Index numConstraints = 3;
+//  Index numNz_jac_g = 7;
+//  Index numNz_h_lag = 2;
+  Eigen::MatrixXd TRM( m_Signma.llt().matrixL() );
+  Eigen::MatrixXd vecDia = TRM.diagonal();
+  for (int i = 0; i < vecDia.rows(); ++i) {
+    cout << vecDia(i) << endl;
+  }
+
+
+  SmartPtr<TMINLP> tminlp = 
+    new MyTMINLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag);
+  FILE * fp = fopen("log.out","w");
+  CoinMessageHandler handler(fp);
+  BonminSetup bonmin(&handler);
+  bonmin.initializeOptionsAndJournalist();
+  // Here we can change the default value of some Bonmin or Ipopt option
+  bonmin.options()->SetNumericValue("bonmin.time_limit", 5); //changes bonmin's time limit
+  bonmin.options()->SetStringValue("mu_oracle","loqo");
+  //Here we read several option files
+  bonmin.readOptionsFile("Mybonmin.opt");
+  bonmin.readOptionsFile();// This reads the default file "bonmin.opt"
+  // Options can also be set by using a string with a format similar to the bonmin.opt file
+  bonmin.readOptionsString("bonmin.algorithm B-BB\n");
+
+  //Now initialize from tminlp
+  bonmin.initialize(GetRawPtr(tminlp));
+
+  //Set up done, now let's branch and bound
+  try {
+    Bab bb;
+    bb(bonmin);//process parameter file using Ipopt and do branch and bound using Cbc
+  }
+  catch(TNLPSolver::UnsolvedError *E) {
+    //There has been a failure to solve a problem with Ipopt.
+    std::cerr<<"Ipopt has failed to solve a problem"<<std::endl;
+  }
+  catch(OsiTMINLPInterface::SimpleError &E) {
+    std::cerr<<E.className()<<"::"<<E.methodName()
+	     <<std::endl
+	     <<E.message()<<std::endl;
+  }
+  catch(CoinError &E) {
+    std::cerr<<E.className()<<"::"<<E.methodName()
+	     <<std::endl
+	     <<E.message()<<std::endl;
+  }
+
   return 0.0;
 }
 

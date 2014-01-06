@@ -1,13 +1,29 @@
 #ifndef _BBSECHEDULER_
 #define _BBSECHEDULER_ 
-#include "scheduler.h"
 #include <eigen3/Eigen/Core>
-#include <coin/IpIpoptApplication.hpp>
-#include <coin/IpSolveStatistics.hpp>
-#include "MyNLP.h"
+#include <eigen3/Eigen/Cholesky>
+#include <eigen3/Eigen/LU>
+//#include <coin/IpIpoptApplication.hpp>
+//#include <coin/IpSolveStatistics.hpp>
+#include <coin/CoinPragma.hpp>
+#include <coin/CoinTime.hpp>
+#include <coin/CoinError.hpp>
+
+#include <coin/BonOsiTMINLPInterface.hpp>
+#include <coin/BonIpoptSolver.hpp>
+#include <coin/BonCbc.hpp>
+#include <coin/BonBonminSetup.hpp>
+
+#include <coin/BonOACutGenerator2.hpp>
+#include <coin/BonEcpCuts.hpp>
+#include <coin/BonOaNlpOptim.hpp>
+
+#include <vector>
+#include <cmath>
+#include "scheduler.h"
+#include "MyTMINLP.hpp"
 
 
-using namespace Ipopt;
 
 class BranchBoundScheduler: public Scheduler
 {
@@ -18,7 +34,7 @@ class BranchBoundScheduler: public Scheduler
         CORRE_MA_OPE const * const, 
         ClusterStructure const * const);
     ~BranchBoundScheduler();
-    double ScheduleOneSlot( vector<int>& );
+    double ScheduleOneSlot( std::vector<int>& );
     string PrintSelf(){ return m_type; }
   private:
     double OmegaValue( const int nodeName );
@@ -30,14 +46,14 @@ class BranchBoundScheduler: public Scheduler
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;
     CORRE_MA_OPE const * const      m_ptrMatComputer;
-    vector<double>                  m_vecNodePower;
+    std::vector<double>                  m_vecNodePower;
     const string                    m_type;
-    SmartPtr<TNLP>                  m_nlp;
-    SmartPtr<IpoptApplication>      m_nlpApp;
+    Ipopt::SmartPtr<Bonmin::TMINLP>                  m_nlp;
     Eigen::MatrixXd                 m_A;
     Eigen::MatrixXd                 m_B;
     Eigen::MatrixXd                 m_C;
     Eigen::MatrixXd                 m_X;
+    Eigen::MatrixXd                 m_Signma;
 
 };
 #endif
