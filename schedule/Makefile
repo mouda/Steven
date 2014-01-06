@@ -4,8 +4,8 @@ CPP= g++
 #CFLAGS= -D ITERATION
 #DFLAGS= -D DEBUG -g
 DFLAGS=-g
-#PREFIX=/opt
-PREFIX=/home/share
+PREFIX=/opt
+#PREFIX=/home/share
 
 SOURCES= main.o \
 	 map.o \
@@ -47,9 +47,9 @@ LIB_FLAGS=-larmadillo \
 	  -lboost_math_c99 \
 	  -lboost_math_tr1 \
 	  -lipopt\
-	  -ldl\
-	  -lz\
-	  -lbz2\
+	  -lbonmin\
+	  -lbonminampl\
+	  -lipoptamplinterface\
 	  -lCbc\
 	  -lCbcSolver\
 	  -lCgl\
@@ -65,9 +65,9 @@ LIB_FLAGS=-larmadillo \
 	  -lcoinmetis\
 	  -lcoinblas\
 	  -lcoinlapack\
-	  -lbonmin\
-	  -lbonminampl\
-	  -lipoptamplinterface
+	  -lz\
+	  -lbz2\
+	  -ldl
 
 all: simulator 
 
