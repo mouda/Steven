@@ -64,10 +64,6 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
       m_Signma(i,j) = variance * exp(-1*(m_ptrMatComputer->GetDijSQByPair(i,j))/corrFactor) ;
     }
   }
-//  cout << TRM.diagonal().format(CleanFmt) << endl;
-//  cout << m_Signma.format(CleanFmt) << endl;
-//  cout << 2*log2(TRM.determinant()) << endl;
-//  cout << log2(m_Signma.determinant()) << endl;
 }
 
 BranchBoundScheduler::~BranchBoundScheduler()
@@ -82,10 +78,7 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
   Index numConstraints = m_numMaxHeads;
   Index numNz_jac_g = m_numMaxHeads * m_numNodes;
   Index numNz_h_lag = 0;
-//  Index numVariables = 4;
-//  Index numConstraints = 3;
-//  Index numNz_jac_g = 7;
-//  Index numNz_h_lag = 2;
+
   Eigen::MatrixXd TRM( m_Signma.llt().matrixL() );
   Eigen::MatrixXd vecDia = TRM.diagonal();
   for (int i = 0; i < vecDia.rows(); ++i) {

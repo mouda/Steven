@@ -25,11 +25,7 @@ MyTMINLP::MyTMINLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag)
 bool 
 MyTMINLP::get_variables_types(Index n, VariableType* var_types)
 {
-//  var_types[0] = BINARY;
-//  var_types[1] = CONTINUOUS;
-//  var_types[2] = CONTINUOUS;
-//  var_types[3] = INTEGER;
-  cout << "=============================================== here get_variables_types ======================="<<endl;
+//  cout << "=============================================== here get_variables_types ======================="<<endl;
   for (int i = 0; i < m_numVariables; ++i) {
     var_types[0] = BINARY;
   }
@@ -40,11 +36,7 @@ MyTMINLP::get_variables_types(Index n, VariableType* var_types)
 bool 
 MyTMINLP::get_variables_linearity(Index n, Ipopt::TNLP::LinearityType* var_types)
 {
-  cout << "=============================================== here get_variables_linearity ======================="<<endl;
-//  var_types[0] = Ipopt::TNLP::LINEAR;
-//  var_types[1] = Ipopt::TNLP::NON_LINEAR;
-//  var_types[2] = Ipopt::TNLP::NON_LINEAR;
-//  var_types[3] = Ipopt::TNLP::LINEAR;
+//  cout << "=============================================== here get_variables_linearity ======================="<<endl;
   for (int i = 0; i < m_numVariables; ++i) {
     var_types[i] = Ipopt::TNLP::LINEAR;
   }
@@ -55,11 +47,8 @@ MyTMINLP::get_variables_linearity(Index n, Ipopt::TNLP::LinearityType* var_types
 bool 
 MyTMINLP::get_constraints_linearity(Index m, Ipopt::TNLP::LinearityType* const_types)
 {
-  cout << "=============================================== here get_constraints_linearity ======================="<<endl;
+//  cout << "=============================================== here get_constraints_linearity ======================="<<endl;
   assert (m==m_numConstraints);
-//  const_types[0] = Ipopt::TNLP::NON_LINEAR;
-//  const_types[1] = Ipopt::TNLP::LINEAR;
-//  const_types[2] = Ipopt::TNLP::LINEAR;
   for (int i = 0; i < m_numConstraints; ++i) {
     const_types[i] = Ipopt::TNLP::LINEAR;
   }
@@ -69,7 +58,7 @@ bool
 MyTMINLP::get_nlp_info(Index& n, Index&m, Index& nnz_jac_g,
                        Index& nnz_h_lag, TNLP::IndexStyleEnum& index_style)
 {
-  cout << "=============================================== here get_nlp_info ======================="<<endl;
+//  cout << "=============================================== here get_nlp_info ======================="<<endl;
   n = m_numVariables;//number of variable
   m = m_numConstraints;//number of constraints
   nnz_jac_g = m_numNz_jac_g;//number of non zeroes in Jacobian
@@ -84,7 +73,7 @@ MyTMINLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
 {
   assert(n==m_numVariables);
   assert(m==m_numConstraints);
-  cout << "=============================================== here get_bounds_info ======================="<<endl;
+//  cout << "=============================================== here get_bounds_info ======================="<<endl;
   for (int i = 0; i < m_numVariables; ++i) {
     x_l[i] = 0.;
     x_u[i] = 1.;
@@ -105,7 +94,7 @@ MyTMINLP::get_starting_point(Index n, bool init_x, Number* x,
 {
   assert(n==m_numVariables);
   assert(m==m_numConstraints);
-  cout << "=============================================== here get_starting_point ======================="<<endl;
+//  cout << "=============================================== here get_starting_point ======================="<<endl;
 
   
   assert(init_x);
@@ -155,16 +144,15 @@ MyTMINLP::eval_jac_g(Index n, const Number* x, bool new_x,
 {
   assert(n==m_numVariables);
   assert(nnz_jac == m_numNz_jac_g);
-  cout << "=============================================== here eval_jac_g ======================="<<endl;
+//  cout << "=============================================== here eval_jac_g ======================="<<endl;
   if(values == NULL) {
-    cout << m_numNz_jac_g << endl;
     for (int i = 0; i < m_numVariables; ++i) {
       for (int j = 0; j < m_numConstraints; ++j) {
         iRow[i*m_numConstraints+j] = j+1; 
         jCol[i*m_numConstraints+j] = i+1; 
-        cout << '(' << i*m_numConstraints+j <<"):" << iRow[i*m_numConstraints+j] << ',' <<jCol[i*m_numConstraints+j] << ' ';
+//        cout << '(' << i*m_numConstraints+j <<"):" << iRow[i*m_numConstraints+j] << ',' <<jCol[i*m_numConstraints+j] << ' ';
       }
-      cout << endl;
+//      cout << endl;
     }
     return true;
   }
