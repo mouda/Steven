@@ -9,7 +9,11 @@
 #ifndef MyTNLP_HPP
 #define MyTNLP_HPP
 #include <coin/BonTMINLP.hpp>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Cholesky>
+#include <eigen3/Eigen/LU>
 #include <vector>
+#include "clusterStructure.h"
 using namespace  Ipopt;
 using namespace Bonmin;
 /** A C++ example for interfacing an MINLP with bonmin.
@@ -31,7 +35,9 @@ class MyTMINLP : public TMINLP
 public:
   /// Default constructor.
   MyTMINLP():printSol_(false){}
-  MyTMINLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag);
+  MyTMINLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
+      const Eigen::MatrixXd& m_Signma, const Eigen::MatrixXd m_Constriants,
+      const ClusterStructure* ptrCS);
   
   /// virtual destructor.
   virtual ~MyTMINLP(){}
@@ -180,6 +186,10 @@ public:
     Index             m_numNz_jac_g;
     Index             m_numNz_h_lag;
     TNLP::IndexStyleEnum  m_index_style;
+    Eigen::MatrixXd   m_Signma;
+    Eigen::MatrixXd   m_Constriants;
+    Eigen::MatrixXd   m_matI;
+    const ClusterStructure* m_ptrCS;
 };
 
 #endif

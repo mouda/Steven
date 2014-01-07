@@ -74,9 +74,10 @@ BranchBoundScheduler::~BranchBoundScheduler()
 double
 BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 {
+  Eigen::IOFormat CleanFmt(2, 0, " ", "\n", "", ";");
   Index numVariables = m_numNodes;
-  Index numConstraints = m_numMaxHeads;
-  Index numNz_jac_g = m_numMaxHeads * m_numNodes;
+  Index numConstraints = 2*m_numMaxHeads;
+  Index numNz_jac_g = 2*m_numMaxHeads * m_numNodes;
   Index numNz_h_lag = 0;
 
   Eigen::MatrixXd TRM( m_Signma.llt().matrixL() );
@@ -84,10 +85,15 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
   for (int i = 0; i < vecDia.rows(); ++i) {
     cout << vecDia(i) << endl;
   }
+  Eigen::MatrixXd matI = Eigen::MatrixXd::Identity(m_numNodes, m_numNodes);
+  cout << log(((matI*0.00000001)+m_Signma).determinant()) << endl;
+  cout << log(m_Signma.determinant()) << endl;
+  cout << m_Signma.format(CleanFmt) << endl;
 
 
   SmartPtr<TMINLP> tminlp = 
-    new MyTMINLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag);
+    new MyTMINLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag, m_Signma,
+        (m_A+m_B-m_C), m_ptrCS);
   FILE * fp = fopen("log.out","w");
   CoinMessageHandler handler(fp);
   BonminSetup bonmin(&handler);
@@ -99,7 +105,7 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
   bonmin.readOptionsFile("Mybonmin.opt");
   bonmin.readOptionsFile();// This reads the default file "bonmin.opt"
   // Options can also be set by using a string with a format similar to the bonmin.opt file
-  bonmin.readOptionsString("bonmin.algorithm B-BB\n");
+  bonmin.readOptionsString("bonmin.algorithm B-QG\n");
 
   //Now initialize from tminlp
   bonmin.initialize(GetRawPtr(tminlp));
