@@ -19,7 +19,6 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
   m_B = Eigen::MatrixXd::Zero(m_numMaxHeads, m_numNodes); 
   m_C = Eigen::MatrixXd::Zero(m_numMaxHeads, m_numNodes);
   m_X = Eigen::MatrixXd::Zero(m_numMaxHeads, m_numNodes);
-  cout << "================ m_A ================" << endl;
   for (int i = 0; i < m_numMaxHeads; ++i) {
     for (int j = 0; j < m_numNodes; ++j) {
      if (i == m_ptrCS->GetChIdxByName(j)) {
@@ -27,8 +26,6 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
      }  
     }
   }
-  cout << m_A.format(CleanFmt) << endl;
-  cout << "================ m_B ================" << endl;
   double exponent = pow(2.0,m_ptrMap->GetIdtEntropy()/m_bandwidthKhz/m_txTimePerSlot);
   for (int i = 0; i < m_numMaxHeads; ++i) {
     for (int j = 0; j < m_numNodes; ++j) {
@@ -38,8 +35,6 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
      }  
     }
   }
-  cout << m_B.format(CleanFmt) << endl;
-  cout << "================ m_C ================" << endl;
   for (int i = 0; i < m_numMaxHeads; ++i) {
     for (int j = 0; j < m_numNodes; ++j) {
       if (i == m_ptrCS->GetChIdxByName(j)) {
@@ -48,14 +43,20 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
       }
     }
   }
+#ifdef DEBUG 
+  cout << "================ m_A ================" << endl;
+  cout << m_A.format(CleanFmt) << endl;
+  cout << "================ m_B ================" << endl;
+  cout << m_B.format(CleanFmt) << endl;
+  cout << "================ m_C ================" << endl;
   cout << m_C.format(CleanFmt) << endl;
-
   cout << "================ m_A + m_B-m_C ================" << endl;
-  Eigen::MatrixXd tmp = m_A+m_B-m_C;
-
   cout << tmp.format(CleanFmt) << endl;
-  
   cout << "Varince: " << m_ptrMatComputer->GetCorrationFactor() << endl;
+#endif
+
+  Eigen::MatrixXd tmp = m_A+m_B-m_C;
+  
   double corrFactor = m_ptrMatComputer->GetCorrationFactor();
   double variance = 1.0;
   m_Signma = Eigen::MatrixXd::Zero(m_numNodes, m_numNodes);
@@ -82,18 +83,11 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 
   Eigen::MatrixXd TRM( m_Signma.llt().matrixL() );
   Eigen::MatrixXd vecDia = TRM.diagonal();
-  for (int i = 0; i < vecDia.rows(); ++i) {
-    cout << vecDia(i) << endl;
-  }
   Eigen::MatrixXd matI = Eigen::MatrixXd::Identity(m_numNodes, m_numNodes);
-  cout << log(((matI*0.00000001)+m_Signma).determinant()) << endl;
-  cout << log(m_Signma.determinant()) << endl;
-  cout << m_Signma.format(CleanFmt) << endl;
-
 
   SmartPtr<TMINLP> tminlp = 
     new MyTMINLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag, m_Signma,
-        (m_A+m_B-m_C), m_ptrCS);
+        (m_A+m_B-m_C), m_ptrCS, m_ptrMap);
   FILE * fp = fopen("log.out","w");
   CoinMessageHandler handler(fp);
   BonminSetup bonmin(&handler);
@@ -109,7 +103,6 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 
   //Now initialize from tminlp
   bonmin.initialize(GetRawPtr(tminlp));
-
   //Set up done, now let's branch and bound
   try {
     Bab bb;
@@ -129,8 +122,17 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 	     <<std::endl
 	     <<E.message()<<std::endl;
   }
+  MyTMINLP* rawPtr = dynamic_cast<MyTMINLP*>(GetRawPtr(tminlp));
 
-  return 0.0;
+  vecSupport.assign(rawPtr->GetVecSolution().begin(), rawPtr->GetVecSolution().end());
+  int activeNodes = 0;
+  for (int i = 0; i < m_numNodes; i++) {
+    if (vecSupport[i] == 1) ++activeNodes;
+  }
+
+  double result = activeNodes * m_ptrMap->GetIdtEntropy() + m_ptrMatComputer->computeLog2Det(1.0, vecSupport);
+
+  return result;
 }
 
 double

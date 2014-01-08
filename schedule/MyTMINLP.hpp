@@ -14,21 +14,9 @@
 #include <eigen3/Eigen/LU>
 #include <vector>
 #include "clusterStructure.h"
+#include "map.h"
 using namespace  Ipopt;
 using namespace Bonmin;
-/** A C++ example for interfacing an MINLP with bonmin.
-   * This class implements the following NLP :
-  * \f[ 
-    \begin{array}{l}
-    \min - x_0 - x_1 - x_2 \\ 
-    \mbox{s.t}\\
-    (x_1 - \frac{1}{2})^2 + (x_2 - \frac{1}{2})^2 \leq \frac{1}{4} \\
-    x_0 - x_1 \leq 0 \\
-    x_0 + x_2 + x_3 \leq 2\\
-    x_0 \in \{0,1\}^n \; (x_1, x_2) \in R^2 \; x_3 \in N
-    \end{array}
-    \f]
-  */
     
 class MyTMINLP : public TMINLP
 {
@@ -37,18 +25,17 @@ public:
   MyTMINLP():printSol_(false){}
   MyTMINLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
       const Eigen::MatrixXd& m_Signma, const Eigen::MatrixXd m_Constriants,
-      const ClusterStructure* ptrCS);
+      const ClusterStructure* ptrCS, const Map* ptrMap);
   
   /// virtual destructor.
   virtual ~MyTMINLP(){}
 
   
-	/** Copy constructor.*/   
+  const std::vector<int>& GetVecSolution(){ return m_vecSolution;}
+  /** Copy constructor.*/   
   MyTMINLP(const MyTMINLP &other):printSol_(other.printSol_){}
   /** Assignment operator. no data = nothing to assign*/
   //MyTMINLP& operator=(const MyTMINLP&) {}
-
-  
   /** \name Overloaded functions specific to a TMINLP.*/
   //@{
   /** Pass the type of the variables (INTEGER, BINARY, CONTINUOUS) to the optimizer.
@@ -181,15 +168,17 @@ public:
   
   private:
     bool printSol_;
-    Index             m_numVariables;
-    Index             m_numConstraints;
-    Index             m_numNz_jac_g;
-    Index             m_numNz_h_lag;
-    TNLP::IndexStyleEnum  m_index_style;
-    Eigen::MatrixXd   m_Signma;
-    Eigen::MatrixXd   m_Constriants;
-    Eigen::MatrixXd   m_matI;
-    const ClusterStructure* m_ptrCS;
+    Index                       m_numVariables;
+    Index                       m_numConstraints;
+    Index                       m_numNz_jac_g;
+    Index                       m_numNz_h_lag;
+    TNLP::IndexStyleEnum        m_index_style;
+    Eigen::MatrixXd             m_Signma;
+    Eigen::MatrixXd             m_Constriants;
+    Eigen::MatrixXd             m_matI;
+    const ClusterStructure*     m_ptrCS;
+    const Map*                  m_ptrMap;
+    std::vector<int>            m_vecSolution;
 };
 
 #endif

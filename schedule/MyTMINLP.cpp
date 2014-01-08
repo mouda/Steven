@@ -9,13 +9,15 @@
 #include "MyTMINLP.hpp"
 #include <coin/BonAmplInterface.hpp>
 #include <iostream>
+#include <cmath>
 
 using std::cout;
 using std::endl;
 
 MyTMINLP::MyTMINLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
-    const Eigen::MatrixXd& signma, const Eigen::MatrixXd constraints, const ClusterStructure* ptrCS):
-  m_ptrCS(ptrCS),printSol_(true)
+    const Eigen::MatrixXd& signma, const Eigen::MatrixXd constraints, const ClusterStructure* ptrCS,
+    const Map* ptrMap):
+  m_ptrCS(ptrCS), m_ptrMap(ptrMap), printSol_(true)
 {
   m_numVariables = n;
   m_numConstraints = m;
@@ -24,7 +26,6 @@ MyTMINLP::MyTMINLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
   m_Constriants = constraints;
   m_Signma = signma;
   m_matI = Eigen::MatrixXd::Identity(n,n);
-
 }
 
 bool 
@@ -81,7 +82,7 @@ MyTMINLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
   cout << "=============================================== here get_bounds_info ======================="<<endl;
   for (int i = 0; i < m_numVariables; ++i) {
     x_l[i] = 0.;
-    x_u[i] = 1.;
+    x_u[i] = 1.0;
   }
 
   for (int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {
@@ -89,7 +90,7 @@ MyTMINLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
     g_u[i] = 0.;
   }
   for (int i = m_ptrCS->GetNumHeads(); i < m_numConstraints; ++i) {
-    g_l[i] = -DBL_MAX;
+    g_l[i] = 1.0;
     g_u[i] = 1.0;
   }
   return true;
@@ -109,7 +110,7 @@ MyTMINLP::get_starting_point(Index n, bool init_x, Number* x,
   assert(init_x);
   assert(!init_lambda);
   for (int i = 0; i < m_numVariables; ++i) {
-    x[i] = 0.;
+    x[i] = 1.;
   }
   return true;
 }
@@ -126,17 +127,16 @@ MyTMINLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
       }
     }
   }
-  Eigen::MatrixXd TRM((matX.transpose() * m_Signma * matX).llt().matrixL());
+  //Eigen::MatrixXd TRM((matX.transpose() * m_Signma * matX).llt().matrixL());
+  Eigen::MatrixXd TRM(m_Signma .llt().matrixL());
   double sum = 0.0;
-//  cout << "Det: " << (matX.transpose() * m_Signma * matX).determinant() << endl;
   Eigen::MatrixXd Diagonal(TRM.diagonal());
-//  cout << Diagonal << endl;
   for (int i = 0; i < TRM.diagonal().rows(); ++i) {
-    sum += 2.0*log2(Diagonal(i));
+    sum += 2.0*log2(Diagonal(i))*x[i];
   }
-  cout << sum << endl;
-  obj_value = 1.*sum;
-
+  obj_value = -1.*(sum + m_ptrCS->GetNumHeads() * m_ptrMap->GetIdtEntropy());
+//  cout << "obj_value: " << obj_value << endl;
+//  cout << "Sum: " << sum << endl;
   return true;
 }
 
@@ -153,9 +153,10 @@ MyTMINLP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
       }
     }
   }
+  Eigen::MatrixXd TRM(m_Signma .llt().matrixL());
+  Eigen::MatrixXd Diagonal(TRM.diagonal());
   for (int i = 0; i < m_numVariables; ++i) {
-//    grad_f[i] = 1.*m_Signma(i,i);
-    grad_f[i] = x[i];
+    grad_f[i] = 2*log2(Diagonal(i));
   }
   return true;
 }
@@ -183,9 +184,9 @@ MyTMINLP::eval_g(Index n, const Number* x, bool new_x, Index m, Number* g)
 //  cout << endl;
   for (int i = m_ptrCS->GetNumHeads(); i < m_numConstraints; ++i) {
     g[i] = matX.col(i-m_ptrCS->GetNumHeads()).sum();
-    cout << matX.col(i-m_ptrCS->GetNumHeads()).sum() << endl; 
-    cout << matX << endl;
+//    cout << matX.col(i-m_ptrCS->GetNumHeads())   ; 
   }
+//  cout << endl;
   return true;
 }
 
@@ -202,21 +203,29 @@ MyTMINLP::eval_jac_g(Index n, const Number* x, bool new_x,
       for (int j = 0; j < m_numConstraints; ++j) {
         iRow[i*m_numConstraints+j] = j+1; 
         jCol[i*m_numConstraints+j] = i+1; 
-//        cout << '(' << i*m_numConstraints+j <<"):" << iRow[i*m_numConstraints+j] << ',' <<jCol[i*m_numConstraints+j] << ' ';
+#ifdef DEBUG
+        cout << '(' << i*m_numConstraints+j <<"):" << iRow[i*m_numConstraints+j] << ',' <<jCol[i*m_numConstraints+j] << ' ';
+#endif
       }
-//      cout << endl;
+#ifdef DEBUG
+      cout << endl;
+#endif
     }
     return true;
   }
   else {
     for (int i = 0; i < m_numVariables; ++i) {
       for (int j = 0; j < m_ptrCS->GetNumHeads() ; ++j) {
-        values[i*m_ptrCS->GetNumHeads()+j] = m_Constriants(j,i);
+        values[i*m_numConstraints +j] = m_Constriants(j,i);
       }
     }
     for (int i = 0; i < m_numVariables; ++i) {
       for (int j = m_ptrCS->GetNumHeads(); j < m_numConstraints; ++j) {
-        values[m_ptrCS->GetNumHeads()+i*m_ptrCS->GetNumHeads()+j] = 1.;
+        if (m_ptrCS->GetChIdxByName(i) == j - m_ptrCS->GetNumHeads()) {
+          values[i*m_numConstraints+j] = 1.;
+        }
+        else 
+          values[i*m_numConstraints+j] = 0.;
       }
     }
     return true;
@@ -241,11 +250,17 @@ MyTMINLP::finalize_solution(TMINLP::SolverReturn status,
 {
   std::cout<<"Problem status: "<<status<<std::endl;
   std::cout<<"Objective value: "<<obj_value<<std::endl;
+#ifdef DEBUG
   if(printSol_ && x != NULL){
     std::cout<<"Solution:"<<std::endl;
     for(int i = 0 ; i < n ; i++){
       std::cout<<"x["<<i<<"] = "<<x[i];
       if(i < n-1) std::cout<<", ";}
     std::cout<<std::endl;
+  }
+#endif 
+  m_vecSolution.clear();
+  for (int i = 0; i < n; ++i) {
+    m_vecSolution.push_back(x[i]);
   }
 }
