@@ -99,13 +99,13 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
   BonminSetup bonmin(&handler);
   bonmin.initializeOptionsAndJournalist();
   // Here we can change the default value of some Bonmin or Ipopt option
-  bonmin.options()->SetNumericValue("bonmin.time_limit", 5); //changes bonmin's time limit
+  bonmin.options()->SetNumericValue("bonmin.time_limit", 10); //changes bonmin's time limit
   bonmin.options()->SetStringValue("mu_oracle","loqo");
   //Here we read several option files
   bonmin.readOptionsFile("Mybonmin.opt");
   bonmin.readOptionsFile();// This reads the default file "bonmin.opt"
   // Options can also be set by using a string with a format similar to the bonmin.opt file
-  bonmin.readOptionsString("bonmin.algorithm B-QG\n");
+  bonmin.readOptionsString("bonmin.algorithm B-BB\n");
 
   //Now initialize from tminlp
   bonmin.initialize(GetRawPtr(tminlp));

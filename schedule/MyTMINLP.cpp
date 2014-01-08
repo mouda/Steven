@@ -134,7 +134,8 @@ MyTMINLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
   for (int i = 0; i < TRM.diagonal().rows(); ++i) {
     sum += 2.0*log2(Diagonal(i));
   }
-  obj_value = -1.*sum;
+  cout << sum << endl;
+  obj_value = 1.*sum;
 
   return true;
 }
@@ -177,12 +178,13 @@ MyTMINLP::eval_g(Index n, const Number* x, bool new_x, Index m, Number* g)
   //cout <<  m_Constriants * matX << endl << endl;
   for (int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {
     g[i] = result(i);
-    cout << g[i] << ' ';
+//    cout << g[i] << ' ';
   }
-  cout << endl;
+//  cout << endl;
   for (int i = m_ptrCS->GetNumHeads(); i < m_numConstraints; ++i) {
     g[i] = matX.col(i-m_ptrCS->GetNumHeads()).sum();
     cout << matX.col(i-m_ptrCS->GetNumHeads()).sum() << endl; 
+    cout << matX << endl;
   }
   return true;
 }
