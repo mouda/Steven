@@ -40,6 +40,7 @@ LIB_PATH=-L$(PREFIX)/boost1550/lib \
 LIB_FLAGS=-larmadillo \
 	  -lopenblas \
 	  -llapack \
+	  -lboost_program_options\
 	  -lboost_regex \
 	  -lboost_system \
 	  -lboost_filesystem\
