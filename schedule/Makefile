@@ -4,8 +4,8 @@ CPP= g++
 #CFLAGS= -D ITERATION
 #DFLAGS= -D DEBUG -g
 DFLAGS=-g
-#PREFIX=/opt
-PREFIX=/home/share
+PREFIX=/opt
+#PREFIX=/home/share
 
 SOURCES= main.o \
 	 map.o \
