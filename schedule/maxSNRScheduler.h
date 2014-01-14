@@ -14,6 +14,7 @@ class MaxSNRScheduler: public Scheduler
     ~MaxSNRScheduler();
     double ScheduleOneSlot( std::vector<int>& );
     string PrintSelf(){ return m_type; }
+    double GetTxTimePerSlot() const { return m_txTimePerSlot; }
   private:
     bool CheckFeasible( bool const * const supStru, double txTime2nd);
     bool CheckFeasible( const std::vector<int>& supStru, double txTime2nd);

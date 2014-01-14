@@ -82,6 +82,46 @@ Simulator::Run(const int numSlots)
   }
 }
 
+vector<int>
+Simulator::CheckConnection( const vector<int>& vecSupport )
+{
+  vector<int> returnVector = vecSupport;
+  while(!CheckFeasible(vecSupport, m_ptrSched->GetTxTimePerSlot() )){
+    for (int i = 0; i < m_ptrMap->GetNumNodes(); i++) {
+      if (vecSupport[i] == 1) {
+        returnVector[i] = 0;
+        break;
+      }
+    }
+  }
+  return returnVector;
+}
+
+bool
+Simulator::CheckFeasible(const vector<int>& supStru, double txTime2nd)
+{
+  for (int i = 0; i < m_ptrMap->GetNumInitHeads() ; i++) {
+    int headName = m_ptrCS->GetVecHeadName()[i];
+    int member = -1;
+    double interference = 0.0;
+    for (int j = 0; j < m_ptrMap->GetNumNodes(); j++) {
+      if (supStru[j] == 1 && headName != m_ptrCS->GetChNameByName(j) ) {
+        interference += m_ptrMap->GetGijByPair(headName,j) * m_ptrMap->GetMaxPower();
+      }
+      else if(supStru[j] == 1 && headName == m_ptrCS->GetChNameByName(j) ){
+        member = j;
+      }
+    }
+    if (member == -1) continue; 
+    if (m_ptrMap->GetIdtEntropy() > m_ptrMap->GetBandwidth() * 
+        txTime2nd*log2(1.0 + m_ptrMap->GetMaxPower() * m_ptrMap->GetGijByPair(headName,member)
+          / (m_ptrMap->GetNoise() + interference))) {
+      return false;
+    }
+  }
+  return true;
+}
+
 void
 Simulator::Print( const vector<int>& vec)
 {

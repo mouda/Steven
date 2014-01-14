@@ -4,8 +4,8 @@ CPP= g++
 #CFLAGS= -D ITERATION
 #DFLAGS= -D DEBUG -g
 DFLAGS=-g
-PREFIX=/opt
-#PREFIX=/home/share
+#PREFIX=/opt
+PREFIX=/home/share
 
 SOURCES= main.o \
 	 map.o \
@@ -28,14 +28,12 @@ INCLUDE_PATH=-I$(PREFIX)/boost1550/include \
 	     -I$(PREFIX)/armadillo39202/include \
 	     -I$(PREFIX)/eigen320/include\
 	     -I$(PREFIX)/bonmin174/include
-#	     -I$(PREFIX)/CoinIpopt3117/include
 
 LIB_PATH=-L$(PREFIX)/boost1550/lib \
 	 -L$(PREFIX)/armadillo39202/lib \
 	 -L$(PREFIX)/openblas/lib \
 	 -L$(PREFIX)/lpack342/lib \
 	 -L$(PREFIX)/bonmin174/lib
-#	 -L$(PREFIX)/CoinIpopt3117/lib
 
 LIB_FLAGS=-larmadillo \
 	  -lopenblas \

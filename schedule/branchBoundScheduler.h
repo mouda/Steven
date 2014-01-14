@@ -36,6 +36,7 @@ class BranchBoundScheduler: public Scheduler
     ~BranchBoundScheduler();
     double ScheduleOneSlot( std::vector<int>& );
     string PrintSelf(){ return m_type; }
+    double GetTxTimePerSlot() const { return m_txTimePerSlot; }
   private:
     double OmegaValue( const int nodeName );
     int                             m_numNodes;

@@ -28,11 +28,6 @@ MaxSNRScheduler::~MaxSNRScheduler()
 double
 MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
 {
-//  bool * mySupStru;
-//  mySupStru = new bool [m_numNodes];
-//  for (int i = 0; i < m_numNodes; i++) {
-//    mySupStru[i] = false;
-//  }
   for (int i = 1; i < m_numMaxHeads; i++) {
     double maxRxPower = 0.0;
     int headName = m_ptrCS->GetVecHeadName()[i];
@@ -47,20 +42,15 @@ MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
       }
     }
     if (maxRxPowerNode >= 0) {
-      /* code */
       m_vecSched.at(maxRxPowerNode) = 1;
       vecSupport.at(maxRxPowerNode) = 1;
-      //    mySupStru[maxRxPowerNode] = true; 
     }
-
   }
 
   /* test the Interference */
   while(!CheckFeasible(vecSupport, m_txTimePerSlot)){
     for (int i = 0; i < m_numNodes; i++) {
-//      if (mySupStru[i] == true) {
       if (vecSupport[i] == 1) {
-//        mySupStru[i] = false;
         vecSupport[i] = 0;
         m_vecSched[i] = 0;
         break;
@@ -69,7 +59,6 @@ MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
   }
   int activeNodes = 0;
   for (int i = 0; i < m_numNodes; i++) {
-    //if (mySupStru[i] == true) ++activeNodes;
     if (vecSupport[i] == 1) ++activeNodes;
   }
 
@@ -78,7 +67,6 @@ MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
   cout << "activeNodes: " << activeNodes << endl;
   cout << "MaxSNR: " << result << " " <<m_ptrMatComputer->computeLog2Det(1.0, mySupStru) <<endl;
 #endif
-//  delete [] mySupStru;
   return result;
 
 }

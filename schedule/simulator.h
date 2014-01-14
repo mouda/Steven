@@ -34,8 +34,10 @@ class Simulator
     void Run();
     void Run(const int numSlots);
     bool SelfCheck();
+    std::vector<int>  CheckConnection(const std::vector<int>& );
 
   private:
+    bool CheckFeasible(const vector<int>& supStru, double txTime2nd);
     void Print(const std::vector<int>& );
     string toString( const std::vector<int>& );
     Map*                m_ptrMap;

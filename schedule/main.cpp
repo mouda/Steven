@@ -26,18 +26,19 @@ int main(int argc, char *argv[])
   //********************************************//
   //User-assigned parameters                    //
   //********************************************//
-  int maxChNum;
-  int totalNodes;
-  double quantizationBits;
-  double powerMaxDbm;
+  int     maxChNum;
+  int     totalNodes;
+  double  quantizationBits;
+  double  powerMaxDbm;
   //we don't need to divide the BW(bandwidthKhz*1000);//Unit := Watt
-  double bandwidthKhz;
-  double compressionRatio;
-  double txTimePerSlot;
-  int SAIter;
-  double fidelityRatio;
-  string mapFileName;
-  string strAlgFlag;
+  double  bandwidthKhz;
+  double  compressionRatio;
+  double  txTimePerSlot;
+  int     SAIter;
+  int     numSlots;
+  double  fidelityRatio;
+  string  mapFileName;
+  string  strAlgFlag;
   try {
     po::options_description desc("Allowed options");
     desc.add_options()
@@ -46,7 +47,8 @@ int main(int argc, char *argv[])
       ("power,p",         po::value<double>(),  "Maximum Power (dbm) ")
       ("quantization,q",  po::value<double>(),  "Bits of quantization")
       ("map,m",           po::value<string>(),  "Map file name")
-      ("algorithm,G",     po::value<string>(),  "Scheduling algorithm Baseline|Algorithm ")
+      ("algorithm,A",     po::value<string>(),  "Scheduling algorithm Baseline|Algorithm ")
+      ("slot,s",          po::value<int>(),     "Num ber of Slots")
       ("nodes,n",         po::value<int>(),     "Initial number of nodes")
       ("heads,H",         po::value<int>(),     "Initial number of heads")
       ("time,t",          po::value<double>(),  "Transmission time per slot (ms) ")
@@ -60,7 +62,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 10 ) {
+    } else if(vm.size() == 11 ) {
 
       totalNodes =        vm["nodes"].as<int>();
       maxChNum =          vm["heads"].as<int>();
@@ -72,6 +74,7 @@ int main(int argc, char *argv[])
       fidelityRatio =     vm["fidelity"].as<double>();
       mapFileName =       vm["map"].as<string>();
       strAlgFlag =        vm["algorithm"].as<string>();
+      numSlots  =         vm["slot"].as<int>();
 
       double powerMaxWatt = pow(10,(powerMaxDbm)/10) /1000;
 
@@ -98,7 +101,7 @@ int main(int argc, char *argv[])
         return 1;
       }
 
-      SchedulerFactory mySchedFactory(0.01, bandwidthKhz, myMap, myMatComputer, myCS);
+      SchedulerFactory mySchedFactory(txTimePerSlot, bandwidthKhz, myMap, myMatComputer, myCS);
       Scheduler* myScheduler = 0;
       myScheduler = mySchedFactory.CreateScheduler(strAlgFlag);
       if (!myScheduler) {
@@ -107,7 +110,7 @@ int main(int argc, char *argv[])
       }
       Simulator mySimulator(myMap, myCS, myScheduler, myMatComputer);
       mySimulator.SelfCheck();
-      mySimulator.Run(1);
+      mySimulator.Run(numSlots);
     }
     else {
       cout << desc << "\n";

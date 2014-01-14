@@ -37,6 +37,7 @@ class Map
     double GetMaxPower() const {return m_maxPower; }
     double GetIdtEntropy() const { return m_idtEntropy; }
     double GetNoise() const { return m_realNoise; } 
+    double GetBandwidth() const { return m_bandwidthKhz; }
 
   private:
     const int                     m_mapId;
