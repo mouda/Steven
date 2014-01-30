@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
 
+    cout <<vm.size() << endl;
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;

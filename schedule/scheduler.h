@@ -14,7 +14,7 @@ class Scheduler
     virtual ~Scheduler();
     virtual double ScheduleOneSlot(std::vector<int>& solution) = 0;
     virtual std::string PrintSelf() = 0;
-    virtual double GetTxTimePerSlot() = 0;
+    virtual double GetTxTimePerSlot() const = 0;
   private:
 };
 #endif
