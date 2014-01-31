@@ -28,4 +28,7 @@ COMMAND TOOL RMEMIND
 
 NEW PROBLEM
 
-node selection by given cluster structure
+HOW TO BUILD
+LDFLAGS="-L/opt/boost1550/lib -L/opt/armadillo40002/lib -L/opt/bonmin174/lib -L/opt/openblas/lib -L/opt/lapack/lib"  \
+CPPFLAGS="-I/opt/boost1550/include -I/opt/armadillo40002/include -I/opt/eigen320/include -I/opt/bonmin174/include"  \
+"CXXFLAGS=-Wl,--no-as-needed"  ./configure
