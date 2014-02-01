@@ -4750,26 +4750,8 @@ fi
 
 done
 
-ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-for ac_header in eigen3/Eigen/Cholesky
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "eigen3/Eigen/Cholesky" "ac_cv_header_eigen3_Eigen_Cholesky" "$ac_includes_default"
-if test "x$ac_cv_header_eigen3_Eigen_Cholesky" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_EIGEN3_EIGEN_CHOLESKY 1
-_ACEOF
-
-else
-  exit
-fi
-
-done
-
+#AC_LANG([C++])
+#AC_CHECK_HEADERS([eigen3/Eigen/Cholesky],,exit)
 
 # Checks for header files.
 for ac_header in arpa/inet.h netinet/in.h sys/ioctl.h sys/socket.h unistd.h
