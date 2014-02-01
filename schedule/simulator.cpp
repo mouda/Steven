@@ -73,11 +73,10 @@ Simulator::Run()
 void 
 Simulator::Run(const int numSlots)
 {
-
   fill(m_vecSupport->begin(), m_vecSupport->end(), 0);
   for (int i = 0; i < numSlots; ++i) {
     fill(m_vecSupport->begin(), m_vecSupport->end(), 0);
-    cout <<"Entropy: " << setw(8) <<m_ptrSched->ScheduleOneSlot(*m_vecSupport)<< ' ';
+    cout <<"Entropy: " << setw(8) << m_ptrSched->ScheduleOneSlot(*m_vecSupport)<< ' ';
     cout <<"Solution: " << toString(*m_vecSupport) << endl;
   }
 }

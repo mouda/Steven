@@ -77,8 +77,8 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 {
   Eigen::IOFormat CleanFmt(2, 0, " ", "\n", "", ";");
   Index numVariables = m_numNodes;
-  Index numConstraints = 2*m_numMaxHeads;
-  Index numNz_jac_g = 2*m_numMaxHeads * m_numNodes;
+  Index numConstraints = 2 * m_numMaxHeads;
+  Index numNz_jac_g = 2 * m_numMaxHeads * m_numNodes;
   Index numNz_h_lag = 0;
 
   Eigen::MatrixXd TRM( m_Signma.llt().matrixL() );

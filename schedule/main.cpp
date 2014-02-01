@@ -59,7 +59,6 @@ int main(int argc, char *argv[])
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
 
-    cout <<vm.size() << endl;
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
@@ -117,7 +116,6 @@ int main(int argc, char *argv[])
       cout << desc << "\n";
       return 0;
     }
-
   }
   catch(std::exception& e) {
     cerr << "error: " << e.what() << "\n";
@@ -126,7 +124,5 @@ int main(int argc, char *argv[])
   catch(...) {
     cerr << "Exception of unknown type!\n";
   }
-
-  
   return 0;
 }

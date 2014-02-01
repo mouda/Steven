@@ -53,7 +53,7 @@ MyTMINLP::get_variables_linearity(Index n, Ipopt::TNLP::LinearityType* var_types
 bool 
 MyTMINLP::get_constraints_linearity(Index m, Ipopt::TNLP::LinearityType* const_types)
 {
-  cout << "=============================================== here get_constraints_linearity ======================="<<endl;
+//  cout << "=============================================== here get_constraints_linearity ======================="<<endl;
   assert (m==m_numConstraints);
   for (int i = 0; i < m_numConstraints; ++i) {
     const_types[i] = Ipopt::TNLP::LINEAR;
@@ -64,7 +64,7 @@ bool
 MyTMINLP::get_nlp_info(Index& n, Index&m, Index& nnz_jac_g,
                        Index& nnz_h_lag, TNLP::IndexStyleEnum& index_style)
 {
-  cout << "=============================================== here get_nlp_info ======================="<<endl;
+//  cout << "=============================================== here get_nlp_info ======================="<<endl;
   n = m_numVariables;//number of variable
   m = m_numConstraints;//number of constraints
   nnz_jac_g = m_numNz_jac_g;//number of non zeroes in Jacobian
@@ -79,7 +79,7 @@ MyTMINLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
 {
   assert(n==m_numVariables);
   assert(m==m_numConstraints);
-  cout << "=============================================== here get_bounds_info ======================="<<endl;
+//  cout << "=============================================== here get_bounds_info ======================="<<endl;
   for (int i = 0; i < m_numVariables; ++i) {
     x_l[i] = 0.;
     x_u[i] = 1.0;
@@ -104,7 +104,7 @@ MyTMINLP::get_starting_point(Index n, bool init_x, Number* x,
 {
   assert(n==m_numVariables);
   assert(m==m_numConstraints);
-  cout << "=============================================== here get_starting_point ======================="<<endl;
+//  cout << "=============================================== here get_starting_point ======================="<<endl;
 
   
   assert(init_x);
@@ -135,8 +135,6 @@ MyTMINLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
     sum += 2.0*log2(Diagonal(i))*x[i];
   }
   obj_value = -1.*(sum + m_ptrCS->GetNumHeads() * m_ptrMap->GetIdtEntropy());
-//  cout << "obj_value: " << obj_value << endl;
-//  cout << "Sum: " << sum << endl;
   return true;
 }
 
@@ -248,9 +246,9 @@ void
 MyTMINLP::finalize_solution(TMINLP::SolverReturn status,
                             Index n, const Number* x, Number obj_value)
 {
+#ifdef DEBUG
   std::cout<<"Problem status: "<<status<<std::endl;
   std::cout<<"Objective value: "<<obj_value<<std::endl;
-#ifdef DEBUG
   if(printSol_ && x != NULL){
     std::cout<<"Solution:"<<std::endl;
     for(int i = 0 ; i < n ; i++){
