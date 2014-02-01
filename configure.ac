@@ -14,13 +14,15 @@ AC_PROG_MAKE_SET
 AC_PROG_CPP
 
 AC_LANG([C++])
-AC_CHECK_HEADERS([boost/program_options.hpp eigen3/Eigen/Cholesky],,exit) 
+AC_CHECK_HEADERS([boost/program_options.hpp],,exit) 
+AC_LANG([C++])
+AC_CHECK_HEADERS([eigen3/Eigen/Cholesky],,exit) 
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h netinet/in.h sys/ioctl.h sys/socket.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_HEADER_STDBOOL
+#AC_CHECK_HEADER_STDBOOL
 
 
 AC_ARG_ENABLE(debug, 
