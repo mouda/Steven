@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <vector>
 #include "map.h"
 #include "clusterStructure.h"
 #include "scheduler.h"
@@ -37,7 +38,7 @@ class Simulator
     std::vector<int>  CheckConnection(const std::vector<int>& );
 
   private:
-    bool CheckFeasible(const vector<int>& supStru, double txTime2nd);
+    bool CheckFeasible(const std::vector<int>& supStru, double txTime2nd);
     void Print(const std::vector<int>& );
     string toString( const std::vector<int>& );
     Map*                m_ptrMap;
