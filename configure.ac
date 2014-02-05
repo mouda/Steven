@@ -15,8 +15,10 @@ AC_PROG_CPP
 
 AC_LANG([C++])
 AC_CHECK_HEADERS([boost/program_options.hpp],,exit) 
-#AC_LANG([C++])
-#AC_CHECK_HEADERS([eigen3/Eigen/Cholesky],,exit) 
+AC_CHECK_HEADERS([boost/numeric/ublas/matrix.hpp],,exit)
+AC_CHECK_HEADERS([boost/numeric/ublas/io.hpp],,exit)
+AC_CHECK_HEADERS([armadillo],,exit)
+AC_CHECK_HEADERS([eigen3/Eigen/Cholesky],,exit) 
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h netinet/in.h sys/ioctl.h sys/socket.h unistd.h])
