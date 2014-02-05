@@ -32,3 +32,5 @@ HOW TO BUILD
 LDFLAGS="-L/opt/boost1550/lib -L/opt/armadillo40002/lib -L/opt/bonmin174/lib -L/opt/openblas/lib -L/opt/lapack/lib"  \
 CPPFLAGS="-I/opt/boost1550/include -I/opt/armadillo40002/include -I/opt/eigen320/include -I/opt/bonmin174/include"  \
 "CXXFLAGS=-Wl,--no-as-needed"  ./configure
+
+LDFLAGS="-L/home/share/armadillo39202/lib -L/home/share/bonmin174/lib -L/home/share/openblas/lib -L/home/share/lapack/lib"   CPPFLAGS="-I/home/share/boost1550/include -I/home/share/armadillo39202/include -I/home/share/eigen320/include -I/home/share/bonmin174/include" ./configure
