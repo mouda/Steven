@@ -30,6 +30,9 @@ public:
   /// virtual destructor.
   virtual ~MyTMINLP(){}
 
+  void SetExtraConstraints( const std::vector<int>& extraConstraints);
+  const std::vector<int>& GetExtraConstraints() const  { return m_vecExtraConstraint;}
+  void PrintExtraConstraints() const;
   
   const std::vector<int>& GetVecSolution(){ return m_vecSolution;}
   /** Copy constructor.*/   
@@ -167,7 +170,7 @@ public:
     printSol_ = true;}
   
   private:
-    bool printSol_;
+    bool                        printSol_;
     Index                       m_numVariables;
     Index                       m_numConstraints;
     Index                       m_numNz_jac_g;
@@ -178,6 +181,7 @@ public:
     Eigen::MatrixXd             m_matI;
     const ClusterStructure*     m_ptrCS;
     const Map*                  m_ptrMap;
+    std::vector<int>            m_vecExtraConstraint;
     std::vector<int>            m_vecSolution;
 };
 

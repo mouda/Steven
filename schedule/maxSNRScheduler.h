@@ -27,8 +27,8 @@ class MaxSNRScheduler: public Scheduler
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;
     CORRE_MA_OPE const * const      m_ptrMatComputer;
-    std::vector<double>                  m_vecNodePower;
-    std::vector<int>                     m_vecSched;
+    std::vector<double>             m_vecNodePower;
+    std::vector<int>                m_vecSched;
     const string                    m_type;
 
 };

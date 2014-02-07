@@ -39,7 +39,8 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
     for (int j = 0; j < m_numNodes; ++j) {
       if (i == m_ptrCS->GetChIdxByName(j)) {
         int headName = m_ptrCS->GetVecHeadName()[i];
-        m_C(i,j) = m_maxPower * m_ptrMap->GetGijByPair(headName,j) - (exponent -1)*m_bandwidthKhz * m_ptrMap->GetNoise() - OmegaValue(j) ;
+        m_C(i,j) = m_maxPower * m_ptrMap->GetGijByPair(headName,j) - 
+          (exponent -1)*m_bandwidthKhz * m_ptrMap->GetNoise() - OmegaValue(j) ;
       }
     }
   }
@@ -65,6 +66,9 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
       m_Signma(i,j) = variance * exp(-1*(m_ptrMatComputer->GetDijSQByPair(i,j))/corrFactor) ;
     }
   }
+
+  m_vecSched.resize(m_numNodes);
+  fill(m_vecSched.begin(), m_vecSched.end(), 0);
 }
 
 BranchBoundScheduler::~BranchBoundScheduler()
@@ -81,13 +85,13 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
   Index numNz_jac_g = 2 * m_numMaxHeads * m_numNodes;
   Index numNz_h_lag = 0;
 
-  Eigen::MatrixXd TRM( m_Signma.llt().matrixL() );
-  Eigen::MatrixXd vecDia = TRM.diagonal();
-  Eigen::MatrixXd matI = Eigen::MatrixXd::Identity(m_numNodes, m_numNodes);
-
   SmartPtr<TMINLP> tminlp = 
     new MyTMINLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag, m_Signma,
         (m_A+m_B-m_C), m_ptrCS, m_ptrMap);
+  MyTMINLP* rawPtr = dynamic_cast<MyTMINLP*>(GetRawPtr(tminlp));
+  rawPtr->SetExtraConstraints(m_vecSched);
+//  rawPtr->PrintExtraConstraints();
+
   FILE * fp = fopen("log.out","w");
   CoinMessageHandler handler(fp);
   BonminSetup bonmin(&handler);
@@ -113,25 +117,27 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
     std::cerr<<"Ipopt has failed to solve a problem"<<std::endl;
   }
   catch(OsiTMINLPInterface::SimpleError &E) {
-    std::cerr<<E.className()<<"::"<<E.methodName()
-	     <<std::endl
-	     <<E.message()<<std::endl;
+    std::cerr << E.className() << "::" << E.methodName()
+	      << std::endl
+	      << E.message() << std::endl;
   }
   catch(CoinError &E) {
-    std::cerr<<E.className()<<"::"<<E.methodName()
-	     <<std::endl
-	     <<E.message()<<std::endl;
+    std::cerr << E.className() << "::" << E.methodName()
+	      << std::endl
+	      << E.message() << std::endl;
   }
-  MyTMINLP* rawPtr = dynamic_cast<MyTMINLP*>(GetRawPtr(tminlp));
 
   vecSupport.assign(rawPtr->GetVecSolution().begin(), rawPtr->GetVecSolution().end());
+  for (int i = 0; i < m_vecSched.size(); ++i) {
+    m_vecSched.at(i) = m_vecSched.at(i) + vecSupport.at(i);
+  }
+
   int activeNodes = 0;
   for (int i = 0; i < m_numNodes; i++) {
     if (vecSupport[i] == 1) ++activeNodes;
   }
 
   double result = activeNodes * m_ptrMap->GetIdtEntropy() + m_ptrMatComputer->computeLog2Det(1.0, vecSupport);
-
   return result;
 }
 

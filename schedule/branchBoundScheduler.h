@@ -47,9 +47,10 @@ class BranchBoundScheduler: public Scheduler
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;
     CORRE_MA_OPE const * const      m_ptrMatComputer;
-    std::vector<double>                  m_vecNodePower;
+    std::vector<double>             m_vecNodePower;
+    std::vector<int>                m_vecSched;
     const string                    m_type;
-    Ipopt::SmartPtr<Bonmin::TMINLP>                  m_nlp;
+    Ipopt::SmartPtr<Bonmin::TMINLP> m_nlp;
     Eigen::MatrixXd                 m_A;
     Eigen::MatrixXd                 m_B;
     Eigen::MatrixXd                 m_C;

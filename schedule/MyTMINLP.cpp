@@ -26,6 +26,23 @@ MyTMINLP::MyTMINLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
   m_Constriants = constraints;
   m_Signma = signma;
   m_matI = Eigen::MatrixXd::Identity(n,n);
+  m_vecExtraConstraint.resize(m_ptrMap->GetNumNodes());
+  fill(m_vecExtraConstraint.begin(), m_vecExtraConstraint.end(), 0);
+}
+
+void
+MyTMINLP::SetExtraConstraints( const std::vector<int>& extraConstraints)
+{
+  m_vecExtraConstraint.assign(extraConstraints.begin(), extraConstraints.end());
+}
+
+void 
+MyTMINLP::PrintExtraConstraints() const
+{
+  for (int i = 0; i < m_vecExtraConstraint.size(); ++i) {
+    cout << m_vecExtraConstraint.at(i) << ' ';
+  }
+  cout << endl;
 }
 
 bool 
@@ -79,10 +96,21 @@ MyTMINLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
 {
   assert(n==m_numVariables);
   assert(m==m_numConstraints);
+  assert(m_vecExtraConstraint.size() != 0);
 //  cout << "=============================================== here get_bounds_info ======================="<<endl;
+//  for (int i = 0; i < m_numVariables; ++i) {
+//    x_l[i] = 0.;
+//    x_u[i] = 1.0;
+//  }
   for (int i = 0; i < m_numVariables; ++i) {
-    x_l[i] = 0.;
-    x_u[i] = 1.0;
+    if (m_vecExtraConstraint.at(i) == 1) {
+      x_l[i] = 0.0;
+      x_u[i] = 0.0;
+    }
+    else {
+      x_l[i] = 0.0;
+      x_u[i] = 1.0;
+    }
   }
 
   for (int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {

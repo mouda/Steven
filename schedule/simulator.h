@@ -7,6 +7,8 @@
 #include <iomanip>
 #include <vector>
 #include "map.h"
+#include "slot.h"
+#include "event.h"
 #include "clusterStructure.h"
 #include "scheduler.h"
 #include "maxSNRScheduler.h"
@@ -32,8 +34,12 @@ class Simulator
     Simulator(Map* myMap,ClusterStructure* myCS, Scheduler* myScheduler, CORRE_MA_OPE* myField);
     ~Simulator();
 
+    void SetEvents(double t_ms);
+    void SequentalRun(double t_ms);
     void Run();
     void Run(const int numSlots);
+
+
     bool SelfCheck();
     std::vector<int>  CheckConnection(const std::vector<int>& );
 
@@ -45,8 +51,12 @@ class Simulator
     ClusterStructure*   m_ptrCS;
     Scheduler*          m_ptrSched;
     CORRE_MA_OPE*       m_ptrGaussianField;
-    std::vector<int>*         m_vecSupport;
-    
+    std::vector<int>*   m_vecSupport;
 
+    /* event driven simulation data structure */
+    //scheduling event
+    //explosion event
+    std::list<Slot*>    m_listSlot;
+    std::list<Event*>   m_listEvent;
 };
 #endif
