@@ -4,6 +4,7 @@
 AC_PREREQ([2.60])
 AC_INIT([steven], [0.0], [dses5211@gmail.com])
 AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE([disable])
 AC_CONFIG_SRCDIR([schedule/main.cpp])
 AC_CONFIG_HEADERS([config.h])
 
