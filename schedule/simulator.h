@@ -36,6 +36,7 @@ class Simulator
 
     void SetEvents(double t_ms);
     void SequentalRun(double t_ms);
+    void SequentalFree();
     void Run();
     void Run(const int numSlots);
 
@@ -57,6 +58,7 @@ class Simulator
     //scheduling event
     //explosion event
     std::list<Slot*>    m_listSlot;
+    Slot*               m_ptrSlotHead;
     std::list<Event*>   m_listEvent;
 };
 #endif

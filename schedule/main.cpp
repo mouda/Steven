@@ -110,7 +110,8 @@ int main(int argc, char *argv[])
       }
       Simulator mySimulator(myMap, myCS, myScheduler, myMatComputer);
       mySimulator.SelfCheck();
-      mySimulator.Run(numSlots);
+      //mySimulator.Run(numSlots);
+      mySimulator.SequentalRun(10.0);
     }
     else {
       cout << desc << "\n";

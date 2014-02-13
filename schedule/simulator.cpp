@@ -18,9 +18,6 @@ Simulator::Simulator(Map* myMap, ClusterStructure* myCS,
   m_ptrGaussianField(myField)
 {
   m_vecSupport = new vector<int>(m_ptrMap->GetNumNodes());
-  Slot* myPtrSlot = new Slot();
-  m_listSlot.push_back(myPtrSlot);
-
 }
 
 Simulator::~Simulator()
@@ -36,6 +33,24 @@ Simulator::SetEvents(double t_ms)
 
 void
 Simulator::SequentalRun(double t_ms)
+{
+  Slot* ptrCurrSlot = new Slot(m_ptrMap, m_ptrSched);
+  Slot* ptrNextSlot = 0;
+  while(true) {
+    ptrNextSlot = ptrCurrSlot->GetNextSlot();
+    if (!ptrNextSlot) {
+      break;
+    }
+    else {
+      m_listSlot.push_back(ptrNextSlot);
+    }
+    ptrCurrSlot = ptrNextSlot;
+    ptrNextSlot = 0;
+  }
+}
+
+void
+Simulator::SequentalFree()
 {
 
 }

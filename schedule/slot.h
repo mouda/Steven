@@ -2,19 +2,24 @@
 #define _SLOT_
 
 #include <vector>
-#include "CORRE_MA_OPE.h"
+#include "gaussianField.h"
+#include "map.h"
+#include "scheduler.h"
 
 class Slot
 {
   public:
-    Slot();
+    Slot(Map* myMap, Scheduler* myScheduler);
     ~Slot();
 
     Slot* GetNextSlot() const;
 
   private:
-    std::vector<int>  m_vecSched;
-    CORRE_MA_OPE*     m_fieldComputer;
+    std::vector<int>    m_vecSupport;
+    std::vector<double> m_vecEntropy;
+    GaussianField*      m_ptrGaussianField;
+    const Map*          m_ptrMap;
+    Scheduler*          m_ptrSched; 
 
 };
 
