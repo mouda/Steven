@@ -3,7 +3,7 @@
 SchedulerFactory::SchedulerFactory(const double txTime, 
   const double bandwidthKhz, 
   Map const * const ptrMap, 
-  CORRE_MA_OPE const * const ptrMatComputer, 
+  CORRE_MA_OPE* ptrMatComputer, 
   ClusterStructure const * const ptrCS): 
   m_txTimePerSlot(txTime), m_bandwidthKhz(bandwidthKhz),
   m_ptrMap(ptrMap), m_maxPower(0),

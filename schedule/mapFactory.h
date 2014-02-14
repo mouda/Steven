@@ -20,10 +20,16 @@ using std::make_pair;
 class MapFactory 
 {
   public:
-    MapFactory(const string& mapFileName, const double maxPower, 
-        const double corrFactor, const double quantizationBits,
+    MapFactory(
+        const string& mapFileName,
+        const double maxPower, 
+        const double spatialCorrFactor, 
+        const double temporalCorrFactor,
+        const double quantizationBits,
         const double bandwidthKhz,  
-        const int maxNumHead, const int numNodes);
+        const int maxNumHead, 
+        const int numNodes
+        );
     ~MapFactory();
     Map* CreateMap();
     CORRE_MA_OPE* CreateMatrixComputer();
@@ -33,7 +39,8 @@ class MapFactory
     const double                  m_maxPower;
     const int                     m_maxNumHead;
     const int                     m_numNodes;
-    const double                  m_corrFactor;
+    const double                  m_spatialCorrFactor;
+    const double                  m_temporalCorrFactor;
     const double                  m_quantizationBits;
     const double                  m_bandwidthKhz;
     int                           m_mapId;

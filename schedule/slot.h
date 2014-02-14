@@ -2,7 +2,6 @@
 #define _SLOT_
 
 #include <vector>
-#include "gaussianField.h"
 #include "map.h"
 #include "scheduler.h"
 
@@ -17,7 +16,6 @@ class Slot
   private:
     std::vector<int>    m_vecSupport;
     std::vector<double> m_vecEntropy;
-    GaussianField*      m_ptrGaussianField;
     const Map*          m_ptrMap;
     Scheduler*          m_ptrSched; 
 

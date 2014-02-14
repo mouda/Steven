@@ -6,15 +6,20 @@ using std::vector;
 class CORRE_MA_OPE
 {
 public:
-  CORRE_MA_OPE(int intotalNodes, double inCorrelationFactor, double ** inDijSQ);
+  CORRE_MA_OPE(int intotalNodes, double spatialCorrFactor, double temporalCorrFactor, double ** inDijSQ);
   ~CORRE_MA_OPE();
   int totalNodes;
   double **DijSQ;
-  double correlationFac;
+  double m_spatialCorrFac;
+  double m_temporalCorrFac;
+  double m_startTime;
+  double m_currTime;
   double m_variance;
 
   double GetVariance() const { return  m_variance;}
-  double GetCorrationFactor() const { return correlationFac; }
+  double GetCorrationFactor() const { return m_spatialCorrFac; }
+  double GetSpatialCorrelationFactor() const { return m_spatialCorrFac; }
+  double GetTemporalCorrelationFactor() const { return m_temporalCorrFac; }
   double GetDijSQByPair( const int i, const int j) const { return DijSQ[i][j]; }
   double computeLog2Det(double inVariance, bool* inClusterStru ) const;
   double computeLog2Det(double inVariance, const vector<int>& vecClusterStru) const;

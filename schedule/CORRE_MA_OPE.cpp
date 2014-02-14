@@ -12,11 +12,14 @@
 using namespace std;
 //using namespace boost::numeric;
 
-CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double inCorrelationFactor, double **inDijSQ)
+CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double spatialCorrFactor, 
+    double temporalCorrFactor, 
+    double **inDijSQ):
+  m_spatialCorrFac(spatialCorrFactor),
+  m_temporalCorrFac(temporalCorrFactor)
 {
   DijSQ = inDijSQ;
   totalNodes = inTotalNodes;
-  correlationFac = inCorrelationFactor;
 }
 
 CORRE_MA_OPE::~CORRE_MA_OPE()
@@ -93,12 +96,12 @@ double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compre
     for(int i = 0; i < totalNodes; ++i )
       inClu[i]=true;
     while(1){
-        correlationFac=start;
+        m_spatialCorrFac=start;
         double redundancy = computeLog2Det(1.0, inClu);
         redundancy = computeLog2Det(1.0, inClu);
         double tmpCompR=1-(totalNodes*indEntropy+redundancy)/(totalNodes*indEntropy);
 //        cout << "Compression Ration: " << compressionRatio << endl;
-//        cout << "Correlation Factor: " << correlationFac <<  ";Compression Ratio=" << tmpCompR <<endl;
+//        cout << "Correlation Factor: " << m_spatialCorrFac <<  ";Compression Ratio=" << tmpCompR <<endl;
 //        cout << "total Entropy: " << (totalNodes * indEntropy) << ";redundancy=" << redundancy <<endl;
 //        cout << "Ratio: " << endl;
         if( tmpCompR > compressionRatio ){
@@ -113,7 +116,7 @@ double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compre
             assert(0);
         }
     }
-//    cout << correlationFac << endl;
+//    cout << m_spatialCorrFac << endl;
 
     delete [] inClu;
 
@@ -131,7 +134,7 @@ void CORRE_MA_OPE::computeCovMa(double* covAry,int covMaSize, int* supSet) const
       else if(i>j)covAry[i*covMaSize+j] = covAry[j*covMaSize+i];
       else
       {
-        covAry[i*covMaSize+j] = m_variance * exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/correlationFac);
+        covAry[i*covMaSize+j] = m_variance * exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/m_spatialCorrFac);
       }
     }
   }
@@ -150,7 +153,7 @@ void CORRE_MA_OPE::constComputeCovMa(double* covAry,int covMaSize, int* supSet, 
         covAry[i*covMaSize+j] = covAry[j*covMaSize+i];
       }
       else {
-        covAry[i*covMaSize+j] = variance * exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/correlationFac);
+        covAry[i*covMaSize+j] = variance * exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/m_spatialCorrFac);
       }
     }
   }
@@ -169,7 +172,7 @@ void CORRE_MA_OPE::matConstComputeCovMa(vector<vector<double> >& covMat, int cov
         covMat[i][j] = covMat[j][i];
       }
       else {
-        covMat[i][j] = inVariance * exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/correlationFac);
+        covMat[i][j] = inVariance * exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/m_spatialCorrFac);
       }
     }
   }
