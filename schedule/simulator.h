@@ -55,8 +55,6 @@ class Simulator
     std::vector<int>*   m_vecSupport;
 
     /* event driven simulation data structure */
-    //scheduling event
-    //explosion event
     std::list<Slot*>    m_listSlot;
     Slot*               m_ptrSlotHead;
     std::list<Event*>   m_listEvent;
