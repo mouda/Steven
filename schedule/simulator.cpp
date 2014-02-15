@@ -80,7 +80,8 @@ Simulator::SelfCheck()
   cout << endl;
   cout << "================= Gaussian Field =================" << endl;
   cout << setw(20) << "Variance: " << setw(10) << m_ptrGaussianField->GetVariance() << endl;
-  cout << setw(20) << "Correlation Factor: " << setw(10) << m_ptrGaussianField->GetCorrationFactor() << endl;
+  cout << setw(20) << "Spatial Correlation Factor: " << setw(10) << m_ptrGaussianField->GetSpatialCorrelationFactor() << endl;
+  cout << setw(20) << "Temporal Correlation Factor: " << setw(10) << m_ptrGaussianField->GetTemporalCorrelationFactor() << endl;
   cout << endl;
   cout << "=============== Cluster Structure  ===============" << endl;
   /* print cluster structure */

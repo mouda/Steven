@@ -25,7 +25,7 @@ class SchedulerFactory
   public:
     SchedulerFactory(const double txTime, const double bandwidthKhz, 
         Map const * const, 
-        CORRE_MA_OPE const * const, 
+        CORRE_MA_OPE* , 
         ClusterStructure const * const);
 
     ~SchedulerFactory();
@@ -37,6 +37,6 @@ class SchedulerFactory
     const double                    m_maxPower;
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;
-    CORRE_MA_OPE const * const      m_ptrMatComputer;
+    CORRE_MA_OPE*       m_ptrMatComputer;
 };
 #endif

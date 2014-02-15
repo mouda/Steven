@@ -31,7 +31,7 @@ class BranchBoundScheduler: public Scheduler
     BranchBoundScheduler(const double txTime, 
         const double bandwidthKhz, 
         Map const * const, 
-        CORRE_MA_OPE const * const, 
+        CORRE_MA_OPE* , 
         ClusterStructure const * const);
     ~BranchBoundScheduler();
     double ScheduleOneSlot( std::vector<int>& );
@@ -46,7 +46,7 @@ class BranchBoundScheduler: public Scheduler
     double                          m_maxPower;
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;
-    CORRE_MA_OPE const * const      m_ptrMatComputer;
+    CORRE_MA_OPE*                   m_ptrMatComputer;
     std::vector<double>             m_vecNodePower;
     std::vector<int>                m_vecSched;
     const string                    m_type;

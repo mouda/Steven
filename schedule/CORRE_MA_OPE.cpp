@@ -12,13 +12,14 @@
 using namespace std;
 //using namespace boost::numeric;
 
-CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double inCorrelationFactor, double **inDijSQ):
-  m_startTime(0),
-  m_currTime(0)
+CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double spatialCorrFactor, 
+    double temporalCorrFactor, 
+    double **inDijSQ):
+  m_spatialCorrFac(spatialCorrFactor),
+  m_temporalCorrFac(temporalCorrFactor)
 {
   DijSQ = inDijSQ;
   totalNodes = inTotalNodes;
-  m_spatialCorrFac = inCorrelationFactor;
 }
 
 CORRE_MA_OPE::~CORRE_MA_OPE()

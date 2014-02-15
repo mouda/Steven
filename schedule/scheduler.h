@@ -3,7 +3,6 @@
 #include <vector>
 #include "map.h"
 #include "CORRE_MA_OPE.h"
-#include "gaussianField.h"
 #include "clusterStructure.h"
 
 class Scheduler
@@ -12,12 +11,10 @@ class Scheduler
     Scheduler(){};
     Scheduler(const double txTime, Map const * const, CORRE_MA_OPE const * const, 
         ClusterStructure const * const);
-    void SetGaussianField( GaussianField* myGField ) { m_ptrGaussianField = myGField; }
+//    void SetGaussianField( GaussianField* myGField ) { m_ptrGaussianField = myGField; }
     virtual ~Scheduler();
     virtual double ScheduleOneSlot(std::vector<int>& solution) = 0;
     virtual std::string PrintSelf() = 0;
     virtual double GetTxTimePerSlot() const = 0;
-  private:
-    GaussianField*  m_ptrGaussianField;
 };
 #endif

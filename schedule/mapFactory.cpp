@@ -2,12 +2,18 @@
 #include "utility.h"
 #include <cstdio>
 
-MapFactory::MapFactory(const string& mapFileName, const double maxPower, 
-    const double corrFactor, const double quantizationBits,
+MapFactory::MapFactory(
+    const string& mapFileName, 
+    const double maxPower, 
+    const double spatialCorrFactor, 
+    const double temporalCorrFactor,
+    const double quantizationBits,
     const double bandwidthKhz,  
     const int maxNumHead, const int numNodes):
   m_ptrMap(0), m_ptrMatComputer(0), m_maxPower(maxPower), 
-  m_corrFactor(corrFactor), m_quantizationBits(quantizationBits),
+  m_spatialCorrFactor(spatialCorrFactor), 
+  m_temporalCorrFactor(temporalCorrFactor),
+  m_quantizationBits(quantizationBits),
   m_bandwidthKhz(bandwidthKhz), 
   m_maxNumHead(maxNumHead), m_numNodes(numNodes)
 {
@@ -59,7 +65,7 @@ MapFactory::CreateMap()
     return NULL;
   }
   mapFile.close();
-  m_ptrMap = new Map(numNodes, m_maxNumHead, m_maxPower, m_corrFactor, m_quantizationBits, m_bandwidthKhz, m_mapId);
+  m_ptrMap = new Map(numNodes, m_maxNumHead, m_maxPower, m_spatialCorrFactor, m_quantizationBits, m_bandwidthKhz, m_mapId);
   m_ptrMap->SetChannelByXYPair(m_vecPairPos);
   return m_ptrMap;
 }
@@ -67,7 +73,7 @@ MapFactory::CreateMap()
 CORRE_MA_OPE*
 MapFactory::CreateMatrixComputer()
 {
-  m_ptrMatComputer = new CORRE_MA_OPE(m_numNodes, m_corrFactor, m_ptrMap->GetMatDistance());
-  m_ptrMatComputer->returnNSetCorrelationFactorByCompressionRatio(m_corrFactor , m_ptrMap->GetIdtEntropy() ,static_cast<double>(m_numNodes));
+  m_ptrMatComputer = new CORRE_MA_OPE(m_numNodes, m_spatialCorrFactor, m_temporalCorrFactor, m_ptrMap->GetMatDistance());
+  m_ptrMatComputer->returnNSetCorrelationFactorByCompressionRatio(m_spatialCorrFactor , m_ptrMap->GetIdtEntropy() ,static_cast<double>(m_numNodes));
   return m_ptrMatComputer;
 }
