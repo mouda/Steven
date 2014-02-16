@@ -19,7 +19,7 @@ CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double spatialCorrFactor,
   m_temporalCorrFac(temporalCorrFactor)
 {
   DijSQ = inDijSQ;
-  totalNodes = inTotalNodes;
+  m_numNodes = inTotalNodes;
 }
 
 CORRE_MA_OPE::~CORRE_MA_OPE()
@@ -32,11 +32,11 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) co
   //m_variance = inVariance;
   //Read information from cluster structure array
   int covMaSize = 0;
-  for(int i=0;i<totalNodes;i++)
+  for(int i=0;i<m_numNodes;i++)
   {if(inClusterStru[i] == true)covMaSize++;}
   int* supSet= new int [covMaSize];
   int cursor = 0;
-  for(int i=0;i<totalNodes;i++)
+  for(int i=0;i<m_numNodes;i++)
   {
     if (inClusterStru[i]== true )
     {
@@ -67,20 +67,19 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) co
 double CORRE_MA_OPE::computeLog2Det( double inVariance, const vector<int>& vecClusterStru) const
 {
   int covMaSize = 0;
-  for(int i = 0; i < totalNodes; ++i) {
-    if(vecClusterStru[i] == true) ++covMaSize;
+  for(int i = 0; i < m_numNodes; ++i) {
+    if(vecClusterStru[i] == 1) ++covMaSize;
   }
   int* supSet= new int [covMaSize];
   int cursor = 0;
-  for(int i=0;i<totalNodes;i++)
+  for(int i=0;i<m_numNodes;i++)
   {
-    if (vecClusterStru[i]== true )
+    if (vecClusterStru[i]== 1 )
     {
       supSet[cursor]=i;
       cursor++;
     }
   }
-  int matrixLength = covMaSize * covMaSize;
   vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
   matConstComputeCovMa(covMat, covMaSize ,supSet, inVariance);
   delete [] supSet;
@@ -88,21 +87,59 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, const vector<int>& vecCl
   return matEigenCholeskyLogDet(covMat, covMaSize);
 }
 
-double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int totalNodes)
+void
+CORRE_MA_OPE::UpdateVariance(const vector<double>& curVecVariance, vector<double>& nextVecVariance, const vector<int>& vecSupport) const
+{
+
+}
+
+double 
+CORRE_MA_OPE::GetJointEntropy(const vector<int>& vecClusterStru, vector<double>& vecVariance, const double currTime, const double qBits) const
+{
+  double idtEntropy = 0.0;
+  for (int i = 0; i < m_numNodes; ++i) {
+    if (vecClusterStru[i] == 1) {
+      idtEntropy += 0.5*log2(2*3.1415*exp(1)) + log2(vecVariance[i]) + qBits;
+    }
+  }
+
+  int covMaSize = 0;
+  for(int i = 0; i < m_numNodes; ++i) {
+    if(vecClusterStru[i] == 1) ++covMaSize;
+  }
+  int* supSet= new int [covMaSize];
+  int cursor = 0;
+  for(int i=0;i<m_numNodes;i++)
+  {
+    if (vecClusterStru[i]== 1 )
+    {
+      supSet[cursor]=i;
+      cursor++;
+    }
+  }
+  vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
+  ComputeCovMaDiffVariance(covMat, covMaSize, supSet, vecVariance);
+  double redundancy = matEigenCholeskyLogDet(covMat, covMaSize);
+
+  delete [] supSet;
+  return idtEntropy - redundancy;
+}
+
+double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int numNodes)
 {
     double step =100;
     double start=0;
-    bool* inClu = new bool [totalNodes];
-    for(int i = 0; i < totalNodes; ++i )
+    bool* inClu = new bool [m_numNodes];
+    for(int i = 0; i < m_numNodes; ++i )
       inClu[i]=true;
     while(1){
         m_spatialCorrFac=start;
         double redundancy = computeLog2Det(1.0, inClu);
         redundancy = computeLog2Det(1.0, inClu);
-        double tmpCompR=1-(totalNodes*indEntropy+redundancy)/(totalNodes*indEntropy);
+        double tmpCompR=1-(m_numNodes*indEntropy+redundancy)/(m_numNodes*indEntropy);
 //        cout << "Compression Ration: " << compressionRatio << endl;
 //        cout << "Correlation Factor: " << m_spatialCorrFac <<  ";Compression Ratio=" << tmpCompR <<endl;
-//        cout << "total Entropy: " << (totalNodes * indEntropy) << ";redundancy=" << redundancy <<endl;
+//        cout << "total Entropy: " << (m_numNodes * indEntropy) << ";redundancy=" << redundancy <<endl;
 //        cout << "Ratio: " << endl;
         if( tmpCompR > compressionRatio ){
 //          cerr << tmpCompR << endl;
@@ -176,8 +213,28 @@ void CORRE_MA_OPE::matConstComputeCovMa(vector<vector<double> >& covMat, int cov
       }
     }
   }
-
 }
+
+void 
+CORRE_MA_OPE::ComputeCovMaDiffVariance(vector<vector<double> >& covMat, int covMaSize ,int* supSet, const vector<double>& vecVariance) const
+{
+  for(int i=0;i<covMaSize;i++)
+  {
+    for(int j=0;j<covMaSize;j++)
+    {
+      if( i == j ) {
+        covMat[i][j] = vecVariance.at(supSet[i]) * vecVariance.at(supSet[i]);
+      }
+      else if( i > j ) {
+        covMat[i][j] = covMat[j][i];
+      }
+      else {
+        covMat[i][j] = vecVariance.at(supSet[i])*vecVariance.at(supSet[j])* exp(-1*((double) DijSQ[supSet[i]][supSet[j]])/m_spatialCorrFac);
+      }
+    }
+  }
+}
+
 double CORRE_MA_OPE::choleskyLogDet( double const * const aryCovariance, const int& dimSize) const  
 {
   boost::numeric::ublas::matrix<double> covMatrix(dimSize,dimSize);

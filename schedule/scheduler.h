@@ -11,9 +11,10 @@ class Scheduler
     Scheduler(){};
     Scheduler(const double txTime, Map const * const, CORRE_MA_OPE const * const, 
         ClusterStructure const * const);
-//    void SetGaussianField( GaussianField* myGField ) { m_ptrGaussianField = myGField; }
+    virtual void SetGaussianField(CORRE_MA_OPE* ) = 0;
     virtual ~Scheduler();
     virtual double ScheduleOneSlot(std::vector<int>& solution) = 0;
+    virtual double ScheduleOneSlot(std::vector<int>& solution, std::vector<double>& vecVariance) = 0;
     virtual std::string PrintSelf() = 0;
     virtual double GetTxTimePerSlot() const = 0;
 };

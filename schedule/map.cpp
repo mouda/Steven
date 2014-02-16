@@ -1,8 +1,13 @@
 #include "map.h"
 
-Map::Map(const int numNodes, const int numHeads, const double maxPower, 
-    const double corrFactor, const double quantizationBits, 
-    const double bandwidthKhz, const int mapId):
+Map::Map(
+    const int numNodes, 
+    const int numHeads, 
+    const double maxPower, 
+    const double corrFactor, 
+    const double quantizationBits, 
+    const double bandwidthKhz, 
+    const int mapId):
   m_numNodes(numNodes), m_numInitHeads(numHeads), m_maxPower(maxPower), m_mapId(mapId),
   m_corrFactor(corrFactor), m_quantizationBits(quantizationBits), 
   m_bandwidthKhz(bandwidthKhz), m_systemComputer(0)

@@ -8,17 +8,17 @@
 class Slot
 {
   public:
-    Slot(Map* myMap, Scheduler* myScheduler);
+    Slot(
+        const std::vector<int>&, 
+        const std::vector<double>& 
+        );
     ~Slot();
 
     Slot* GetNextSlot() const;
 
   private:
     std::vector<int>    m_vecSupport;
-    std::vector<double> m_vecEntropy;
-    const Map*          m_ptrMap;
-    Scheduler*          m_ptrSched; 
-
+    std::vector<double> m_vecVariance;
 };
 
 #endif

@@ -91,6 +91,7 @@ int main(int argc, char *argv[])
           maxChNum, 
           totalNodes
           );
+
       Map* myMap = 0;
       CORRE_MA_OPE* myMatComputer  = 0;
       myMap = myMapFactory.CreateMap();
@@ -121,8 +122,8 @@ int main(int argc, char *argv[])
       }
       Simulator mySimulator(myMap, myCS, myScheduler, myMatComputer);
       mySimulator.SelfCheck();
-      mySimulator.Run(numSlots);
-      //mySimulator.SequentalRun(10.0);
+      //mySimulator.Run(numSlots);
+      mySimulator.SequentalRun(10.0);
     }
     else {
       cout << desc << "\n";

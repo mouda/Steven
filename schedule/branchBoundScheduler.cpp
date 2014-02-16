@@ -142,6 +142,13 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 }
 
 double
+BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecVariance)
+{
+
+  return 0;
+}
+
+double
 BranchBoundScheduler::OmegaValue(const int nodeName)
 {
   Eigen::MatrixXd matOwnership = Eigen::MatrixXd::Zero(m_numMaxHeads, m_numNodes);

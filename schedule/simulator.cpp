@@ -34,10 +34,23 @@ Simulator::SetEvents(double t_ms)
 void
 Simulator::SequentalRun(double t_ms)
 {
-  Slot* ptrCurrSlot = new Slot(m_ptrMap, m_ptrSched);
+  std::vector<int> vecSupport(m_ptrMap->GetNumNodes());
+  fill(vecSupport.begin(), vecSupport.end(), 0);
+  std::vector<double> currVecVariance(m_ptrMap->GetNumNodes());
+  fill(currVecVariance.begin(), currVecVariance.end(), 1.0);
+  std::vector<double> nextVecVariance(m_ptrMap->GetNumNodes());
+  fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
+
+  m_ptrSched->ScheduleOneSlot(vecSupport, currVecVariance);
+  cout << "Entropy: " << m_ptrGaussianField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits())<< ' ';  
+  cout << "Solution: " << toString(vecSupport) << endl;
+  m_ptrGaussianField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport);
+
+  Slot* ptrCurrSlot = new Slot(vecSupport, currVecVariance);
   Slot* ptrNextSlot = 0;
+
   while(true) {
-    ptrNextSlot = ptrCurrSlot->GetNextSlot();
+    ptrNextSlot = this->GetNextSlot(ptrCurrSlot);
     if (!ptrNextSlot) {
       break;
     }
@@ -47,6 +60,13 @@ Simulator::SequentalRun(double t_ms)
     ptrCurrSlot = ptrNextSlot;
     ptrNextSlot = 0;
   }
+}
+
+Slot*
+Simulator::GetNextSlot(Slot* mySlot)
+{
+  Slot* ptrSlot = 0;
+  return ptrSlot;
 }
 
 void

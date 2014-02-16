@@ -48,6 +48,8 @@ class Simulator
     bool CheckFeasible(const std::vector<int>& supStru, double txTime2nd);
     void Print(const std::vector<int>& );
     string toString( const std::vector<int>& );
+    Slot* GetNextSlot(Slot*);
+
     Map*                m_ptrMap;
     ClusterStructure*   m_ptrCS;
     Scheduler*          m_ptrSched;

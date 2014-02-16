@@ -31,6 +31,7 @@ class Map
     int GetMapId() const { return m_mapId; }
     int GetNumNodes() const { return m_numNodes; }
     int GetNumInitHeads() const { return m_numInitHeads; }
+    double GetQBits() const { return m_quantizationBits; }
     double GetNodeXPos(const int idx) const { return m_vecPairNodePos[idx].first;}
     double GetNodeYPos(const int idx) const { return m_vecPairNodePos[idx].second;}
     double GetGijByPair( const int lhs, const int rhs) const {return m_matGij[lhs][rhs]; } 

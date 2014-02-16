@@ -71,6 +71,13 @@ MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
 
 }
 
+double
+MaxSNRScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecVariance)
+{
+
+  return this->ScheduleOneSlot(vecSupport);
+}
+
 bool 
 MaxSNRScheduler::CheckFeasible( bool const * const supStru, double txTime2nd)
 {
