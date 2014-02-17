@@ -71,11 +71,12 @@ MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
 
 }
 
-double
+bool
 MaxSNRScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecVariance)
 {
 
-  return this->ScheduleOneSlot(vecSupport);
+  this->ScheduleOneSlot(vecSupport);
+  return true;
 }
 
 bool 

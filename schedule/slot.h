@@ -14,9 +14,13 @@ class Slot
         );
     ~Slot();
 
+
     Slot* GetNextSlot() const;
+    const std::vector<int>& GetSupport() const { return m_vecSupport; }
+    const std::vector<double>& GetVariance() const { return m_vecVariance;}
 
   private:
+
     std::vector<int>    m_vecSupport;
     std::vector<double> m_vecVariance;
 };

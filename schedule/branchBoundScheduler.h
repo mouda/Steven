@@ -37,7 +37,7 @@ class BranchBoundScheduler: public Scheduler
 
     void SetGaussianField(CORRE_MA_OPE* myGField) { m_ptrMatComputer = myGField;}
     double ScheduleOneSlot( std::vector<int>& );
-    double ScheduleOneSlot( std::vector<int>& , std::vector<double>& );
+    bool ScheduleOneSlot( std::vector<int>& , std::vector<double>& );
     string PrintSelf(){ return m_type; }
     double GetTxTimePerSlot() const { return m_txTimePerSlot; }
   private:

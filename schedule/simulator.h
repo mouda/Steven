@@ -46,6 +46,8 @@ class Simulator
 
   private:
     bool CheckFeasible(const std::vector<int>& supStru, double txTime2nd);
+    double GetTotalEntropy(const std::vector<int>& vecSupport) const;
+    double Get1stSlotEntropy(const std::vector<int>& vecSupport) const;
     void Print(const std::vector<int>& );
     string toString( const std::vector<int>& );
     Slot* GetNextSlot(Slot*);
