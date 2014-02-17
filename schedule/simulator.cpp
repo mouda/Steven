@@ -42,21 +42,18 @@ Simulator::SequentalRun(double t_ms)
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
 
   m_ptrSched->ScheduleOneSlot(vecSupport, currVecVariance);
+#ifdef DEBUG 
   cout << "Entropy: " << m_ptrGaussianField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits())<< ' ';  
   cout << "Solution: " << toString(vecSupport) << endl;
+#endif 
   m_ptrGaussianField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport);
 
   Slot* ptrCurrSlot = new Slot(vecSupport, currVecVariance);
   Slot* ptrNextSlot = 0;
 
-  while(true) {
+  for (double currTime = 0; currTime < t_ms; currTime+=m_ptrSched->GetTxTimePerSlot()) {
     ptrNextSlot = this->GetNextSlot(ptrCurrSlot);
-    if (!ptrNextSlot) {
-      break;
-    }
-    else {
-      m_listSlot.push_back(ptrNextSlot);
-    }
+    m_listSlot.push_back(ptrNextSlot);
     ptrCurrSlot = ptrNextSlot;
     ptrNextSlot = 0;
   }
@@ -188,3 +185,17 @@ Simulator::toString( const vector<int>& vec)
   }
   return ss.str();
 }
+
+
+double
+Simulator::GetTotalEntropy( const vector<int>& vecSupport) const
+{
+  return 0;
+}
+
+double
+Simulator::Get1stSlotEntropy( const vector<int>& vecSupport) const
+{
+  return 0;
+}
+

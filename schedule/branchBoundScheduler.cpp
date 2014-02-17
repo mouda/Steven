@@ -141,11 +141,10 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
   return result;
 }
 
-double
+bool
 BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecVariance)
 {
-
-  return 0;
+  return true;
 }
 
 double

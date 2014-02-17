@@ -19,3 +19,5 @@ Slot::GetNextSlot() const
 {
 
 }
+
+
