@@ -88,9 +88,13 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, const vector<int>& vecCl
 }
 
 void
-CORRE_MA_OPE::UpdateVariance(const vector<double>& curVecVariance, vector<double>& nextVecVariance, const vector<int>& vecSupport) const
+CORRE_MA_OPE::UpdateVariance(const vector<double>& curVecVariance, vector<double>& nextVecVariance, const vector<int>& vecSupport, const double timeDiff) const
 {
-
+  for (int i = 0; i < m_numNodes; ++i) {
+    if (vecSupport[i] == 1) {
+      nextVecVariance.at(i) = curVecVariance.at(i) * ( 1 - curVecVariance.at(i) * exp(timeDiff/m_temporalCorrFac) );
+    }
+  }
 }
 
 double 

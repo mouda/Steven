@@ -42,6 +42,7 @@ class BranchBoundScheduler: public Scheduler
     double GetTxTimePerSlot() const { return m_txTimePerSlot; }
   private:
     double OmegaValue( const int nodeName );
+    int  SolverHook(std::vector<int>&, Eigen::MatrixXd&  );
     int                             m_numNodes;
     int                             m_numMaxHeads;
     const double                    m_txTimePerSlot;

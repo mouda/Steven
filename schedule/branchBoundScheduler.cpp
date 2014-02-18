@@ -79,18 +79,34 @@ BranchBoundScheduler::~BranchBoundScheduler()
 double
 BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 {
+  Eigen::MatrixXd tmp = m_Signma;
+  int activeNodes = this->SolverHook(vecSupport, tmp);
+  double result = activeNodes * m_ptrMap->GetIdtEntropy() + m_ptrMatComputer->computeLog2Det(1.0, vecSupport);
+  return result;
+}
+
+bool
+BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecVariance)
+{
+  /* construct the covariance matrix */
+
+  return true;
+}
+
+int
+BranchBoundScheduler::SolverHook(std::vector<int>& vecSupport, Eigen::MatrixXd& matSigma)
+{
   Eigen::IOFormat CleanFmt(2, 0, " ", "\n", "", ";");
   Index numVariables = m_numNodes;
   Index numConstraints = 2 * m_numMaxHeads;
   Index numNz_jac_g = 2 * m_numMaxHeads * m_numNodes;
   Index numNz_h_lag = 0;
-
+  
   SmartPtr<TMINLP> tminlp = 
-    new MyTMINLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag, m_Signma,
+    new MyTMINLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag, matSigma,
         (m_A+m_B-m_C), m_ptrCS, m_ptrMap);
   MyTMINLP* rawPtr = dynamic_cast<MyTMINLP*>(GetRawPtr(tminlp));
   rawPtr->SetExtraConstraints(m_vecSched);
-//  rawPtr->PrintExtraConstraints();
 
   FILE * fp = fopen("log.out","w");
   CoinMessageHandler handler(fp);
@@ -136,15 +152,7 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
   for (int i = 0; i < m_numNodes; i++) {
     if (vecSupport[i] == 1) ++activeNodes;
   }
-
-  double result = activeNodes * m_ptrMap->GetIdtEntropy() + m_ptrMatComputer->computeLog2Det(1.0, vecSupport);
-  return result;
-}
-
-bool
-BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecVariance)
-{
-  return true;
+  return activeNodes;
 }
 
 double

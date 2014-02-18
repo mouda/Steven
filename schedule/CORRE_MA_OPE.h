@@ -25,7 +25,7 @@ public:
   double GetTemporalCorrelationFactor() const { return m_temporalCorrFac; }
   double GetDijSQByPair( const int i, const int j) const { return DijSQ[i][j]; }
 
-  void   UpdateVariance(const vector<double>& curVecVariance, vector<double>& nextVecVariance, const vector<int>& vecSupport) const;
+  void   UpdateVariance(const vector<double>& curVecVariance, vector<double>& nextVecVariance, const vector<int>& vecSupport, const double timeDiff) const;
   double GetJointEntropy(const vector<int>& vecClusterStru, vector<double>& vecVariance, const double currTime, const double qBits) const;
   double computeLog2Det(double inVariance, bool* inClusterStru ) const;
   double computeLog2Det(double inVariance, const vector<int>& vecClusterStru) const;

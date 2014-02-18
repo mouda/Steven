@@ -35,8 +35,8 @@ class Simulator
     ~Simulator();
 
     void SetEvents(double t_ms);
-    void SequentalRun(double t_ms);
-    void SequentalFree();
+    void SequentialRun(double t_ms);
+    void SequentialFree();
     void Run();
     void Run(const int numSlots);
 
