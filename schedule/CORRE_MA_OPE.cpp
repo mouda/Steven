@@ -92,7 +92,8 @@ CORRE_MA_OPE::UpdateVariance(const vector<double>& curVecVariance, vector<double
 {
   for (int i = 0; i < m_numNodes; ++i) {
     if (vecSupport[i] == 1) {
-      nextVecVariance.at(i) = curVecVariance.at(i) * ( 1 - curVecVariance.at(i) * exp(timeDiff/m_temporalCorrFac) );
+      nextVecVariance.at(i) = curVecVariance.at(i) *  exp(-1*timeDiff/m_temporalCorrFac) ;
+      cout << nextVecVariance.at(i) << endl;
     }
   }
 }

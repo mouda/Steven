@@ -89,7 +89,13 @@ bool
 BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecVariance)
 {
   /* construct the covariance matrix */
-
+  Eigen::MatrixXd mySigma = Eigen::MatrixXd::Zero(m_numNodes, m_numNodes);
+  for (int i = 0; i < m_numNodes; ++i) {
+    for (int j = 0; j < m_numNodes; ++j) {
+      mySigma(i,j) = vecVariance.at(i) * vecVariance.at(j) * exp(-1*(m_ptrMatComputer->GetDijSQByPair(i,j))/m_ptrMatComputer->GetSpatialCorrelationFactor()) ;
+    }
+  }
+  int activeNodes = this->SolverHook(vecSupport, mySigma);
   return true;
 }
 
@@ -106,7 +112,9 @@ BranchBoundScheduler::SolverHook(std::vector<int>& vecSupport, Eigen::MatrixXd& 
     new MyTMINLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag, matSigma,
         (m_A+m_B-m_C), m_ptrCS, m_ptrMap);
   MyTMINLP* rawPtr = dynamic_cast<MyTMINLP*>(GetRawPtr(tminlp));
-  rawPtr->SetExtraConstraints(m_vecSched);
+  std::vector<int> tmp(m_ptrMap->GetNumNodes(), 0);
+  rawPtr->SetExtraConstraints(tmp);
+  //rawPtr->SetExtraConstraints(m_vecSched);
 
   FILE * fp = fopen("log.out","w");
   CoinMessageHandler handler(fp);
