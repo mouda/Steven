@@ -49,7 +49,8 @@ class Simulator
     double GetTotalEntropy(const std::vector<int>& vecSupport) const;
     double Get1stSlotEntropy(const std::vector<int>& vecSupport) const;
     void Print(const std::vector<int>& );
-    string toString( const std::vector<int>& );
+    template < class T>
+    string VecToString( const std::vector<T>& );
     Slot* GetNextSlot(Slot*);
 
     Map*                m_ptrMap;

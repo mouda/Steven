@@ -43,7 +43,8 @@ Simulator::SequentialRun(double t_ms)
 
   m_ptrSched->ScheduleOneSlot(vecSupport, currVecVariance);
   cout << "Entropy: " << m_ptrGaussianField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits())<< ' ';  
-  cout << "Solution: " << toString(vecSupport) << endl;
+  cout << "Solution: " << VecToString(vecSupport) << endl;
+  cout << "Variance: " << VecToString(currVecVariance) << endl;
   m_ptrGaussianField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrCurrSlot = new Slot(vecSupport, currVecVariance);
@@ -62,17 +63,16 @@ Simulator::GetNextSlot(Slot* mySlot)
 {
   std::vector<int> vecSupport(m_ptrMap->GetNumNodes());
   fill(vecSupport.begin(), vecSupport.end(), 0);
-  std::vector<double> currVecVariance(m_ptrMap->GetNumNodes());
-  fill(currVecVariance.begin(), currVecVariance.end(), 1.0);
   std::vector<double> nextVecVariance(m_ptrMap->GetNumNodes());
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
   
-  m_ptrSched->ScheduleOneSlot(vecSupport, currVecVariance);
-  cout << "Entropy: " << m_ptrGaussianField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits())<< ' ';  
-  cout << "Solution: " << toString(vecSupport) << endl;
-  m_ptrGaussianField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
+  m_ptrSched->ScheduleOneSlot(vecSupport, mySlot->GetVariance());
+  cout << "Entropy: " << m_ptrGaussianField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits())<< ' ';  
+  cout << "Solution: " << VecToString(vecSupport) << endl;
+  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
+  m_ptrGaussianField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
-  Slot* ptrSlot = new Slot(vecSupport, currVecVariance);
+  Slot* ptrSlot = new Slot(vecSupport, nextVecVariance);
   return ptrSlot;
 }
 
@@ -139,7 +139,7 @@ Simulator::Run(const int numSlots)
   for (int i = 0; i < numSlots; ++i) {
     fill(m_vecSupport->begin(), m_vecSupport->end(), 0);
     cout <<"Entropy: " << setw(8) << m_ptrSched->ScheduleOneSlot(*m_vecSupport)<< ' ';
-    cout <<"Solution: " << toString(*m_vecSupport) << endl;
+    cout <<"Solution: " << VecToString(*m_vecSupport) << endl;
   }
 }
 
@@ -191,8 +191,9 @@ Simulator::Print( const vector<int>& vec)
   }
 }
 
+template< class T>
 string
-Simulator::toString( const vector<int>& vec)
+Simulator::VecToString( const vector<T>& vec)
 {
   stringstream ss;
   for (int i = 0; i < vec.size(); ++i) {

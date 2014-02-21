@@ -14,7 +14,7 @@ class Scheduler
     virtual void SetGaussianField(CORRE_MA_OPE* ) = 0;
     virtual ~Scheduler();
     virtual double ScheduleOneSlot(std::vector<int>& solution) = 0;
-    virtual bool ScheduleOneSlot(std::vector<int>& solution, std::vector<double>& vecVariance) = 0;
+    virtual bool ScheduleOneSlot(std::vector<int>& solution, const std::vector<double>& vecVariance) = 0;
     virtual std::string PrintSelf() = 0;
     virtual double GetTxTimePerSlot() const = 0;
 };

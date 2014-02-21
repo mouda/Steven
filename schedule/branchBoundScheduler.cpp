@@ -86,7 +86,7 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 }
 
 bool
-BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecVariance)
+BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
   /* construct the covariance matrix */
   Eigen::MatrixXd mySigma = Eigen::MatrixXd::Zero(m_numNodes, m_numNodes);

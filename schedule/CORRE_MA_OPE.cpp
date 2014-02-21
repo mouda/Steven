@@ -93,13 +93,12 @@ CORRE_MA_OPE::UpdateVariance(const vector<double>& curVecVariance, vector<double
   for (int i = 0; i < m_numNodes; ++i) {
     if (vecSupport[i] == 1) {
       nextVecVariance.at(i) = curVecVariance.at(i) *  exp(-1*timeDiff/m_temporalCorrFac) ;
-      cout << nextVecVariance.at(i) << endl;
     }
   }
 }
 
 double 
-CORRE_MA_OPE::GetJointEntropy(const vector<int>& vecClusterStru, vector<double>& vecVariance, const double currTime, const double qBits) const
+CORRE_MA_OPE::GetJointEntropy(const vector<int>& vecClusterStru, const vector<double>& vecVariance, const double currTime, const double qBits) const
 {
   double idtEntropy = 0.0;
   for (int i = 0; i < m_numNodes; ++i) {
@@ -124,10 +123,16 @@ CORRE_MA_OPE::GetJointEntropy(const vector<int>& vecClusterStru, vector<double>&
   }
   vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
   ComputeCovMaDiffVariance(covMat, covMaSize, supSet, vecVariance);
+  for (int i = 0; i < covMaSize; ++i) {
+    for (int j = 0; j < covMaSize; ++j) {
+      cout << covMat.at(i).at(j) << ' ';
+    }
+    cout << endl;
+  }
   double redundancy = matEigenCholeskyLogDet(covMat, covMaSize);
 
   delete [] supSet;
-  return idtEntropy - redundancy;
+  return idtEntropy + redundancy;
 }
 
 double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int numNodes)
