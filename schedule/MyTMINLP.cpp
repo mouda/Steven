@@ -156,11 +156,14 @@ MyTMINLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
     }
   }
   //Eigen::MatrixXd TRM((matX.transpose() * m_Signma * matX).llt().matrixL());
-  Eigen::MatrixXd TRM(m_Signma .llt().matrixL());
+  Eigen::MatrixXd TRM((matX.transpose() * m_Signma * matX).llt().matrixL());
   double sum = 0.0;
-  Eigen::MatrixXd Diagonal(TRM.diagonal());
-  for (int i = 0; i < TRM.diagonal().rows(); ++i) {
-    sum += 2.0*log2(Diagonal(i))*x[i];
+  for (int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {
+    for (int j = 0; j < m_ptrCS->GetNumHeads(); ++j) {
+      if (i == j) {
+        sum += TRM(i,j);
+      }
+    }
   }
   obj_value = -1.*(sum + m_ptrCS->GetNumHeads() * m_ptrMap->GetIdtEntropy());
   return true;
@@ -179,10 +182,9 @@ MyTMINLP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
       }
     }
   }
-  Eigen::MatrixXd TRM(m_Signma .llt().matrixL());
-  Eigen::MatrixXd Diagonal(TRM.diagonal());
+  Eigen::MatrixXd Diagonal((matX.transpose() * m_Signma * matX).inverse().diagonal());
   for (int i = 0; i < m_numVariables; ++i) {
-    grad_f[i] = 2*log2(Diagonal(i));
+    grad_f[i] = -1;
   }
   return true;
 }

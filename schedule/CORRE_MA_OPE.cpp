@@ -94,6 +94,9 @@ CORRE_MA_OPE::UpdateVariance(const vector<double>& curVecVariance, vector<double
     if (vecSupport[i] == 1) {
       nextVecVariance.at(i) = curVecVariance.at(i) *  exp(-1*timeDiff/m_temporalCorrFac) ;
     }
+    else{
+      nextVecVariance.at(i) = curVecVariance.at(i);
+    }
   }
 }
 
@@ -123,12 +126,6 @@ CORRE_MA_OPE::GetJointEntropy(const vector<int>& vecClusterStru, const vector<do
   }
   vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
   ComputeCovMaDiffVariance(covMat, covMaSize, supSet, vecVariance);
-  for (int i = 0; i < covMaSize; ++i) {
-    for (int j = 0; j < covMaSize; ++j) {
-      cout << covMat.at(i).at(j) << ' ';
-    }
-    cout << endl;
-  }
   double redundancy = matEigenCholeskyLogDet(covMat, covMaSize);
 
   delete [] supSet;
