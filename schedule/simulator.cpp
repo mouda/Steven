@@ -47,7 +47,7 @@ Simulator::SequentialRun(double t_ms)
   cout << "Variance: " << VecToString(currVecVariance) << endl;
   m_ptrGaussianField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
-  Slot* ptrCurrSlot = new Slot(vecSupport, currVecVariance);
+  Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance);
   Slot* ptrNextSlot = 0;
 
   for (double currTime = 0; currTime < t_ms; currTime+=m_ptrSched->GetTxTimePerSlot()) {
