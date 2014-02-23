@@ -28,6 +28,7 @@ MaxSNRScheduler::~MaxSNRScheduler()
 double
 MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
 {
+  CheckAllScheduled(); 
   for (int i = 1; i < m_numMaxHeads; i++) {
     double maxRxPower = 0.0;
     int headName = m_ptrCS->GetVecHeadName()[i];
@@ -48,15 +49,15 @@ MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
   }
 
   /* test the Interference */
-  while(!CheckFeasible(vecSupport, m_txTimePerSlot)){
-    for (int i = 0; i < m_numNodes; i++) {
-      if (vecSupport[i] == 1) {
-        vecSupport[i] = 0;
-        m_vecSched[i] = 0;
-        break;
-      }
-    }
-  }
+//  while(!CheckFeasible(vecSupport, m_txTimePerSlot)){
+//    for (int i = 0; i < m_numNodes; i++) {
+//      if (vecSupport[i] == 1) {
+//        vecSupport[i] = 0;
+//        //m_vecSched[i] = 0;
+//        break;
+//      }
+//    }
+//  }
   int activeNodes = 0;
   for (int i = 0; i < m_numNodes; i++) {
     if (vecSupport[i] == 1) ++activeNodes;
@@ -127,3 +128,38 @@ MaxSNRScheduler::CheckFeasible( const vector<int>& supStru, double txTime2nd)
   return true;
 }
 
+bool
+MaxSNRScheduler::CheckGroupScheduled( const int idx)
+{
+  assert(idx >= 0 && idx < m_ptrMap->GetNumInitHeads());
+  for (int i = 0; i < m_numNodes; ++i) {
+    if ( m_ptrCS->GetChNameByName(i) == i ) continue;
+    if ( m_ptrCS->GetChIdxByName(i) == idx && m_vecSched.at(i) == 0 ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool
+MaxSNRScheduler::CheckAllScheduled()
+{
+  for (int i = 0; i < m_ptrMap->GetNumInitHeads(); ++i) {
+    if (CheckGroupScheduled(i)) {
+      ResetGroupScheduled(i);
+    }
+  }
+  return true;
+}
+
+bool
+MaxSNRScheduler::ResetGroupScheduled( const int idx)
+{
+  assert(idx >= 0 && idx < m_ptrMap->GetNumInitHeads());
+  for (int i = 0; i < m_vecSched.size(); ++i) {
+    if ( m_ptrCS->GetChIdxByName(i) == idx ) {
+      m_vecSched.at(i) = 0;
+    }
+  }
+  return true;
+}
