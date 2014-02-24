@@ -1,4 +1,8 @@
-../../../schedule/simulator -n 50 -H 10 -q 8 -p 0 -b 180.0 -t 0.01 -m ../../mapFile/mapFile_uni_50_r500/mapFile_uniR500_N50_1.txt -c 0.477 -f 0.95 -A Branchbound 
-../../../schedule/simulator -n 10 -H 2 -q 8 -p 0 -b 180.0 -t 0.01 -m ../../mapFile/mapFile_uni_10_r150/mapFile_uniR150_N10_1.txt -f 0.95 -c 0.477 -A Branchbound
-../../../schedule/simulator -n 10 -H 2 -q 8 -p 0 -b 180.0 -t 0.01 -m ../../mapFile/mapFile_uni_10_r150/mapFile_uniR150_N10_1.txt -f 0.95 -c 0.477 -A Baseline
-../../../schedule/simulator -n 50 -H 10 -q 8 -p 0 -b 180.0 -t 0.01 -m ../../mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_1.txt -f 0.95 -c 0.477 -A Branchbound -s 5
+algorithm="Baseline Branchbound"
+for token in $algorithm; do
+  for (( i = 1; i <= 50; i++ )); do
+    ../../../schedule/simulator -n 50 -H 10 -q 8 -p 0 -b 180.0 -t 0.1 -m \
+    ../../mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_${i}.txt -f 0.95 -c \
+    0.477 -A $token -s 5 -T 0.5 -e 0.5 -o entropy_${token}.out
+  done
+done

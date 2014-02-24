@@ -79,4 +79,5 @@ simulator_SOURCES = main.cpp \
 		    schedFactory.h schedFactory.cpp \
 		    slot.h slot.cpp \
 		    event.h event.cpp \
+		    fileHandler.h fileHandler.cpp\
 		    simulator.h simulator.cpp 

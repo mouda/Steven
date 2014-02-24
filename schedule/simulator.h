@@ -13,6 +13,7 @@
 #include "scheduler.h"
 #include "maxSNRScheduler.h"
 #include "CORRE_MA_OPE.h"
+#include "fileHandler.h"
 
 using std::string;
 using std::pair;
@@ -29,9 +30,7 @@ using std::make_pair;
 class Simulator
 {
   public:
-    Simulator();
-    Simulator(Map* myMap,ClusterStructure* myCS, Scheduler* myScheduler );
-    Simulator(Map* myMap,ClusterStructure* myCS, Scheduler* myScheduler, CORRE_MA_OPE* myField);
+    Simulator(Map* myMap,ClusterStructure* myCS, Scheduler* myScheduler, CORRE_MA_OPE* myField, const string&);
     ~Simulator();
 
     void SetEvents(double t_ms);
@@ -63,5 +62,8 @@ class Simulator
     std::list<Slot*>    m_listSlot;
     Slot*               m_ptrSlotHead;
     std::list<Event*>   m_listEvent;
+
+    /* output  */
+    FileHandler         m_fileHandler;
 };
 #endif

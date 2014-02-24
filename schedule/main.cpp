@@ -35,10 +35,12 @@ int main(int argc, char *argv[])
   double  spatialCompressionRatio;
   double  temporalCorrFactor;
   double  txTimePerSlot;
+  double  endTime;
   int     SAIter;
   int     numSlots;
   double  fidelityRatio;
   string  mapFileName;
+  string  outputFileName;
   string  strAlgFlag;
   try {
     po::options_description desc("Allowed options");
@@ -52,11 +54,13 @@ int main(int argc, char *argv[])
       ("slot,s",                  po::value<int>(),     "Num ber of Slots")
       ("nodes,n",                 po::value<int>(),     "Initial number of nodes")
       ("heads,H",                 po::value<int>(),     "Initial number of heads")
-      ("time,t",                  po::value<double>(),  "Transmission time per slot (ms) ")
+      ("txTime,t",                  po::value<double>(),  "Transmission time per slot (ms) ")
       ("fidelity,f",              po::value<double>(),  "Fidelity ratio")
       ("iteration,i",             po::value<int>(),     "Number of iteration Simulate Annealing")
       ("spatialCorrelation,c",    po::value<double>(),  "Spatial Correlation level")
-      ("temporalCorrelation,T",   po::value<double>(), "Temproal Correlation factor");
+      ("temporalCorrelation,T",   po::value<double>(), "Temproal Correlation factor")
+      ("endTime,e",               po::value<double>(), "End simulation time")
+      ("output,o",                po::value<string>(), "Output file name");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
@@ -64,20 +68,22 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 12 ) {
+    } else if(vm.size() == 14 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
       quantizationBits =        vm["quantization"].as<double>();
       powerMaxDbm =             vm["power"].as<double>();
       bandwidthKhz =            vm["bandwidth"].as<double>();
-      txTimePerSlot =           vm["time"].as<double>();
+      txTimePerSlot =           vm["txTime"].as<double>();
       spatialCompressionRatio = vm["spatialCorrelation"].as<double>();
       temporalCorrFactor =      vm["temporalCorrelation"].as<double>();
       fidelityRatio =           vm["fidelity"].as<double>();
       mapFileName =             vm["map"].as<string>();
       strAlgFlag =              vm["algorithm"].as<string>();
       numSlots  =               vm["slot"].as<int>();
+      endTime   =               vm["endTime"].as<double>();
+      outputFileName =          vm["output"].as<string>();
 
       double powerMaxWatt = pow(10,(powerMaxDbm)/10) /1000;
 
@@ -120,10 +126,10 @@ int main(int argc, char *argv[])
         cerr << "Error: Failed to initialize scheduler" << endl;
         return 1;
       }
-      Simulator mySimulator(myMap, myCS, myScheduler, myMatComputer);
+      Simulator mySimulator(myMap, myCS, myScheduler, myMatComputer, outputFileName);
       mySimulator.SelfCheck();
       //mySimulator.Run(numSlots);
-      mySimulator.SequentialRun(0.5);
+      mySimulator.SequentialRun(endTime);
     }
     else {
       cout << desc << "\n";

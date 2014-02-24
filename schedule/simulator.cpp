@@ -1,27 +1,30 @@
 #include "simulator.h"
 
-Simulator::Simulator()
-{
 
-}
 
-Simulator::Simulator(Map* myMap, ClusterStructure* myCS, 
-    Scheduler* myScheduler):
-  m_ptrMap(myMap), m_ptrCS(myCS), m_ptrSched(myScheduler)
-{
+Simulator::Simulator(Map* myMap, 
+    ClusterStructure* myCS, 
+    Scheduler* myScheduler, 
+    CORRE_MA_OPE* myField,
+    const string& outputFileName):
+  m_ptrMap(myMap), 
+  m_ptrCS(myCS), 
+  m_ptrSched(myScheduler),
+  m_ptrGaussianField(myField),
+  m_fileHandler(outputFileName)
 
-}
-
-Simulator::Simulator(Map* myMap, ClusterStructure* myCS, 
-    Scheduler* myScheduler, CORRE_MA_OPE* myField):
-  m_ptrMap(myMap), m_ptrCS(myCS), m_ptrSched(myScheduler),
-  m_ptrGaussianField(myField)
 {
   m_vecSupport = new vector<int>(m_ptrMap->GetNumNodes());
 }
 
 Simulator::~Simulator()
 {
+  list<Slot*>::const_iterator it = m_listSlot.begin();
+  vector<double> vecEntropy;
+  for (; it != m_listSlot.end(); ++it) {
+    vecEntropy.push_back((*it)->GetEntropy());
+  }
+  m_fileHandler.WriteString(VecToString(vecEntropy));
   this->SequentialFree();
 }
 
@@ -42,13 +45,15 @@ Simulator::SequentialRun(double t_ms)
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
 
   m_ptrSched->ScheduleOneSlot(vecSupport, currVecVariance);
-  cout << "Entropy: " << m_ptrGaussianField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits())<< ' ';  
+  double entropy = m_ptrGaussianField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
+  cout << "Entropy: " << entropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
-  cout << "Variance: " << VecToString(currVecVariance) << endl;
+  //cout << "Variance: " << VecToString(currVecVariance) << endl;
   m_ptrGaussianField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
-  Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance);
+  Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, entropy);
   Slot* ptrNextSlot = 0;
+  m_listSlot.push_back(ptrCurrSlot);
 
   for (double currTime = 0; currTime < t_ms; currTime+=m_ptrSched->GetTxTimePerSlot()) {
     ptrNextSlot = this->GetNextSlot(ptrCurrSlot);
@@ -67,12 +72,13 @@ Simulator::GetNextSlot(Slot* mySlot)
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
   
   m_ptrSched->ScheduleOneSlot(vecSupport, mySlot->GetVariance());
-  cout << "Entropy: " << m_ptrGaussianField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits())<< ' ';  
+  double entropy = m_ptrGaussianField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
+  cout << "Entropy: " << entropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
-  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
+  //cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
   m_ptrGaussianField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
-  Slot* ptrSlot = new Slot(vecSupport, nextVecVariance);
+  Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, entropy);
   return ptrSlot;
 }
 
