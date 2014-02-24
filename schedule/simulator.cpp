@@ -48,7 +48,7 @@ Simulator::SequentialRun(double t_ms)
   double entropy = m_ptrGaussianField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
   cout << "Entropy: " << entropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
-  //cout << "Variance: " << VecToString(currVecVariance) << endl;
+  cout << "Variance: " << VecToString(currVecVariance) << endl;
   m_ptrGaussianField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, entropy);
@@ -75,7 +75,7 @@ Simulator::GetNextSlot(Slot* mySlot)
   double entropy = m_ptrGaussianField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
   cout << "Entropy: " << entropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
-  //cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
+  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
   m_ptrGaussianField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, entropy);
