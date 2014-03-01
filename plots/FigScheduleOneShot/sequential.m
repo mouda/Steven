@@ -10,5 +10,5 @@ str=sprintf('Branchbound');
 plot(x,mean(branchboundEntropy),'^--','LineWidth',2.0,'Color','k','DisplayName',str,'MarkerSize',10); 
 legend('show');
 xlabel('Time (ms)');
-ylabel('Entropy');
+ylabel('Entropy (bits)');
 grid on;

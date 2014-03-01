@@ -5,7 +5,6 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <armadillo>
-#include <eigen3/Eigen/Cholesky>
 
 #include "CORRE_MA_OPE.h"
 #include "../lib/cholesky.hpp"
@@ -14,12 +13,18 @@ using namespace std;
 
 CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double spatialCorrFactor, 
     double temporalCorrFactor, 
-    double **inDijSQ):
-  m_spatialCorrFac(spatialCorrFactor),
-  m_temporalCorrFac(temporalCorrFactor)
+    double **inDijSQ, double qBits):
+  m_qBits(qBits),
+  m_temporalCorrFac(temporalCorrFactor),
+  m_numNodes(inTotalNodes),
+  DijSQ(inDijSQ),
+  m_totalEntropyPerSlot(0)
 {
-  DijSQ = inDijSQ;
-  m_numNodes = inTotalNodes;
+  double idtEntropy = 0.5*log2(2*3.1415*exp(1)) + qBits;
+  returnNSetCorrelationFactorByCompressionRatio(spatialCorrFactor, idtEntropy, static_cast<double>(m_numNodes) );
+  Eigen::MatrixXd covMat(m_numNodes, m_numNodes);
+  GetCovMaVariance(covMat);
+  m_totalEntropyPerSlot = covMat.determinant();
 }
 
 CORRE_MA_OPE::~CORRE_MA_OPE()
@@ -52,7 +57,6 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) co
   //computeCovMa(covAry,covMaSize ,supSet);
   matConstComputeCovMa(covMat, covMaSize ,supSet, inVariance);
 
-//  cout << "new   : " << choleskyLogDet(covAry,covMaSize) << endl;
 //  cout << "arma  : " << armaLogDet(covAry, covMaSize) << endl;
 //  cout << "Eigen : " << eigenCholeskyLogDet(covAry, covMaSize) << endl;
 
@@ -61,7 +65,6 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) co
     delete [] supSet;
     
     return matEigenCholeskyLogDet(covMat, covMaSize);
-    //return choleskyLogDet(covAry,covMaSize);
 }
 
 double CORRE_MA_OPE::computeLog2Det( double inVariance, const vector<int>& vecClusterStru) const
@@ -130,6 +133,18 @@ CORRE_MA_OPE::GetJointEntropy(const vector<int>& vecClusterStru, const vector<do
 
   delete [] supSet;
   return idtEntropy + redundancy;
+}
+
+double
+CORRE_MA_OPE::GetRateDistortion(const vector<int>& vecClusterStru, const vector<double>& vecVariance, const double currTime, const double qBits) const
+{
+  double entropy = GetJointEntropy(vecClusterStru, vecVariance, currTime, qBits);
+  int* supSet = new int [m_numNodes];
+  for (int i = 0; i < m_numNodes; ++i) {
+    supSet[i] = i;
+  }
+  delete [] supSet;
+  return pow( m_totalEntropyPerSlot / pow(2,2*entropy), 1.0/static_cast<double>(m_numNodes));
 }
 
 double CORRE_MA_OPE::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int numNodes)
@@ -242,26 +257,24 @@ CORRE_MA_OPE::ComputeCovMaDiffVariance(vector<vector<double> >& covMat, int covM
   }
 }
 
-double CORRE_MA_OPE::choleskyLogDet( double const * const aryCovariance, const int& dimSize) const  
+void
+CORRE_MA_OPE::GetCovMaVariance(Eigen::MatrixXd& covMat) const
 {
-  boost::numeric::ublas::matrix<double> covMatrix(dimSize,dimSize);
-  for (int i = 0; i < dimSize; ++i) {
-    for (int j = 0; j < dimSize; ++j) {
-      covMatrix(i,j) = aryCovariance[ i * dimSize + j ];  
-    }
-  }
-  boost::numeric::ublas::matrix<double> TRM (dimSize, dimSize);
-  cholesky_decompose(covMatrix, TRM);
-  double logDet = 0.0;
-  for (int i = 0; i < dimSize; ++i) {
-    for (int j = 0; j < dimSize; ++j) {
-      if (i == j) {
-        logDet += log2(TRM(i,j));
+  for(int i=0;i<m_numNodes;i++)
+  {
+    for(int j=0;j<m_numNodes;j++)
+    {
+      if( i == j ) {
+        covMat(i,j) = 1.0;
+      }
+      else if( i > j ) {
+        covMat(i,j) = covMat(i,j);
+      }
+      else {
+        covMat(i,j) = 1.0 * exp(-1*((double) DijSQ[i][j])/m_spatialCorrFac);
       }
     }
   }
-  return 2*logDet;
-
 }
 
 double CORRE_MA_OPE::armaLogDet( double const * const aryCovariance, const int& dimSize)
@@ -273,8 +286,6 @@ double CORRE_MA_OPE::armaLogDet( double const * const aryCovariance, const int& 
     }
   }
   return log2(arma::det(covMatrix));
-  
-
 }
 
 double CORRE_MA_OPE::eigenCholeskyLogDet( double const * const aryCovariance, const int& dimSize) const

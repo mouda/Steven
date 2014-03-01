@@ -10,7 +10,7 @@ Simulator::Simulator(Map* myMap,
   m_ptrMap(myMap), 
   m_ptrCS(myCS), 
   m_ptrSched(myScheduler),
-  m_ptrGaussianField(myField),
+  m_ptrGField(myField),
   m_fileHandler(outputFileName)
 
 {
@@ -45,11 +45,12 @@ Simulator::SequentialRun(double t_ms)
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
 
   m_ptrSched->ScheduleOneSlot(vecSupport, currVecVariance);
-  double entropy = m_ptrGaussianField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
-  cout << "Entropy: " << entropy << ' ';  
+  double entropy = m_ptrGField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
+  double MSE = m_ptrGField->GetRateDistortion(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
+  cout << "Entropy: " << entropy << " MSE: " << MSE << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
-  cout << "Variance: " << VecToString(currVecVariance) << endl;
-  m_ptrGaussianField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
+//  cout << "Variance: " << VecToString(currVecVariance) << endl;
+  m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, entropy);
   Slot* ptrNextSlot = 0;
@@ -72,11 +73,12 @@ Simulator::GetNextSlot(Slot* mySlot)
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
   
   m_ptrSched->ScheduleOneSlot(vecSupport, mySlot->GetVariance());
-  double entropy = m_ptrGaussianField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
-  cout << "Entropy: " << entropy << ' ';  
+  double entropy = m_ptrGField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
+  double MSE = m_ptrGField->GetRateDistortion(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
+  cout << "Entropy: " << entropy << " MSE: " << MSE << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
-  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
-  m_ptrGaussianField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
+//  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
+  m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, entropy);
   return ptrSlot;
@@ -117,9 +119,9 @@ Simulator::SelfCheck()
   cout << setw(20) << "IdtEntropy:" << setw(10) << m_ptrMap->GetIdtEntropy() << endl;
   cout << endl;
   cout << "================= Gaussian Field =================" << endl;
-  cout << setw(20) << "Variance: " << setw(10) << m_ptrGaussianField->GetVariance() << endl;
-  cout << setw(20) << "Spatial Correlation Factor: " << setw(10) << m_ptrGaussianField->GetSpatialCorrelationFactor() << endl;
-  cout << setw(20) << "Temporal Correlation Factor: " << setw(10) << m_ptrGaussianField->GetTemporalCorrelationFactor() << endl;
+  cout << setw(20) << "Variance: " << setw(10) << m_ptrGField->GetVariance() << endl;
+  cout << setw(20) << "Spatial Correlation Factor: " << setw(10) << m_ptrGField->GetSpatialCorrelationFactor() << endl;
+  cout << setw(20) << "Temporal Correlation Factor: " << setw(10) << m_ptrGField->GetTemporalCorrelationFactor() << endl;
   cout << endl;
   cout << "=============== Cluster Structure  ===============" << endl;
   /* print cluster structure */
@@ -137,16 +139,6 @@ Simulator::Run()
   fill(vecSupport.begin(), vecSupport.end(), 0);
 //  cout << m_ptrSched->PrintSelf() << endl;
 //  cout << m_ptrSched->ScheduleOneSlot(vecSupport) << endl;
-}
-void 
-Simulator::Run(const int numSlots)
-{
-  fill(m_vecSupport->begin(), m_vecSupport->end(), 0);
-  for (int i = 0; i < numSlots; ++i) {
-    fill(m_vecSupport->begin(), m_vecSupport->end(), 0);
-    cout <<"Entropy: " << setw(8) << m_ptrSched->ScheduleOneSlot(*m_vecSupport)<< ' ';
-    cout <<"Solution: " << VecToString(*m_vecSupport) << endl;
-  }
 }
 
 vector<int>

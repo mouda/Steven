@@ -37,7 +37,6 @@ class Simulator
     void SequentialRun(double t_ms);
     void SequentialFree();
     void Run();
-    void Run(const int numSlots);
 
 
     bool SelfCheck();
@@ -55,7 +54,7 @@ class Simulator
     Map*                m_ptrMap;
     ClusterStructure*   m_ptrCS;
     Scheduler*          m_ptrSched;
-    CORRE_MA_OPE*       m_ptrGaussianField;
+    CORRE_MA_OPE*       m_ptrGField;
     std::vector<int>*   m_vecSupport;
 
     /* event driven simulation data structure */

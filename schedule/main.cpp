@@ -37,7 +37,6 @@ int main(int argc, char *argv[])
   double  txTimePerSlot;
   double  endTime;
   int     SAIter;
-  int     numSlots;
   double  fidelityRatio;
   string  mapFileName;
   string  outputFileName;
@@ -51,7 +50,6 @@ int main(int argc, char *argv[])
       ("quantization,q",          po::value<double>(),  "Bits of quantization")
       ("map,m",                   po::value<string>(),  "Map file name")
       ("algorithm,A",             po::value<string>(),  "Scheduling algorithm Baseline|Algorithm ")
-      ("slot,s",                  po::value<int>(),     "Num ber of Slots")
       ("nodes,n",                 po::value<int>(),     "Initial number of nodes")
       ("heads,H",                 po::value<int>(),     "Initial number of heads")
       ("txTime,t",                  po::value<double>(),  "Transmission time per slot (ms) ")
@@ -68,7 +66,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 14 ) {
+    } else if(vm.size() == 13 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -81,7 +79,6 @@ int main(int argc, char *argv[])
       fidelityRatio =           vm["fidelity"].as<double>();
       mapFileName =             vm["map"].as<string>();
       strAlgFlag =              vm["algorithm"].as<string>();
-      numSlots  =               vm["slot"].as<int>();
       endTime   =               vm["endTime"].as<double>();
       outputFileName =          vm["output"].as<string>();
 
@@ -128,7 +125,6 @@ int main(int argc, char *argv[])
       }
       Simulator mySimulator(myMap, myCS, myScheduler, myMatComputer, outputFileName);
       mySimulator.SelfCheck();
-      //mySimulator.Run(numSlots);
       mySimulator.SequentialRun(endTime);
     }
     else {
