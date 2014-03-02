@@ -11,6 +11,7 @@ class Slot
     Slot(
         const std::vector<int>&, 
         const std::vector<double>&,
+        const double,
         const double
         );
     ~Slot();
@@ -20,12 +21,14 @@ class Slot
     const std::vector<int>& GetSupport() const { return m_vecSupport; }
     const std::vector<double>& GetVariance() const { return m_vecVariance;}
     double GetEntropy() const { return m_entropy; }
+    double GetMSE() const { return m_MSE; } 
 
   private:
 
     std::vector<int>    m_vecSupport;
     std::vector<double> m_vecVariance;
     double              m_entropy;
+    double              m_MSE;
 };
 
 #endif

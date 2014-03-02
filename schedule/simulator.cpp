@@ -1,4 +1,5 @@
 #include "simulator.h"
+#include <cstdio>
 
 
 
@@ -6,12 +7,16 @@ Simulator::Simulator(Map* myMap,
     ClusterStructure* myCS, 
     Scheduler* myScheduler, 
     CORRE_MA_OPE* myField,
-    const string& outputFileName):
+    const string& entropyFName,
+    const string& MSEFName,
+    const string& solutionFName ):
   m_ptrMap(myMap), 
   m_ptrCS(myCS), 
   m_ptrSched(myScheduler),
   m_ptrGField(myField),
-  m_fileHandler(outputFileName)
+  m_entropyFHandler(entropyFName),
+  m_MSEFHandler(MSEFName),
+  m_solutionFHandler(solutionFName)
 
 {
   m_vecSupport = new vector<int>(m_ptrMap->GetNumNodes());
@@ -19,12 +24,7 @@ Simulator::Simulator(Map* myMap,
 
 Simulator::~Simulator()
 {
-  list<Slot*>::const_iterator it = m_listSlot.begin();
-  vector<double> vecEntropy;
-  for (; it != m_listSlot.end(); ++it) {
-    vecEntropy.push_back((*it)->GetEntropy());
-  }
-  m_fileHandler.WriteString(VecToString(vecEntropy));
+  /* free the memory */
   this->SequentialFree();
 }
 
@@ -52,7 +52,7 @@ Simulator::SequentialRun(double t_ms)
 //  cout << "Variance: " << VecToString(currVecVariance) << endl;
   m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
-  Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, entropy);
+  Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, entropy, MSE);
   Slot* ptrNextSlot = 0;
   m_listSlot.push_back(ptrCurrSlot);
 
@@ -80,7 +80,7 @@ Simulator::GetNextSlot(Slot* mySlot)
 //  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
   m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
 
-  Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, entropy);
+  Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, entropy, MSE);
   return ptrSlot;
 }
 
@@ -213,3 +213,89 @@ Simulator::Get1stSlotEntropy( const vector<int>& vecSupport) const
   return 0;
 }
 
+// -------------------------------------------------------------------------- //
+// @Description: for the output
+// @Provides: 
+// -------------------------------------------------------------------------- //
+
+
+void
+Simulator::WriteCS( const string& fileName )
+{
+    FILE  *fid; 
+    fid = fopen(fileName.c_str(), "a");
+    fprintf( fid,"%d\n", m_ptrMap->GetNumNodes()   );
+    fprintf( fid,"%d\n", m_ptrCS->GetNumHeads()    );
+    fprintf( fid,"%e\n", m_ptrMap->GetMaxPower()   );
+    fprintf( fid,"%e\n", m_ptrMap->GetIdtEntropy() );
+    fprintf( fid,"%d\n", 0                         );  // Payoff (objective)
+    fprintf( fid,"%d\n", 0                         );  // SA iteration
+    fprintf( fid,"%5e\n", 0.0                      );  // 1st tier tx time (ms)
+    fprintf( fid,"%5e\n", 0.0                      );  // 2nd tier tx time (ms)
+    fprintf( fid,"%5e\n", 0.0                      );  // 1st tier Joule
+    fprintf( fid,"%5e\n", 0.0                      );  // 2nd tier Joule
+
+
+    for ( int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {
+        for( int j = 0; j < m_ptrMap->GetNumNodes(); ++j) {
+          if (m_ptrCS->GetChIdxByName(j) == i ) 
+            fprintf(fid,"%d ", 1);
+          else 
+            fprintf(fid,"%d ", 0);
+        }
+        fprintf(fid,"\n");
+    }
+
+    for ( int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {
+        fprintf(fid,"%d ", m_ptrCS->GetVecHeadName().at(i)+1);
+    }
+    fprintf(fid,"\n");
+
+    /* updated power for each node */
+    for ( int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+        fprintf(fid,"%E ", 0);
+    }
+    fprintf(fid,"\n");
+
+    list<list<int> >::const_iterator itRows = m_ptrCS->GetListCluMemeber().begin();
+    for (; itRows != m_ptrCS->GetListCluMemeber().end(); ++itRows ) {
+        list <int>::const_iterator itCols = itRows->begin();
+        for (; itCols!=itRows->end(); itCols++) fprintf(fid,"%d ", (*itCols)+1 );
+        fprintf(fid,"\n");
+    }
+
+    fprintf(fid,"\n");
+    fclose(fid);
+}
+
+void
+Simulator::WriteEntropy()
+{
+  list<Slot*>::const_iterator it = m_listSlot.begin();
+  vector<double> vecEntropy;
+  for (; it != m_listSlot.end(); ++it) {
+    vecEntropy.push_back((*it)->GetEntropy());
+  }
+  m_entropyFHandler.WriteString(VecToString(vecEntropy));
+}
+
+
+void
+Simulator::WriteMSE()
+{
+  vector<double> vecMSE;
+  list<Slot*>::const_iterator it = m_listSlot.begin();
+  for (; it != m_listSlot.end(); ++it) {
+    vecMSE.push_back((*it)->GetMSE());
+  }
+  m_MSEFHandler.WriteString(VecToString(vecMSE));
+}
+
+void 
+Simulator::WriteSolution()
+{
+  list<Slot*>::const_iterator it = m_listSlot.begin();
+  for (; it != m_listSlot.end(); ++it) {
+    m_solutionFHandler.WriteString(VecToString((*it)->GetSupport()));
+  }
+}

@@ -36,8 +36,8 @@ class ClusterStructure
 
     list<list<int> >  m_listCluMember;
     vector<int>       m_vecSupport;
-    vector<int>       m_vecHeadName;
-    vector<int>       m_vecCHIdxForNodes;
-    vector<int>       m_vecCHNameForNodes;
+    vector<int>       m_vecHeadName;        // size = # of heads
+    vector<int>       m_vecCHIdxForNodes;   // size = # of nodes
+    vector<int>       m_vecCHNameForNodes;  // size = # of nodes
 };
 #endif

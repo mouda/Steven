@@ -30,13 +30,21 @@ using std::make_pair;
 class Simulator
 {
   public:
-    Simulator(Map* myMap,ClusterStructure* myCS, Scheduler* myScheduler, CORRE_MA_OPE* myField, const string&);
+    Simulator(Map* myMap,ClusterStructure* myCS, Scheduler* myScheduler, CORRE_MA_OPE* myField, 
+        const string&,
+        const string&,
+        const string& );
     ~Simulator();
 
     void SetEvents(double t_ms);
     void SequentialRun(double t_ms);
     void SequentialFree();
     void Run();
+
+    void WriteCS( const string& );
+    void WriteEntropy();
+    void WriteMSE();
+    void WriteSolution();
 
 
     bool SelfCheck();
@@ -63,6 +71,8 @@ class Simulator
     std::list<Event*>   m_listEvent;
 
     /* output  */
-    FileHandler         m_fileHandler;
+    FileHandler         m_entropyFHandler;
+    FileHandler         m_MSEFHandler;
+    FileHandler         m_solutionFHandler;
 };
 #endif

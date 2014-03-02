@@ -39,7 +39,11 @@ int main(int argc, char *argv[])
   int     SAIter;
   double  fidelityRatio;
   string  mapFileName;
-  string  outputFileName;
+  /* output file name string */
+  string  CSFName;
+  string  entropyFName;
+  string  MSEFName;
+  string  solutionFName;
   string  strAlgFlag;
   try {
     po::options_description desc("Allowed options");
@@ -58,7 +62,10 @@ int main(int argc, char *argv[])
       ("spatialCorrelation,c",    po::value<double>(),  "Spatial Correlation level")
       ("temporalCorrelation,T",   po::value<double>(), "Temproal Correlation factor")
       ("endTime,e",               po::value<double>(), "End simulation time")
-      ("output,o",                po::value<string>(), "Output file name");
+      ("ClusterStructureOutput,C",po::value<string>(), "Cluster structure output file name")
+      ("EntropyOutput,E",         po::value<string>(), "Entropy output file name")
+      ("MSEOutput,M",             po::value<string>(), "MSE output file name")
+      ("SolutionOutput,S",        po::value<string>(), "Solution output file name");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
@@ -66,7 +73,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 13 ) {
+    } else if(vm.size() > 13 && vm.size() <= 16 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -80,7 +87,20 @@ int main(int argc, char *argv[])
       mapFileName =             vm["map"].as<string>();
       strAlgFlag =              vm["algorithm"].as<string>();
       endTime   =               vm["endTime"].as<double>();
-      outputFileName =          vm["output"].as<string>();
+
+      /* output control */
+      if (vm.count("ClusterStructureOutput")) {
+        CSFName = vm["ClusterStructureOutput"].as<string>();
+      }
+      if (vm.count("EntropyOutput")) {
+        entropyFName = vm["EntropyOutput"].as<string>();
+      }
+      if (vm.count("MSEOutput")) {
+        MSEFName = vm["MSEOutput"].as<string>();
+      }
+      if (vm.count("SolutionOutput")) {
+        solutionFName = vm["SolutionOutput"].as<string>();
+      }
 
       double powerMaxWatt = pow(10,(powerMaxDbm)/10) /1000;
 
@@ -123,9 +143,23 @@ int main(int argc, char *argv[])
         cerr << "Error: Failed to initialize scheduler" << endl;
         return 1;
       }
-      Simulator mySimulator(myMap, myCS, myScheduler, myMatComputer, outputFileName);
+      Simulator mySimulator(myMap, myCS, myScheduler, myMatComputer, entropyFName, MSEFName, solutionFName);
       mySimulator.SelfCheck();
       mySimulator.SequentialRun(endTime);
+
+      /* output control */
+      if (vm.count("ClusterStructureOutput")) {
+        mySimulator.WriteCS( CSFName );
+      }
+      if (vm.count("EntropyOutput")) {
+        mySimulator.WriteEntropy();
+      }
+      if (vm.count("MSEOutput")) {
+        mySimulator.WriteMSE();
+      }
+      if (vm.count("SolutionOutput")) {
+        mySimulator.WriteSolution();
+      }
     }
     else {
       cout << desc << "\n";
