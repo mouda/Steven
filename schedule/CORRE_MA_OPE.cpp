@@ -91,14 +91,21 @@ double CORRE_MA_OPE::computeLog2Det( double inVariance, const vector<int>& vecCl
 }
 
 void
-CORRE_MA_OPE::UpdateVariance(const vector<double>& curVecVariance, vector<double>& nextVecVariance, const vector<int>& vecSupport, const double timeDiff) const
+CORRE_MA_OPE::UpdateVariance(const vector<double>& curVecVariance, vector<double>& nextVecVariance, const vector<int>& vecSupport, vector<int>& vecSlots, const double timeDiff) const
 {
   for (int i = 0; i < m_numNodes; ++i) {
     if (vecSupport[i] == 1) {
-      nextVecVariance.at(i) = curVecVariance.at(i) * (1 - pow(exp(-1*timeDiff/m_temporalCorrFac),2)) ;
+      vecSlots.at(i) = 1;
+      nextVecVariance.at(i) = 1.0 * (1 - pow(exp(-1*timeDiff/m_temporalCorrFac),2)) ;
     }
     else{
-      nextVecVariance.at(i) = curVecVariance.at(i);
+      if (vecSlots.at(i) == 0) {
+        nextVecVariance.at(i) = 1.0 ;
+      }
+      else {
+        vecSlots.at(i) += 1;
+        nextVecVariance.at(i) = 1.0 * (1 - pow(exp(-1*timeDiff*static_cast<double>(vecSlots[i])/m_temporalCorrFac),2));
+      }
     }
   }
 }

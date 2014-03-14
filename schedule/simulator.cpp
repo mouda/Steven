@@ -9,14 +9,16 @@ Simulator::Simulator(Map* myMap,
     CORRE_MA_OPE* myField,
     const string& entropyFName,
     const string& MSEFName,
-    const string& solutionFName ):
+    const string& solutionFName,
+    const string& supportNumFName ):
   m_ptrMap(myMap), 
   m_ptrCS(myCS), 
   m_ptrSched(myScheduler),
   m_ptrGField(myField),
   m_entropyFHandler(entropyFName),
   m_MSEFHandler(MSEFName),
-  m_solutionFHandler(solutionFName)
+  m_solutionFHandler(solutionFName),
+  m_supportNumFHandler(supportNumFName)
 
 {
   m_vecSupport = new vector<int>(m_ptrMap->GetNumNodes());
@@ -43,6 +45,8 @@ Simulator::SequentialRun(double t_ms)
   fill(currVecVariance.begin(), currVecVariance.end(), 1.0);
   std::vector<double> nextVecVariance(m_ptrMap->GetNumNodes());
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
+  std::vector<int> vecSlots(m_ptrMap->GetNumNodes());
+  fill(vecSlots.begin(), vecSlots.end(), 0);
 
   m_ptrSched->ScheduleOneSlot(vecSupport, currVecVariance);
   double entropy = m_ptrGField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
@@ -50,14 +54,14 @@ Simulator::SequentialRun(double t_ms)
   cout << "Entropy: " << entropy << " MSE: " << MSE << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
 //  cout << "Variance: " << VecToString(currVecVariance) << endl;
-  m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
+  m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, vecSlots ,m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, entropy, MSE);
   Slot* ptrNextSlot = 0;
   m_listSlot.push_back(ptrCurrSlot);
 
   for (double currTime = 0; currTime < t_ms; currTime+=m_ptrSched->GetTxTimePerSlot()) {
-    ptrNextSlot = this->GetNextSlot(ptrCurrSlot);
+    ptrNextSlot = this->GetNextSlot(ptrCurrSlot, vecSlots);
     m_listSlot.push_back(ptrNextSlot);
     ptrCurrSlot = ptrNextSlot;
     ptrNextSlot = 0;
@@ -65,7 +69,7 @@ Simulator::SequentialRun(double t_ms)
 }
 
 Slot*
-Simulator::GetNextSlot(Slot* mySlot)
+Simulator::GetNextSlot(Slot* mySlot, std::vector<int>& vecSlots)
 {
   std::vector<int> vecSupport(m_ptrMap->GetNumNodes());
   fill(vecSupport.begin(), vecSupport.end(), 0);
@@ -78,7 +82,7 @@ Simulator::GetNextSlot(Slot* mySlot)
   cout << "Entropy: " << entropy << " MSE: " << MSE << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
 //  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
-  m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, m_ptrSched->GetTxTimePerSlot());
+  m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, vecSlots, m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, entropy, MSE);
   return ptrSlot;
@@ -298,4 +302,22 @@ Simulator::WriteSolution()
   for (; it != m_listSlot.end(); ++it) {
     m_solutionFHandler.WriteString(VecToString((*it)->GetSupport()));
   }
+}
+
+void
+Simulator::WriteSupport()
+{
+  list<Slot*>::const_iterator it = m_listSlot.begin();
+  vector<int> vecSupportNumber;
+  for (; it != m_listSlot.end(); ++it) {
+    vector<int> vecTmp = (*it)->GetSupport();
+    int counter = 0;
+    for (int i = 0; i < vecTmp.size(); ++i) {
+      if ( vecTmp.at(i) == 1) {
+        ++counter;
+      }
+    }
+    vecSupportNumber.push_back(counter);
+  }
+  m_supportNumFHandler.WriteString(VecToString(vecSupportNumber));
 }

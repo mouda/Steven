@@ -33,6 +33,7 @@ class Simulator
     Simulator(Map* myMap,ClusterStructure* myCS, Scheduler* myScheduler, CORRE_MA_OPE* myField, 
         const string&,
         const string&,
+        const string&,
         const string& );
     ~Simulator();
 
@@ -45,6 +46,7 @@ class Simulator
     void WriteEntropy();
     void WriteMSE();
     void WriteSolution();
+    void WriteSupport();
 
 
     bool SelfCheck();
@@ -57,7 +59,7 @@ class Simulator
     void Print(const std::vector<int>& );
     template < class T>
     string VecToString( const std::vector<T>& );
-    Slot* GetNextSlot(Slot*);
+    Slot* GetNextSlot(Slot*, std::vector<int>& );
 
     Map*                m_ptrMap;
     ClusterStructure*   m_ptrCS;
@@ -74,5 +76,6 @@ class Simulator
     FileHandler         m_entropyFHandler;
     FileHandler         m_MSEFHandler;
     FileHandler         m_solutionFHandler;
+    FileHandler         m_supportNumFHandler;
 };
 #endif

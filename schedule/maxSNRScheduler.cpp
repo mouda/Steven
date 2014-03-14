@@ -49,15 +49,15 @@ MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
   }
 
   /* test the Interference */
-//  while(!CheckFeasible(vecSupport, m_txTimePerSlot)){
-//    for (int i = 0; i < m_numNodes; i++) {
-//      if (vecSupport[i] == 1) {
-//        vecSupport[i] = 0;
-//        //m_vecSched[i] = 0;
-//        break;
-//      }
-//    }
-//  }
+  while(!CheckFeasible(vecSupport, m_txTimePerSlot)){
+    for (int i = 0; i < m_numNodes; i++) {
+      if (vecSupport[i] == 1) {
+        vecSupport[i] = 0;
+        //m_vecSched[i] = 0;
+        break;
+      }
+    }
+  }
   int activeNodes = 0;
   for (int i = 0; i < m_numNodes; i++) {
     if (vecSupport[i] == 1) ++activeNodes;
