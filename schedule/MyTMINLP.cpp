@@ -103,7 +103,7 @@ MyTMINLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
 //    x_u[i] = 1.0;
 //  }
   for (int i = 0; i < m_numVariables; ++i) {
-    if (m_vecExtraConstraint.at(i) == 1) {
+    if (m_vecExtraConstraint.at(i) == 1 ||  m_ptrCS->GetChNameByName(i) == i) {
       x_l[i] = 0.0;
       x_u[i] = 0.0;
     }

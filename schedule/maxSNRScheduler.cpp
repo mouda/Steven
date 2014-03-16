@@ -29,7 +29,7 @@ double
 MaxSNRScheduler::ScheduleOneSlot( vector<int>& vecSupport )
 {
   CheckAllScheduled(); 
-  for (int i = 1; i < m_numMaxHeads; i++) {
+  for (int i = 0; i < m_numMaxHeads; i++) {
     double maxRxPower = 0.0;
     int headName = m_ptrCS->GetVecHeadName()[i];
     int maxRxPowerNode = -1;

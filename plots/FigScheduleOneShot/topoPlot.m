@@ -12,7 +12,7 @@ figure;
 
 
 CSPath = ['cs_baseline_N50.out'];
-SchedulePath = ['solution_baseline_N50.out'];
+SchedulePath = ['data/solution_Branchbound_N50.out'];
 mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_1.txt'];
 matSolution = dlmread(SchedulePath);
 
