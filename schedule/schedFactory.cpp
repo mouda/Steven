@@ -31,10 +31,15 @@ SchedulerFactory::CreateScheduler( const string& scheduleType)
         m_ptrMap, m_ptrMatComputer, m_ptrCS); 
     return m_ptrSched; 
   }
-  if (scheduleType == "Branchbound") {
+  else if (scheduleType == "Branchbound") {
     m_ptrSched = new BranchBoundScheduler(m_txTimePerSlot, m_bandwidthKhz, 
         m_ptrMap, m_ptrMatComputer, m_ptrCS); 
     return m_ptrSched; 
+  }
+  else if (scheduleType == "GreedyPhysical") {
+    m_ptrSched = new GreedyPhysical(m_txTimePerSlot, m_bandwidthKhz,
+        m_ptrMap, m_ptrMatComputer, m_ptrCS);
+    return m_ptrSched;
   }
   else{
     return NULL;

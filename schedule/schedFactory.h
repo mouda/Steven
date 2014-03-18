@@ -3,6 +3,7 @@
 #include "scheduler.h"
 #include "branchBoundScheduler.h"
 #include "maxSNRScheduler.h"
+#include "greedyPhysical.h"
 
 #include <string>
 #include <iostream>
