@@ -17,6 +17,7 @@ typedef graph_traits<BglGraph>::vertex_descriptor     BglVertex;
 typedef graph_traits<BglGraph>::edge_descriptor       BglEdge;
 typedef graph_traits<BglGraph>::out_edge_iterator     OutEdgeIter;
 typedef property_map<BglGraph, vertex_index_t>::type  BglVertexMap;
+typedef property_map<BglGraph, edge_weight_t>::type   BglEdgeMap;
 typedef BglGraph::edge_property_type                  BglEdgeWeight;
 typedef graph_traits<BglGraph>::edge_iterator         EdgeIter;
 typedef graph_traits<BglGraph>::vertex_iterator       VertexIter;
@@ -43,6 +44,8 @@ class GreedyPhysical: public Scheduler
     double GetTxTimePerSlot() const { return m_txTimePerSlot; }
     
   private:
+    double GetInterferenceNumber(const int source, const int target );
+    double GetConflictEdgeWeight(const int source, const int target);
 
     int                             m_numNodes;
     int                             m_numMaxHeads;

@@ -46,9 +46,11 @@ GreedyPhysical::GreedyPhysical( const double txTime,
     for (int j = 0; j < m_ptrMap->GetNumNodes(); ++j) {
       if (m_ptrCS->GetChNameByName(j) == j) continue; /* head doesn't transmit */ 
       if (m_ptrCS->GetChNameByName(i) != m_ptrCS->GetChNameByName(j)) {
+        property<edge_weight_t, double> tmpProperty(GetConflictEdgeWeight(i,j)); 
         add_edge(
             vertex(i, m_conflictGraph),
             vertex(j, m_conflictGraph),
+            tmpProperty,
             m_conflictGraph
             );
       }
@@ -57,11 +59,12 @@ GreedyPhysical::GreedyPhysical( const double txTime,
 
   EdgeIter ep, ep_end;
   BglVertex u, v;
-  BglVertexMap indices = get( vertex_index, m_conflictGraph);
+  BglVertexMap vertexMap = get( vertex_index, m_conflictGraph);
+  BglEdgeMap   edgeMap = get( edge_weight, m_conflictGraph);
   for (tie(ep,ep_end) = edges(m_conflictGraph); ep != ep_end; ++ep) {
     u = source(*ep, m_conflictGraph);
     v = target(*ep, m_conflictGraph);
-    cout << "u: " << indices[u] <<" v: " << indices[v] << endl;
+    cout << "u: " << vertexMap[u] <<" v: " << vertexMap[v] << " weight " << edgeMap[*ep] <<endl;
   }
 
 
@@ -73,12 +76,40 @@ GreedyPhysical::~GreedyPhysical()
 }
 
 
-double GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport )
+double 
+GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport )
 {
   return 0.0;
 }
 
-bool GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
+bool 
+GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
   return true;
+}
+
+double
+GreedyPhysical::GetInterferenceNumber( const int source, const int target)
+{
+  /* we only need to consider the rx condition of cluster head */
+  list<list<int> >::const_iterator itRow = m_ptrCS->GetListCluMemeber().begin();
+  double counter = 0.0;
+  BglVertex u, v;
+  for (; itRow != m_ptrCS->GetListCluMemeber().end(); ++itRow) {
+    list<int>::const_iterator itCol = itRow->begin();
+    if (m_ptrCS->GetChNameByName(*itCol) == target) continue; /* we don't need to the self cluster */ 
+    for (; itCol != itRow->end(); ++itCol) {
+      u = vertex(source, m_conflictGraph);
+      v = vertex(*itCol, m_conflictGraph);
+    }
+  }
+
+  return 0;
+}
+
+/* rx power */
+double 
+GreedyPhysical::GetConflictEdgeWeight( const int source, const int target)
+{
+  return m_ptrMap->GetGijByPair(source, target) * m_maxPower;
 }
