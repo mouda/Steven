@@ -24,23 +24,9 @@ GreedyPhysical::GreedyPhysical( const double txTime,
   m_vecSched.resize(m_numNodes);
   fill(m_vecSched.begin(), m_vecSched.end(), 0);
 
-  /* construct the communicate graph */
-  list<list<int> >::const_iterator  itRow = m_ptrCS->GetListCluMemeber().begin(); 
-  for (; itRow != m_ptrCS->GetListCluMemeber().end(); ++itRow) {
-    list<int>::const_iterator itCol = itRow->begin();
-    for (; itCol != itRow->end(); ++itCol) {
-      if (m_ptrCS->GetChNameByName(*itCol) != *itCol) {
-        add_edge(
-            vertex(*itCol, m_commGraph),  /* memeber */
-            vertex(m_ptrCS->GetChNameByName(*itCol), m_commGraph), /* cluster head */
-            m_commGraph
-            );
-      } 
-    }
-  }
 
   /* construct the conflict graph */
-  itRow = m_ptrCS->GetListCluMemeber().begin();
+  list<list<int> >::const_iterator  itRow = m_ptrCS->GetListCluMemeber().begin();
   for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
     if (m_ptrCS->GetChNameByName(i) == i) continue; /* head doesn't transmit */ 
     for (int j = 0; j < m_ptrMap->GetNumNodes(); ++j) {
@@ -57,6 +43,23 @@ GreedyPhysical::GreedyPhysical( const double txTime,
     }
   }
 
+  /* construct the communicate graph */
+  itRow = m_ptrCS->GetListCluMemeber().begin(); 
+  for (; itRow != m_ptrCS->GetListCluMemeber().end(); ++itRow) {
+    list<int>::const_iterator itCol = itRow->begin();
+    for (; itCol != itRow->end(); ++itCol) {
+      if (m_ptrCS->GetChNameByName(*itCol) != *itCol) {
+        GetInterferenceNumber(*itCol, m_ptrCS->GetChNameByName(*itCol));
+        add_edge(
+            vertex(*itCol, m_commGraph),  /* memeber */
+            vertex(m_ptrCS->GetChNameByName(*itCol), m_commGraph), /* cluster head */
+            m_commGraph
+            );
+      } 
+    }
+  }
+
+#ifdef DEBUG
   EdgeIter ep, ep_end;
   BglVertex u, v;
   BglVertexMap vertexMap = get( vertex_index, m_conflictGraph);
@@ -66,7 +69,7 @@ GreedyPhysical::GreedyPhysical( const double txTime,
     v = target(*ep, m_conflictGraph);
     cout << "u: " << vertexMap[u] <<" v: " << vertexMap[v] << " weight " << edgeMap[*ep] <<endl;
   }
-
+#endif
 
 }
 
@@ -95,12 +98,18 @@ GreedyPhysical::GetInterferenceNumber( const int source, const int target)
   list<list<int> >::const_iterator itRow = m_ptrCS->GetListCluMemeber().begin();
   double counter = 0.0;
   BglVertex u, v;
+  BglEdgeMap edgeMap = get( edge_weight, m_conflictGraph);
   for (; itRow != m_ptrCS->GetListCluMemeber().end(); ++itRow) {
     list<int>::const_iterator itCol = itRow->begin();
     if (m_ptrCS->GetChNameByName(*itCol) == target) continue; /* we don't need to the self cluster */ 
     for (; itCol != itRow->end(); ++itCol) {
+      if (*itCol == m_ptrCS->GetChNameByName(*itCol)) continue;
       u = vertex(source, m_conflictGraph);
       v = vertex(*itCol, m_conflictGraph);
+      double rxPower =  edgeMap[edge(u,v,m_conflictGraph).first];
+      if (m_ptrMap->GetIdtEntropy() > m_bandwidthKhz*m_txTimePerSlot*log2(1.0+ rxPower 
+            / (m_ptrMap->GetNoise() + rxPower))) {
+      }
     }
   }
 
