@@ -29,13 +29,13 @@ GreedyPhysical::GreedyPhysical( const double txTime,
   list<list<int> >::const_iterator  itRow = m_ptrCS->GetListCluMemeber().begin();
   for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
     if (m_ptrCS->GetChNameByName(i) == i) continue; /* head doesn't transmit */ 
-    for (int j = 0; j < m_ptrMap->GetNumNodes(); ++j) {
-      if (m_ptrCS->GetChNameByName(j) == j) continue; /* head doesn't transmit */ 
-      if (m_ptrCS->GetChNameByName(i) != m_ptrCS->GetChNameByName(j)) {
-        property<edge_weight_t, double> tmpProperty(GetConflictEdgeWeight(i,j)); 
+    for (int j = 0; j < m_ptrCS->GetNumHeads(); ++j) {
+      int headName = m_ptrCS->GetVecHeadName()[j];
+      if (m_ptrCS->GetChIdxByName(i) != j) {
+        property<edge_weight_t, double> tmpProperty(GetConflictEdgeWeight(i,headName)); 
         add_edge(
             vertex(i, m_conflictGraph),
-            vertex(j, m_conflictGraph),
+            vertex(headName, m_conflictGraph),
             tmpProperty,
             m_conflictGraph
             );
@@ -49,10 +49,12 @@ GreedyPhysical::GreedyPhysical( const double txTime,
     list<int>::const_iterator itCol = itRow->begin();
     for (; itCol != itRow->end(); ++itCol) {
       if (m_ptrCS->GetChNameByName(*itCol) != *itCol) {
-        GetInterferenceNumber(*itCol, m_ptrCS->GetChNameByName(*itCol));
+        double interferenceNum = GetInterferenceNumber(*itCol, m_ptrCS->GetChNameByName(*itCol));
+        property<edge_weight_t, double> tmpProperty(interferenceNum);
         add_edge(
             vertex(*itCol, m_commGraph),  /* memeber */
             vertex(m_ptrCS->GetChNameByName(*itCol), m_commGraph), /* cluster head */
+            tmpProperty,
             m_commGraph
             );
       } 
@@ -103,17 +105,21 @@ GreedyPhysical::GetInterferenceNumber( const int source, const int target)
     list<int>::const_iterator itCol = itRow->begin();
     if (m_ptrCS->GetChNameByName(*itCol) == target) continue; /* we don't need to the self cluster */ 
     for (; itCol != itRow->end(); ++itCol) {
-      if (*itCol == m_ptrCS->GetChNameByName(*itCol)) continue;
-      u = vertex(source, m_conflictGraph);
-      v = vertex(*itCol, m_conflictGraph);
+      if (*itCol == m_ptrCS->GetChNameByName(*itCol)) continue; /* cannot be head */
+
+      u = vertex(source, m_conflictGraph);  /* the interferencing node */
+      v = vertex(m_ptrCS->GetChNameByName(*itCol), m_conflictGraph); /* the interferenced node */
       double rxPower =  edgeMap[edge(u,v,m_conflictGraph).first];
-      if (m_ptrMap->GetIdtEntropy() > m_bandwidthKhz*m_txTimePerSlot*log2(1.0+ rxPower 
+
+      int headName = m_ptrCS->GetChNameByName(*itCol);
+      if (m_ptrMap->GetIdtEntropy() > m_bandwidthKhz*m_txTimePerSlot*log2(1.0+ m_ptrMap->GetMaxPower() * m_ptrMap->GetGijByPair(*itCol,headName) 
             / (m_ptrMap->GetNoise() + rxPower))) {
+        ++counter;
       }
     }
   }
 
-  return 0;
+  return counter;
 }
 
 /* rx power */
