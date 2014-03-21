@@ -3,6 +3,9 @@
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/directed_graph.hpp> 
+#include <boost/bind.hpp>
+#include <queue>
+
 
 #include "scheduler.h"
 
@@ -45,6 +48,8 @@ class GreedyPhysical: public Scheduler
     
   private:
     double GetInterferenceNumber(const int source, const int target );
+    double GetInterferenceNumber(const int source, const int target, const std::vector<BglEdge>& );
+    int  GreedySelectOneNode();
     double GetConflictEdgeWeight(const int source, const int target);
 
     int                             m_numNodes;

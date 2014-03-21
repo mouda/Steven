@@ -96,6 +96,13 @@ GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<
 double
 GreedyPhysical::GetInterferenceNumber( const int source, const int target)
 {
+  std::vector<BglEdge> nullVector;
+  return GetInterferenceNumber( source, target, nullVector);
+}
+
+double
+GreedyPhysical::GetInterferenceNumber( const int source, const int target, const std::vector<BglEdge>& vecEdge)
+{
   /* we only need to consider the rx condition of cluster head */
   list<list<int> >::const_iterator itRow = m_ptrCS->GetListCluMemeber().begin();
   double counter = 0.0;
@@ -110,7 +117,7 @@ GreedyPhysical::GetInterferenceNumber( const int source, const int target)
       u = vertex(source, m_conflictGraph);  /* the interferencing node */
       v = vertex(m_ptrCS->GetChNameByName(*itCol), m_conflictGraph); /* the interferenced node */
       double rxPower =  edgeMap[edge(u,v,m_conflictGraph).first];
-
+      for (int i = 0; i < vecEdge.size(); ++i) rxPower+=edgeMap[vecEdge.at(i)]; 
       int headName = m_ptrCS->GetChNameByName(*itCol);
       if (m_ptrMap->GetIdtEntropy() > m_bandwidthKhz*m_txTimePerSlot*log2(1.0+ m_ptrMap->GetMaxPower() * m_ptrMap->GetGijByPair(*itCol,headName) 
             / (m_ptrMap->GetNoise() + rxPower))) {
@@ -118,8 +125,24 @@ GreedyPhysical::GetInterferenceNumber( const int source, const int target)
       }
     }
   }
-
   return counter;
+} 
+
+int 
+GreedyPhysical::GreedySelectOneNode()
+{
+  std::vector<std::pair<BglEdge, double> > vecPairEdge;
+  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+    if (m_vecSched.at(i) == 1) continue; 
+    if (m_ptrCS->GetChNameByName(i) == i ) continue; 
+    BglVertex u, v;
+    BglEdgeMap edgeMap = get( edge_weight, m_conflictGraph);
+    u = vertex(i, m_commGraph);
+    v = vertex(m_ptrCS->GetChNameByName(i), m_commGraph);
+    BglEdge myEdge = edge(u, v, m_commGraph).first;
+
+    vecPairEdge.push_back(std::make_pair( myEdge, edgeMap[myEdge]));
+  }
 }
 
 /* rx power */
