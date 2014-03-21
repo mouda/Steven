@@ -32,7 +32,7 @@ GreedyPhysical::GreedyPhysical( const double txTime,
     for (int j = 0; j < m_ptrCS->GetNumHeads(); ++j) {
       int headName = m_ptrCS->GetVecHeadName()[j];
       if (m_ptrCS->GetChIdxByName(i) != j) {
-        property<edge_weight_t, double> tmpProperty(GetConflictEdgeWeight(i,headName)); 
+        property<edge_weight_t, double> tmpProperty(GetRxPower(i,headName)); 
         add_edge(
             vertex(i, m_conflictGraph),
             vertex(headName, m_conflictGraph),
@@ -49,8 +49,7 @@ GreedyPhysical::GreedyPhysical( const double txTime,
     list<int>::const_iterator itCol = itRow->begin();
     for (; itCol != itRow->end(); ++itCol) {
       if (m_ptrCS->GetChNameByName(*itCol) != *itCol) {
-        double interferenceNum = GetInterferenceNumber(*itCol, m_ptrCS->GetChNameByName(*itCol));
-        property<edge_weight_t, double> tmpProperty(interferenceNum);
+        property<edge_weight_t, double> tmpProperty(GetRxPower(*itCol,m_ptrCS->GetChNameByName(*itCol)));
         add_edge(
             vertex(*itCol, m_commGraph),  /* memeber */
             vertex(m_ptrCS->GetChNameByName(*itCol), m_commGraph), /* cluster head */
@@ -90,6 +89,7 @@ GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport )
 bool 
 GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
+  /* Get the scheduled nodes */
   return true;
 }
 
@@ -129,25 +129,13 @@ GreedyPhysical::GetInterferenceNumber( const int source, const int target, const
 } 
 
 int 
-GreedyPhysical::GreedySelectOneNode()
+GreedyPhysical::GreedySelectOneNode( const std::vector<BglEdge>& vecEdge)
 {
-  std::vector<std::pair<BglEdge, double> > vecPairEdge;
-  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
-    if (m_vecSched.at(i) == 1) continue; 
-    if (m_ptrCS->GetChNameByName(i) == i ) continue; 
-    BglVertex u, v;
-    BglEdgeMap edgeMap = get( edge_weight, m_conflictGraph);
-    u = vertex(i, m_commGraph);
-    v = vertex(m_ptrCS->GetChNameByName(i), m_commGraph);
-    BglEdge myEdge = edge(u, v, m_commGraph).first;
-
-    vecPairEdge.push_back(std::make_pair( myEdge, edgeMap[myEdge]));
-  }
 }
 
 /* rx power */
 double 
-GreedyPhysical::GetConflictEdgeWeight( const int source, const int target)
+GreedyPhysical::GetRxPower( const int source, const int target)
 {
   return m_ptrMap->GetGijByPair(source, target) * m_maxPower;
 }

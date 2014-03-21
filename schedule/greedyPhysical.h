@@ -49,8 +49,8 @@ class GreedyPhysical: public Scheduler
   private:
     double GetInterferenceNumber(const int source, const int target );
     double GetInterferenceNumber(const int source, const int target, const std::vector<BglEdge>& );
-    int  GreedySelectOneNode();
-    double GetConflictEdgeWeight(const int source, const int target);
+    int  GreedySelectOneNode( const std::vector<BglEdge>& );
+    double GetRxPower(const int source, const int target);
 
     int                             m_numNodes;
     int                             m_numMaxHeads;
