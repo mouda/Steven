@@ -89,23 +89,45 @@ GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport )
 bool 
 GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
-  /* Get the scheduled nodes */
+  CheckAllScheduled();
+  std::vector<BglEdge> vecEdge;
+  int selectedNode = -1;
+  BglVertex u, v;
+  while( vecEdge.size() < m_ptrCS->GetNumHeads() ) {
+    selectedNode = GreedySelectOneNode(vecEdge);
+    if (selectedNode != -1) {
+      u = vertex(selectedNode, m_commGraph);
+      v = vertex(m_ptrCS->GetChNameByName(selectedNode), m_commGraph);
+      BglEdge myEdge = edge( u, v, m_commGraph).first;
+      vecEdge.push_back(myEdge);
+    }
+    else {
+      break;
+    }
+  }
+
+  BglVertexMap vertexMap;
+  for (int i = 0; i < vecEdge.size(); ++i) {
+    u = source(vecEdge.at(i), m_commGraph);
+    vecSupport.at(vertexMap[u]) = 1;
+    m_vecSched.at(vertexMap[u]) = 1;
+  }
   return true;
 }
 
-double
+int
 GreedyPhysical::GetInterferenceNumber( const int source, const int target)
 {
   std::vector<BglEdge> nullVector;
   return GetInterferenceNumber( source, target, nullVector);
 }
 
-double
+int
 GreedyPhysical::GetInterferenceNumber( const int source, const int target, const std::vector<BglEdge>& vecEdge)
 {
   /* we only need to consider the rx condition of cluster head */
   list<list<int> >::const_iterator itRow = m_ptrCS->GetListCluMemeber().begin();
-  double counter = 0.0;
+  int counter = 0.0;
   BglVertex u, v;
   BglEdgeMap edgeMap = get( edge_weight, m_conflictGraph);
   for (; itRow != m_ptrCS->GetListCluMemeber().end(); ++itRow) {
@@ -117,9 +139,12 @@ GreedyPhysical::GetInterferenceNumber( const int source, const int target, const
       u = vertex(source, m_conflictGraph);  /* the interferencing node */
       v = vertex(m_ptrCS->GetChNameByName(*itCol), m_conflictGraph); /* the interferenced node */
       double rxPower =  edgeMap[edge(u,v,m_conflictGraph).first];
+
       for (int i = 0; i < vecEdge.size(); ++i) rxPower+=edgeMap[vecEdge.at(i)]; 
+
       int headName = m_ptrCS->GetChNameByName(*itCol);
-      if (m_ptrMap->GetIdtEntropy() > m_bandwidthKhz*m_txTimePerSlot*log2(1.0+ m_ptrMap->GetMaxPower() * m_ptrMap->GetGijByPair(*itCol,headName) 
+      if (m_ptrMap->GetIdtEntropy() > 
+          m_bandwidthKhz * m_txTimePerSlot*log2(1.0+ m_ptrMap->GetMaxPower() * m_ptrMap->GetGijByPair(*itCol,headName) 
             / (m_ptrMap->GetNoise() + rxPower))) {
         ++counter;
       }
@@ -131,6 +156,33 @@ GreedyPhysical::GetInterferenceNumber( const int source, const int target, const
 int 
 GreedyPhysical::GreedySelectOneNode( const std::vector<BglEdge>& vecEdge)
 {
+  int maxInterferingNode = -1;
+  int maxInterferingNum = 0;
+  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+    int headName = m_ptrCS->GetChNameByName(i);
+    if (!ClusterSelected(vecEdge,i) && headName != i && m_vecSched.at(i) == 0 ) {
+      int num = GetInterferenceNumber(i, headName, vecEdge); 
+      if (num > maxInterferingNum) {
+        maxInterferingNum = num;
+        maxInterferingNode = i;
+      }
+    }
+  }
+  return maxInterferingNode;
+}
+
+bool
+GreedyPhysical::ClusterSelected( const std::vector<BglEdge>& vecEdge, const int nodeName )
+{
+  BglVertex v;
+  BglVertexMap vertexMap;
+  for (int i = 0; i < vecEdge.size(); ++i) {
+    v = target(vecEdge.at(i), m_commGraph);
+    if (m_ptrCS->GetChNameByName(nodeName) == m_ptrCS->GetChNameByName(vertexMap[v]) ) {
+      return true;
+    }
+  }
+  return false;
 }
 
 /* rx power */
@@ -138,4 +190,40 @@ double
 GreedyPhysical::GetRxPower( const int source, const int target)
 {
   return m_ptrMap->GetGijByPair(source, target) * m_maxPower;
+}
+
+bool
+GreedyPhysical::CheckGroupScheduled( const int idx)
+{
+  assert(idx >= 0 && idx < m_ptrMap->GetNumInitHeads());
+  for (int i = 0; i < m_numNodes; ++i) {
+    if ( m_ptrCS->GetChNameByName(i) == i ) continue;
+    if ( m_ptrCS->GetChIdxByName(i) == idx && m_vecSched.at(i) == 0 ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool
+GreedyPhysical::CheckAllScheduled()
+{
+  for (int i = 0; i < m_ptrMap->GetNumInitHeads(); ++i) {
+    if (CheckGroupScheduled(i)) {
+      ResetGroupScheduled(i);
+    }
+  }
+  return true;
+}
+
+bool
+GreedyPhysical::ResetGroupScheduled( const int idx)
+{
+  assert(idx >= 0 && idx < m_ptrMap->GetNumInitHeads());
+  for (int i = 0; i < m_vecSched.size(); ++i) {
+    if ( m_ptrCS->GetChIdxByName(i) == idx ) {
+      m_vecSched.at(i) = 0;
+    }
+  }
+  return true;
 }

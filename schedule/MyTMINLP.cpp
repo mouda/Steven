@@ -165,7 +165,7 @@ MyTMINLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
       }
     }
   }
-  obj_value = -1.*(sum + m_ptrCS->GetNumHeads() * m_ptrMap->GetIdtEntropy());
+  obj_value = -1.*(sum + m_ptrCS->GetNumHeads() * m_ptrMap->GetIdtEntropy()); /* here is the bug!!! */
   return true;
 }
 
@@ -184,7 +184,7 @@ MyTMINLP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
   }
   Eigen::MatrixXd Diagonal((matX.transpose() * m_Signma * matX).inverse().diagonal());
   for (int i = 0; i < m_numVariables; ++i) {
-    grad_f[i] = -1;
+    grad_f[i] = -1.0*Diagonal.sum();
   }
   return true;
 }

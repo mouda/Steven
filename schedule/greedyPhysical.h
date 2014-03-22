@@ -47,10 +47,16 @@ class GreedyPhysical: public Scheduler
     double GetTxTimePerSlot() const { return m_txTimePerSlot; }
     
   private:
-    double GetInterferenceNumber(const int source, const int target );
-    double GetInterferenceNumber(const int source, const int target, const std::vector<BglEdge>& );
+    int GetInterferenceNumber(const int source, const int target );
+    int GetInterferenceNumber(const int source, const int target, const std::vector<BglEdge>& );
     int  GreedySelectOneNode( const std::vector<BglEdge>& );
     double GetRxPower(const int source, const int target);
+    bool  ClusterSelected(const std::vector<BglEdge>& vecEdge, const int nodeName);
+
+    /* to be refactored  */
+    bool CheckGroupScheduled( const int );
+    bool CheckAllScheduled();
+    bool ResetGroupScheduled( const int );
 
     int                             m_numNodes;
     int                             m_numMaxHeads;
