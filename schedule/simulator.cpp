@@ -53,7 +53,7 @@ Simulator::SequentialRun(double t_ms)
   double MSE = m_ptrGField->GetRateDistortion(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
   cout << "Entropy: " << entropy << " MSE: " << MSE << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
-  cout << "Variance: " << VecToString(currVecVariance) << endl;
+//  cout << "Variance: " << VecToString(currVecVariance) << endl;
   m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, vecSlots ,m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, entropy, MSE);
@@ -81,7 +81,7 @@ Simulator::GetNextSlot(Slot* mySlot, std::vector<int>& vecSlots)
   double MSE = m_ptrGField->GetRateDistortion(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
   cout << "Entropy: " << entropy << " MSE: " << MSE << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
-  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
+//  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
   m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, vecSlots, m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, entropy, MSE);

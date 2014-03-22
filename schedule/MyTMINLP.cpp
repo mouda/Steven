@@ -155,8 +155,8 @@ MyTMINLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
       }
     }
   }
-  //Eigen::MatrixXd TRM((matX.transpose() * m_Signma * matX).llt().matrixL());
-  Eigen::MatrixXd TRM((matX.transpose() * m_Signma * matX).llt().matrixL());
+  Eigen::MatrixXd matC(matX.transpose() * m_Signma * matX);
+  Eigen::MatrixXd TRM(matC.llt().matrixL());
   double sum = 0.0;
   for (int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {
     for (int j = 0; j < m_ptrCS->GetNumHeads(); ++j) {
@@ -165,7 +165,13 @@ MyTMINLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
       }
     }
   }
-  obj_value = -1.*(sum + m_ptrCS->GetNumHeads() * m_ptrMap->GetIdtEntropy()); /* here is the bug!!! */
+  double idtEntropy = 0.0;
+  for (int i = 0; i < matC.cols(); ++i) {
+    if (matC(i,i) > 0.0) {
+      idtEntropy += 0.5*log2(2*3.1415*exp(1)) + log2(matC(i,i))+ m_ptrMap->GetQBits(); 
+    }
+  }
+  obj_value = -1.*(sum + idtEntropy); /* here is the bug!!! */
   return true;
 }
 

@@ -13,7 +13,7 @@ Map::Map(
   m_bandwidthKhz(bandwidthKhz), m_systemComputer(0)
 {
   m_systemComputer = new SimSystem;
-  m_idtEntropy = 0.5*log2(2*3.1415*exp(1)) + quantizationBits;
+  m_idtEntropy = 0.5*log2(2*PI*exp(1)) + quantizationBits;
   m_realNoise = m_systemComputer->returnInBandThermalNoise(bandwidthKhz);
 }
 

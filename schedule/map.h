@@ -7,6 +7,7 @@
 #include "simSystem.h"
 #include "CORRE_MA_OPE.h"
 
+#define PI 3.1415
 using std::vector;
 using std::pair;
 using std::string;
