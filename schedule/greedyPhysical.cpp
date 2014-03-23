@@ -158,7 +158,7 @@ int
 GreedyPhysical::GreedySelectOneNode( const std::vector<BglEdge>& vecEdge, std::vector<int>& vecSupport)
 {
   int maxInterferingNode = -1;
-  int maxInterferingNum = 0;
+  int maxInterferingNum = -1.0;
   for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
     int headName = m_ptrCS->GetChNameByName(i);
     if (!ClusterSelected(vecEdge,i) && headName != i && m_vecSched.at(i) == 0 ) {
@@ -169,11 +169,6 @@ GreedyPhysical::GreedySelectOneNode( const std::vector<BglEdge>& vecEdge, std::v
           maxInterferingNum = num;
           maxInterferingNode = i;
         }
-      }
-      int num = GetInterferenceNumber(i, headName, vecEdge); 
-      if (num > maxInterferingNum) {
-        maxInterferingNum = num;
-        maxInterferingNode = i;
       }
       vecSupport.at(i) = 0;
     }

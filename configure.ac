@@ -31,6 +31,20 @@ AC_CHECK_HEADERS([arpa/inet.h netinet/in.h sys/ioctl.h sys/socket.h unistd.h])
 AC_ARG_ENABLE(debug, 
 	      AC_HELP_STRING([--enable-debug], [Enable debugging]), 
 	      CFLAGS="$CFLAGS -g")
+
+AC_ARG_ENABLE(debug,
+AS_HELP_STRING(
+	       [--enable-debug],
+	       [enable debugging, default: no]),
+	       [case "${enableval}" in
+		yes) debug=true ;;
+		no)  debug=false ;;
+		*)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
+	esac],
+	[debug=false])
+
+AM_CONDITIONAL(DEBUG, test x"$debug" = x"true")
+
 # Checks for library functions.
 AC_FUNC_ERROR_AT_LINE
 AC_CHECK_FUNCS([floor mkdir pow socket sqrt])

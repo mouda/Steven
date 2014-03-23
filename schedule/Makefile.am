@@ -82,3 +82,11 @@ simulator_SOURCES = main.cpp \
 		    event.h event.cpp \
 		    fileHandler.h fileHandler.cpp\
 		    simulator.h simulator.cpp 
+
+if DEBUG
+AM_CFLAGS = -g3 -O0
+AM_CXXFLAGS = -g3 -O0
+else
+AM_CFLAGS = -O2
+AM_CXXFLAGS = -O2
+endif
