@@ -49,7 +49,7 @@ class GreedyPhysical: public Scheduler
   private:
     int GetInterferenceNumber(const int source, const int target );
     int GetInterferenceNumber(const int source, const int target, const std::vector<BglEdge>& );
-    int  GreedySelectOneNode( const std::vector<BglEdge>& );
+    int  GreedySelectOneNode( const std::vector<BglEdge>&, std::vector<int>& );
     double GetRxPower(const int source, const int target);
     bool  ClusterSelected(const std::vector<BglEdge>& vecEdge, const int nodeName);
     double GetInterference( const int source, const int target, const std::vector<BglEdge>& vecEdge);

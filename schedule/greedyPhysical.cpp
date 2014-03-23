@@ -94,33 +94,21 @@ GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<
   int selectedNode = -1;
   BglVertex u, v;
   while( vecEdge.size() < m_ptrCS->GetNumHeads() ) {
-    selectedNode = GreedySelectOneNode(vecEdge);
+    selectedNode = GreedySelectOneNode(vecEdge, vecSupport);
     if (selectedNode != -1) {
       u = vertex(selectedNode, m_commGraph);
       v = vertex(m_ptrCS->GetChNameByName(selectedNode), m_commGraph);
       BglEdge myEdge = edge( u, v, m_commGraph).first;
       vecEdge.push_back(myEdge);
+
+      vecSupport.at(selectedNode) = 1;
+      m_vecSched.at(selectedNode) = 1;
     }
     else {
       break;
     }
   }
 
-  BglVertexMap vertexMap;
-  for (int i = 0; i < vecEdge.size(); ++i) {
-    u = source(vecEdge.at(i), m_commGraph);
-    vecSupport.at(vertexMap[u]) = 1;
-    m_vecSched.at(vertexMap[u]) = 1;
-  }
-  while(!CheckFeasible(vecSupport, m_txTimePerSlot)){
-    for (int i = 0; i < m_numNodes; i++) {
-      if (vecSupport[i] == 1) {
-        vecSupport[i] = 0;
-        //m_vecSched[i] = 0;
-        break;
-      }
-    }
-  }
 
 
   return true;
@@ -167,18 +155,27 @@ GreedyPhysical::GetInterferenceNumber( const int s, const int t, const std::vect
 } 
 
 int 
-GreedyPhysical::GreedySelectOneNode( const std::vector<BglEdge>& vecEdge)
+GreedyPhysical::GreedySelectOneNode( const std::vector<BglEdge>& vecEdge, std::vector<int>& vecSupport)
 {
   int maxInterferingNode = -1;
   int maxInterferingNum = 0;
   for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
     int headName = m_ptrCS->GetChNameByName(i);
     if (!ClusterSelected(vecEdge,i) && headName != i && m_vecSched.at(i) == 0 ) {
+      vecSupport.at(i) = 1;
+      if (CheckFeasible(vecSupport, m_txTimePerSlot)) {
+        int num = GetInterferenceNumber(i, headName, vecEdge); 
+        if (num > maxInterferingNum) {
+          maxInterferingNum = num;
+          maxInterferingNode = i;
+        }
+      }
       int num = GetInterferenceNumber(i, headName, vecEdge); 
       if (num > maxInterferingNum) {
         maxInterferingNum = num;
         maxInterferingNode = i;
       }
+      vecSupport.at(i) = 0;
     }
   }
   return maxInterferingNode;
