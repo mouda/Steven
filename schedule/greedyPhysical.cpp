@@ -108,9 +108,6 @@ GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<
       break;
     }
   }
-
-
-
   return true;
 }
 

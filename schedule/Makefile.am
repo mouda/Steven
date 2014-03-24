@@ -77,6 +77,7 @@ simulator_SOURCES = main.cpp \
 		    branchBoundScheduler.h branchBoundScheduler.cpp \
 		    maxSNRScheduler.h maxSNRScheduler.cpp \
 		    greedyPhysical.h greedyPhysical.cpp \
+		    bruteForceScheduler.h bruteForceScheduler.cpp\
 		    schedFactory.h schedFactory.cpp \
 		    slot.h slot.cpp \
 		    event.h event.cpp \
