@@ -121,7 +121,7 @@ BranchBoundScheduler::SolverHook(std::vector<int>& vecSupport, Eigen::MatrixXd& 
   BonminSetup bonmin(&handler);
   bonmin.initializeOptionsAndJournalist();
   // Here we can change the default value of some Bonmin or Ipopt option
-  bonmin.options()->SetNumericValue("bonmin.time_limit", 100); //changes bonmin's time limit
+  bonmin.options()->SetNumericValue("bonmin.time_limit", 600); //changes bonmin's time limit
   bonmin.options()->SetStringValue("mu_oracle","loqo");
   //Here we read several option files
   bonmin.readOptionsFile("Mybonmin.opt");

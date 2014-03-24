@@ -1,6 +1,6 @@
-algorithm="Baseline Branchbound GreedyPhysical"
-numNodes="50 100 150 195"
-numHeads=(10 20 30 40)
+algorithm="Branchbound"
+numNodes="195"
+numHeads=(39)
 qBits="16"
 for token in $algorithm; do 
   j=0
