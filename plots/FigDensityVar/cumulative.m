@@ -24,10 +24,10 @@ str=sprintf('Branch and bound algorithm');
 plot(nodeNum,branchboundEntropy,'^--','LineWidth',2.0,'Color','b','DisplayName',str,'MarkerSize',10); hold on;
 str=sprintf('GreedyPhysical algorithm');
 plot(nodeNum,greedyPhysical,'^--','LineWidth',2.0,'Color','g','DisplayName',str,'MarkerSize',10);hold on;
-str=sprintf('Baseline algorithm');
+str=sprintf('MaxSNR algorithm');
 plot(nodeNum,baselineEntropy,'*-','LineWidth',2.0,'Color','r','DisplayName',str,'MarkerSize',10); 
 
 legend('show');
-xlabel('Time (ms)');
+xlabel('Number of machines');
 ylabel('Entropy (bits)');
 grid on;

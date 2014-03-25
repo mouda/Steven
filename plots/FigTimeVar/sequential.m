@@ -9,7 +9,7 @@ str=sprintf('Branch and bound algorithm');
 plot(x,mean(branchboundEntropy,1),'^--','LineWidth',2.0,'Color','b','DisplayName',str,'MarkerSize',10); hold on;
 str=sprintf('GreedyPhysical algorithm');
 plot(x,mean(greedyPhysical,1),'^--','LineWidth',2.0,'Color','g','DisplayName',str,'MarkerSize',10);hold on;
-str=sprintf('Baseline algorithm');
+str=sprintf('MaxSNR algorithm');
 plot(x,mean(baselineEntropy,1),'*-','LineWidth',2.0,'Color','r','DisplayName',str,'MarkerSize',10); 
 legend('show');
 xlabel('Time (ms)');
