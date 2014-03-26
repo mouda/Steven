@@ -41,6 +41,16 @@ SchedulerFactory::CreateScheduler( const string& scheduleType)
         m_ptrMap, m_ptrMatComputer, m_ptrCS);
     return m_ptrSched;
   }
+  else if (scheduleType == "BruteForce") {
+    m_ptrSched = new BruteForceScheduler(m_txTimePerSlot, m_bandwidthKhz,
+        m_ptrMap, m_ptrMatComputer, m_ptrCS);
+    return m_ptrSched;
+  }
+  else if (scheduleType == "NonSimplified") {
+    m_ptrSched = new NonSimplifiedScheduler(m_txTimePerSlot, m_bandwidthKhz,
+        m_ptrMap, m_ptrMatComputer, m_ptrCS);
+    return m_ptrSched;
+  }
   else{
     return NULL;
   }

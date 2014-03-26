@@ -4,6 +4,8 @@
 #include "branchBoundScheduler.h"
 #include "maxSNRScheduler.h"
 #include "greedyPhysical.h"
+#include "bruteForceScheduler.h"
+#include "nonSimplifiedScheduler.h"
 
 #include <string>
 #include <iostream>
