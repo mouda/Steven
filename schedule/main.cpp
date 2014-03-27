@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
   /* output file name string */
   string  CSFName;
   string  entropyFName;
+  string  totalEntropyFName;
   string  MSEFName;
   string  solutionFName;
   string  supportFName;
@@ -64,6 +65,7 @@ int main(int argc, char *argv[])
       ("temporalCorrelation,T",   po::value<double>(), "Temproal Correlation factor")
       ("endTime,e",               po::value<double>(), "End simulation time")
       ("ClusterStructureOutput,C",po::value<string>(), "Cluster structure output file name")
+      ("TotalEntropy,O",          po::value<string>(), "Total entropy per slot")
       ("EntropyOutput,E",         po::value<string>(), "Entropy output file name")
       ("SupportOutput,U",         po::value<string>(), "Support number output file name")
       ("MSEOutput,M",             po::value<string>(), "MSE output file name")
@@ -75,7 +77,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() > 13 && vm.size() <= 17 ) {
+    } else if(vm.size() > 14 && vm.size() <= 18 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -105,6 +107,9 @@ int main(int argc, char *argv[])
       }
       if (vm.count("SupportOutput")) {
         supportFName = vm["SupportOutput"].as<string>();
+      }
+      if (vm.count("TotalEntropy")) {
+        totalEntropyFName = vm["TotalEntropy"].as<string>();
       }
 
       double powerMaxWatt = pow(10,(powerMaxDbm)/10) /1000;
@@ -148,7 +153,17 @@ int main(int argc, char *argv[])
         cerr << "Error: Failed to initialize scheduler" << endl;
         return 1;
       }
-      Simulator mySimulator(myMap, myCS, myScheduler, myMatComputer, entropyFName, MSEFName, solutionFName, supportFName);
+      Simulator mySimulator(
+          myMap, 
+          myCS, 
+          myScheduler, 
+          myMatComputer, 
+          entropyFName, 
+          MSEFName, 
+          solutionFName, 
+          supportFName,
+          totalEntropyFName
+          );
       mySimulator.SelfCheck();
       mySimulator.SequentialRun(endTime);
 
@@ -167,6 +182,9 @@ int main(int argc, char *argv[])
       }
       if (vm.count("SupportOutput")) {
         mySimulator.WriteSupport();
+      }
+      if (vm.count("TotalEntropy")) {
+        mySimulator.WriteTotalEntropy();
       }
     }
     else {

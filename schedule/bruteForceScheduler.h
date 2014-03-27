@@ -19,6 +19,10 @@ class BruteForceScheduler: public Scheduler
     double GetTxTimePerSlot() const { return m_txTimePerSlot; }
 
   private:
+
+    void Init();
+    double OmegaValue( const int nodeName );
+    
     int                             m_numNodes;
     int                             m_numMaxHeads;
     const double                    m_txTimePerSlot;
@@ -30,6 +34,12 @@ class BruteForceScheduler: public Scheduler
     std::vector<double>             m_vecNodePower;
     std::vector<int>                m_vecSched; /* record the scheduled node */
     const string                    m_type;
+    
+    Eigen::MatrixXd                 m_A;
+    Eigen::MatrixXd                 m_B;
+    Eigen::MatrixXd                 m_C;
+    Eigen::MatrixXd                 m_X;
+    Eigen::MatrixXd                 m_Signma;
 
 }; 
 #endif

@@ -21,6 +21,7 @@ class Slot
     const std::vector<int>& GetSupport() const { return m_vecSupport; }
     const std::vector<double>& GetVariance() const { return m_vecVariance;}
     double GetEntropy() const { return m_entropy; }
+    double GetTotalEntropy() const { return m_totalEntropy;}
     double GetMSE() const { return m_MSE; } 
 
   private:
@@ -28,6 +29,7 @@ class Slot
     std::vector<int>    m_vecSupport;
     std::vector<double> m_vecVariance;
     double              m_entropy;
+    double              m_totalEntropy;
     double              m_MSE;
 };
 

@@ -34,7 +34,8 @@ class Simulator
         const string&,
         const string&,
         const string&,
-        const string& );
+        const string&, 
+        const string&);
     ~Simulator();
 
     void SetEvents(double t_ms);
@@ -47,6 +48,7 @@ class Simulator
     void WriteMSE();
     void WriteSolution();
     void WriteSupport();
+    void WriteTotalEntropy();
 
 
     bool SelfCheck();
@@ -67,6 +69,8 @@ class Simulator
     CORRE_MA_OPE*       m_ptrGField;
     std::vector<int>*   m_vecSupport;
 
+    std::vector<int>    m_vecTotal;
+
     /* event driven simulation data structure */
     std::list<Slot*>    m_listSlot;
     Slot*               m_ptrSlotHead;
@@ -77,5 +81,6 @@ class Simulator
     FileHandler         m_MSEFHandler;
     FileHandler         m_solutionFHandler;
     FileHandler         m_supportNumFHandler;
+    FileHandler         m_totalEntropyFHandler;
 };
 #endif

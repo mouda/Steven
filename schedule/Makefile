@@ -52,8 +52,8 @@ am_simulator_OBJECTS = main.$(OBJEXT) map.$(OBJEXT) \
 	MyTMINLP.$(OBJEXT) branchBoundScheduler.$(OBJEXT) \
 	maxSNRScheduler.$(OBJEXT) greedyPhysical.$(OBJEXT) \
 	bruteForceScheduler.$(OBJEXT) nonSimplifiedScheduler.$(OBJEXT) \
-	schedFactory.$(OBJEXT) slot.$(OBJEXT) event.$(OBJEXT) \
-	fileHandler.$(OBJEXT) simulator.$(OBJEXT)
+	totalEntropy.$(OBJEXT) schedFactory.$(OBJEXT) slot.$(OBJEXT) \
+	event.$(OBJEXT) fileHandler.$(OBJEXT) simulator.$(OBJEXT)
 simulator_OBJECTS = $(am_simulator_OBJECTS)
 simulator_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
@@ -246,6 +246,7 @@ simulator_SOURCES = main.cpp \
 		    greedyPhysical.h greedyPhysical.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\
 		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
+		    totalEntropy.h totalEntropy.cpp\
 		    schedFactory.h schedFactory.cpp \
 		    slot.h slot.cpp \
 		    event.h event.cpp \
@@ -357,6 +358,7 @@ include ./$(DEPDIR)/scheduler.Po
 include ./$(DEPDIR)/simSystem.Po
 include ./$(DEPDIR)/simulator.Po
 include ./$(DEPDIR)/slot.Po
+include ./$(DEPDIR)/totalEntropy.Po
 include ./$(DEPDIR)/utility.Po
 
 .cpp.o:

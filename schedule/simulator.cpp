@@ -10,7 +10,8 @@ Simulator::Simulator(Map* myMap,
     const string& entropyFName,
     const string& MSEFName,
     const string& solutionFName,
-    const string& supportNumFName ):
+    const string& supportNumFName,
+    const string& totalEntropyFName ):
   m_ptrMap(myMap), 
   m_ptrCS(myCS), 
   m_ptrSched(myScheduler),
@@ -18,10 +19,19 @@ Simulator::Simulator(Map* myMap,
   m_entropyFHandler(entropyFName),
   m_MSEFHandler(MSEFName),
   m_solutionFHandler(solutionFName),
-  m_supportNumFHandler(supportNumFName)
-
+  m_supportNumFHandler(supportNumFName),
+  m_totalEntropyFHandler(totalEntropyFName)
 {
   m_vecSupport = new vector<int>(m_ptrMap->GetNumNodes());
+  m_vecTotal.resize(m_ptrMap->GetNumNodes());
+  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+    if (m_ptrCS->GetChNameByName(i) != i) {
+      m_vecTotal.at(i) = 1;
+    }
+    else {
+      m_vecTotal.at(i) = 0;
+    }
+  }
 }
 
 Simulator::~Simulator()
@@ -49,9 +59,10 @@ Simulator::SequentialRun(double t_ms)
   fill(vecSlots.begin(), vecSlots.end(), 0);
 
   m_ptrSched->ScheduleOneSlot(vecSupport, currVecVariance);
-  double entropy = m_ptrGField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
-  double MSE = m_ptrGField->GetRateDistortion(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
-  cout << "Entropy: " << entropy << " MSE: " << MSE << ' ';  
+  double entropy      = m_ptrGField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
+  double MSE          = m_ptrGField->GetRateDistortion(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
+  double totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, currVecVariance, 0.0, m_ptrMap->GetQBits());
+  cout << "Entropy: " << entropy << " MSE: " << MSE << " Total: " << totalEntropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
 //  cout << "Variance: " << VecToString(currVecVariance) << endl;
   m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, vecSlots ,m_ptrSched->GetTxTimePerSlot());
@@ -77,9 +88,10 @@ Simulator::GetNextSlot(Slot* mySlot, std::vector<int>& vecSlots)
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
   
   m_ptrSched->ScheduleOneSlot(vecSupport, mySlot->GetVariance());
-  double entropy = m_ptrGField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
-  double MSE = m_ptrGField->GetRateDistortion(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
-  cout << "Entropy: " << entropy << " MSE: " << MSE << ' ';  
+  double entropy      = m_ptrGField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
+  double MSE          = m_ptrGField->GetRateDistortion(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
+  double totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
+  cout << "Entropy: " << entropy << " MSE: " << MSE << " Total: " << totalEntropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
 //  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
   m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, vecSlots, m_ptrSched->GetTxTimePerSlot());
@@ -320,4 +332,15 @@ Simulator::WriteSupport()
     vecSupportNumber.push_back(counter);
   }
   m_supportNumFHandler.WriteString(VecToString(vecSupportNumber));
+}
+
+void
+Simulator::WriteTotalEntropy()
+{
+  list<Slot*>::const_iterator it = m_listSlot.begin();
+  vector<double> vecEntropy;
+  for (; it != m_listSlot.end(); ++it) {
+    vecEntropy.push_back((*it)->GetTotalEntropy());
+  }
+  m_entropyFHandler.WriteString(VecToString(vecEntropy));
 }

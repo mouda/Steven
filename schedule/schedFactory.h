@@ -6,6 +6,7 @@
 #include "greedyPhysical.h"
 #include "bruteForceScheduler.h"
 #include "nonSimplifiedScheduler.h"
+#include "totalEntropy.h"
 
 #include <string>
 #include <iostream>
