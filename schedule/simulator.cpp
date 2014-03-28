@@ -67,7 +67,7 @@ Simulator::SequentialRun(double t_ms)
 //  cout << "Variance: " << VecToString(currVecVariance) << endl;
   m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, vecSlots ,m_ptrSched->GetTxTimePerSlot());
 
-  Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, entropy, MSE);
+  Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, entropy, totalEntropy, MSE);
   Slot* ptrNextSlot = 0;
   m_listSlot.push_back(ptrCurrSlot);
 
@@ -96,7 +96,7 @@ Simulator::GetNextSlot(Slot* mySlot, std::vector<int>& vecSlots)
 //  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
   m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, vecSlots, m_ptrSched->GetTxTimePerSlot());
 
-  Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, entropy, MSE);
+  Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, entropy, totalEntropy, MSE);
   return ptrSlot;
 }
 
@@ -342,5 +342,5 @@ Simulator::WriteTotalEntropy()
   for (; it != m_listSlot.end(); ++it) {
     vecEntropy.push_back((*it)->GetTotalEntropy());
   }
-  m_entropyFHandler.WriteString(VecToString(vecEntropy));
+  m_totalEntropyFHandler.WriteString(VecToString(vecEntropy));
 }

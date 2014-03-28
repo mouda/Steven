@@ -21,7 +21,16 @@ class BruteForceScheduler: public Scheduler
   private:
 
     void Init();
-    double OmegaValue( const int nodeName );
+    double  OmegaValue( const int nodeName );
+    void    Perm(
+        Eigen::MatrixXd&, 
+        std::vector<int> vecSupport,
+        const int& ChIdx, 
+        double& maxValue, 
+        std::vector<int>& vecSolution,
+        std::vector<double>& vecVariance);
+
+    bool EigenMatrixIsSmaller(const Eigen::MatrixXd&, const Eigen::MatrixXd& );
     
     int                             m_numNodes;
     int                             m_numMaxHeads;
@@ -38,6 +47,7 @@ class BruteForceScheduler: public Scheduler
     Eigen::MatrixXd                 m_A;
     Eigen::MatrixXd                 m_B;
     Eigen::MatrixXd                 m_C;
+    Eigen::MatrixXd                 m_M;
     Eigen::MatrixXd                 m_X;
     Eigen::MatrixXd                 m_Signma;
 

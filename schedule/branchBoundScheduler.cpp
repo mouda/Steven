@@ -44,6 +44,9 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
       }
     }
   }
+
+  Eigen::MatrixXd tmp = m_A+m_B-m_C;
+ 
 #ifdef DEBUG 
   cout << "================ m_A ================" << endl;
   cout << m_A.format(CleanFmt) << endl;
@@ -56,7 +59,6 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
   cout << "Varince: " << m_ptrMatComputer->GetCorrationFactor() << endl;
 #endif
 
-  Eigen::MatrixXd tmp = m_A+m_B-m_C;
   
   double corrFactor = m_ptrMatComputer->GetCorrationFactor();
   double variance = 1.0;

@@ -12,6 +12,7 @@ class Slot
         const std::vector<int>&, 
         const std::vector<double>&,
         const double,
+        const double,
         const double
         );
     ~Slot();

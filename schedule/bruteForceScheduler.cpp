@@ -77,6 +77,7 @@ BruteForceScheduler::Init()
       }
     }
   }
+  Eigen::MatrixXd m_M = m_A+m_B-m_C;
 #ifdef DEBUG 
   cout << "================ m_A ================" << endl;
   cout << m_A.format(CleanFmt) << endl;
@@ -85,11 +86,10 @@ BruteForceScheduler::Init()
   cout << "================ m_C ================" << endl;
   cout << m_C.format(CleanFmt) << endl;
   cout << "================ m_A + m_B-m_C ================" << endl;
-  cout << tmp.format(CleanFmt) << endl;
+  cout << m_M.format(CleanFmt) << endl;
   cout << "Varince: " << m_ptrMatComputer->GetCorrationFactor() << endl;
 #endif
 
-  Eigen::MatrixXd tmp = m_A+m_B-m_C;
   
   double corrFactor = m_ptrMatComputer->GetCorrationFactor();
   double variance = 1.0;
@@ -145,4 +145,58 @@ BruteForceScheduler::OmegaValue(const int nodeName)
     return 0.0;
   }
   return 0.0;
+}
+
+void BruteForceScheduler::Perm(
+    Eigen::MatrixXd&        matSelec, 
+    std::vector<int>        vecSupport,
+    const int&              chIdx,
+    double&                 maxValue,
+    std::vector<int>&       vecSolution,
+    std::vector<double>&    vecVariance )
+{
+  if (chIdx == m_ptrCS->GetNumHeads() ) {
+    //Eigen::MatrixXd neqMatTmp = matAij*matSelec.transpose()*matSelec;
+    if( EigenMatrixIsSmaller(neqMatTmp) ){
+
+      double value = m_ptrMatComputer->GetJointEntropy(vecSupport, vecVariance, 0.0, m_ptrMap->GetQBits()); 
+      if ( value > maxValue ) {
+        maxValue = value;
+        for (int i = 0; i < m_ptrMap->GetNumNodes(); i++) {
+           vecSolution[i] = vecSupport[i];
+        }
+      }
+    }
+    return;
+  }
+
+  Perm(matSelec, vecSupport, chIdx+1, maxValue, vecSolution, vecVariance);
+  for (int i = 0; i < m_ptrMap->GetNumNodes(); i++) {
+    if (m_ptrCS->GetChIdxByName(i) == chIdx && i != chIdx) {
+      matSelec(chIdx,i) = 1.0;
+      vecSupport[i] = 1;
+      Perm(matSelec, vecSupport, chIdx+1, maxValue, vecSolution, vecVariance);
+      matSelec(chIdx,i) = 0.0;
+      vecSupport[i] = 0;
+    }
+  }
+}
+
+bool BruteForceScheduler::EigenMatrixIsSmaller( const Eigen::MatrixXd& lhs, 
+    const Eigen::MatrixXd& rhs)
+{
+  int rhsRows = rhs.rows();
+  int rhsCols = rhs.cols();
+  int lhsRows = lhs.rows();
+  int lhsCols = rhs.cols();
+  if (rhsRows != lhsRows) return false; 
+  if (rhsCols != lhsCols) return false; 
+  for (int i = 0; i < rhsRows ; i++) {
+    for (int j = 0; j < rhsCols; j++) {
+      if ( i == j && lhs(i,j) > rhs(i,j)) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
