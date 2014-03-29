@@ -81,7 +81,7 @@ BruteForceScheduler::Init()
       }
     }
   }
-  Eigen::MatrixXd m_constraints = m_A+m_B-m_C;
+  m_constraints = m_A+m_B-m_C;
 #ifdef DEBUG 
   cout << "================ m_A ================" << endl;
   cout << m_A.format(CleanFmt) << endl;
@@ -163,7 +163,7 @@ void BruteForceScheduler::Perm(
     //Eigen::MatrixXd neqMatTmp = matAij*matSelec.transpose()*matSelec;
     Eigen::MatrixXd matOnes = Eigen::MatrixXd::Ones(m_ptrCS->GetNumHeads(), 1);
     Eigen::MatrixXd result(m_constraints * matX * matOnes);
-    Eigen::MatrixXd matZeros = Eigen::MatrixXd::Zero(m_ptrCS->GetNumNodes(), 1);
+    Eigen::MatrixXd matZeros = Eigen::MatrixXd::Zero(m_ptrCS->GetNumHeads(), 1);
     if( EigenMatrixIsSmaller(result, matZeros) ){
 
       double value = m_ptrMatComputer->GetJointEntropy(vecSupport, vecVariance, 0.0, m_ptrMap->GetQBits()); 
