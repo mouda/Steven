@@ -1,4 +1,6 @@
 #include "bruteForceScheduler.h"
+#include <cfloat>
+#include <limits>
 
 BruteForceScheduler::BruteForceScheduler( const double txTime, 
     const double bandwidthKhz, 
@@ -33,14 +35,16 @@ BruteForceScheduler::~BruteForceScheduler()
 double 
 BruteForceScheduler::ScheduleOneSlot(std::vector<int>& vecSupport )
 {
-  fill(vecSupport.begin(), vecSupport.end(), 1);
   return 0.0;
 }
 
 bool 
 BruteForceScheduler::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
-  fill(vecSupport.begin(), vecSupport.end(), 1);
+  Eigen::MatrixXd matX = Eigen::MatrixXd::Zero(m_ptrCS->GetNumNodes(), m_ptrCS->GetNumHeads()); 
+  std::vector<int> vecTmpSolution(m_ptrCS->GetNumNodes(), 0); 
+  double maxValue = -DBL_MAX;
+  Perm(matX, vecTmpSolution, 0, maxValue, vecSupport, vecVariance);
   return true;
 }
 
@@ -77,7 +81,7 @@ BruteForceScheduler::Init()
       }
     }
   }
-  Eigen::MatrixXd m_M = m_A+m_B-m_C;
+  Eigen::MatrixXd m_constraints = m_A+m_B-m_C;
 #ifdef DEBUG 
   cout << "================ m_A ================" << endl;
   cout << m_A.format(CleanFmt) << endl;
@@ -86,7 +90,7 @@ BruteForceScheduler::Init()
   cout << "================ m_C ================" << endl;
   cout << m_C.format(CleanFmt) << endl;
   cout << "================ m_A + m_B-m_C ================" << endl;
-  cout << m_M.format(CleanFmt) << endl;
+  cout << m_constraints.format(CleanFmt) << endl;
   cout << "Varince: " << m_ptrMatComputer->GetCorrationFactor() << endl;
 #endif
 
@@ -148,16 +152,19 @@ BruteForceScheduler::OmegaValue(const int nodeName)
 }
 
 void BruteForceScheduler::Perm(
-    Eigen::MatrixXd&        matSelec, 
-    std::vector<int>        vecSupport,
+    Eigen::MatrixXd&        matX, 
+    std::vector<int>&       vecSupport,
     const int&              chIdx,
     double&                 maxValue,
     std::vector<int>&       vecSolution,
-    std::vector<double>&    vecVariance )
+    const std::vector<double>&    vecVariance )
 {
   if (chIdx == m_ptrCS->GetNumHeads() ) {
     //Eigen::MatrixXd neqMatTmp = matAij*matSelec.transpose()*matSelec;
-    if( EigenMatrixIsSmaller(neqMatTmp) ){
+    Eigen::MatrixXd matOnes = Eigen::MatrixXd::Ones(m_ptrCS->GetNumHeads(), 1);
+    Eigen::MatrixXd result(m_constraints * matX * matOnes);
+    Eigen::MatrixXd matZeros = Eigen::MatrixXd::Zero(m_ptrCS->GetNumNodes(), 1);
+    if( EigenMatrixIsSmaller(result, matZeros) ){
 
       double value = m_ptrMatComputer->GetJointEntropy(vecSupport, vecVariance, 0.0, m_ptrMap->GetQBits()); 
       if ( value > maxValue ) {
@@ -170,13 +177,13 @@ void BruteForceScheduler::Perm(
     return;
   }
 
-  Perm(matSelec, vecSupport, chIdx+1, maxValue, vecSolution, vecVariance);
+  Perm(matX, vecSupport, chIdx+1, maxValue, vecSolution, vecVariance);
   for (int i = 0; i < m_ptrMap->GetNumNodes(); i++) {
     if (m_ptrCS->GetChIdxByName(i) == chIdx && i != chIdx) {
-      matSelec(chIdx,i) = 1.0;
+      matX(i,chIdx) = 1.0;
       vecSupport[i] = 1;
-      Perm(matSelec, vecSupport, chIdx+1, maxValue, vecSolution, vecVariance);
-      matSelec(chIdx,i) = 0.0;
+      Perm(matX, vecSupport, chIdx+1, maxValue, vecSolution, vecVariance);
+      matX(i,chIdx) = 0.0;
       vecSupport[i] = 0;
     }
   }
