@@ -72,36 +72,12 @@ MinPowerSA::ScheduleOneSlot( vector<int>& vecSupport )
 
 }
 
-bool
+double
 MinPowerSA::ScheduleOneSlot( std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
 
   this->ScheduleOneSlot(vecSupport);
-  return true;
-}
-
-bool 
-MinPowerSA::CheckFeasible( bool const * const supStru, double txTime2nd)
-{
-  for (int i = 0; i < m_numMaxHeads; i++) {
-    int headName = m_ptrCS->GetVecHeadName()[i];
-    int member = -1;
-    double interference = 0.0;
-    for (int j = 0; j < m_numNodes; j++) {
-      if (supStru[j] == true && headName != m_ptrCS->GetChNameByName(j) ) {
-        interference += m_ptrMap->GetGijByPair(headName,j) * m_maxPower;
-      }
-      else if(supStru[j] == true && headName == m_ptrCS->GetChNameByName(j) ){
-        member = j;
-      }
-    }
-    if (member == -1) continue; 
-    if (m_ptrMap->GetIdtEntropy() > m_bandwidthKhz*txTime2nd*log2(1.0+m_maxPower * m_ptrMap->GetGijByPair(headName,member)
-          / (m_ptrMap->GetNoise() + interference))) {
-      return false;
-    }
-  }
-  return true;
+  return 0.0;
 }
 
 bool 

@@ -52,9 +52,9 @@ am_simulator_OBJECTS = main.$(OBJEXT) map.$(OBJEXT) \
 	MyTMINLP.$(OBJEXT) branchBoundScheduler.$(OBJEXT) \
 	maxSNRScheduler.$(OBJEXT) greedyPhysical.$(OBJEXT) \
 	bruteForceScheduler.$(OBJEXT) nonSimplifiedScheduler.$(OBJEXT) \
-	minPowerSA.$(OBJEXT) totalEntropy.$(OBJEXT) \
-	schedFactory.$(OBJEXT) slot.$(OBJEXT) event.$(OBJEXT) \
-	fileHandler.$(OBJEXT) simulator.$(OBJEXT)
+	minPowerSA.$(OBJEXT) SASolver.$(OBJEXT) powerUpdater.$(OBJEXT) \
+	totalEntropy.$(OBJEXT) schedFactory.$(OBJEXT) slot.$(OBJEXT) \
+	event.$(OBJEXT) fileHandler.$(OBJEXT) simulator.$(OBJEXT)
 simulator_OBJECTS = $(am_simulator_OBJECTS)
 simulator_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
@@ -248,6 +248,8 @@ simulator_SOURCES = main.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\
 		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
 		    minPowerSA.h minPowerSA.cpp\
+		    SASolver.h SASolver.cpp\
+		    powerUpdater.h powerUpdater.cpp\
 		    totalEntropy.h totalEntropy.cpp\
 		    schedFactory.h schedFactory.cpp \
 		    slot.h slot.cpp \
@@ -342,6 +344,7 @@ distclean-compile:
 
 include ./$(DEPDIR)/CORRE_MA_OPE.Po
 include ./$(DEPDIR)/MyTMINLP.Po
+include ./$(DEPDIR)/SASolver.Po
 include ./$(DEPDIR)/ULAGENT.Po
 include ./$(DEPDIR)/branchBoundScheduler.Po
 include ./$(DEPDIR)/bruteForceScheduler.Po
@@ -356,6 +359,7 @@ include ./$(DEPDIR)/mapFactory.Po
 include ./$(DEPDIR)/maxSNRScheduler.Po
 include ./$(DEPDIR)/minPowerSA.Po
 include ./$(DEPDIR)/nonSimplifiedScheduler.Po
+include ./$(DEPDIR)/powerUpdater.Po
 include ./$(DEPDIR)/schedFactory.Po
 include ./$(DEPDIR)/scheduler.Po
 include ./$(DEPDIR)/simSystem.Po

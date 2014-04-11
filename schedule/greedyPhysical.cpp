@@ -86,7 +86,7 @@ GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport )
   return 0.0;
 }
 
-bool 
+double
 GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
   CheckAllScheduled();
@@ -108,7 +108,7 @@ GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<
       break;
     }
   }
-  return true;
+  return 0.0;
 }
 
 int

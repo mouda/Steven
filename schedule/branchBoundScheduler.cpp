@@ -87,7 +87,7 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
   return result;
 }
 
-bool
+double
 BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
   /* construct the covariance matrix */
@@ -98,7 +98,7 @@ BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, const std::
     }
   }
   int activeNodes = this->SolverHook(vecSupport, mySigma);
-  return true;
+  return 0.0;
 }
 
 int

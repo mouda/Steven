@@ -38,14 +38,14 @@ BruteForceScheduler::ScheduleOneSlot(std::vector<int>& vecSupport )
   return 0.0;
 }
 
-bool 
+double
 BruteForceScheduler::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
   Eigen::MatrixXd matX = Eigen::MatrixXd::Zero(m_ptrCS->GetNumNodes(), m_ptrCS->GetNumHeads()); 
   std::vector<int> vecTmpSolution(m_ptrCS->GetNumNodes(), 0); 
   double maxValue = -DBL_MAX;
   Perm(matX, vecTmpSolution, 0, maxValue, vecSupport, vecVariance);
-  return true;
+  return 0.0;
 }
 
 void

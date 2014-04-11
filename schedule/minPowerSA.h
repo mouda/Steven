@@ -1,6 +1,7 @@
 #ifndef _MINPOWERSA_
 #define _MINPOWERSA_
 #include "scheduler.h"
+#include "SASolver.h"
 #include <vector>
 
 
@@ -17,11 +18,10 @@ class MinPowerSA: public Scheduler
 
     void SetGaussianField(CORRE_MA_OPE* myGField) { m_ptrMatComputer = myGField;}
     double ScheduleOneSlot( std::vector<int>& );
-    bool ScheduleOneSlot( std::vector<int>& , const std::vector<double>& );
+    double ScheduleOneSlot( std::vector<int>& , const std::vector<double>& );
     string PrintSelf(){ return m_type; }
     double GetTxTimePerSlot() const { return m_txTimePerSlot; }
   private:
-    bool CheckFeasible( bool const * const supStru, double txTime2nd);
     bool CheckFeasible( const std::vector<int>& supStru, double txTime2nd);
     /* to be refactored  */
     bool CheckGroupScheduled( const int );

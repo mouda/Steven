@@ -34,8 +34,8 @@ NonSimplifiedScheduler::ScheduleOneSlot(std::vector<int>& vecSupport )
   return 0.0;
 }
 
-bool 
+double
 NonSimplifiedScheduler::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
-  return true;
+  return 0.0;
 }
