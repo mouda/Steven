@@ -8,7 +8,7 @@ MinPowerSA::MinPowerSA( const double txTime,
     m_txTimePerSlot(txTime), m_bandwidthKhz(bandwidthKhz),
     m_ptrMap(ptrMap), 
     m_ptrCS(ptrCS), m_ptrMatComputer(ptrMatComputer),
-    m_type("MaxSNR")
+    m_type("MinPowerSA")
 {
   m_numNodes = m_ptrMap->GetNumNodes();
   m_numMaxHeads =  m_ptrMap->GetNumInitHeads();
@@ -29,46 +29,7 @@ double
 MinPowerSA::ScheduleOneSlot( vector<int>& vecSupport )
 {
   CheckAllScheduled(); 
-  for (int i = 0; i < m_numMaxHeads; i++) {
-    double maxRxPower = 0.0;
-    int headName = m_ptrCS->GetVecHeadName()[i];
-    int maxRxPowerNode = -1;
-    for (int j = 0; j < m_numNodes; j++) {
-      if (m_ptrCS->GetChNameByName(j) == j ) continue; 
-      if (m_ptrCS->GetChIdxByName(j) == i && m_vecSched[j] == 0 ) {
-        if (m_ptrMap->GetGijByPair(headName,j) * m_maxPower > maxRxPower) {
-          maxRxPower = m_ptrMap->GetGijByPair(headName,j) * m_maxPower; 
-          maxRxPowerNode = j;
-        }
-      }
-    }
-    if (maxRxPowerNode >= 0) {
-      m_vecSched.at(maxRxPowerNode) = 1;
-      vecSupport.at(maxRxPowerNode) = 1;
-    }
-  }
-
-  /* test the Interference */
-  while(!CheckFeasible(vecSupport, m_txTimePerSlot)){
-    for (int i = 0; i < m_numNodes; i++) {
-      if (vecSupport[i] == 1) {
-        vecSupport[i] = 0;
-        //m_vecSched[i] = 0;
-        break;
-      }
-    }
-  }
-  int activeNodes = 0;
-  for (int i = 0; i < m_numNodes; i++) {
-    if (vecSupport[i] == 1) ++activeNodes;
-  }
-
-  double result = activeNodes * m_ptrMap->GetIdtEntropy() + m_ptrMatComputer->computeLog2Det(1.0, vecSupport);
-#ifdef DEBUG
-  cout << "activeNodes: " << activeNodes << endl;
-  cout << "MaxSNR: " << result << " " <<m_ptrMatComputer->computeLog2Det(1.0, mySupStru) <<endl;
-#endif
-  return result;
+  return 0.0;
 
 }
 
@@ -76,7 +37,6 @@ double
 MinPowerSA::ScheduleOneSlot( std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
 
-  this->ScheduleOneSlot(vecSupport);
   return 0.0;
 }
 

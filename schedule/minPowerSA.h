@@ -22,6 +22,7 @@ class MinPowerSA: public Scheduler
     string PrintSelf(){ return m_type; }
     double GetTxTimePerSlot() const { return m_txTimePerSlot; }
   private:
+
     bool CheckFeasible( const std::vector<int>& supStru, double txTime2nd);
     /* to be refactored  */
     bool CheckGroupScheduled( const int );
@@ -39,6 +40,9 @@ class MinPowerSA: public Scheduler
     std::vector<double>             m_vecNodePower;
     std::vector<int>                m_vecSched;
     const string                    m_type;
+
+    SASolver*                       m_ptrSASolver;
+
 
 };
 
