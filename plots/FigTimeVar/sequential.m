@@ -1,9 +1,14 @@
 clear;
 close all;
 x = 0.0:0.1:0.5;
-baselineEntropy = dlmread('data/entropy_Baseline_Q_16_N100.out');
-branchboundEntropy = dlmread('data/entropy_Branchbound_Q_16_N100.out');
-greedyPhysical = dlmread('data/entropy_GreedyPhysical_Q_16_N100.out');
+
+baselineTotalEntropy = dlmread('data/TE_Baseline_Q16_N195_SC.47_TC.5.out');
+branchboundTotalEntropy = dlmread('data/TE_Branchbound_Q16_N195_SC.47_TC.5.out');
+greedyPhysicalTotalEntropy = dlmread('data/TE_GreedyPhysical_Q16_N195_SC.47_TC.5.out');
+
+baselineEntropy = dlmread('data/GE_Baseline_Q16_N195_SC.47_TC.5.out');
+branchboundEntropy = dlmread('data/GE_Branchbound_Q16_N195_SC.47_TC.5.out');
+greedyPhysical = dlmread('data/GE_GreedyPhysical_Q16_N195_SC.47_TC.5.out');
 
 str=sprintf('Branch and bound algorithm');
 plot(x,mean(branchboundEntropy,1),'^--','LineWidth',2.0,'Color','b','DisplayName',str,'MarkerSize',10); hold on;

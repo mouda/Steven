@@ -7,6 +7,7 @@
 #include "bruteForceScheduler.h"
 #include "nonSimplifiedScheduler.h"
 #include "totalEntropy.h"
+#include "minPowerSA.h"
 
 #include <string>
 #include <iostream>

@@ -79,6 +79,7 @@ simulator_SOURCES = main.cpp \
 		    greedyPhysical.h greedyPhysical.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\
 		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
+		    minPowerSA.h minPowerSA.cpp\
 		    totalEntropy.h totalEntropy.cpp\
 		    schedFactory.h schedFactory.cpp \
 		    slot.h slot.cpp \
