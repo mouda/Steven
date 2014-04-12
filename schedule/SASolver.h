@@ -28,7 +28,7 @@ class SASolver
 
     PowerUpdater m_powerUpdater;
     std::vector<int>                m_vecSolution;
-    std::vector<int>                m_minvecSolution;
+    std::vector<int>                m_minVecSolution;
     double                          m_payoff;
     double                          m_minPayoff;
 

@@ -25,7 +25,9 @@ SASolver::Init()
   m_payoff = -DBL_MAX;
   m_minPayoff = -DBL_MAX;
   m_vecSolution.resize(m_ptrMap->GetNumNodes());
-
+  std::fill(m_vecSolution.begin(), m_vecSolution.end(), 0);
+  m_minVecSolution.resize(m_ptrMap->GetNumNodes());
+  std::fill(m_minVecSolution.begin(), m_minVecSolution.end(), 0);
 }
 
 void
