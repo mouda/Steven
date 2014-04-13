@@ -18,10 +18,12 @@ MinPowerSA::MinPowerSA( const double txTime,
   m_vecSched.resize(m_numNodes);
   fill(m_vecSched.begin(), m_vecSched.end(), 0);
 
+  m_ptrSASolver = new SASolver(ptrMap, ptrMatComputer, ptrCS);
 }
 
 MinPowerSA::~MinPowerSA()
 {
+  delete m_ptrSASolver;
 
 }
 
@@ -36,7 +38,7 @@ MinPowerSA::ScheduleOneSlot( vector<int>& vecSupport )
 double
 MinPowerSA::ScheduleOneSlot( std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
 {
-
+  m_ptrSASolver->Solve(vecSupport);
   return 0.0;
 }
 

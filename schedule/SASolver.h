@@ -21,6 +21,8 @@ class SASolver
 
   private:
     void Init();
+    int  RandomSelectMember(const int clusterIdx, const std::list<int>& listCluster);
+    int RandomSelectCluster(std::list<std::list<int> >::const_iterator& iterCluster );
     void Move();
     void Optimize();
     void CheckIfFeasible();
@@ -31,6 +33,7 @@ class SASolver
     std::vector<int>                m_minVecSolution;
     double                          m_payoff;
     double                          m_minPayoff;
+    int                             m_maxIter;
 
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;
