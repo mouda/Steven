@@ -24,11 +24,14 @@ class SASolver
     void InitSolution(double& objective, std::vector<int>& vecSolution);
     int  RandomSelectMember(const int clusterIdx, const std::list<int>& listCluster);
     int  RandomSelectCluster(std::list<std::list<int> >::const_iterator& iterCluster );
-    void Move();
+    void Move(std::vector<int>& vecSolution);
     double Optimize(const std::vector<int>& vecSolution);
-    bool CoolProcess();
+    bool CoolProcess(const double obj);
     bool IsFeasible(const std::vector<int>& vecSolution);
     bool CheckIfBest(const double obj);
+
+    template < class T>
+    string VecToString( const std::vector<T>& );
 
     PowerUpdater m_powerUpdater;
     std::vector<int>                m_minVecSolution;

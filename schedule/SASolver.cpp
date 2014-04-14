@@ -42,7 +42,7 @@ SASolver::InitSolution(double& objective, std::vector<int>& vecSolution)
   std::list<std::list<int> >::const_iterator iterRow = m_ptrCS->GetListCluMemeber().begin();
   for (int i = 0 ;iterRow != m_ptrCS->GetListCluMemeber().end(); ++iterRow, ++i) {
     if (iterRow->size() > 1) {
-      vecSolution.at(i) = RandomSelectMember(i, *iterRow);
+      vecSolution.at(RandomSelectMember(i, *iterRow)) = 1;
     }
   }
 }
@@ -86,11 +86,11 @@ SASolver::Solve(std::vector<int>& vecSolution)
   double objective;
   InitSolution(objective, vecTmpSolu);
   for (int i = 0; i < m_maxIter; ++i) {
-    Move();
+    Move(vecTmpSolu);
     if (IsFeasible(vecTmpSolu)) {
       objective = Optimize(vecTmpSolu);
     }
-    else if(CoolProcess()){
+    else if(CoolProcess(objective)){
       objective = Optimize(vecTmpSolu);
     }
     CheckIfBest(objective);
@@ -98,12 +98,33 @@ SASolver::Solve(std::vector<int>& vecSolution)
 }
 
 void
-SASolver::Move()
+SASolver::Move(std::vector<int>& vecSupport)
 {
   std::list<std::list<int> >::const_iterator iterCluster;
   int chIdx = RandomSelectCluster(iterCluster);
-  while( iterCluster->size() == 1 ) chIdx = RandomSelectCluster(iterCluster);
+  while(iterCluster->size() == 1) chIdx = RandomSelectCluster(iterCluster);
   int memberIdx = RandomSelectMember(chIdx, *iterCluster);
+  /* de-activate the origin select node */
+  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+    if ((m_ptrCS->GetChNameByName(i) == m_ptrCS->GetChNameByName(memberIdx)) &&
+        (m_ptrCS->GetChNameByName(i) != i) && 
+        (vecSupport.at(i) == 1)) {
+      vecSupport.at(i) = 0;
+    }
+  }
+  /* activate the random select node */
+  vecSupport.at(memberIdx) = 1;
+}
+
+template< class T>
+string
+SASolver::VecToString( const vector<T>& vec)
+{
+  stringstream ss;
+  for (int i = 0; i < vec.size(); ++i) {
+    ss << vec[i] << ' ';
+  }
+  return ss.str();
 }
 
 double
