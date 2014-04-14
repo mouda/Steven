@@ -27,19 +27,24 @@ SASolver::~SASolver()
 void
 SASolver::Init()
 {
-  m_payoff = -DBL_MAX;
   m_minPayoff = -DBL_MAX;
-  m_vecSolution.resize(m_ptrMap->GetNumNodes());
-  std::fill(m_vecSolution.begin(), m_vecSolution.end(), 0);
+  m_minVecSolution.resize(m_ptrMap->GetNumNodes());
+  std::fill(m_minVecSolution.begin(), m_minVecSolution.end(), 0);
+}
 
+
+void
+SASolver::InitSolution(double& objective, std::vector<int>& vecSolution)
+{
+  objective = -DBL_MAX;
+  vecSolution.resize(m_ptrMap->GetNumNodes());
+  std::fill(vecSolution.begin(), vecSolution.end(), 0);
   std::list<std::list<int> >::const_iterator iterRow = m_ptrCS->GetListCluMemeber().begin();
   for (int i = 0 ;iterRow != m_ptrCS->GetListCluMemeber().end(); ++iterRow, ++i) {
     if (iterRow->size() > 1) {
-      m_vecSolution.at(i) = RandomSelectMember(i, *iterRow);
+      vecSolution.at(i) = RandomSelectMember(i, *iterRow);
     }
   }
-  m_minVecSolution.resize(m_ptrMap->GetNumNodes());
-  std::fill(m_minVecSolution.begin(), m_minVecSolution.end(), 0);
 }
 
 int 
@@ -77,11 +82,18 @@ SASolver::RandomSelectCluster(std::list<std::list<int> >::const_iterator& iterCl
 double
 SASolver::Solve(std::vector<int>& vecSolution)
 {
+  std::vector<int> vecTmpSolu;
+  double objective;
+  InitSolution(objective, vecTmpSolu);
   for (int i = 0; i < m_maxIter; ++i) {
     Move();
-    Optimize();
-    CheckIfFeasible();
-    CheckIfBest();
+    if (IsFeasible(vecTmpSolu)) {
+      objective = Optimize(vecTmpSolu);
+    }
+    else if(CoolProcess()){
+      objective = Optimize(vecTmpSolu);
+    }
+    CheckIfBest(objective);
   }
 }
 
@@ -92,23 +104,22 @@ SASolver::Move()
   int chIdx = RandomSelectCluster(iterCluster);
   while( iterCluster->size() == 1 ) chIdx = RandomSelectCluster(iterCluster);
   int memberIdx = RandomSelectMember(chIdx, *iterCluster);
-
 }
 
-void
-SASolver::Optimize()
+double
+SASolver::Optimize(const std::vector<int>& vecSolution)
 {
-
+  return 0.0;
 }
 
-void
-SASolver::CheckIfFeasible()
+bool
+SASolver::IsFeasible(const std::vector<int>& vecSolution)
 {
-
+  return true;
 }
 
-void
-SASolver::CheckIfBest()
+bool
+SASolver::CheckIfBest(const double objective)
 {
-
+  return true;
 }
