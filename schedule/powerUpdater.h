@@ -27,6 +27,8 @@ class PowerUpdater
     const double        m_threshold;
     double              m_avgRatio;
     static const double m_scale = 1; //This scale is for avoiding computation error.
+    int                 **m_maIndexInterference;
+    double              **m_maStrengthInterference;
 
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;

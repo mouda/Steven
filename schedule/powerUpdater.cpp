@@ -10,23 +10,120 @@ PowerUpdater::PowerUpdater(
   m_ptrMap(ptrMap), 
   m_ptrCS(ptrCS) 
 {
+  m_maIndexInterference = new int* [m_ptrMap->GetNumInitHeads()];
+  for (int i=0; i < m_ptrMap->GetNumInitHeads(); i++) 
+    m_maIndexInterference[i] = new int [m_ptrMap->GetNumInitHeads()];
 
+  m_maStrengthInterference = new double* [m_ptrMap->GetNumInitHeads()];
+  for (int i=0; i < m_ptrMap->GetNumInitHeads(); i++) 
+    m_maStrengthInterference[i] = new double [m_ptrMap->GetNumInitHeads()];
 }
 
 PowerUpdater::~PowerUpdater()
 {
+  for(int i = 0; i < m_ptrMap->GetNumInitHeads(); i++) delete[] m_maIndexInterference[i];
+  delete [] m_maIndexInterference;
+  for(int i = 0; i < m_ptrMap->GetNumInitHeads(); i++) delete[] m_maStrengthInterference[i];
+  delete [] m_maStrengthInterference;
 
 }
 
 void
 PowerUpdater::UpdateInterference( std::vector<double>& vecPower)
 {
+  std::list<std::list<int> >::const_iterator itl = m_ptrCS->GetListCluMemeber().begin();
+  //For each CH we will see there member 1-by-1
+  for(int i=0; i<m_ptrMap->GetNumInitHeads(); i++,itl++)  {
+
+    if(m_ptrCS->GetVecHeadName().at(i) == -1 ) continue; //Cluster Not exist
+    std::list<std::list<int> >::const_iterator itl2 = m_ptrCS->GetListCluMemeber().begin(); //search other cluster from start for each CH
+    //Search other cluster for each member in cluster (*vecHeadName)[i]
+    for (int j = 0; j < m_ptrMap->GetNumInitHeads(); j++, itl2++) {
+      int interferentSource = -1;
+      double maxInterference = -99;
+      //Same headIndex which means this is self head.
+      if ( i == j ) {
+        m_maIndexInterference[i][j]=-1;
+        m_maStrengthInterference[i][j]=0;
+        continue;
+      }
+      //empty list ->0
+      else if ( itl2->size() <= 1 ) {
+        m_maIndexInterference[i][j] = -1;
+        m_maStrengthInterference[i][j] = 0;
+        continue;
+      }
+
+      //Find the strongest interference from other group
+      list<int> ::const_iterator itl3 = itl2->begin();
+
+      //search every node(itl3) under each cluster(itl2) != self cluster
+      for(; itl3!=itl2->end(); itl3++) {
+        double tempInterference = vecPower.at((*itl3)) * m_ptrMap->GetGijByPair(m_ptrCS->GetVecHeadName().at(i), (*itl3));
+        if( m_ptrCS->GetVecHeadName().at(i) == (*itl3) )
+          continue;//In Downlink Scenario othe head won't transmit power
+        else if ( tempInterference > maxInterference ) {
+          interferentSource = (*itl3);
+          maxInterference = tempInterference;
+        }
+      }
+      m_maIndexInterference[i][j] = interferentSource;
+      //Interference form j(HeadIndex) to i(HeadIndex)
+      m_maStrengthInterference[i][j] = maxInterference;
+    }
+  }
 
 }
 
 void
 PowerUpdater::ChangeAllMemberPower( std::vector<double>& vecPower) const
 {
+  std::list<std::list<int> >::const_iterator it1 = m_ptrCS->GetListCluMemeber().begin();
+  for(int headIndex = 0; it1!=m_ptrCS->GetListCluMemeber().end(); ++headIndex, ++it1) {
+    //Compute the Interference headIndex received.
+    if ((*vecHeadName)[headIndex]==-1)continue;
+
+    double accuInterference = inBandNoise;
+    for(unsigned int i=0; i<(*vecHeadName).size(); i++)
+    {
+      if ((*vecHeadName)[i]==-1)continue;
+      if(maIndexInterference[headIndex][i]!=-1)
+      {
+        accuInterference+= maStrengthInterference[headIndex][i];
+      }
+    }
+    //cout<<"Cluster: "<<headIndex<<" ->"<<accuInterference<<" C2 "<<C2<<endl;
+    list <int>::const_iterator it2 =it1->begin();
+    // update all the power  in the cluster we are interested.
+    int sizeOfCluter = it1->size();
+    for(int i=0; it2!=it1->end(); i++,it2++) {
+      if(sizeOfCluter==1||(*vecHeadName)[headIndex]==(*it2))//if the cluster has only one head or the *it2 is the head(same Name)
+      {
+        powerDifference[(*it2)]=0;
+        powerDifferenceRatio[(*it2)] =0;
+        vecPower.at((*it2)) = 0;
+        continue;
+      }
+
+      else
+      {
+        float powerCursor = 0;
+        double tempDifference = 0;
+        //cout<<"c2 "<<C2<<endl;
+        //cout<<"Channel Gain from"<<(*vecHeadName)[headIndex]<<" "<<(*it2)<<" "<<Gij[(*vecHeadName)[headIndex]][(*it2)];
+        powerCursor = (accuInterference *(pow((float)2.0, (sizeOfCluter-1)*C2)-1))/Gij[(*vecHeadName)[headIndex]][(*it2)];
+        //cout<<"Power "<<powerCursor/scale<< " accu "<< accuInterference/scale<<endl;
+        tempDifference = powerCursor - vecPower.at((*it2));
+
+        if(powerDifference[(*it2)]!=0)powerDifferenceRatio[(*it2)] = (double)tempDifference / powerDifference[(*it2)];
+        powerDifference[(*it2)] = tempDifference;
+        vecPower.at((*it2)) = powerCursor;
+        if(vecPower.at((*it2)) > powerMax) {
+          exceedPc = true;
+        }
+      }
+    }
+  }
 
 }
 
