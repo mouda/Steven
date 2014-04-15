@@ -13,7 +13,8 @@ SASolver::SASolver(
     m_ptrMap(ptrMap), 
     m_ptrCS(ptrCS), 
     m_ptrGField(ptrGField),
-    m_maxIter(1000)
+    m_maxIter(1000),
+    m_powerUpdater(ptrMap,ptrCS)
 {
   Init();
   std::srand(std::time(NULL));
@@ -130,6 +131,7 @@ SASolver::VecToString( const vector<T>& vec)
 double
 SASolver::Optimize(const std::vector<int>& vecSolution)
 {
+  m_powerUpdater.Solve(vecSolution);
   return 0.0;
 }
 

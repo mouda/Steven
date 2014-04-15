@@ -33,7 +33,7 @@ class SASolver
     template < class T>
     string VecToString( const std::vector<T>& );
 
-    PowerUpdater m_powerUpdater;
+    PowerUpdater                    m_powerUpdater;
     std::vector<int>                m_minVecSolution;
     double                          m_minPayoff;
     int                             m_maxIter;
