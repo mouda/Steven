@@ -4,12 +4,14 @@
 
 PowerUpdater::PowerUpdater(
     Map const * const ptrMap, 
-    ClusterStructure const * const ptrCS
+    ClusterStructure const * const ptrCS,
+    const double txTimeSlot
     ):
   m_threshold(1e-12),
   m_ptrMap(ptrMap), 
   m_ptrCS(ptrCS), 
-  m_idtEntropy(ptrMap->GetIdtEntropy())
+  m_idtEntropy(ptrMap->GetIdtEntropy()),
+  m_txTimePerSlot(txTimeSlot)
 {
   m_maIndexInterference = new int* [m_ptrMap->GetNumInitHeads()];
   for (int i=0; i < m_ptrMap->GetNumInitHeads(); i++) 
@@ -19,7 +21,7 @@ PowerUpdater::PowerUpdater(
   for (int i=0; i < m_ptrMap->GetNumInitHeads(); i++) 
     m_maStrengthInterference[i] = new double [m_ptrMap->GetNumInitHeads()];
   m_inBandNoise = m_ptrMap->GetBandwidth() * m_scale;
-  m_C2=m_idtEntropy/m_ptrMap->Get/bandwidthKhz;
+  m_C2=m_idtEntropy/m_txTimePerSlot/m_ptrMap->GetBandwidth();
 }
 
 PowerUpdater::~PowerUpdater()
@@ -81,7 +83,7 @@ PowerUpdater::UpdateInterference( std::vector<double>& vecPower)
 void
 PowerUpdater::ChangeAllMemberPower( std::vector<double>& vecPower, 
     std::vector<double>& vecPowerDiff, 
-    std::vector<double>& vecPowerDiffRatio) const
+    std::vector<double>& vecPowerDiffRatio)
 {
   std::list<std::list<int> >::const_iterator it1 = m_ptrCS->GetListCluMemeber().begin();
   for(int headIndex = 0; it1!=m_ptrCS->GetListCluMemeber().end(); ++headIndex, ++it1) {
@@ -97,12 +99,12 @@ PowerUpdater::ChangeAllMemberPower( std::vector<double>& vecPower,
         accuInterference += m_maStrengthInterference[headIndex][i];
       }
     }
-    //cout<<"Cluster: "<<headIndex<<" ->"<<accuInterference<<" C2 "<<C2<<endl;
     list <int>::const_iterator it2 =it1->begin();
     // update all the power  in the cluster we are interested.
     int sizeOfCluter = it1->size();
     for(int i=0; it2!=it1->end(); i++,it2++) {
-      if(sizeOfCluter==1||m_ptrCS->GetVecHeadName().at(headIndex) == (*it2) )//if the cluster has only one head or the *it2 is the head(same Name)
+      //if the cluster has only one head or the *it2 is the head(same Name)
+      if(sizeOfCluter==1||m_ptrCS->GetVecHeadName().at(headIndex) == (*it2) )
       {
         vecPowerDiff[(*it2)]=0;
         vecPowerDiffRatio[(*it2)] =0;
@@ -114,9 +116,8 @@ PowerUpdater::ChangeAllMemberPower( std::vector<double>& vecPower,
       {
         float powerCursor = 0;
         double tempDifference = 0;
-        //cout<<"c2 "<<C2<<endl;
-        //cout<<"Channel Gain from"<<(*vecHeadName)[headIndex]<<" "<<(*it2)<<" "<<Gij[(*vecHeadName)[headIndex]][(*it2)];
-        powerCursor = (accuInterference *(pow((float)2.0, (sizeOfCluter-1)*C2)-1))/Gij[(*vecHeadName)[headIndex]][(*it2)];
+        powerCursor = (accuInterference *(pow((float)2.0, (sizeOfCluter-1)*m_C2)-1)) / 
+          m_ptrMap->GetGijByPair(m_ptrCS->GetVecHeadName().at(headIndex), (*it2));
         //cout<<"Power "<<powerCursor/scale<< " accu "<< accuInterference/scale<<endl;
         tempDifference = powerCursor - vecPower.at((*it2));
 
@@ -124,7 +125,7 @@ PowerUpdater::ChangeAllMemberPower( std::vector<double>& vecPower,
         vecPowerDiff[(*it2)] = tempDifference;
         vecPower.at((*it2)) = powerCursor;
         if(vecPower.at((*it2)) > m_ptrMap->GetMaxPower()) {
-          exceedPc = true;
+          m_exceedPc = true;
         }
       }
     }
@@ -149,8 +150,8 @@ PowerUpdater::Solve(const std::vector<int>& vecSupport)
   //add m_scale to avoid computation error//
   //------------------------------------//
   int loopCounter = 0;//counter to count how many round we updated Power
-  bool exceedPc = false;
-  while(loopCounter <2||(!exceedPc)) {
+  bool m_exceedPc = false;
+  while(loopCounter <2||(!m_exceedPc)) {
     //cout<<"loop "<<loopCounter<<endl;
     //cout<<"avgR"<< m_avgRatio<<endl;
     if ( loopCounter > 2 && CheckConverged(vecPowerDiffRatio))
@@ -165,7 +166,7 @@ PowerUpdater::Solve(const std::vector<int>& vecSupport)
     }
     //Change the uplink node power cluster by cluster, which means that we will change all the members undet cluster i and go i+1
     UpdateInterference( vecPower);// Need to update before change all member power to avoid the result from last time
-    ChangeAllMemberPower(vecPower);
+    ChangeAllMemberPower(vecPower, vecPowerDiff, vecPowerDiffRatio);
     loopCounter++;
     //cout<<loopCounter<<"-th round"<<endl;
 
@@ -177,13 +178,11 @@ PowerUpdater::Solve(const std::vector<int>& vecSupport)
     for (int i=0; i<m_ptrMap->GetNumNodes(); i++)
     {
       vecPower[i]/=m_scale;
-      if (vecPower[i]>(m_ptrMap->GetMaxPower()+1e-6)){// cout<<vecPower[i]<<endl;
-        exceedPc=true;
+      if (vecPower[i]>(m_ptrMap->GetMaxPower()+1e-6)){
+        m_exceedPc=true;
       }
-      //cout<<"node "<<i <<": "<<vecPower[i]<<endl;
-      //cout<<"  =>"<<vecPower[i]<<endl;
     }
-    if(exceedPc){
+    if(m_exceedPc){
       statusFlag=2;
     }
     else {statusFlag=3;}
@@ -193,22 +192,19 @@ PowerUpdater::Solve(const std::vector<int>& vecSupport)
 
   for (int i=0; i<m_ptrMap->GetNumNodes(); i++)
   {
-    //cout<<"node i :"<<i <<" Ori= "<<vecPower[i];
     if(m_avgRatio<1){
       vecPower[i]=vecPower[i] + m_avgRatio * vecPowerDiff.at(i) /(1-m_avgRatio);
       vecPower[i]/=m_scale;
     }
-    //cout<<"node "<<i <<": "<<vecPower[i]<<endl;
-    if (vecPower[i]>(m_ptrMap->GetMaxPower()+1e-6)){// cout<<vecPower[i]<<endl;
-      exceedPc=true;}
-
-      //cout<<"  =>"<<vecPower[i]<<endl;
+    if (vecPower[i]>(m_ptrMap->GetMaxPower()+1e-6)){
+      m_exceedPc=true;
+    }
   }
   //showVerificationResult();
-  if (exceedPc == true)
+  if (m_exceedPc == true)
   {
     statusFlag=2;
-    //cout<<"exceedPc"<<endl;    // Infeasible
+    //cout<<"m_exceedPc"<<endl;    // Infeasible
     //cout<<"================="<<endl;
     return false;
   }
