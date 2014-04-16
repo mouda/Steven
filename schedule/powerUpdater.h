@@ -20,12 +20,15 @@ class PowerUpdater
 
     void Init();
     void UpdateInterference( std::vector<double>& );
-    void ChangeAllMemberPower( std::vector<double>& ) const;
+    void ChangeAllMemberPower( std::vector<double>&, std::vector<double>&, std::vector<double>& ) const;
     bool CheckDifference( const std::vector<double>& ) const;
     bool CheckConverged( const std::vector<double>& ) ;
 
     const double        m_threshold;
+    double              m_inBandNoise;
     double              m_avgRatio;
+    double              m_C2;
+    double              m_idtEntropy;
     static const double m_scale = 1; //This scale is for avoiding computation error.
     int                 **m_maIndexInterference;
     double              **m_maStrengthInterference;

@@ -8,13 +8,15 @@
 SASolver::SASolver(
     Map const * const ptrMap, 
     CORRE_MA_OPE* ptrGField, 
-    ClusterStructure const * const ptrCS
+    ClusterStructure const * const ptrCS,
+    const double txTimeSlot
     ):
     m_ptrMap(ptrMap), 
     m_ptrCS(ptrCS), 
     m_ptrGField(ptrGField),
     m_maxIter(1000),
-    m_powerUpdater(ptrMap,ptrCS)
+    m_powerUpdater(ptrMap,ptrCS),
+    m_txTimePerSlot(txTimeSlot)
 {
   Init();
   std::srand(std::time(NULL));

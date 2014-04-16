@@ -8,7 +8,8 @@ PowerUpdater::PowerUpdater(
     ):
   m_threshold(1e-12),
   m_ptrMap(ptrMap), 
-  m_ptrCS(ptrCS) 
+  m_ptrCS(ptrCS), 
+  m_idtEntropy(ptrMap->GetIdtEntropy())
 {
   m_maIndexInterference = new int* [m_ptrMap->GetNumInitHeads()];
   for (int i=0; i < m_ptrMap->GetNumInitHeads(); i++) 
@@ -17,6 +18,8 @@ PowerUpdater::PowerUpdater(
   m_maStrengthInterference = new double* [m_ptrMap->GetNumInitHeads()];
   for (int i=0; i < m_ptrMap->GetNumInitHeads(); i++) 
     m_maStrengthInterference[i] = new double [m_ptrMap->GetNumInitHeads()];
+  m_inBandNoise = m_ptrMap->GetBandwidth() * m_scale;
+  m_C2=m_idtEntropy/m_ptrMap->Get/bandwidthKhz;
 }
 
 PowerUpdater::~PowerUpdater()
@@ -76,20 +79,22 @@ PowerUpdater::UpdateInterference( std::vector<double>& vecPower)
 }
 
 void
-PowerUpdater::ChangeAllMemberPower( std::vector<double>& vecPower) const
+PowerUpdater::ChangeAllMemberPower( std::vector<double>& vecPower, 
+    std::vector<double>& vecPowerDiff, 
+    std::vector<double>& vecPowerDiffRatio) const
 {
   std::list<std::list<int> >::const_iterator it1 = m_ptrCS->GetListCluMemeber().begin();
   for(int headIndex = 0; it1!=m_ptrCS->GetListCluMemeber().end(); ++headIndex, ++it1) {
     //Compute the Interference headIndex received.
-    if ((*vecHeadName)[headIndex]==-1)continue;
+    if (m_ptrCS->GetVecHeadName().at(headIndex) == -1) continue;
 
-    double accuInterference = inBandNoise;
-    for(unsigned int i=0; i<(*vecHeadName).size(); i++)
+    double accuInterference = m_inBandNoise;
+    for(unsigned int i=0; i<m_ptrCS->GetVecHeadName().size(); i++)
     {
-      if ((*vecHeadName)[i]==-1)continue;
-      if(maIndexInterference[headIndex][i]!=-1)
+      if (m_ptrCS->GetVecHeadName().at(i) == -1 ) continue;
+      if (m_maIndexInterference[headIndex][i]!=-1)
       {
-        accuInterference+= maStrengthInterference[headIndex][i];
+        accuInterference += m_maStrengthInterference[headIndex][i];
       }
     }
     //cout<<"Cluster: "<<headIndex<<" ->"<<accuInterference<<" C2 "<<C2<<endl;
@@ -97,10 +102,10 @@ PowerUpdater::ChangeAllMemberPower( std::vector<double>& vecPower) const
     // update all the power  in the cluster we are interested.
     int sizeOfCluter = it1->size();
     for(int i=0; it2!=it1->end(); i++,it2++) {
-      if(sizeOfCluter==1||(*vecHeadName)[headIndex]==(*it2))//if the cluster has only one head or the *it2 is the head(same Name)
+      if(sizeOfCluter==1||m_ptrCS->GetVecHeadName().at(headIndex) == (*it2) )//if the cluster has only one head or the *it2 is the head(same Name)
       {
-        powerDifference[(*it2)]=0;
-        powerDifferenceRatio[(*it2)] =0;
+        vecPowerDiff[(*it2)]=0;
+        vecPowerDiffRatio[(*it2)] =0;
         vecPower.at((*it2)) = 0;
         continue;
       }
@@ -115,10 +120,10 @@ PowerUpdater::ChangeAllMemberPower( std::vector<double>& vecPower) const
         //cout<<"Power "<<powerCursor/scale<< " accu "<< accuInterference/scale<<endl;
         tempDifference = powerCursor - vecPower.at((*it2));
 
-        if(powerDifference[(*it2)]!=0)powerDifferenceRatio[(*it2)] = (double)tempDifference / powerDifference[(*it2)];
-        powerDifference[(*it2)] = tempDifference;
+        if(vecPowerDiff[(*it2)]!=0)vecPowerDiffRatio[(*it2)] = (double)tempDifference / vecPowerDiff[(*it2)];
+        vecPowerDiff[(*it2)] = tempDifference;
         vecPower.at((*it2)) = powerCursor;
-        if(vecPower.at((*it2)) > powerMax) {
+        if(vecPower.at((*it2)) > m_ptrMap->GetMaxPower()) {
           exceedPc = true;
         }
       }
