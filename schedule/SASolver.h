@@ -14,7 +14,8 @@ class SASolver
     SASolver(
         Map const * const, 
         CORRE_MA_OPE* , 
-        ClusterStructure const * const
+        ClusterStructure const * const,
+        const double txTimeSlot
         );
     ~SASolver();
     double Solve(std::vector<int>& );
@@ -33,10 +34,11 @@ class SASolver
     template < class T>
     string VecToString( const std::vector<T>& );
 
-    PowerUpdater m_powerUpdater;
+    PowerUpdater                    m_powerUpdater;
     std::vector<int>                m_minVecSolution;
     double                          m_minPayoff;
     int                             m_maxIter;
+    double                          m_txTimePerSlot;
 
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;

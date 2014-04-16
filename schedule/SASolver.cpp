@@ -8,12 +8,15 @@
 SASolver::SASolver(
     Map const * const ptrMap, 
     CORRE_MA_OPE* ptrGField, 
-    ClusterStructure const * const ptrCS
+    ClusterStructure const * const ptrCS,
+    const double txTimeSlot
     ):
     m_ptrMap(ptrMap), 
     m_ptrCS(ptrCS), 
     m_ptrGField(ptrGField),
-    m_maxIter(1000)
+    m_maxIter(1000),
+    m_txTimePerSlot(txTimeSlot),
+    m_powerUpdater(ptrMap,ptrCS,txTimeSlot)
 {
   Init();
   std::srand(std::time(NULL));
@@ -130,6 +133,7 @@ SASolver::VecToString( const vector<T>& vec)
 double
 SASolver::Optimize(const std::vector<int>& vecSolution)
 {
+  m_powerUpdater.Solve(vecSolution);
   return 0.0;
 }
 

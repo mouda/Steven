@@ -18,7 +18,7 @@ MinPowerSA::MinPowerSA( const double txTime,
   m_vecSched.resize(m_numNodes);
   fill(m_vecSched.begin(), m_vecSched.end(), 0);
 
-  m_ptrSASolver = new SASolver(ptrMap, ptrMatComputer, ptrCS);
+  m_ptrSASolver = new SASolver(ptrMap, ptrMatComputer, ptrCS, m_txTimePerSlot);
 }
 
 MinPowerSA::~MinPowerSA()
