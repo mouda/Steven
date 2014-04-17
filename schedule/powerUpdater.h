@@ -16,12 +16,12 @@ class PowerUpdater
         ); 
     ~PowerUpdater();
 
-    double Solve( const std::vector<int>& );
+    double Solve( std::vector<double>&, const std::vector<int>& );
 
   private:
 
     void Init();
-    void UpdateInterference( std::vector<double>& );
+    void UpdateInterference( std::vector<double>&, const std::vector<int>& );
     void ChangeAllMemberPower( std::vector<double>&, std::vector<double>&, std::vector<double>& );
     bool CheckDifference( const std::vector<double>& ) const;
     bool CheckConverged( const std::vector<double>& ) ;
