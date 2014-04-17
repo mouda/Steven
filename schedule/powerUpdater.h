@@ -4,6 +4,7 @@
 #include "map.h"
 #include "clusterStructure.h"
 #include <vector>
+#include <iostream>
 
 class PowerUpdater
 {

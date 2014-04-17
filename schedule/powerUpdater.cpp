@@ -20,8 +20,11 @@ PowerUpdater::PowerUpdater(
   m_maStrengthInterference = new double* [m_ptrMap->GetNumInitHeads()];
   for (int i=0; i < m_ptrMap->GetNumInitHeads(); i++) 
     m_maStrengthInterference[i] = new double [m_ptrMap->GetNumInitHeads()];
-  m_inBandNoise = m_ptrMap->GetBandwidth() * m_scale;
+  m_inBandNoise = m_ptrMap->GetNoise() * m_scale;
   m_C2=m_idtEntropy/m_txTimePerSlot/m_ptrMap->GetBandwidth();
+  cout << "********idtEntropy " << m_idtEntropy << endl;
+  cout << "********m_txTimePerSlot " << m_txTimePerSlot << endl;
+  cout << "********bandwidth " << m_ptrMap->GetBandwidth() << endl;
 }
 
 PowerUpdater::~PowerUpdater()
@@ -114,11 +117,12 @@ PowerUpdater::ChangeAllMemberPower( std::vector<double>& vecPower,
 
       else
       {
-        float powerCursor = 0;
+        double powerCursor = 0;
         double tempDifference = 0;
-        powerCursor = (accuInterference *(pow((float)2.0, (sizeOfCluter-1)*m_C2)-1)) / 
+//        cout << "C2:" << m_C2 << endl;
+        powerCursor = (accuInterference *(pow(2.0, m_C2)-1)) / 
           m_ptrMap->GetGijByPair(m_ptrCS->GetVecHeadName().at(headIndex), (*it2));
-        //cout<<"Power "<<powerCursor/scale<< " accu "<< accuInterference/scale<<endl;
+//        cout<<"Power "<<powerCursor<< " accu "<< accuInterference<<endl;
         tempDifference = powerCursor - vecPower.at((*it2));
 
         if(vecPowerDiff[(*it2)]!=0)vecPowerDiffRatio[(*it2)] = (double)tempDifference / vecPowerDiff[(*it2)];
@@ -165,7 +169,8 @@ PowerUpdater::Solve(const std::vector<int>& vecSupport)
       break;
     }
     //Change the uplink node power cluster by cluster, which means that we will change all the members undet cluster i and go i+1
-    UpdateInterference( vecPower);// Need to update before change all member power to avoid the result from last time
+    // Need to update before change all member power to avoid the result from last time
+    UpdateInterference( vecPower);
     ChangeAllMemberPower(vecPower, vecPowerDiff, vecPowerDiffRatio);
     loopCounter++;
     //cout<<loopCounter<<"-th round"<<endl;
@@ -211,9 +216,9 @@ PowerUpdater::Solve(const std::vector<int>& vecSupport)
   //cout<<loopCounter<<endl;
   //cout<<"vvvvvvvvvvvvvvvvvvvvvFeasiblevvvvvvvvvvvvvvv"<<endl;
   statusFlag=1;
-  return true;
+    return true;
 
-}
+  }
 
 bool
 PowerUpdater::CheckDifference(const std::vector<double>& vecPowerDiff ) const
@@ -233,7 +238,6 @@ bool
 PowerUpdater::CheckConverged(const std::vector<double>& vecPowerDiffRatio) 
 {
   bool convergence = true;
-  double thre = 1e-5;
   m_avgRatio = 0; // find the m_avgRatio
   double avgMember =0;
   int chNum = m_ptrCS->GetNumHeads();
@@ -245,6 +249,7 @@ PowerUpdater::CheckConverged(const std::vector<double>& vecPowerDiffRatio)
       avgMember++;
     }
   }
+//  std::cout << avgMember << std::endl;
   if(avgMember!=0) m_avgRatio/=avgMember;
   //cout<<"AvGr"<<m_avgRatio<<endl;
   //check if all the power ratio close to the average
@@ -252,7 +257,8 @@ PowerUpdater::CheckConverged(const std::vector<double>& vecPowerDiffRatio)
   for (int i =0; i<chNum; i++)
   {
     assert(m_avgRatio>-1);
-    if (abs(vecPowerDiffRatio.at(i)-m_avgRatio)>thre&&vecPowerDiffRatio.at(i)!=0)
+    if ( (abs(vecPowerDiffRatio.at(i)-m_avgRatio) > m_threshold) && 
+        (vecPowerDiffRatio.at(i)!=0) )
     {
       convergence = false;
       break;
