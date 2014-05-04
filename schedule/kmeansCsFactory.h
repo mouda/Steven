@@ -8,10 +8,9 @@ class KmeansCsFactory: public CsFactory
   public:
     KmeansCsFactory(Map const * const, CORRE_MA_OPE const * const );
     ~KmeansCsFactory();
+    ClusterStructure * CreateClusterStructure();
   private:
-    ClusterStructure*   m_ptrCS;
-    Map const * const   m_ptrMap;
-    CORRE_MA_OPE const * const  m_ptrMatComputer;
+    bool Kmedoid( vector<int>&, list<list<int> >& );
 };
 
 #endif

@@ -10,6 +10,8 @@
 #include "mapFactory.h"
 #include "clusterStructure.h"
 #include "csFactory.h"
+#include "kmeansCsFactory.h"
+#include "minResCsFactory.h"
 #include "scheduler.h"
 #include "maxSNRScheduler.h"
 #include "schedFactory.h"
@@ -47,6 +49,7 @@ int main(int argc, char *argv[])
   string  solutionFName;
   string  supportFName;
   string  strAlgFlag;
+  string  CSFormation;
   try {
     po::options_description desc("Allowed options");
     desc.add_options()
@@ -69,7 +72,8 @@ int main(int argc, char *argv[])
       ("EntropyOutput,E",         po::value<string>(), "Entropy output file name")
       ("SupportOutput,U",         po::value<string>(), "Support number output file name")
       ("MSEOutput,M",             po::value<string>(), "MSE output file name")
-      ("SolutionOutput,S",        po::value<string>(), "Solution output file name");
+      ("SolutionOutput,S",        po::value<string>(), "Solution output file name")
+      ("ClusterFormation,F",      po::value<string>(), "Cluster Formation Algorithm");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
@@ -77,7 +81,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() > 13 && vm.size() <= 18 ) {
+    } else if(vm.size() > 14 && vm.size() <= 19 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -91,6 +95,7 @@ int main(int argc, char *argv[])
       mapFileName =             vm["map"].as<string>();
       strAlgFlag =              vm["algorithm"].as<string>();
       endTime   =               vm["endTime"].as<double>();
+      CSFormation =             vm["ClusterFormation"].as<string>();
 
       /* output control */
       if (vm.count("ClusterStructureOutput")) {
@@ -138,8 +143,17 @@ int main(int argc, char *argv[])
         return 1;
       }
       ClusterStructure* myCS = 0;
-      CsFactory myCsFactory(myMap, myMatComputer);
-      myCS = myCsFactory.CreateClusterStructure();
+      CsFactory* myCsFactory = 0;
+      
+      if (CSFormation == "Kmeans") {
+        myCsFactory = new KmeansCsFactory(myMap, myMatComputer);
+      }
+      else if (CSFormation == "MinRes"){
+        myCsFactory = new MinResCsFactory(myMap, myMatComputer); 
+
+      }
+
+      myCS = myCsFactory->CreateClusterStructure();
 
       if (!myCS) {
         cerr << "Error: Failed to initalize cluster structure" << endl;
@@ -186,6 +200,8 @@ int main(int argc, char *argv[])
       if (vm.count("TotalEntropy")) {
         mySimulator.WriteTotalEntropy();
       }
+
+      delete myCsFactory;
     }
     else {
       cout << desc << "\n";

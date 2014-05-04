@@ -25,10 +25,9 @@ class CsFactory
 {
   public:
     CsFactory(Map const * const, CORRE_MA_OPE const * const );
-    ~CsFactory();
-    ClusterStructure * CreateClusterStructure();
-  private:
-    bool Kmedoid( vector<int>&, list<list<int> >& );
+    virtual ~CsFactory();
+    virtual ClusterStructure * CreateClusterStructure() = 0;
+  protected:
 
     int                 m_numNodes;
     int                 m_numMaxHeads;

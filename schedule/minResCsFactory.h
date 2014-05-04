@@ -8,10 +8,10 @@ class MinResCsFactory: public CsFactory
   public:
     MinResCsFactory(Map const * const, CORRE_MA_OPE const * const );
     ~MinResCsFactory();
+    ClusterStructure * CreateClusterStructure();
   private:
-    ClusterStructure*   m_ptrCS;
-    Map const * const   m_ptrMap;
-    CORRE_MA_OPE const * const  m_ptrMatComputer;
+
+    bool SASearch(vector<int>& vecHeadNames, list<list<int> >& listCluMembers );
 };
 
 #endif
