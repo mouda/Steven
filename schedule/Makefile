@@ -48,11 +48,13 @@ PROGRAMS = $(bin_PROGRAMS)
 am_simulator_OBJECTS = main.$(OBJEXT) map.$(OBJEXT) \
 	simSystem.$(OBJEXT) ULAGENT.$(OBJEXT) CORRE_MA_OPE.$(OBJEXT) \
 	clusterStructure.$(OBJEXT) mapFactory.$(OBJEXT) \
-	csFactory.$(OBJEXT) utility.$(OBJEXT) scheduler.$(OBJEXT) \
-	MyTMINLP.$(OBJEXT) branchBoundScheduler.$(OBJEXT) \
-	maxSNRScheduler.$(OBJEXT) greedyPhysical.$(OBJEXT) \
-	bruteForceScheduler.$(OBJEXT) nonSimplifiedScheduler.$(OBJEXT) \
-	minPowerSA.$(OBJEXT) SASolver.$(OBJEXT) powerUpdater.$(OBJEXT) \
+	csFactory.$(OBJEXT) kmeansCsFactory.$(OBJEXT) \
+	minResCsFactory.$(OBJEXT) utility.$(OBJEXT) \
+	scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) \
+	branchBoundScheduler.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
+	greedyPhysical.$(OBJEXT) bruteForceScheduler.$(OBJEXT) \
+	nonSimplifiedScheduler.$(OBJEXT) minPowerSA.$(OBJEXT) \
+	SASolver.$(OBJEXT) powerUpdater.$(OBJEXT) \
 	totalEntropy.$(OBJEXT) schedFactory.$(OBJEXT) slot.$(OBJEXT) \
 	event.$(OBJEXT) fileHandler.$(OBJEXT) simulator.$(OBJEXT)
 simulator_OBJECTS = $(am_simulator_OBJECTS)
@@ -75,17 +77,17 @@ DIST_SOURCES = $(simulator_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/mouda/Work/Thesis/figures_src/Simulatorsrc/missing --run aclocal-1.11
-AMTAR = ${SHELL} /home/mouda/Work/Thesis/figures_src/Simulatorsrc/missing --run tar
-AUTOCONF = ${SHELL} /home/mouda/Work/Thesis/figures_src/Simulatorsrc/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/mouda/Work/Thesis/figures_src/Simulatorsrc/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/mouda/Work/Thesis/figures_src/Simulatorsrc/missing --run automake-1.11
+ACLOCAL = ${SHELL} /home/mouda/Work/Research/src/missing --run aclocal-1.11
+AMTAR = ${SHELL} /home/mouda/Work/Research/src/missing --run tar
+AUTOCONF = ${SHELL} /home/mouda/Work/Research/src/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/mouda/Work/Research/src/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/mouda/Work/Research/src/missing --run automake-1.11
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2 -g
 CPP = gcc -E
-CPPFLAGS = -I/home/share/lapack/include/ -I/home/share/boost1550/include -I/home/share/armadillo39202/include -I/home/share/eigen320/include -I/home/share/bonmin174/include
+CPPFLAGS = -I/opt/boost/include/ -I/opt/armadillo/include/ -I/opt/eigen/include/ -I/opt/bonmin/include
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -104,7 +106,7 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
-LDFLAGS = -L/home/share/armadillo39202/lib -L/home/share/bonmin174/lib -L/home/share/openblas/lib -L/home/share/lapack/lib -L/home/share/boost1550/lib
+LDFLAGS = -L/opt/armadillo/lib -L/opt/bonmin/lib -L/opt/openblas/lib -L/opt/lapack/lib -L/opt/boost/lib
 LIBOBJS = 
 #scheduler_CFLAGS = 
 LIBS = -lopenblas \
@@ -141,7 +143,7 @@ LIBS = -lopenblas \
 
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} /home/mouda/Work/Thesis/figures_src/Simulatorsrc/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/mouda/Work/Research/src/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
 PACKAGE = steven
@@ -155,10 +157,10 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = 
 VERSION = 0.0
-abs_builddir = /home/mouda/Work/Thesis/figures_src/Simulatorsrc/schedule
-abs_srcdir = /home/mouda/Work/Thesis/figures_src/Simulatorsrc/schedule
-abs_top_builddir = /home/mouda/Work/Thesis/figures_src/Simulatorsrc
-abs_top_srcdir = /home/mouda/Work/Thesis/figures_src/Simulatorsrc
+abs_builddir = /home/mouda/Work/Research/src/schedule
+abs_srcdir = /home/mouda/Work/Research/src/schedule
+abs_top_builddir = /home/mouda/Work/Research/src
+abs_top_srcdir = /home/mouda/Work/Research/src
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
@@ -178,7 +180,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/mouda/Work/Thesis/figures_src/Simulatorsrc/install-sh
+install_sh = ${SHELL} /home/mouda/Work/Research/src/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -239,6 +241,8 @@ simulator_SOURCES = main.cpp \
 		    clusterStructure.h clusterStructure.cpp \
 		    mapFactory.h mapFactory.cpp \
 		    csFactory.h csFactory.cpp \
+		    kmeansCsFactory.h kmeansCsFactory.cpp\
+		    minResCsFactory.h minResCsFactory.cpp\
 		    utility.h utility.cpp \
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \
@@ -353,11 +357,13 @@ include ./$(DEPDIR)/csFactory.Po
 include ./$(DEPDIR)/event.Po
 include ./$(DEPDIR)/fileHandler.Po
 include ./$(DEPDIR)/greedyPhysical.Po
+include ./$(DEPDIR)/kmeansCsFactory.Po
 include ./$(DEPDIR)/main.Po
 include ./$(DEPDIR)/map.Po
 include ./$(DEPDIR)/mapFactory.Po
 include ./$(DEPDIR)/maxSNRScheduler.Po
 include ./$(DEPDIR)/minPowerSA.Po
+include ./$(DEPDIR)/minResCsFactory.Po
 include ./$(DEPDIR)/nonSimplifiedScheduler.Po
 include ./$(DEPDIR)/powerUpdater.Po
 include ./$(DEPDIR)/schedFactory.Po

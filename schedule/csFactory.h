@@ -24,7 +24,6 @@ using std::make_pair;
 class CsFactory
 {
   public:
-    CsFactory();
     CsFactory(Map const * const, CORRE_MA_OPE const * const );
     ~CsFactory();
     ClusterStructure * CreateClusterStructure();
