@@ -1247,6 +1247,7 @@ bool ULSA4b7_DC::startCool()
 {
   begin = clock();
   matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes);
+  std::cout << "here *******************" << endl;
   indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
   double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
                     (compRatio,indEntropy,static_cast<double>(totalNodes));
@@ -1270,7 +1271,6 @@ bool ULSA4b7_DC::startCool()
   cur1st_ms = return1stTotalNcal1stResors_HomoPower();
   cur2nd_Joule = returnTransientJoule();
   cur1st_Joule = power1st*cur1st_ms/1000.0;
-
 
   curSupNum=cSystem->calSupNodes();
   curChNum=maxChNum;

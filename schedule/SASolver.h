@@ -29,7 +29,7 @@ class SASolver
     double Optimize(const std::vector<int>& vecSolution);
     bool CoolProcess(const double obj);
     bool IsFeasible(const std::vector<int>& vecSolution);
-    bool CheckIfBest(const double obj);
+    void UpdateBest(const double obj, const std::vector<int>& vecSolution);
 
     template < class T>
     string VecToString( const std::vector<T>& );

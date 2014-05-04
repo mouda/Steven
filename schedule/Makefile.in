@@ -48,11 +48,13 @@ PROGRAMS = $(bin_PROGRAMS)
 am_simulator_OBJECTS = main.$(OBJEXT) map.$(OBJEXT) \
 	simSystem.$(OBJEXT) ULAGENT.$(OBJEXT) CORRE_MA_OPE.$(OBJEXT) \
 	clusterStructure.$(OBJEXT) mapFactory.$(OBJEXT) \
-	csFactory.$(OBJEXT) utility.$(OBJEXT) scheduler.$(OBJEXT) \
-	MyTMINLP.$(OBJEXT) branchBoundScheduler.$(OBJEXT) \
-	maxSNRScheduler.$(OBJEXT) greedyPhysical.$(OBJEXT) \
-	bruteForceScheduler.$(OBJEXT) nonSimplifiedScheduler.$(OBJEXT) \
-	minPowerSA.$(OBJEXT) SASolver.$(OBJEXT) powerUpdater.$(OBJEXT) \
+	csFactory.$(OBJEXT) kmeansCsFactory.$(OBJEXT) \
+	minResCsFactory.$(OBJEXT) utility.$(OBJEXT) \
+	scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) \
+	branchBoundScheduler.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
+	greedyPhysical.$(OBJEXT) bruteForceScheduler.$(OBJEXT) \
+	nonSimplifiedScheduler.$(OBJEXT) minPowerSA.$(OBJEXT) \
+	SASolver.$(OBJEXT) powerUpdater.$(OBJEXT) \
 	totalEntropy.$(OBJEXT) schedFactory.$(OBJEXT) slot.$(OBJEXT) \
 	event.$(OBJEXT) fileHandler.$(OBJEXT) simulator.$(OBJEXT)
 simulator_OBJECTS = $(am_simulator_OBJECTS)
@@ -239,6 +241,8 @@ simulator_SOURCES = main.cpp \
 		    clusterStructure.h clusterStructure.cpp \
 		    mapFactory.h mapFactory.cpp \
 		    csFactory.h csFactory.cpp \
+		    kmeansCsFactory.h kmeansCsFactory.cpp\
+		    minResCsFactory.h minResCsFactory.cpp\
 		    utility.h utility.cpp \
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \
@@ -353,11 +357,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fileHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/greedyPhysical.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kmeansCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mapFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxSNRScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerSA.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minResCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nonSimplifiedScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/powerUpdater.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schedFactory.Po@am__quote@

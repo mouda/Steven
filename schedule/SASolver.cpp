@@ -4,6 +4,7 @@
 #include <ctime>
 #include <limits>
 #include <iostream>
+#include <numeric>
 
 SASolver::SASolver(
     Map const * const ptrMap, 
@@ -14,7 +15,7 @@ SASolver::SASolver(
     m_ptrMap(ptrMap), 
     m_ptrCS(ptrCS), 
     m_ptrGField(ptrGField),
-    m_maxIter(1000),
+    m_maxIter(10000),
     m_txTimePerSlot(txTimeSlot),
     m_powerUpdater(ptrMap,ptrCS,txTimeSlot)
 {
@@ -30,7 +31,7 @@ SASolver::~SASolver()
 void
 SASolver::Init()
 {
-  m_minPayoff = -DBL_MAX;
+  m_minPayoff = DBL_MAX;
   m_minVecSolution.resize(m_ptrMap->GetNumNodes());
   std::fill(m_minVecSolution.begin(), m_minVecSolution.end(), 0);
 }
@@ -39,7 +40,7 @@ SASolver::Init()
 void
 SASolver::InitSolution(double& objective, std::vector<int>& vecSolution)
 {
-  objective = -DBL_MAX;
+  objective = DBL_MAX;
   vecSolution.resize(m_ptrMap->GetNumNodes());
   std::fill(vecSolution.begin(), vecSolution.end(), 0);
   std::list<std::list<int> >::const_iterator iterRow = m_ptrCS->GetListCluMemeber().begin();
@@ -86,7 +87,8 @@ double
 SASolver::Solve(std::vector<int>& vecSolution)
 {
   std::vector<int> vecTmpSolu;
-  double objective;
+  double objective = 0.0;
+  m_minPayoff = DBL_MAX;
   InitSolution(objective, vecTmpSolu);
   for (int i = 0; i < m_maxIter; ++i) {
     Move(vecTmpSolu);
@@ -96,8 +98,9 @@ SASolver::Solve(std::vector<int>& vecSolution)
     else if(CoolProcess(objective)){
       objective = Optimize(vecTmpSolu);
     }
-    CheckIfBest(objective);
+    UpdateBest(objective, vecTmpSolu);
   }
+  vecSolution.assign(m_minVecSolution.begin(), m_minVecSolution.end());
 }
 
 void
@@ -133,8 +136,9 @@ SASolver::VecToString( const vector<T>& vec)
 double
 SASolver::Optimize(const std::vector<int>& vecSolution)
 {
-  m_powerUpdater.Solve(vecSolution);
-  return 0.0;
+  std::vector<double> myVecPower(m_ptrMap->GetNumNodes());
+  m_powerUpdater.Solve(myVecPower, vecSolution);
+  return std::accumulate(myVecPower.begin(), myVecPower.end(), 0.0);
 }
 
 bool
@@ -143,8 +147,11 @@ SASolver::IsFeasible(const std::vector<int>& vecSolution)
   return true;
 }
 
-bool
-SASolver::CheckIfBest(const double objective)
+void
+SASolver::UpdateBest(const double objective, const std::vector<int>& vecSolution)
 {
-  return true;
+  if (objective < m_minPayoff) {
+    m_minPayoff = objective;
+    m_minVecSolution.assign(vecSolution.begin(), vecSolution.end());
+  }
 }

@@ -71,6 +71,8 @@ simulator_SOURCES = main.cpp \
 		    clusterStructure.h clusterStructure.cpp \
 		    mapFactory.h mapFactory.cpp \
 		    csFactory.h csFactory.cpp \
+		    kmeansCsFactory.h kmeansCsFactory.cpp\
+		    minResCsFactory.h minResCsFactory.cpp\
 		    utility.h utility.cpp \
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \
