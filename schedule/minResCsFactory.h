@@ -12,6 +12,9 @@ class MinResCsFactory: public CsFactory
   private:
 
     bool SASearch(vector<int>& vecHeadNames, list<list<int> >& listCluMembers );
+    bool Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listCluMembers );
+
+    double m_wholeSystemEntropy;
 };
 
 #endif
