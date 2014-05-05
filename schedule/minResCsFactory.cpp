@@ -18,10 +18,12 @@ MinResCsFactory::CreateClusterStructure()
   if (m_ptrCS == 0) {
     vector<int> myVecHeadNames;
     list<list<int> > myListCluMembers;
-    if (SASearch(myVecHeadNames, myListCluMembers)) {
+    if (Kmedoid(myVecHeadNames, myListCluMembers)) {
       m_ptrCS = new ClusterStructure(m_ptrMap->GetNumNodes(), 
           m_ptrMap->GetNumInitHeads() );
       m_ptrCS->SetRecord(myVecHeadNames, myListCluMembers);
+      SASearch();
+       
       return m_ptrCS;
     }
     else{
@@ -31,16 +33,25 @@ MinResCsFactory::CreateClusterStructure()
 }
 
 bool
-MinResCsFactory::SASearch( vector<int>& vecHeadNames, list<list<int> >& listCluMembers )
+MinResCsFactory::SASearch()
 {
-  if (!Kmedoid(vecHeadNames, listCluMembers)) {
-    return false;
-  }
   bool inClu[m_ptrMap->GetNumInitHeads()];
-  vector<int> vecSupport(m_ptrMap->GetNumInitHeads());
+  vector<int>     vecSupport(m_ptrMap->GetNumNodes());
+  vector<double>  vecPower(m_ptrMap->GetNumNodes());
   fill(vecSupport.begin(), vecSupport.end(), 1);
+  fill(vecPower.end(), vecPower.end(), 0.0);
   double sysRedundancy = m_ptrMatComputer->computeLog2Det(1.0, vecSupport);
   m_wholeSystemEntropy = m_ptrMap->GetNumInitHeads() * m_ptrMap->GetIdtEntropy() +sysRedundancy;
+  CSPowerUpdater myCSPowerUpdater(m_ptrMap);
+  bool flagAnsFound = false;
+  int curSupNum = m_ptrMap->GetNumNodes(); 
+  double cur2nd_ms = 0.0;
+  
+  if( curSupNum > m_ptrMap->GetNumInitHeads() ) 
+    cur2nd_ms = myCSPowerUpdater.Solve_withT2Adj_BinerySearch_2(10.0, vecPower, vecSupport, m_ptrCS);
+  else
+    cur2nd_ms = 0;
+  cout << cur2nd_ms << endl;
 
   return true;
 }

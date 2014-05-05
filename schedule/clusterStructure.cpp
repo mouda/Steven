@@ -1,9 +1,11 @@
 #include "clusterStructure.h"
 
 ClusterStructure::ClusterStructure(const int numNodes, const int maxNumHeads):
-  m_numNodes(numNodes), m_maxNumHeads(maxNumHeads)
+  m_numNodes(numNodes), m_maxNumHeads(maxNumHeads), m_vecSupport(numNodes),
+  m_vecPower(numNodes)
 {
-
+  fill(m_vecSupport.begin(), m_vecSupport.end(), 0);
+  fill(m_vecPower.begin(), m_vecPower.end(), 0.0);
 }
 
 ClusterStructure::~ClusterStructure()

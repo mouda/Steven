@@ -16,16 +16,18 @@ class ClusterStructure
     ClusterStructure( const int numNodes, const int maxNumHeads);
     ~ClusterStructure();
 
-    void SetRecord( const vector<int>& invecheadname, 
-        const list<list<int> >& inlistclumember);
+    void  SetRecord( const vector<int>& invecheadname, 
+          const list<list<int> >& inlistclumember);
 
-    int GetChIdxByName( const int& nodeName ) const;
-    int GetChNameByName( const int& nodeName ) const;
-    int GetNumNodes() const {return m_numNodes;}
-    int GetNumHeads() const {return m_maxNumHeads;}
+    int                     GetChIdxByName( const int& nodeName ) const;
+    int                     GetChNameByName( const int& nodeName ) const;
+    int                     GetNumNodes() const {return m_numNodes;}
+    int                     GetNumHeads() const {return m_maxNumHeads;}
 
-    const vector<int>&  GetVecHeadName() const { return m_vecHeadName; }
+    const vector<int>&      GetVecHeadName() const { return m_vecHeadName; }
     const list<list<int> >& GetListCluMemeber() const{return m_listCluMember; }
+    const vector<int>&      GetVecSupport() const { return m_vecSupport; }
+    const vector<double>&   GetVecPower() const { return m_vecPower; }
 
     void Print() const;
 
@@ -39,5 +41,6 @@ class ClusterStructure
     vector<int>       m_vecHeadName;        // size = # of heads
     vector<int>       m_vecCHIdxForNodes;   // size = # of nodes
     vector<int>       m_vecCHNameForNodes;  // size = # of nodes
+    vector<double>    m_vecPower;
 };
 #endif

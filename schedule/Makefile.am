@@ -73,6 +73,7 @@ simulator_SOURCES = main.cpp \
 		    csFactory.h csFactory.cpp \
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minResCsFactory.h minResCsFactory.cpp\
+		    csPowerUpdater.h csPowerUpdater.cpp\
 		    utility.h utility.cpp \
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \

@@ -2,6 +2,7 @@
 #define _MINRESCSFACTORY_
 
 #include "csFactory.h"
+#include "csPowerUpdater.h"
 
 class MinResCsFactory: public CsFactory
 {
@@ -11,7 +12,7 @@ class MinResCsFactory: public CsFactory
     ClusterStructure * CreateClusterStructure();
   private:
 
-    bool SASearch(vector<int>& vecHeadNames, list<list<int> >& listCluMembers );
+    bool SASearch();
     bool Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listCluMembers );
 
     double m_wholeSystemEntropy;

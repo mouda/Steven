@@ -49,8 +49,8 @@ am_simulator_OBJECTS = main.$(OBJEXT) map.$(OBJEXT) \
 	simSystem.$(OBJEXT) ULAGENT.$(OBJEXT) CORRE_MA_OPE.$(OBJEXT) \
 	clusterStructure.$(OBJEXT) mapFactory.$(OBJEXT) \
 	csFactory.$(OBJEXT) kmeansCsFactory.$(OBJEXT) \
-	minResCsFactory.$(OBJEXT) utility.$(OBJEXT) \
-	scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) \
+	minResCsFactory.$(OBJEXT) csPowerUpdater.$(OBJEXT) \
+	utility.$(OBJEXT) scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) \
 	branchBoundScheduler.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
 	greedyPhysical.$(OBJEXT) bruteForceScheduler.$(OBJEXT) \
 	nonSimplifiedScheduler.$(OBJEXT) minPowerSA.$(OBJEXT) \
@@ -243,6 +243,7 @@ simulator_SOURCES = main.cpp \
 		    csFactory.h csFactory.cpp \
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minResCsFactory.h minResCsFactory.cpp\
+		    csPowerUpdater.h csPowerUpdater.cpp\
 		    utility.h utility.cpp \
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \
@@ -354,6 +355,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bruteForceScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clusterStructure.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csPowerUpdater.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/event.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fileHandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/greedyPhysical.Po@am__quote@
