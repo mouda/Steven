@@ -12,10 +12,16 @@ class MinResCsFactory: public CsFactory
     ClusterStructure * CreateClusterStructure();
   private:
 
-    bool SASearch();
-    bool Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listCluMembers );
+    bool    SASearch();
+    double  Return1stTotalNcal1stResors_HomoPower(); 
+    bool    Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listCluMembers );
 
-    double m_wholeSystemEntropy;
+    double  m_wholeSystemEntropy;
+
+
+    vector<double>  m_vecClusterHeadBits;
+    vector<double>  m_vecClusterHeadWatt;
+    vector<double>  m_vecClusterHeadMS;
 };
 
 #endif

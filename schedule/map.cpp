@@ -43,12 +43,14 @@ Map::SetChannelByXYPair(const vector<pair<double, double> >& vecPosPair)
 #endif
   m_matDistance = new double* [m_numNodes]; 
   m_matGij.resize(m_numNodes, vector<double>(m_numNodes,0.0));
+  m_vecGi0.resize(m_numNodes);
   m_vecPairNodePos = vecPosPair;
   for (int i = 0; i < m_numNodes; i++) {
+    double lhsX = vecPosPair[i].first;
+    double lhsY = vecPosPair[i].second;
     m_matDistance[i] = new double [m_numNodes];
+    m_vecGi0.at(i) = m_systemComputer->returnChannelGain_BS_ByPos(lhsX, lhsY ); 
     for (int j = 0; j < m_numNodes; j++) {
-      double lhsX = vecPosPair[i].first;
-      double lhsY = vecPosPair[i].second;
       double rhsX = vecPosPair[j].first;
       double rhsY = vecPosPair[j].second;
       if ( i == j ) {

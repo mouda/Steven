@@ -2,7 +2,10 @@
 
 MinResCsFactory::MinResCsFactory( Map const * const myMap, 
     CORRE_MA_OPE const * const myMatComputer):
-  CsFactory(myMap, myMatComputer) 
+  CsFactory(myMap, myMatComputer),
+  m_vecClusterHeadBits(myMap->GetNumInitHeads()),
+  m_vecClusterHeadMS(myMap->GetNumInitHeads()),
+  m_vecClusterHeadWatt(myMap->GetNumInitHeads()) 
 {
 
 }
@@ -51,7 +54,6 @@ MinResCsFactory::SASearch()
     cur2nd_ms = myCSPowerUpdater.Solve_withT2Adj_BinerySearch_2(10.0, vecPower, vecSupport, m_ptrCS);
   else
     cur2nd_ms = 0;
-  cout << cur2nd_ms << endl;
 
   return true;
 }
@@ -172,4 +174,21 @@ MinResCsFactory::Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listCluMe
 
   return true;
 
+}
+
+double 
+MinResCsFactory::Return1stTotalNcal1stResors_HomoPower() {
+    double power1st = m_ptrMap->GetMaxPower();
+    double T1=0;
+    list <list<int> >::const_iterator it_LiInt = m_ptrCS->GetListCluMemeber().begin();
+    for(unsigned int i=0; i < m_ptrCS->GetVecHeadName().size(); ++i, ++it_LiInt) {
+        if ( m_ptrCS->GetVecHeadName().at(i) == -1 || it_LiInt->size() == 0 ) continue;
+        double information = it_LiInt->size() * m_ptrMap->GetIdtEntropy() + m_ptrMatComputer->computeLog2Det(1.0, m_ptrCS->GetMatClusterStru().at(i));
+        double temp = (information/(m_ptrMap->GetBandwidth() *log2(1+power1st*m_ptrMap->GetGi0ByNode(m_ptrCS->GetVecHeadName().at(i)) /m_ptrMap->GetNoise())));
+        m_vecClusterHeadBits[i] = information;
+        m_vecClusterHeadMS[i]   = temp;
+        m_vecClusterHeadWatt[i] = power1st;
+        T1+=temp;
+    }
+    return T1;
 }

@@ -15,6 +15,12 @@ double SimSystem::returnChannelGain_BS(ULAGENT &nodes1){
     double channelGain = pow(10,-(pathLossDBMacroUE/10));
     return channelGain;
 }
+double SimSystem::returnChannelGain_BS_ByPos( double X, double Y){
+    float tempDib = pow(BSx - X,2) +pow(BSy - Y,2);
+    float pathLossDBMacroUE = pathLoss0_MacroUE + pathLossAlpha_MacroUE * (0.5*log10(tempDib) - 3);
+    double channelGain = pow(10,-(pathLossDBMacroUE/10));
+    return channelGain;
+}
 double SimSystem::returnChannelGain_2Nodes(ULAGENT &nodes1, ULAGENT &nodes2){
     float tempDib = pow(nodes1.locX - nodes2.locX,2) +pow(nodes1.locY - nodes2.locY,2);
     float pathLossDBMacroUE = pathLoss0_MacroUE + pathLossAlpha_MacroUE * (0.5*log10(tempDib) - 3);

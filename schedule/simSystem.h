@@ -7,6 +7,7 @@ class SimSystem
   public:
     //SimSystem();
     double returnChannelGain_BS(ULAGENT &node1);
+    double returnChannelGain_BS_ByPos(double X, double Y);
     double returnChannelGain_2Nodes(ULAGENT &node1, ULAGENT &node2);
     double returnChannelGainByPos( double lhsX, double lhsY, double rhsX, double rhsY);
     double returnRate_BS(ULAGENT &node1, double bandwidthKhz,double PowerWatt);

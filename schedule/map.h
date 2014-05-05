@@ -36,6 +36,7 @@ class Map
     double GetNodeXPos(const int idx) const { return m_vecPairNodePos[idx].first;}
     double GetNodeYPos(const int idx) const { return m_vecPairNodePos[idx].second;}
     double GetGijByPair( const int lhs, const int rhs) const {return m_matGij[lhs][rhs]; } 
+    double GetGi0ByNode( const int idx ) const {return m_vecGi0.at(idx); } 
     double GetMaxPower() const {return m_maxPower; }
     double GetIdtEntropy() const { return m_idtEntropy; }
     double GetNoise() const { return m_realNoise; } 
@@ -52,6 +53,7 @@ class Map
     double                        m_idtEntropy;
     double                        m_realNoise;
     vector<vector<double> >       m_matGij;
+    vector<double>                m_vecGi0;
     vector<pair<double, double> > m_vecPairNodePos;
     double**                      m_matDistance;
     vector<double>                m_vecPower;
