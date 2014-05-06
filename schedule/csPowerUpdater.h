@@ -14,7 +14,8 @@ class CSPowerUpdater
     ~CSPowerUpdater();
     double PowerUpdate( std::vector<double>&, const std::vector<int>&, ClusterStructure const * const );
     double Solve_withT2Adj_BinerySearch_2( double inIniT2, std::vector<double>&, const std::vector<int>&, ClusterStructure const * const ); 
-    void showVerificationResult(std::vector<double>&, const std::vector<int>&, ClusterStructure const * const, std::vector <double>& , std::vector<double>& v, std::vector<double>& );
+    void  showVerificationResult(std::vector<double>&, const std::vector<int>&, ClusterStructure const * const, std::vector <double>& , std::vector<double>& v, std::vector<double>& );
+    void    decideDiscard3b();
 
   private:
 

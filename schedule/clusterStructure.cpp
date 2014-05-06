@@ -357,3 +357,18 @@ ClusterStructure::calSupNodes()
   for(; it1 != m_listCluMember.end(); it1++)supNodes+=it1->size();
   return supNodes;
 }
+
+/*
+    Initialization ONlY: return head iterator of certain headIndex
+*/
+int* 
+ClusterStructure::returnHeadPtr(int inputHeadIndex)
+{
+  int* ptrtemp = NULL;
+  vector <int>::iterator  it;
+  it = m_vecHeadName.begin();
+  for(int i=0; i<inputHeadIndex; ++i) ++it;
+  ptrtemp = &(*it);
+  return ptrtemp;
+}
+

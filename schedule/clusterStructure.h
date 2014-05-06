@@ -17,6 +17,9 @@ class ClusterStructure
     ~ClusterStructure();
 
     void                          SetRecord( const vector<int>& invecheadname, const list<list<int> >& inlistclumember);
+    void                          SetNotSupport( const int idx){ m_allSupStru.at(idx) = 0; }
+    void                          SetSupport( const int idx){ m_allSupStru.at(idx) = 1; }
+    void                          SetVecHeadNameByIdx( const int idx, const int name){ m_vecHeadName.at(idx) = name; }
 
     int                           GetChIdxByName( const int& nodeName ) const;
     int                           GetChNameByName( const int& nodeName ) const;
@@ -30,6 +33,7 @@ class ClusterStructure
     const vector<int>&            GetAllSupStru() const { return m_allSupStru; }
     const vector<double>&         GetVecPower() const { return m_vecPower; }
     const vector<vector<int> >&   GetMatClusterStru() const { return m_matClusterStru; }
+    const list<int>&              GetListUnSupport() const { return m_listUnSupport; }
 
     void Print() const;
 
@@ -46,6 +50,7 @@ class ClusterStructure
     void                          resetSystem();
 
     bool                          returnIfClusterSmall(int thershold, int &numOfClu);
+    int*                          returnHeadPtr(int inputHeadIndex);
     int                           calSupNodes();
   private:
     const int                     m_numNodes;

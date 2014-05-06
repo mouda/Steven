@@ -2,6 +2,7 @@
 #define _MINRESCSFACTORY_
 
 #include "csFactory.h"
+#include "ULAGENT.h"
 #include "csPowerUpdater.h"
 
 class MinResCsFactory: public CsFactory
@@ -17,7 +18,15 @@ class MinResCsFactory: public CsFactory
     double              returnTransientJoule( const vector<double>& vecPower );
     bool                checkBestClusterStructure_DataCentric(int inputRound, CSPowerUpdater& myPowerUpdater,  vector<double>& vecPower);
     void                keepBestStructure( const vector<double>& vecPower);
+    void                coolOnce_minResors( CSPowerUpdater& myPowerUpdater, vector<double>& vecPower);
     bool                Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listCluMembers );
+
+    void                decideAdd3i_DC_HeadDetMemRan();
+    void                addMemberSA(int inputHeadIndex, int inputMemberName);
+    void                decideDiscard3b();
+    void                discardMemberSA(int inputHeadIndex2, int inputMemberName2);
+    void                decideHeadRotate2i_DC_HeadRanMemDet( CSPowerUpdater& myPowerUpdater, vector<double>& vecPower );
+    void                rotateHeadSA(int inputHeadIndex3, int inputMemberName3);
 
 
     vector<vector<int> >m_matBestCluStru;
@@ -37,6 +46,7 @@ class MinResCsFactory: public CsFactory
     vector<double>      m_vecBestSINR_forVerification;
     vector<double>      m_vecBestBpshz_forVerification;
     vector<double>      m_vecChooseIndex;
+    vector<ULAGENT>     m_nodes;
 
     int                 m_roundBest;
     double              m_fidelityRatio;// Temporary set by here 2013/02/21
@@ -75,6 +85,19 @@ class MinResCsFactory: public CsFactory
     double              m_bestFeasiblePayoff;
     int                 m_bestFeasibleSupNum;
     int                 m_bestChNum;
+
+    int                 m_targetHeadIndex;
+    int                 m_targetNode;
+    int                 m_JoiningHeadIndex;
+    int                 m_IsolateNodeName;
+    int                 m_isolatedHeadIndex;
+    int                 m_nextEventFlag;
+    bool                m_iniDone;
+    static const int    m_thresholdd = 5;
+    int*                m_ptrHeadLastDiscard;
+    double              m_powerLastDiscard;
+    int                 m_rotatedHeadNameLast;
+    vector<bool>        m_aryFlagHRDone; //If it is true means Head Rotate have been done in this structure, starrt from ULSA4b7_DC
 };
 
 #endif
