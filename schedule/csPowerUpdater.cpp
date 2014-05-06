@@ -368,3 +368,47 @@ CSPowerUpdater::CheckConverged(const std::vector<double>& vecPowerDiffRatio, Clu
   return convergence;
 }
 
+
+void 
+CSPowerUpdater::showVerificationResult(
+    std::vector<double>& vecPower,
+    const std::vector<int>& vecSupport,
+    ClusterStructure const * const myPtrCS,
+    std::vector<double>& vecBestReceivedInterference,
+    std::vector<double>& vecBestSINR_forVerification, 
+    std::vector<double>& vecBestBpsHz_forVerification
+    )
+{
+    vecBestReceivedInterference.clear();
+    UpdateInterference(vecPower, vecSupport, myPtrCS);
+    list <list <int> >::const_iterator it1 = myPtrCS->GetListCluMemeber().begin();
+    for(int headIndex=0; it1 != myPtrCS->GetListCluMemeber().end(); headIndex++,it1++)
+    {
+        //Compute the Interference headIndex received.
+        if (myPtrCS->GetVecHeadName().at(headIndex)==-1)continue;
+        double accuInterference = m_inBandNoise;
+        for(int i=0; i< m_ptrMap->GetNumInitHeads(); i++)
+        {
+            if(m_maIndexInterference[headIndex][i]!=-1)
+            {
+                accuInterference+= m_maStrengthInterference[headIndex][i];
+            }
+        }
+        vecBestReceivedInterference.push_back(accuInterference - m_inBandNoise);
+        //cout<<"Cluster: "<<headIndex<<" BpsHz "<<C2<<endl;
+        list <int>::const_iterator it2 =it1->begin();
+        // update all the power  in the cluster we are interested.
+        int sizeOfCluter = it1->size();
+        for(int i=0; it2!=it1->end(); i++,it2++)
+        {
+            vecBestSINR_forVerification[*it2] = m_ptrMap->GetGijByPair(myPtrCS->GetVecHeadName().at(headIndex), (*it2))* vecPower.at(*it2) /accuInterference;
+            vecBestBpsHz_forVerification[*it2]=(log2(1+ m_ptrMap->GetGijByPair(myPtrCS->GetVecHeadName().at(headIndex), (*it2) ) * vecPower.at(*it2) /accuInterference)/(sizeOfCluter-1));
+            /*
+            cout.precision(5);
+            cout<<scientific<<"Normal: Node "<<*it2<<" SINR "<< Gij[(*vecHeadName)[headIndex]][(*it2)]*nextNodePower[(*it2)] /accuInterference<< \
+            "  BpsHz:"<<log2(1+Gij[(*vecHeadName)[headIndex]][(*it2)]*nextNodePower[(*it2)] /accuInterference)/(sizeOfCluter-1)<<endl;
+            */
+        }
+//        cout<<"---------------"<<endl;
+    }
+}

@@ -48,8 +48,8 @@ PROGRAMS = $(bin_PROGRAMS)
 am_simulator_OBJECTS = main.$(OBJEXT) map.$(OBJEXT) \
 	simSystem.$(OBJEXT) ULAGENT.$(OBJEXT) CORRE_MA_OPE.$(OBJEXT) \
 	clusterStructure.$(OBJEXT) mapFactory.$(OBJEXT) \
-	csFactory.$(OBJEXT) kmeansCsFactory.$(OBJEXT) \
-	minResCsFactory.$(OBJEXT) csPowerUpdater.$(OBJEXT) \
+	csPowerUpdater.$(OBJEXT) csFactory.$(OBJEXT) \
+	kmeansCsFactory.$(OBJEXT) minResCsFactory.$(OBJEXT) \
 	utility.$(OBJEXT) scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) \
 	branchBoundScheduler.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
 	greedyPhysical.$(OBJEXT) bruteForceScheduler.$(OBJEXT) \
@@ -240,10 +240,10 @@ simulator_SOURCES = main.cpp \
 		    CORRE_MA_OPE.h CORRE_MA_OPE.cpp\
 		    clusterStructure.h clusterStructure.cpp \
 		    mapFactory.h mapFactory.cpp \
+		    csPowerUpdater.h csPowerUpdater.cpp\
 		    csFactory.h csFactory.cpp \
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minResCsFactory.h minResCsFactory.cpp\
-		    csPowerUpdater.h csPowerUpdater.cpp\
 		    utility.h utility.cpp \
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \

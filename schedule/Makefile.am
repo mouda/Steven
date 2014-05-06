@@ -70,10 +70,10 @@ simulator_SOURCES = main.cpp \
 		    CORRE_MA_OPE.h CORRE_MA_OPE.cpp\
 		    clusterStructure.h clusterStructure.cpp \
 		    mapFactory.h mapFactory.cpp \
+		    csPowerUpdater.h csPowerUpdater.cpp\
 		    csFactory.h csFactory.cpp \
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minResCsFactory.h minResCsFactory.cpp\
-		    csPowerUpdater.h csPowerUpdater.cpp\
 		    utility.h utility.cpp \
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \

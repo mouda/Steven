@@ -3,10 +3,12 @@
 
 ClusterStructure::ClusterStructure(const int numNodes, const int maxNumHeads):
   m_numNodes(numNodes), m_maxNumHeads(maxNumHeads), m_vecSupport(numNodes),
-  m_vecPower(numNodes), m_matClusterStru(maxNumHeads,vector<int>(numNodes))
+  m_vecPower(numNodes), m_matClusterStru(maxNumHeads,vector<int>(numNodes)),
+  m_allSupStru(numNodes)
 {
   fill(m_vecSupport.begin(), m_vecSupport.end(), 0);
   fill(m_vecPower.begin(), m_vecPower.end(), 0.0);
+  fill(m_allSupStru.begin(), m_allSupStru.end(), 1);
 
   for(int i=0; i<m_maxNumHeads; i++) {
     for(int j=0; j<m_numNodes; j++) {
@@ -41,7 +43,7 @@ ClusterStructure::SetRecord(
       m_vecCHNameForNodes[*iterCol] = m_vecHeadName[i];
     }
   }
-
+  std::fill(m_allSupStru.begin(), m_allSupStru.end(), 1);
 }
 
 void
@@ -81,7 +83,7 @@ ClusterStructure::addNewHeadCs(int inputHeadName)
   m_vecHeadName.push_back(inputHeadName);
   tempHeadIndex = m_vecHeadName.size()-1;
   m_matClusterStru[tempHeadIndex][m_vecHeadName[tempHeadIndex]]=1;
-  m_allSupStru[m_vecHeadName[tempHeadIndex]]=true;
+  m_allSupStru[m_vecHeadName[tempHeadIndex]] = 1;
   m_vecClusterSize.push_back(0);//Size of each Cluster = 0 because it hasn't known it's real head and member yet
   m_listCluMember.resize(m_listCluMember.size()+1);
 }
@@ -94,7 +96,7 @@ void
 ClusterStructure::addMemberCs(int headIndex, int memberName,bool iniDone)
 {
   m_matClusterStru[headIndex][memberName] = 1; //Please notice "memberName = memberIndex" here.
-  m_allSupStru[memberName]=true;
+  m_allSupStru[memberName] = 1;
   m_vecClusterSize[headIndex]++;
   list <list<int> >::iterator it = m_listCluMember.begin();
   for(int i=0; i<headIndex; i++) it++;
@@ -139,7 +141,7 @@ void
 ClusterStructure::discardMemberCs(int headIndex, int memberName )//headIndex := headName
 {
   m_matClusterStru[headIndex][memberName] = 0; //Please note that accoring to my design memberName = memberIndex
-  m_allSupStru[memberName]=false;
+  m_allSupStru[memberName] = 0;
   m_vecClusterSize[headIndex]--;
   m_listUnSupport.push_back(memberName);
   list <list <int> > ::iterator it1=m_listCluMember.begin();
@@ -230,7 +232,7 @@ ClusterStructure::reverseAdd(int targetHeadIndex,int targetMember)
   it1->pop_back();
   m_listUnSupport.push_back(targetMember);
   m_matClusterStru[targetHeadIndex][targetMember] = 0;
-  m_allSupStru[targetMember]=false;
+  m_allSupStru[targetMember] = 0;
   m_vecClusterSize[targetHeadIndex]--;
 }
 
@@ -250,7 +252,7 @@ ClusterStructure::reverseDiscard(int targetHeadIndex, int targetMember)
   }
   m_listUnSupport.pop_back();
   m_matClusterStru[targetHeadIndex][targetMember] = 1;
-  m_allSupStru[targetMember]=true;
+  m_allSupStru[targetMember] = 1;
   m_vecClusterSize[targetHeadIndex]++;
   m_iteLastDiscard = m_listCluMember.end();
 }
@@ -322,10 +324,10 @@ ClusterStructure::resetSystem()
   m_listUnSupport.clear();
   for(int i=0;i<m_maxNumHeads;i++)
   {
-    m_allSupStru[i]=false;
+    m_allSupStru[i] = 0;
 
     for(int j=0;j<m_numNodes;j++){
-      m_matClusterStru[i][j]=false;
+      m_matClusterStru[i][j] = 0;
     }
   }
 }
@@ -341,4 +343,17 @@ ClusterStructure::returnIfClusterSmall(int threshold, int &numOfClu){
         }
     }
     return tmpFlag;
+}
+
+/*
+   Compute the number of support's node in the cSystem->listCluMember
+   This is the payoff of Version ULSA2x
+*/
+int 
+ClusterStructure::calSupNodes()
+{
+  list <list<int> >:: iterator it1 = m_listCluMember.begin();
+  int supNodes =0;
+  for(; it1 != m_listCluMember.end(); it1++)supNodes+=it1->size();
+  return supNodes;
 }

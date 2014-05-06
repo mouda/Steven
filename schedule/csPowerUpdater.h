@@ -14,6 +14,7 @@ class CSPowerUpdater
     ~CSPowerUpdater();
     double PowerUpdate( std::vector<double>&, const std::vector<int>&, ClusterStructure const * const );
     double Solve_withT2Adj_BinerySearch_2( double inIniT2, std::vector<double>&, const std::vector<int>&, ClusterStructure const * const ); 
+    void showVerificationResult(std::vector<double>&, const std::vector<int>&, ClusterStructure const * const, std::vector <double>& , std::vector<double>& v, std::vector<double>& );
 
   private:
 
@@ -36,8 +37,8 @@ class CSPowerUpdater
     double              m_best2nd_ms;
     bool                m_exceedPc;
     static const double m_scale = 1; //This scale is for avoiding computation error.
-    int                 **m_maIndexInterference;
-    double              **m_maStrengthInterference;
+    int**               m_maIndexInterference;
+    double**            m_maStrengthInterference;
 
     Map const * const               m_ptrMap;
 };

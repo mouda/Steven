@@ -5,7 +5,13 @@ MinResCsFactory::MinResCsFactory( Map const * const myMap,
   CsFactory(myMap, myMatComputer),
   m_vecClusterHeadBits(myMap->GetNumInitHeads()),
   m_vecClusterHeadMS(myMap->GetNumInitHeads()),
-  m_vecClusterHeadWatt(myMap->GetNumInitHeads()) 
+  m_vecClusterHeadWatt(myMap->GetNumInitHeads()), 
+  m_matBestCluStru(myMap->GetNumInitHeads(), vector<int>(myMap->GetNumNodes(),0)),
+  m_vecBestReceivedInterference(myMap->GetNumInitHeads()),
+  m_vecBestSINR_forVerification(myMap->GetNumNodes()),
+  m_vecBestBpshz_forVerification(myMap->GetNumNodes()),
+  m_powerBest(myMap->GetNumNodes()),
+  m_vecBestAllSupStru(myMap->GetNumNodes())
 {
 
 }
@@ -39,21 +45,38 @@ bool
 MinResCsFactory::SASearch()
 {
   bool inClu[m_ptrMap->GetNumInitHeads()];
-  vector<int>     vecSupport(m_ptrMap->GetNumNodes());
   vector<double>  vecPower(m_ptrMap->GetNumNodes());
-  fill(vecSupport.begin(), vecSupport.end(), 1);
   fill(vecPower.end(), vecPower.end(), 0.0);
-  double sysRedundancy = m_ptrMatComputer->computeLog2Det(1.0, vecSupport);
+  double sysRedundancy = m_ptrMatComputer->computeLog2Det(1.0, m_ptrCS->GetAllSupStru());
   m_wholeSystemEntropy = m_ptrMap->GetNumInitHeads() * m_ptrMap->GetIdtEntropy() +sysRedundancy;
   CSPowerUpdater myCSPowerUpdater(m_ptrMap);
   bool flagAnsFound = false;
-  int curSupNum = m_ptrMap->GetNumNodes(); 
-  double cur2nd_ms = 0.0;
+  m_curSupNum = m_ptrMap->GetNumNodes(); 
+  m_cur2nd_ms = 0.0;
   
-  if( curSupNum > m_ptrMap->GetNumInitHeads() ) 
-    cur2nd_ms = myCSPowerUpdater.Solve_withT2Adj_BinerySearch_2(10.0, vecPower, vecSupport, m_ptrCS);
+  if( m_curSupNum > m_ptrMap->GetNumInitHeads() ) 
+    m_cur2nd_ms = myCSPowerUpdater.Solve_withT2Adj_BinerySearch_2(10.0, vecPower, m_ptrCS->GetAllSupStru(), m_ptrCS);
   else
-    cur2nd_ms = 0;
+    m_cur2nd_ms = 0;
+
+  m_cur1st_ms       = Return1stTotalNcal1stResors_HomoPower(); 
+  m_cur2nd_Joule    = returnTransientJoule(vecPower);
+  m_cur1st_Joule    = m_power1st * m_cur1st_ms/1000.0;
+#ifdef DEBUG
+  cout << m_cur1st_ms <<" " <<m_cur2nd_ms << endl;
+#endif
+
+  m_curSupNum         = m_ptrCS->calSupNodes();
+  m_curChNum          = m_ptrMap->GetNumInitHeads();
+  m_nextChNum         = m_curChNum;
+  m_curJEntropy       = m_curSupNum * m_ptrMap->GetIdtEntropy() + 
+                        m_ptrMatComputer->computeLog2Det(1.0, m_ptrCS->GetAllSupStru());
+  m_curPayoff         = m_cur1st_ms + m_cur2nd_ms;
+
+  cout << "curPayoff: " << m_curPayoff << endl;
+  m_bestAllServeFound = false;
+  checkBestClusterStructure_DataCentric(0, myCSPowerUpdater, vecPower);
+
 
   return true;
 }
@@ -176,19 +199,123 @@ MinResCsFactory::Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listCluMe
 
 }
 
+/*
+    Check if this structure is the best
+*/
+bool 
+MinResCsFactory::checkBestClusterStructure_DataCentric(int inputRound, CSPowerUpdater& myPowerUpdater,  vector<double>& vecPower)
+{
+    bool curAllServe = ( m_curJEntropy > m_fidelityRatio * m_wholeSystemEntropy?true:false);
+    if( curAllServe ) m_bestAllServeFound = true;
+    //cout<<"In check Best"<<endl;
+    if (( m_curJEntropy > m_bestFeasibleJEntropy) && !curAllServe && !m_bestAllServeFound)
+    {
+        m_roundBest             = inputRound;
+        m_bestFeasibleJEntropy  = m_curJEntropy;
+        m_bestFeasibleSupNum    = m_curSupNum ;
+        m_best1st_Joule         = m_cur1st_Joule;
+        m_best1st_ms            = m_cur1st_ms;
+        m_best2nd_Joule         = m_cur2nd_Joule;
+        m_best2nd_ms            = m_cur2nd_ms;
+        keepBestStructure( vecPower);
+        myPowerUpdater.showVerificationResult(vecPower, 
+            m_ptrCS->GetAllSupStru(), 
+            m_ptrCS, 
+            m_vecBestReceivedInterference, 
+            m_vecBestSINR_forVerification, 
+            m_vecBestBpshz_forVerification
+            );
+        m_bestChNum             = m_curChNum;
+
+    }
+    else if ((m_curPayoff < m_bestFeasiblePayoff) && curAllServe)
+    {
+        //cout<<"Find new best"<<endl;
+        m_roundBest             = inputRound;
+        m_bestFeasibleJEntropy  = m_curJEntropy;
+        m_bestFeasibleSupNum    = m_curSupNum ;
+        m_bestFeasiblePayoff    = m_curPayoff;
+        m_best1st_Joule         = m_cur1st_Joule;
+        m_best1st_ms            = m_cur1st_ms;
+        m_best2nd_Joule         = m_cur2nd_Joule;
+        m_best2nd_ms            = m_cur2nd_ms;
+        m_bestChNum             = m_curChNum;
+        keepBestStructure( vecPower);
+        myPowerUpdater.showVerificationResult(vecPower, 
+            m_ptrCS->GetAllSupStru(), 
+            m_ptrCS,
+            m_vecBestReceivedInterference,
+            m_vecBestSINR_forVerification,
+            m_vecBestBpshz_forVerification
+            );
+    }
+    //cout<<"best FeasiblePayoff="<<bestFeasiblePayoff<<" with headNum="<<bestChNum<<";Info Ratio="<<bestFeasibleJEntropy/wholeSystemEntopy<<endl;
+    return false;
+}
+
 double 
-MinResCsFactory::Return1stTotalNcal1stResors_HomoPower() {
-    double power1st = m_ptrMap->GetMaxPower();
-    double T1=0;
+MinResCsFactory::Return1stTotalNcal1stResors_HomoPower() 
+{
+    m_power1st = m_ptrMap->GetMaxPower();
+    double T1 = 0;
     list <list<int> >::const_iterator it_LiInt = m_ptrCS->GetListCluMemeber().begin();
     for(unsigned int i=0; i < m_ptrCS->GetVecHeadName().size(); ++i, ++it_LiInt) {
         if ( m_ptrCS->GetVecHeadName().at(i) == -1 || it_LiInt->size() == 0 ) continue;
         double information = it_LiInt->size() * m_ptrMap->GetIdtEntropy() + m_ptrMatComputer->computeLog2Det(1.0, m_ptrCS->GetMatClusterStru().at(i));
-        double temp = (information/(m_ptrMap->GetBandwidth() *log2(1+power1st*m_ptrMap->GetGi0ByNode(m_ptrCS->GetVecHeadName().at(i)) /m_ptrMap->GetNoise())));
+        double temp = (information/(m_ptrMap->GetBandwidth() *log2(1+m_power1st*m_ptrMap->GetGi0ByNode(m_ptrCS->GetVecHeadName().at(i)) /m_ptrMap->GetNoise())));
         m_vecClusterHeadBits[i] = information;
         m_vecClusterHeadMS[i]   = temp;
-        m_vecClusterHeadWatt[i] = power1st;
+        m_vecClusterHeadWatt[i] = m_power1st;
         T1+=temp;
     }
     return T1;
+}
+
+double 
+MinResCsFactory::returnTransientJoule( const vector<double>& vecPower ) 
+{
+    list <list<int> >::const_iterator itlist1 = m_ptrCS->GetListCluMemeber().begin();
+    double accuJoule = 0;
+    for(int i =0; itlist1 != m_ptrCS->GetListCluMemeber().end(); ++itlist1,++i)
+    {
+        list<int>::const_iterator it1 = itlist1->begin();
+        double tempSize = static_cast<double> (itlist1->size());
+        if ( tempSize == 1 ) continue;
+        for(; it1 != itlist1->end(); it1++) {
+            if (*it1 == m_ptrCS->GetVecHeadName().at(i)) continue;
+            accuJoule += vecPower.at(*it1) * m_cur2nd_ms/(tempSize-1);
+            //  EYESTEVEN
+            /*  cout<<"node "<<setw(4)<<*it1<<" : "<<setw(12)<<nextNodePower[(*it1)]<<"(Watt), "<<setw(12)<<nextNodePower[(*it1)]*m_cur2nd_ms/ \
+            //  (tempSize-1)/1000<<"(Joule) " <<" to Head "<<setw(4)<<cSystem->vecHeadName[i]<<" with "<<setw(4)<<(int)tempSize << " in same cluster" <<endl;
+            */
+        }
+    }
+    accuJoule/=1000;
+    return (accuJoule);
+}
+
+void 
+MinResCsFactory::keepBestStructure( const vector<double>& vecPower)
+{
+    m_vecHeadNameBest.assign(m_ptrCS->GetVecHeadName().begin(),m_ptrCS->GetVecHeadName().end());
+    m_listCluMemBest.assign(m_ptrCS->GetListCluMemeber().begin(),m_ptrCS->GetListCluMemeber().end());
+    //1st tier computation has been done in the calculateMatrics_minResors()
+    m_vecBestClusterBits.assign(m_vecClusterHeadBits.begin(), m_vecClusterHeadBits.end());
+    m_vecBestClusterSize.assign(m_ptrCS->GetVecClusterSize().begin(), m_ptrCS->GetVecClusterSize().end());
+    m_vecBestClusterHeadMS.assign(m_vecClusterHeadMS.begin(), m_vecClusterHeadMS.end());
+    m_vecBestClusterHeadWatt.assign(m_vecClusterHeadWatt.begin(), m_vecClusterHeadWatt.end());
+    for(int i=0; i < m_ptrMap->GetNumInitHeads(); ++i)
+    {
+        for(int j=0; j < m_ptrMap->GetNumNodes(); ++j)
+        {
+            m_matBestCluStru[i][j] = m_ptrCS->GetMatClusterStru().at(i).at(j);
+        }
+    }
+    for(int i =0; i < m_ptrMap->GetNumNodes(); ++i)
+    {
+        m_powerBest[i] = vecPower.at(i);
+        // cout<<"InKEEP "<<i<<" Power"<< powerBest[i]<<endl;
+    }
+    for(int i=0; i < m_ptrMap->GetNumNodes(); ++i)
+        m_vecBestAllSupStru[i] = m_ptrCS->GetAllSupStru().at(i);
 }
