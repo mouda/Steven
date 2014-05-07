@@ -25,10 +25,11 @@ ClusterStructure::~ClusterStructure()
 void
 ClusterStructure::SetRecord( 
     const vector<int>& inVecHeadName, 
-    const list<list<int> >& inListCluMember
+    const list<list<int> >& inListCluMember,
+    const vector<int>& vecAllSupport
     )
 {
-
+  m_allSupStru.assign(vecAllSupport.begin(), vecAllSupport.end());
   m_vecCHIdxForNodes.resize(m_numNodes);
   std::fill(m_vecCHIdxForNodes.begin(),m_vecCHIdxForNodes.end(),-1);
   m_vecCHNameForNodes.resize(m_numNodes);
@@ -43,7 +44,6 @@ ClusterStructure::SetRecord(
       m_vecCHNameForNodes[*iterCol] = m_vecHeadName[i];
     }
   }
-  std::fill(m_allSupStru.begin(), m_allSupStru.end(), 1);
 }
 
 void

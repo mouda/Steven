@@ -16,7 +16,7 @@ class ClusterStructure
     ClusterStructure( const int numNodes, const int maxNumHeads);
     ~ClusterStructure();
 
-    void                          SetRecord( const vector<int>& invecheadname, const list<list<int> >& inlistclumember);
+    void                          SetRecord( const vector<int>& invecheadname, const list<list<int> >& inlistclumember, const vector<int>& vecAllSupStru);
     void                          SetNotSupport( const int idx){ m_allSupStru.at(idx) = 0; }
     void                          SetSupport( const int idx){ m_allSupStru.at(idx) = 1; }
     void                          SetVecHeadNameByIdx( const int idx, const int name){ m_vecHeadName.at(idx) = name; }

@@ -21,7 +21,7 @@ KmeansCsFactory::CreateClusterStructure()
     if (Kmedoid(myVecHeadNames, myListCluMembers)) {
       m_ptrCS = new ClusterStructure(m_ptrMap->GetNumNodes(), 
           m_ptrMap->GetNumInitHeads() );
-      m_ptrCS->SetRecord(myVecHeadNames, myListCluMembers);
+      m_ptrCS->SetRecord(myVecHeadNames, myListCluMembers, vector<int>(m_ptrMap->GetNumNodes(),1));
       return m_ptrCS;
     }
     else{

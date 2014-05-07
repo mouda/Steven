@@ -65,7 +65,10 @@ MinResCsFactory::CreateClusterStructure()
     m_ptrToolSA->startCool();
     m_ptrCS = new ClusterStructure(m_ptrMap->GetNumNodes(), 
         m_ptrMap->GetNumInitHeads() );
-    m_ptrCS->SetRecord(m_ptrToolSA->GetVecHeadName(), m_ptrToolSA->GetListCluMemeber());
+    m_ptrCS->SetRecord(m_ptrToolSA->GetVecHeadName(), 
+        m_ptrToolSA->GetListCluMemeber(),
+        m_ptrToolSA->GetAllSupStru()
+        );
     return m_ptrCS;
   }
 }

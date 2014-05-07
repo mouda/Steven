@@ -146,7 +146,8 @@ CORRE_MA_OPE::UpdateVariance(const vector<double>& curVecVariance, vector<double
   for (int i = 0; i < m_numNodes; ++i) {
     if (vecSupport[i] == 1) {
       vecSlots.at(i) = 1;
-      nextVecVariance.at(i) = 1.0 * (1 - pow(exp(-1*timeDiff/m_temporalCorrFac),2)) ;
+      ///nextVecVariance.at(i) = 1.0 * (1 - pow(exp(-1*timeDiff/m_temporalCorrFac),2)) ;
+      nextVecVariance.at(i) = curVecVariance.at(i);
     }
     else{
       if (vecSlots.at(i) == 0) {
@@ -154,7 +155,8 @@ CORRE_MA_OPE::UpdateVariance(const vector<double>& curVecVariance, vector<double
       }
       else {
         vecSlots.at(i) += 1;
-        nextVecVariance.at(i) = 1.0 * (1 - pow(exp(-1*timeDiff*static_cast<double>(vecSlots[i])/m_temporalCorrFac),2));
+        //nextVecVariance.at(i) = 1.0 * (1 - pow(exp(-1*timeDiff*static_cast<double>(vecSlots[i])/m_temporalCorrFac),2));
+        nextVecVariance.at(i) = curVecVariance.at(i);
       }
     }
   }

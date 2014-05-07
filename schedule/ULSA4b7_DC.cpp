@@ -166,6 +166,19 @@ ULSA4b7_DC::~ULSA4b7_DC()
     if(!terminated)releaseMemory();
 }
 
+vector<int>
+ULSA4b7_DC::GetAllSupStru() const {
+  vector<int> myAllSupStru(totalNodes,0);
+  list<list<int> >::const_iterator iterRow = listCluMemBest->begin();
+  for (;iterRow != listCluMemBest->end(); ++iterRow) {
+    list<int>::const_iterator iterCol = iterRow->begin();
+    for (; iterCol != iterRow->end(); ++iterCol) {
+      myAllSupStru.at(*iterCol) = 1;
+    }
+  }
+  return myAllSupStru;
+}
+
 void ULSA4b7_DC::releaseMemory()
 {
 
@@ -503,6 +516,7 @@ bool ULSA4b7_DC::setIniStruDistanceKmedoids()
         tempGroup[closetHeadIndex].push_back(i);
       }
       convergedFlag = true;
+#ifdef DEBUG
       //find the k-means coordinate of each cluster
       for (int i = 0; i < tempGroup.size(); i++) {
         cout << "cluster: " << i <<"-th ";
@@ -511,6 +525,7 @@ bool ULSA4b7_DC::setIniStruDistanceKmedoids()
         }
         cout << endl;
       }
+#endif
       for(int i=0; i<maxChNum; i++)
       {
         float newHx = 0;
@@ -1247,7 +1262,6 @@ bool ULSA4b7_DC::startCool()
 {
   begin = clock();
   matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes, (double)quantizationBits);
-  std::cout << "here *******************" << endl;
   indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
   double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
                     (compRatio,indEntropy,static_cast<double>(totalNodes));
@@ -1350,6 +1364,7 @@ bool ULSA4b7_DC::startCool()
   char str3[500];
   if(bestFeasibleJEntropy>=(wholeSystemEntopy*fidelityRatio)) {
     cout<<timeBuf<<endl;
+#ifdef DEBUG
     if (isDetailOutputOn) {
       sprintf(str,"%s_Best4b2Struc2ndN%d_m%d_FR%.1f_r%.1f.txt",timeBuf,totalNodes,maxChNum,fidelityRatio,radius);
       resultShow.writeBestStru(str,*this);
@@ -1360,18 +1375,21 @@ bool ULSA4b7_DC::startCool()
     resultShow.writePeformance_MinResors_with2ndPowerControl_4b(str3,*this, best2nd_ms, fidelityRatio,bestChNum);
     sprintf(str3,"tmpAll/ULSA4b7_Cluster_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius, strIpAddr.c_str());
     resultShow.writeClusterInfo(str3,*this,timeBuf);
+#endif
 
     delete matrixComputer;
     delete consSol;
     return true;
   }
   else{
+#ifdef DEBUG
     if (isDetailOutputOn) {
       sprintf(str,"%s_Best4b2Struc2ndN%d_m%d_FR%.1f_r%.1f.txt",timeBuf,totalNodes,maxChNum,fidelityRatio,radius);
       resultShow.writeBestStru(str,*this);
       sprintf(str2,"%s_Detail4b2DataULSA3i%d_m%d_FR%.1f_r%.1f.txt",timeBuf, totalNodes,maxChNum,fidelityRatio,radius);
       resultShow.summaryNwrite2tiers_MinResors_with2ndPowerControl(str2, *this, best2nd_ms);
     }
+#endif
     delete matrixComputer;
     delete consSol;
     return false;

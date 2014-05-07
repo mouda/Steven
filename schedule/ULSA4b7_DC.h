@@ -73,6 +73,7 @@ public:
   /* For Integrate */
   const vector<int>& GetVecHeadName() const { return vecHeadNameBest; }
   const list<list<int> >& GetListCluMemeber() const { return *listCluMemBest;}
+  vector<int> GetAllSupStru() const;
   
 
 
