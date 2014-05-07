@@ -655,10 +655,10 @@ void ULConstraintSolver::changeAllMemberPower()
             {
                 float powerCursor = 0;
                 double tempDifference = 0;
-                cout<<"c2 "<<C2*(sizeOfCluter-1)<<endl;
-                cout<<"Channel Gain from"<<(*vecHeadName)[headIndex]<<" "<<(*it2)<<" "<<Gij[(*vecHeadName)[headIndex]][(*it2)];
+//                cout<<"c2 "<<C2*(sizeOfCluter-1)<<endl;
+//                cout<<"Channel Gain from"<<(*vecHeadName)[headIndex]<<" "<<(*it2)<<" "<<Gij[(*vecHeadName)[headIndex]][(*it2)];
                 powerCursor = (accuInterference *(pow((float)2.0, (sizeOfCluter-1)*C2)-1))/Gij[(*vecHeadName)[headIndex]][(*it2)];
-                cout<<"Power "<<powerCursor/scale<< " accu "<< accuInterference/scale<<endl;
+//                cout<<"Power "<<powerCursor/scale<< " accu "<< accuInterference/scale<<endl;
                 tempDifference = powerCursor -nextNodePower[(*it2)];
 
                 if(powerDifference[(*it2)]!=0)powerDifferenceRatio[(*it2)] = (double)tempDifference / powerDifference[(*it2)];

@@ -1,32 +1,72 @@
 #include "minResCsFactory.h"
+#define SA_INI_TEMP 3.0
+#define SA_FIN_TEMP 0.5
 
 MinResCsFactory::MinResCsFactory( Map const * const myMap, 
     CORRE_MA_OPE const * const myMatComputer):
-  CsFactory(myMap, myMatComputer)
+  CsFactory(myMap, myMatComputer),
+  m_fid(NULL),
+  m_mapFileName(""),
+  m_compressionRatio(-1.0)
 {
-
 }
 
 MinResCsFactory::~MinResCsFactory()
 {
+  fclose(m_fid);
+  delete m_ptrToolSA;
 
 }
 
 ClusterStructure*
 MinResCsFactory::CreateClusterStructure()
 {
+  double SAIter = 500;
+  double alpha = pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
+  m_fid = fopen(m_mapFileName.c_str(), "r");
+  if(m_fid == NULL) {
+    cerr << "Read map file failed!!" << endl;
+    return NULL;
+  }
+  else if ( m_compressionRatio < 0.0){
+    cerr << "Compression Not Initialized" << endl;
+    return NULL;
+
+  }
+  m_ptrToolSA = new ULSA4b7_DC(
+      m_fid, 
+      m_ptrMap->GetNumNodes(), 
+      m_ptrMap->GetNumInitHeads(), 
+      SAIter, 
+      false, 
+      false, 
+      SA_INI_TEMP, 
+      alpha, 
+      m_compressionRatio, 
+      "NULL"
+      );
+  if(!m_ptrToolSA->setSystem(m_ptrMap->GetMaxPower(), 
+        (int)m_ptrMap->GetQBits(), 
+        m_ptrMap->GetBandwidth(), 
+        m_fidelityRatio)
+      ) {
+    cerr << "Set parameter failed! " << endl;
+    return NULL;
+  }
+  char iniFlag[]="kmedoids_distance";
+  if (!m_ptrToolSA->setInitialStucture (iniFlag)) {
+    cerr<<"The MinRes can't be initialized! " << endl;
+    return NULL;
+  }
+
   if (m_ptrCS == 0) {
     vector<int> myVecHeadNames;
     list<list<int> > myListCluMembers;
-    if (Kmedoid(myVecHeadNames, myListCluMembers)) {
-      m_ptrCS = new ClusterStructure(m_ptrMap->GetNumNodes(), 
-          m_ptrMap->GetNumInitHeads() );
-      m_ptrCS->SetRecord(myVecHeadNames, myListCluMembers);
-      return m_ptrCS;
-    }
-    else{
-      return NULL;
-    }
+    m_ptrToolSA->startCool();
+    m_ptrCS = new ClusterStructure(m_ptrMap->GetNumNodes(), 
+        m_ptrMap->GetNumInitHeads() );
+    m_ptrCS->SetRecord(m_ptrToolSA->GetVecHeadName(), m_ptrToolSA->GetListCluMemeber());
+    return m_ptrCS;
   }
 }
 
@@ -147,3 +187,4 @@ MinResCsFactory::Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listCluMe
   return true;
 
 }
+

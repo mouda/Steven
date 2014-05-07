@@ -150,7 +150,9 @@ int main(int argc, char *argv[])
       }
       else if (CSFormation == "MinRes"){
         myCsFactory = new MinResCsFactory(myMap, myMatComputer); 
-
+        (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
+        (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
+        (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
       }
 
       myCS = myCsFactory->CreateClusterStructure();

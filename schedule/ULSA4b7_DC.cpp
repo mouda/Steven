@@ -1763,7 +1763,9 @@ void ULSA4b7_DC::decideHeadJoining4b(){
         }
     }
 
+#ifdef DEBUG
     cout<<"Cand Size="<<vecJoinCandHeadIndex.size()<<" " << count <<  endl;
+#endif
     vector<double> firtGainRecord;
     //only for check
     firtGainRecord.resize(maxChNum);
@@ -2064,12 +2066,14 @@ void ULSA4b7_DC::decideIsolate4b(){
 
     vector<double> firsttierC;
     firsttierC.resize(totalNodes);
+#ifdef DEBUG
     //Calculate the cluster number 
     int count = 0;
     for (int i = 0; i < maxChNum; i++) {
       if (cSystem->vecClusterSize[i] > 0 ) count++;
     }
     cout << count << endl;
+#endif
 
 
     //Calculate 2nd tier Gain

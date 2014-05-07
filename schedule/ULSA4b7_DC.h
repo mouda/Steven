@@ -70,6 +70,11 @@ public:
   bool setIniStruFullResourceKmedoids();
   bool setIniHeadLimited();
 
+  /* For Integrate */
+  const vector<int>& GetVecHeadName() const { return vecHeadNameBest; }
+  const list<list<int> >& GetListCluMemeber() const { return *listCluMemBest;}
+  
+
 
   void writeStruSingleRound(int round);
   void writePayoffEachRound_MinResors(int round);
@@ -336,5 +341,7 @@ public:
   // display control
   int isDetailOutputOn;
   string strIpAddr; 
+
+  vector<int>       m_vecHeadName;
 };
 #endif
