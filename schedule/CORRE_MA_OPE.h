@@ -11,6 +11,7 @@ class CORRE_MA_OPE
 {
 public:
   CORRE_MA_OPE(int inm_numNodes, double spatialCorrFactor, double temporalCorrFactor, double ** inDijSQ, double qBits);
+  CORRE_MA_OPE(int inm_numNodes, double spatialCorrFactor,  double ** inDijSQ, double qBits);
   ~CORRE_MA_OPE();
   int m_numNodes;
   double m_qBits;
@@ -35,6 +36,7 @@ public:
   double GetJointEntropy(const vector<int>& vecClusterStru, const vector<double>& vecVariance, const double currTime, const double qBits) const;
   double GetRateDistortion(const vector<int>& vecClusterStru, const vector<double>& vecVariance, const double currTime, const double qBits) const;
   double computeLog2Det(double inVariance, bool* inClusterStru ) const;
+  double computeLog2Det(double inVariance, bool* inClusterStru ) ;
   double computeLog2Det(double inVariance, const vector<int>& vecClusterStru) const;
   double returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int numNodes);
 

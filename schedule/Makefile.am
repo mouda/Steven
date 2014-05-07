@@ -72,6 +72,12 @@ simulator_SOURCES = main.cpp \
 		    mapFactory.h mapFactory.cpp \
 		    csPowerUpdater.h csPowerUpdater.cpp\
 		    csFactory.h csFactory.cpp \
+		    ULConstraintSolver.h ULConstraintSolver.cpp\
+		    ULSAOutputToolSet.h ULSAOutputToolSet.cpp\
+		    timesearch.h timesearch.cpp\
+		    TimeStamp.h TimeStamp.cpp\
+		    ULCS1b.h ULCS1b.cpp\
+		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minResCsFactory.h minResCsFactory.cpp\
 		    utility.h utility.cpp \

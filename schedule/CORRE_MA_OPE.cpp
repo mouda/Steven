@@ -27,12 +27,62 @@ CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double spatialCorrFactor,
   m_totalEntropyPerSlot = covMat.determinant();
 }
 
+CORRE_MA_OPE::CORRE_MA_OPE(int inTotalNodes, double spatialCorrFactor, 
+    double **inDijSQ, double qBits):
+  m_qBits(qBits),
+  m_temporalCorrFac(0),
+  m_numNodes(inTotalNodes),
+  DijSQ(inDijSQ),
+  m_totalEntropyPerSlot(0)
+{
+  double idtEntropy = 0.5*log2(2*3.1415*exp(1)) + qBits;
+  returnNSetCorrelationFactorByCompressionRatio(spatialCorrFactor, idtEntropy, static_cast<double>(m_numNodes) );
+  Eigen::MatrixXd covMat(m_numNodes, m_numNodes);
+  GetCovMaVariance(covMat);
+  m_totalEntropyPerSlot = covMat.determinant();
+}
+
 CORRE_MA_OPE::~CORRE_MA_OPE()
 {
 
 }
 
 double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) const
+{
+  //m_variance = inVariance;
+  //Read information from cluster structure array
+  int covMaSize = 0;
+  for(int i=0;i<m_numNodes;i++)
+  {if(inClusterStru[i] == true)covMaSize++;}
+  int* supSet= new int [covMaSize];
+  int cursor = 0;
+  for(int i=0;i<m_numNodes;i++)
+  {
+    if (inClusterStru[i]== true )
+    {
+      supSet[cursor]=i;
+      cursor++;
+    }
+  }
+  //cout<<covMaSize<<endl;
+  //-----------------------------------------------
+  int matrixLength = covMaSize * covMaSize;
+  double *covAry = new double [matrixLength];
+  vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
+  //computeCovMa(covAry,covMaSize ,supSet);
+  matConstComputeCovMa(covMat, covMaSize ,supSet, inVariance);
+
+//  cout << "arma  : " << armaLogDet(covAry, covMaSize) << endl;
+//  cout << "Eigen : " << eigenCholeskyLogDet(covAry, covMaSize) << endl;
+
+//  return armaLogDet(covAry, covMaSize);
+    delete [] covAry;
+    delete [] supSet;
+    
+    return matEigenCholeskyLogDet(covMat, covMaSize);
+}
+
+double CORRE_MA_OPE::computeLog2Det( double inVariance, bool * inClusterStru) 
 {
   //m_variance = inVariance;
   //Read information from cluster structure array

@@ -49,8 +49,11 @@ am_simulator_OBJECTS = main.$(OBJEXT) map.$(OBJEXT) \
 	simSystem.$(OBJEXT) ULAGENT.$(OBJEXT) CORRE_MA_OPE.$(OBJEXT) \
 	clusterStructure.$(OBJEXT) mapFactory.$(OBJEXT) \
 	csPowerUpdater.$(OBJEXT) csFactory.$(OBJEXT) \
-	kmeansCsFactory.$(OBJEXT) minResCsFactory.$(OBJEXT) \
-	utility.$(OBJEXT) scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) \
+	ULConstraintSolver.$(OBJEXT) ULSAOutputToolSet.$(OBJEXT) \
+	timesearch.$(OBJEXT) TimeStamp.$(OBJEXT) ULCS1b.$(OBJEXT) \
+	ULSA4b7_DC.$(OBJEXT) kmeansCsFactory.$(OBJEXT) \
+	minResCsFactory.$(OBJEXT) utility.$(OBJEXT) \
+	scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) \
 	branchBoundScheduler.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
 	greedyPhysical.$(OBJEXT) bruteForceScheduler.$(OBJEXT) \
 	nonSimplifiedScheduler.$(OBJEXT) minPowerSA.$(OBJEXT) \
@@ -242,6 +245,12 @@ simulator_SOURCES = main.cpp \
 		    mapFactory.h mapFactory.cpp \
 		    csPowerUpdater.h csPowerUpdater.cpp\
 		    csFactory.h csFactory.cpp \
+		    ULConstraintSolver.h ULConstraintSolver.cpp\
+		    ULSAOutputToolSet.h ULSAOutputToolSet.cpp\
+		    timesearch.h timesearch.cpp\
+		    TimeStamp.h TimeStamp.cpp\
+		    ULCS1b.h ULCS1b.cpp\
+		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minResCsFactory.h minResCsFactory.cpp\
 		    utility.h utility.cpp \
@@ -350,7 +359,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CORRE_MA_OPE.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MyTMINLP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SASolver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TimeStamp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ULAGENT.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ULCS1b.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ULConstraintSolver.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ULSA4b7_DC.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ULSAOutputToolSet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/branchBoundScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bruteForceScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clusterStructure.Po@am__quote@
@@ -373,6 +387,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simSystem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simulator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/slot.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timesearch.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/totalEntropy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility.Po@am__quote@
 
