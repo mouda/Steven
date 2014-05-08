@@ -236,6 +236,7 @@ public:
   double *powerBest;
   int  roundBest;;
   bool *bestAllSupStru;
+  bool *prevAllSupStru;
   clock_t begin, end;
   float computingTimes;
 
@@ -256,6 +257,7 @@ public:
   void adaptSearchingProbability();
   void updateHeadLocation();
 
+  void decideExchangeNode();
   void decideAdd3i_DC_HeadDetMemRan();
   void decideDiscard3b();
   void decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio();

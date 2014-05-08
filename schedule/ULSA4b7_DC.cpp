@@ -10,6 +10,7 @@
 #include <list>
 #include <cassert>
 #include <armadillo>
+#include <iterator>
 
 using namespace std;
 #include "ULSA4b7_DC.h"
@@ -129,6 +130,7 @@ ULSA4b7_DC::ULSA4b7_DC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxCh
     }
 
     bestAllSupStru = new bool[totalNodes];
+    prevAllSupStru = new bool[totalNodes];
     vecBestBpshz_forVerification.resize(totalNodes);
     vecBestSINR_forVerification.resize(totalNodes);
     vecBestReceivedInterference.reserve(maxChNum);
@@ -192,6 +194,7 @@ void ULSA4b7_DC::releaseMemory()
     delete [] Gib;
     delete [] rateibMax;
     delete [] bestAllSupStru;
+    delete [] prevAllSupStru;
     //release maIndexSortDecGain
     for (int i = 0; i<totalNodes; i++) delete [] maIndexSortDecGain[i];
     delete maIndexSortDecGain;
@@ -1432,6 +1435,9 @@ void ULSA4b7_DC::coolOnce_minResors()
 {
   int probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
   int probDiscard = ((curSupNum<(maxChNum+1)) ?0:30000);
+//  int probAdd = 0;
+//  int probDiscard = 0;
+  int probExchange = 0;
   bool checkRotateble=false;//check if there are rotatableSet;
   for(int i=0; i<maxChNum; i++) {
     //cout<<aryFlagHRDone[i]<<" "<<cSystem->vecClusterSize[i]<<endl;
@@ -1454,7 +1460,7 @@ void ULSA4b7_DC::coolOnce_minResors()
   //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
 
 
-  int sumProb = probAdd + probDiscard + probHeadRotate+probJoin+probIsoltae;
+  int sumProb = probAdd + probDiscard + probExchange + probHeadRotate+probJoin+probIsoltae;
   int eventCursor= (int)((double)rand() / ((double)RAND_MAX + 1) * sumProb);
   nextEventFlag=-1;// this flag tell add or discard or Headrotate
 
@@ -1469,7 +1475,8 @@ void ULSA4b7_DC::coolOnce_minResors()
   else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
   else if (eventCursor<(probAdd+probDiscard+probHeadRotate)) nextEventFlag=3;
   else if (eventCursor<(probAdd+probDiscard+probHeadRotate+probJoin)) nextEventFlag=4;
-  else if (eventCursor<sumProb)nextEventFlag=5;
+  else if (eventCursor<(probAdd+probDiscard+probHeadRotate+probJoin + probExchange))nextEventFlag=5;
+  else if (eventCursor<sumProb) nextEventFlag = 6;
   else
   {
     cout<<"Failure in the random step"<<endl;
@@ -1531,12 +1538,26 @@ void ULSA4b7_DC::coolOnce_minResors()
     nextJEntropy = curJEntropy;
     nextSupNum = curSupNum;
   }
+  else if ( nextEventFlag == 6) {
+    decideExchangeNode();
+    cout << "Exchane: " << targetNode << endl;
+
+  }
   else
   {
     cout<<"Error. The random Neighbor event "<<nextEventFlag<<" choose is wrong"<<endl;
     cout<<"CursupNum "<<curSupNum<<" maxChNUm "<<maxChNum<<endl;
     cout<<"SumProb "<<sumProb<<endl;
   }
+}
+/*
+ * to exchange the node randomly
+ */
+void 
+ULSA4b7_DC::decideExchangeNode()
+{
+  decideDiscard3b();
+
 }
 
 /*
@@ -2331,43 +2352,43 @@ void ULSA4b7_DC::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 
 void ULSA4b7_DC::calculateMatrics_minResors()//Calculate next performance matircs
 {
-	next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
-	next1st_ms = return1stTotalNcal1stResors_HomoPower();
-	next2nd_Joule = returnTransientJoule();
-	next1st_Joule= power1st*next1st_ms/1000;
-	//:<<"MaxPowerLoad="<<returnMaxPowerLoad()<<" Max="<<powerMax<<endl;
+  next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+  next1st_ms = return1stTotalNcal1stResors_HomoPower();
+  next2nd_Joule = returnTransientJoule();
+  next1st_Joule= power1st*next1st_ms/1000;
+  //:<<"MaxPowerLoad="<<returnMaxPowerLoad()<<" Max="<<powerMax<<endl;
 
-	if (nextEventFlag==1)
-	{
-		nextSupNum = curSupNum + 1;//Serve one more node
-		nextJEntropy = nextSupNum*indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
-	}
-	else if(nextEventFlag==2)
-	{
-		nextSupNum = curSupNum -1;
-		nextJEntropy = nextSupNum * indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
-	}
-	else if (nextEventFlag==3)  //Do Nothing
-	{
-		//cout<<"Original Head="<<rotatedHeadNameLast<<endl;
+  if (nextEventFlag==1)
+  {
+    nextSupNum = curSupNum + 1;//Serve one more node
+    nextJEntropy = nextSupNum*indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
+  }
+  else if(nextEventFlag==2)
+  {
+    nextSupNum = curSupNum -1;
+    nextJEntropy = nextSupNum * indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
+  }
+  else if (nextEventFlag==3)  //Do Nothing
+  {
+    //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
 
-	}
-	else if (nextEventFlag==4)  //Do Nothing
-    {
-        //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
+  }
+  else if (nextEventFlag==4)  //Do Nothing
+  {
+    //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
 
-    }
-    else if (nextEventFlag==5)  //Do Nothing
-    {
-        //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
+  }
+  else if (nextEventFlag==5)  //Do Nothing
+  {
+    //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
 
-    }
-	else
-	{
-		cout<<"Error in calculateMatrics_minResors "<<endl;
-		assert(0);
-	}
-	nextPayoff =(next1st_ms+next2nd_ms);
+  }
+  else
+  {
+    cout<<"Error in calculateMatrics_minResors "<<endl;
+    assert(0);
+  }
+  nextPayoff =(next1st_ms+next2nd_ms);
 }
 
 /*
@@ -2378,63 +2399,61 @@ void ULSA4b7_DC::calculateMatrics_minResors()//Calculate next performance matirc
    */
 void ULSA4b7_DC::confirmNeighbor3i()
 {
-    /*cout<<"By "<<nextEventFlag<<endl;
-    cout<<"Next Payoff="<<nextPayoff<<"; From CurPayoff="<<curPayoff <<endl;
-    cout<<"Oiginal 1st="<<cur1st_ms<<" Original2nd="<<cur2nd_ms<<";CurInfoRatio="<<curJEntropy/wholeSystemEntopy<<endl;
-    cout<<"    new 1st="<<next1st_ms<<" new     2nd="<<next2nd_ms<<";NexInfoRatio="<<nextJEntropy/wholeSystemEntopy<<endl;
-	cout<<"   CurChNum="<<curChNum<<endl;
-	*/
-	bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
-	bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
-
-	if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
-	{
-          passNext2Cur();
-          for(int i=0; i<totalNodes; i++) 
-            nodes[i].power = nextNodePower[i];
-          if( nextEventFlag == 1 || nextEventFlag == 2 ) 
-            confirmStructureChange();
-	}
-	else if ( !curAllServe && nextAllServe ) {
-          passNext2Cur();
-          for(int i=0; i<totalNodes; i++) 
-            nodes[i].power = nextNodePower[i];
-          if( nextEventFlag == 1 || nextEventFlag == 2 ) 
-            confirmStructureChange();
-	}
-	else if ( ( nextPayoff < curPayoff ) && nextAllServe && curAllServe )
-	{
-          passNext2Cur();
-          for(int i=0; i<totalNodes; i++)
-            nodes[i].power = nextNodePower[i];
-          if( nextEventFlag == 1 || nextEventFlag == 2 )
-            confirmStructureChange();
-	}
-	else if( ( ( nextJEntropy < curJEntropy ) && !nextAllServe && !curAllServe ) || 
-            ( !nextAllServe && curAllServe ) || 
-            ( ( nextPayoff > curPayoff ) && nextAllServe && curAllServe ) )
-	{
-          double probAnnealing = exp (-20*abs(nextPayoff-curPayoff)/temparature);
-          //cout<<"Show Payoff "<<nextPayoff<<"  "<<curPayoff<<endl;
-          //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
-          double annealingChoose = (double)rand()/((double)RAND_MAX+1);
-          if ( annealingChoose > probAnnealing )
-          {
-            reverseMoveSA();
-          }
-          else//accept the move
-          {
-            passNext2Cur();
-            for(int i=0; i<totalNodes; i++)
-              nodes[i].power = nextNodePower[i];
-            if(nextEventFlag==1||nextEventFlag==2)
-              confirmStructureChange();
-          }
-	}
-	targetHeadIndex = -1;
-	targetNode = -1;
-	nextEventFlag = -1;
-	temparature*=alpha;
+  //constraint: the fidelity ratio must be satisfied
+//  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
+//  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
+//
+  //constraint: the all the machine must be supported
+  bool nextAllServe = (find(cSystem->allSupStru, cSystem->allSupStru + totalNodes,false ) == cSystem->allSupStru + totalNodes ); 
+  bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
+  if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
+  {
+    passNext2Cur();
+    for(int i=0; i<totalNodes; i++) 
+      nodes[i].power = nextNodePower[i];
+    if( nextEventFlag == 1 || nextEventFlag == 2 ) 
+      confirmStructureChange();
+  }
+  else if ( !curAllServe && nextAllServe ) {
+    passNext2Cur();
+    for(int i=0; i<totalNodes; i++) 
+      nodes[i].power = nextNodePower[i];
+    if( nextEventFlag == 1 || nextEventFlag == 2 ) 
+      confirmStructureChange();
+  }
+  else if ( ( nextPayoff < curPayoff ) && nextAllServe && curAllServe )
+  {
+    passNext2Cur();
+    for(int i=0; i<totalNodes; i++)
+      nodes[i].power = nextNodePower[i];
+    if( nextEventFlag == 1 || nextEventFlag == 2 )
+      confirmStructureChange();
+  }
+  else if( ( ( nextJEntropy < curJEntropy ) && !nextAllServe && !curAllServe ) || 
+      ( !nextAllServe && curAllServe ) || 
+      ( ( nextPayoff > curPayoff ) && nextAllServe && curAllServe ) )
+  {
+    double probAnnealing = exp (-20*abs(nextPayoff-curPayoff)/temparature);
+    //cout<<"Show Payoff "<<nextPayoff<<"  "<<curPayoff<<endl;
+    //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
+    double annealingChoose = (double)rand()/((double)RAND_MAX+1);
+    if ( annealingChoose > probAnnealing )
+    {
+      reverseMoveSA();
+    }
+    else//accept the move
+    {
+      passNext2Cur();
+      for(int i=0; i<totalNodes; i++)
+        nodes[i].power = nextNodePower[i];
+      if(nextEventFlag==1||nextEventFlag==2)
+        confirmStructureChange();
+    }
+  }
+  targetHeadIndex = -1;
+  targetNode = -1;
+  nextEventFlag = -1;
+  temparature*=alpha;
 }
 
 void ULSA4b7_DC::passNext2Cur() {
@@ -2553,8 +2572,11 @@ void ULSA4b7_DC::reverseMoveSA()
 */
 void ULSA4b7_DC::confirmStructureChange()
 {
-    //cout<<"Structure Change"<<endl;
-    for(int i=0; i<maxChNum; i++)aryFlagHRDone[i]=false;
+  //cout<<"Structure Change"<<endl;
+  for(int i=0; i<maxChNum; i++)aryFlagHRDone[i]=false;
+  for (int i = 0; i < totalNodes; ++i) {
+    prevAllSupStru[i] = cSystem->allSupStru[i];
+  }
 }
 
 
@@ -2564,7 +2586,8 @@ void ULSA4b7_DC::confirmStructureChange()
 */
 bool ULSA4b7_DC::checkBestClusterStructure_DataCentric(int inputRound)
 {
-    bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
+//    bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
+    bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
     if(curAllServe)bestAllServeFound=true;
     //cout<<"In check Best"<<endl;
     if ((curJEntropy>bestFeasibleJEntropy)&&!curAllServe&&!bestAllServeFound)
