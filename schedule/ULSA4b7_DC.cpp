@@ -20,7 +20,7 @@ ULSA4b7_DC::ULSA4b7_DC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxCh
                      int inOutputControl,
                      int isStrucOuput,
                      double inputTemprature, double InputSaAlpha, \
-                     double inCorrelationFactor, string ipAddr)
+                     double inCorrelationFactor, string ipAddr, Map const * const myPtrMap)
 {
 
     sysComputing = new SimSystem;
@@ -61,7 +61,7 @@ ULSA4b7_DC::ULSA4b7_DC(FILE *fileReadCursor, int inputTotalNodes, int inputMaxCh
         }
         else
         {
-            inputNode.aryConstructor(inputIndex,dx,dy);
+            inputNode.aryConstructor(inputIndex,myPtrMap->GetNodeXPos(inputIndex), myPtrMap->GetNodeYPos(inputIndex));
             nodes.push_back(inputNode);
         }
         inputIndex++;
@@ -1460,7 +1460,8 @@ void ULSA4b7_DC::coolOnce_minResors()
   //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
 
 
-  int sumProb = probAdd + probDiscard + probExchange + probHeadRotate+probJoin+probIsoltae;
+//  int sumProb = probAdd + probDiscard + probExchange + probHeadRotate+probJoin+probIsoltae;
+  int sumProb = probAdd + probDiscard + probHeadRotate+probJoin+probIsoltae;
   int eventCursor= (int)((double)rand() / ((double)RAND_MAX + 1) * sumProb);
   nextEventFlag=-1;// this flag tell add or discard or Headrotate
 
@@ -1475,8 +1476,7 @@ void ULSA4b7_DC::coolOnce_minResors()
   else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
   else if (eventCursor<(probAdd+probDiscard+probHeadRotate)) nextEventFlag=3;
   else if (eventCursor<(probAdd+probDiscard+probHeadRotate+probJoin)) nextEventFlag=4;
-  else if (eventCursor<(probAdd+probDiscard+probHeadRotate+probJoin + probExchange))nextEventFlag=5;
-  else if (eventCursor<sumProb) nextEventFlag = 6;
+  else if (eventCursor<sumProb)nextEventFlag=5;
   else
   {
     cout<<"Failure in the random step"<<endl;

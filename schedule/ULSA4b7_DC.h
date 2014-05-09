@@ -32,6 +32,7 @@
 #include "ULSAOutputToolSet.cpp"
 #include "TimeStamp.h"
 #include "../lib/SA/SABASE.h"
+#include "map.h"
 
 template class ULSAOutputToolSet<class ULSA4b7_DC>;
 
@@ -46,7 +47,7 @@ public:
                int inOutputControl,
                int isStrucOuput,
                double inputTemprature, double InputSaAlpha, 
-               double inCorrelationFactor, string ipAddr);
+               double inCorrelationFactor, string ipAddr, Map const * const myPtrMap);
 
   ~ULSA4b7_DC();
 
