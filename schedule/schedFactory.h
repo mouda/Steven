@@ -8,6 +8,7 @@
 #include "nonSimplifiedScheduler.h"
 #include "totalEntropy.h"
 #include "minPowerSA.h"
+#include "minPowerScheduler.h"
 
 #include <string>
 #include <iostream>

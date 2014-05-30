@@ -57,9 +57,10 @@ am_simulator_OBJECTS = main.$(OBJEXT) map.$(OBJEXT) \
 	branchBoundScheduler.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
 	greedyPhysical.$(OBJEXT) bruteForceScheduler.$(OBJEXT) \
 	nonSimplifiedScheduler.$(OBJEXT) minPowerSA.$(OBJEXT) \
-	SASolver.$(OBJEXT) powerUpdater.$(OBJEXT) \
-	totalEntropy.$(OBJEXT) schedFactory.$(OBJEXT) slot.$(OBJEXT) \
-	event.$(OBJEXT) fileHandler.$(OBJEXT) simulator.$(OBJEXT)
+	minPowerScheduler.$(OBJEXT) SASolver.$(OBJEXT) \
+	powerUpdater.$(OBJEXT) totalEntropy.$(OBJEXT) \
+	schedFactory.$(OBJEXT) slot.$(OBJEXT) event.$(OBJEXT) \
+	fileHandler.$(OBJEXT) simulator.$(OBJEXT)
 simulator_OBJECTS = $(am_simulator_OBJECTS)
 simulator_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -262,6 +263,7 @@ simulator_SOURCES = main.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\
 		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
 		    minPowerSA.h minPowerSA.cpp\
+		    minPowerScheduler.h minPowerScheduler.cpp\
 		    SASolver.h SASolver.cpp\
 		    powerUpdater.h powerUpdater.cpp\
 		    totalEntropy.h totalEntropy.cpp\
@@ -379,6 +381,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mapFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxSNRScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerSA.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minResCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nonSimplifiedScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/powerUpdater.Po@am__quote@

@@ -11,8 +11,8 @@ figure;
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
 
-CSPath = ['cs_baseline_N50.out'];
-SchedulePath = ['data/solution_Branchbound_N50.out'];
+CSPath = ['data/clusterStructure_bb_Kmeans.out'];
+SchedulePath = ['data/solution_bb_Kmeans.out'];
 mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_1.txt'];
 matSolution = dlmread(SchedulePath);
 
@@ -23,7 +23,7 @@ matSolution = dlmread(SchedulePath);
 
 nodeIdx = 1:totalNodes;
 
-for ii=1:size(matSolution,1)
+for ii=1:1
 % 
     hFig = figure(ii);
     set(hFig, 'Position', [1 1 550 500 ]);

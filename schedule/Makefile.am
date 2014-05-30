@@ -89,6 +89,7 @@ simulator_SOURCES = main.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\
 		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
 		    minPowerSA.h minPowerSA.cpp\
+		    minPowerScheduler.h minPowerScheduler.cpp\
 		    SASolver.h SASolver.cpp\
 		    powerUpdater.h powerUpdater.cpp\
 		    totalEntropy.h totalEntropy.cpp\
