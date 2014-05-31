@@ -37,7 +37,8 @@ int main(int argc, char *argv[])
   double  spatialCompressionRatio;
   double  temporalCorrFactor;
   double  txTimePerSlot;
-  double  endTime;
+  //double  endTime;
+  int     tier2NumSlot;
   int     SAIter;
   double  fidelityRatio;
   string  mapFileName;
@@ -66,7 +67,7 @@ int main(int argc, char *argv[])
       ("iteration,i",             po::value<int>(),     "Number of iteration Simulate Annealing")
       ("spatialCorrelation,c",    po::value<double>(),  "Spatial Correlation level")
       ("temporalCorrelation,T",   po::value<double>(), "Temproal Correlation factor")
-      ("endTime,e",               po::value<double>(), "End simulation time")
+      ("tier2NumSlot,N",          po::value<int>(), "Number of tier-2 slots")
       ("ClusterStructureOutput,C",po::value<string>(), "Cluster structure output file name")
       ("TotalEntropy,O",          po::value<string>(), "Total entropy per slot")
       ("EntropyOutput,E",         po::value<string>(), "Entropy output file name")
@@ -94,7 +95,7 @@ int main(int argc, char *argv[])
       fidelityRatio =           vm["fidelity"].as<double>();
       mapFileName =             vm["map"].as<string>();
       strAlgFlag =              vm["algorithm"].as<string>();
-      endTime   =               vm["endTime"].as<double>();
+      tier2NumSlot   =          vm["tier2NumSlot"].as<int>();
       CSFormation =             vm["ClusterFormation"].as<string>();
 
       /* output control */
@@ -162,7 +163,7 @@ int main(int argc, char *argv[])
         return 1;
       }
 
-      SchedulerFactory mySchedFactory(txTimePerSlot, bandwidthKhz, myMap, myMatComputer, myCS);
+      SchedulerFactory mySchedFactory(txTimePerSlot, tier2NumSlot, bandwidthKhz, myMap, myMatComputer, myCS);
       Scheduler* myScheduler = 0;
       myScheduler = mySchedFactory.CreateScheduler(strAlgFlag);
       if (!myScheduler) {
@@ -181,7 +182,7 @@ int main(int argc, char *argv[])
           totalEntropyFName
           );
       mySimulator.SelfCheck();
-      mySimulator.SequentialRun(endTime);
+      mySimulator.SequentialRun(tier2NumSlot);
 
       /* output control */
       if (vm.count("ClusterStructureOutput")) {

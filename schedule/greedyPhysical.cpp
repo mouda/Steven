@@ -87,7 +87,7 @@ GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport )
 }
 
 double
-GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
+GreedyPhysical::ScheduleOneSlot(std::vector<int>& vecSupport, std::vector<double>&, const std::vector<double>& vecVariance)
 {
   CheckAllScheduled();
   std::vector<BglEdge> vecEdge;

@@ -39,7 +39,7 @@ BruteForceScheduler::ScheduleOneSlot(std::vector<int>& vecSupport )
 }
 
 double
-BruteForceScheduler::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
+BruteForceScheduler::ScheduleOneSlot(std::vector<int>& vecSupport, std::vector<double>& vecPower, const std::vector<double>& vecVariance)
 {
   Eigen::MatrixXd matX = Eigen::MatrixXd::Zero(m_ptrCS->GetNumNodes(), m_ptrCS->GetNumHeads()); 
   std::vector<int> vecTmpSolution(m_ptrCS->GetNumNodes(), 0); 

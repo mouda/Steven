@@ -88,11 +88,10 @@ simulator_SOURCES = main.cpp \
 		    greedyPhysical.h greedyPhysical.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\
 		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
-		    minPowerSA.h minPowerSA.cpp\
 		    minPowerScheduler.h minPowerScheduler.cpp\
+		    minPowerMILP.h minPowerMILP.cpp\
 		    SASolver.h SASolver.cpp\
 		    powerUpdater.h powerUpdater.cpp\
-		    totalEntropy.h totalEntropy.cpp\
 		    schedFactory.h schedFactory.cpp \
 		    slot.h slot.cpp \
 		    event.h event.cpp \

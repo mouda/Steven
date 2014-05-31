@@ -14,7 +14,7 @@ class BruteForceScheduler: public Scheduler
 
     void SetGaussianField(CORRE_MA_OPE* myGField) { m_ptrMatComputer = myGField;}
     double ScheduleOneSlot( std::vector<int>& );
-    double ScheduleOneSlot( std::vector<int>& , const std::vector<double>& );
+    double ScheduleOneSlot( std::vector<int>& , std::vector<double>&, const std::vector<double>& );
     string PrintSelf(){ return m_type; }
     double GetTxTimePerSlot() const { return m_txTimePerSlot; }
 

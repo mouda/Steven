@@ -6,8 +6,6 @@
 #include "greedyPhysical.h"
 #include "bruteForceScheduler.h"
 #include "nonSimplifiedScheduler.h"
-#include "totalEntropy.h"
-#include "minPowerSA.h"
 #include "minPowerScheduler.h"
 
 #include <string>
@@ -29,7 +27,9 @@ using std::make_pair;
 class SchedulerFactory
 {
   public:
-    SchedulerFactory(const double txTime, const double bandwidthKhz, 
+    SchedulerFactory(const double txTime, 
+        const int tier2NumSlot,
+        const double bandwidthKhz, 
         Map const * const, 
         CORRE_MA_OPE* , 
         ClusterStructure const * const);
@@ -41,6 +41,7 @@ class SchedulerFactory
     const double                    m_txTimePerSlot;
     const double                    m_bandwidthKhz;
     const double                    m_maxPower;
+    const int                       m_tier2NumSlot;
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;
     CORRE_MA_OPE*       m_ptrMatComputer;

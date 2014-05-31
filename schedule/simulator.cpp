@@ -47,7 +47,7 @@ Simulator::SetEvents(double t_ms)
 }
 
 void
-Simulator::SequentialRun(double t_ms)
+Simulator::SequentialRun(int tier2NumSlot)
 {
   std::vector<int> vecSupport(m_ptrMap->GetNumNodes());
   fill(vecSupport.begin(), vecSupport.end(), 0);
@@ -55,10 +55,12 @@ Simulator::SequentialRun(double t_ms)
   fill(currVecVariance.begin(), currVecVariance.end(), 1.0);
   std::vector<double> nextVecVariance(m_ptrMap->GetNumNodes());
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
+  std::vector<double> vecPower(m_ptrMap->GetNumNodes());
+  fill(vecPower.begin(), vecPower.end(), 0.0);
   std::vector<int> vecSlots(m_ptrMap->GetNumNodes());
   fill(vecSlots.begin(), vecSlots.end(), 0);
 
-  m_ptrSched->ScheduleOneSlot(vecSupport, currVecVariance);
+  m_ptrSched->ScheduleOneSlot(vecSupport, vecPower, currVecVariance);
   double entropy      = m_ptrGField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
   double MSE          = m_ptrGField->GetRateDistortion(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
   double totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, currVecVariance, 0.0, m_ptrMap->GetQBits());
@@ -71,7 +73,7 @@ Simulator::SequentialRun(double t_ms)
   Slot* ptrNextSlot = 0;
   m_listSlot.push_back(ptrCurrSlot);
 
-  for (double currTime = 0; currTime < t_ms; currTime+=m_ptrSched->GetTxTimePerSlot()) {
+  for (int currSlot = 0; currSlot < tier2NumSlot; ++currSlot) {
     ptrNextSlot = this->GetNextSlot(ptrCurrSlot, vecSlots);
     m_listSlot.push_back(ptrNextSlot);
     ptrCurrSlot = ptrNextSlot;
@@ -86,8 +88,10 @@ Simulator::GetNextSlot(Slot* mySlot, std::vector<int>& vecSlots)
   fill(vecSupport.begin(), vecSupport.end(), 0);
   std::vector<double> nextVecVariance(m_ptrMap->GetNumNodes());
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
+  std::vector<double> vecPower(m_ptrMap->GetNumNodes());
+  fill(vecPower.begin(), vecPower.end(), 0.0);
   
-  m_ptrSched->ScheduleOneSlot(vecSupport, mySlot->GetVariance());
+  m_ptrSched->ScheduleOneSlot(vecSupport, vecPower, mySlot->GetVariance());
   double entropy      = m_ptrGField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
   double MSE          = m_ptrGField->GetRateDistortion(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
   double totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());

@@ -39,7 +39,7 @@ class Simulator
     ~Simulator();
 
     void SetEvents(double t_ms);
-    void SequentialRun(double t_ms);
+    void SequentialRun(int tier2NumSlot);
     void SequentialFree();
     void Run();
 

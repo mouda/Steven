@@ -1,23 +1,32 @@
 #include "minPowerScheduler.h"
 
+using Ipopt::Index;
+
 MinPowerScheduler::MinPowerScheduler( const double txTime, 
+    const int tier2NumSlot,
     const double bandwidthKhz, 
     Map const * const ptrMap, 
     CORRE_MA_OPE* ptrMatComputer, 
     ClusterStructure const * const ptrCS): 
-    m_txTimePerSlot(txTime), m_bandwidthKhz(bandwidthKhz),
+    m_txTimePerSlot(txTime), 
+    m_tier2NumSlot(tier2NumSlot),
+    m_bandwidthKhz(bandwidthKhz),
     m_ptrMap(ptrMap), 
     m_ptrCS(ptrCS), m_ptrMatComputer(ptrMatComputer),
-    m_type("MaxSNR")
+    m_type("MinPower")
 {
   m_numNodes = m_ptrMap->GetNumNodes();
-  m_numMaxHeads =  m_ptrMap->GetNumInitHeads();
+  m_numHeads =  m_ptrMap->GetNumInitHeads();
   m_maxPower = m_ptrMap->GetMaxPower();
   m_vecNodePower.resize(m_numNodes);
   fill(m_vecNodePower.begin(), m_vecNodePower.end(), m_maxPower);
-  m_vecSched.resize(m_numNodes);
-  fill(m_vecSched.begin(), m_vecSched.end(), 0);
 
+  m_matA = Eigen::MatrixXd::Zero(m_numNodes, m_numNodes);
+  m_matB = Eigen::MatrixXd::Zero(m_numNodes, m_tier2NumSlot);
+  m_matO = Eigen::MatrixXd::Zero(m_numHeads, 1);
+  m_matE = Eigen::MatrixXd::Zero(m_numNodes, m_numHeads);
+
+  InitSolution();
 }
 
 MinPowerScheduler::~MinPowerScheduler()
@@ -26,140 +35,72 @@ MinPowerScheduler::~MinPowerScheduler()
 }
 
 double
-MinPowerScheduler::ScheduleOneSlot( vector<int>& vecSupport )
+MinPowerScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 {
-  CheckAllScheduled(); 
-  for (int i = 0; i < m_numMaxHeads; i++) {
-    double maxRxPower = 0.0;
-    int headName = m_ptrCS->GetVecHeadName()[i];
-    int maxRxPowerNode = -1;
-    for (int j = 0; j < m_numNodes; j++) {
-      if (m_ptrCS->GetChNameByName(j) == j ) continue; 
-      if (m_ptrCS->GetChIdxByName(j) == i && m_vecSched[j] == 0 ) {
-        if (m_ptrMap->GetGijByPair(headName,j) * m_maxPower > maxRxPower) {
-          maxRxPower = m_ptrMap->GetGijByPair(headName,j) * m_maxPower; 
-          maxRxPowerNode = j;
-        }
-      }
-    }
-    if (maxRxPowerNode >= 0) {
-      m_vecSched.at(maxRxPowerNode) = 1;
-      vecSupport.at(maxRxPowerNode) = 1;
-    }
-  }
-
-  /* test the Interference */
-  while(!CheckFeasible(vecSupport, m_txTimePerSlot)){
-    for (int i = 0; i < m_numNodes; i++) {
-      if (vecSupport[i] == 1) {
-        vecSupport[i] = 0;
-        //m_vecSched[i] = 0;
-        break;
-      }
-    }
-  }
-  int activeNodes = 0;
-  for (int i = 0; i < m_numNodes; i++) {
-    if (vecSupport[i] == 1) ++activeNodes;
-  }
-
-  double result = activeNodes * m_ptrMap->GetIdtEntropy() + m_ptrMatComputer->computeLog2Det(1.0, vecSupport);
-#ifdef DEBUG
-  cout << "activeNodes: " << activeNodes << endl;
-  cout << "MaxSNR: " << result << " " <<m_ptrMatComputer->computeLog2Det(1.0, mySupStru) <<endl;
-#endif
-  return result;
-
-}
-
-double
-MinPowerScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
-{
-
-  this->ScheduleOneSlot(vecSupport);
+  /* NULL */
   return 0.0;
 }
 
-bool 
-MinPowerScheduler::CheckFeasible( bool const * const supStru, double txTime2nd)
+double
+MinPowerScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecPower, const std::vector<double>& vecVariance)
 {
-  for (int i = 0; i < m_numMaxHeads; i++) {
-    int headName = m_ptrCS->GetVecHeadName()[i];
-    int member = -1;
-    double interference = 0.0;
-    for (int j = 0; j < m_numNodes; j++) {
-      if (supStru[j] == true && headName != m_ptrCS->GetChNameByName(j) ) {
-        interference += m_ptrMap->GetGijByPair(headName,j) * m_maxPower;
-      }
-      else if(supStru[j] == true && headName == m_ptrCS->GetChNameByName(j) ){
-        member = j;
-      }
-    }
-    if (member == -1) continue; 
-    if (m_ptrMap->GetIdtEntropy() > m_bandwidthKhz*txTime2nd*log2(1.0+m_maxPower * m_ptrMap->GetGijByPair(headName,member)
-          / (m_ptrMap->GetNoise() + interference))) {
-      return false;
-    }
-  }
-  return true;
+
+  return 0.0;
 }
 
-bool 
-MinPowerScheduler::CheckFeasible( const vector<int>& supStru, double txTime2nd)
-{
-  for (int i = 0; i < m_numMaxHeads; i++) {
-    int headName = m_ptrCS->GetVecHeadName()[i];
-    int member = -1;
-    double interference = 0.0;
-    for (int j = 0; j < m_numNodes; j++) {
-      if (supStru[j] == 1 && headName != m_ptrCS->GetChNameByName(j) ) {
-        interference += m_ptrMap->GetGijByPair(headName,j) * m_maxPower;
-      }
-      else if(supStru[j] == 1 && headName == m_ptrCS->GetChNameByName(j) ){
-        member = j;
-      }
-    }
-    if (member == -1) continue; 
-    if (m_ptrMap->GetIdtEntropy() > m_bandwidthKhz*txTime2nd*log2(1.0+m_maxPower * m_ptrMap->GetGijByPair(headName,member)
-          / (m_ptrMap->GetNoise() + interference))) {
-      return false;
-    }
-  }
-  return true;
-}
 
-bool
-MinPowerScheduler::CheckGroupScheduled( const int idx)
+void 
+MinPowerScheduler::InitSolution()
 {
-  assert(idx >= 0 && idx < m_ptrMap->GetNumInitHeads());
-  for (int i = 0; i < m_numNodes; ++i) {
-    if ( m_ptrCS->GetChNameByName(i) == i ) continue;
-    if ( m_ptrCS->GetChIdxByName(i) == idx && m_vecSched.at(i) == 0 ) {
-      return false;
-    }
-  }
-  return true;
-}
 
-bool
-MinPowerScheduler::CheckAllScheduled()
-{
-  for (int i = 0; i < m_ptrMap->GetNumInitHeads(); ++i) {
-    if (CheckGroupScheduled(i)) {
-      ResetGroupScheduled(i);
-    }
-  }
-  return true;
-}
+  Eigen::IOFormat CleanFmt(2, 0, " ", "\n", "", ";");
+  Index numVariables = 2* m_numNodes * m_tier2NumSlot;
+  Index numConstraints = m_numNodes * m_tier2NumSlot + m_numNodes + m_numHeads + m_numHeads * m_tier2NumSlot;
+  Index numNz_jac_g = 2 * m_numHeads * m_numNodes;
+  Index numNz_h_lag = 0;
+  
+  SmartPtr<TMINLP> tminlp = 
+    new MinPowerMILP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag,
+        m_ptrCS, m_ptrMap);
+  MinPowerMILP* rawPtr = dynamic_cast<MinPowerMILP*>(GetRawPtr(tminlp));
+  std::vector<int> tmp(m_ptrMap->GetNumNodes(), 0);
+  rawPtr->SetExtraConstraints(tmp);
+  //rawPtr->SetExtraConstraints(m_vecSched);
 
-bool
-MinPowerScheduler::ResetGroupScheduled( const int idx)
-{
-  assert(idx >= 0 && idx < m_ptrMap->GetNumInitHeads());
-  for (int i = 0; i < m_vecSched.size(); ++i) {
-    if ( m_ptrCS->GetChIdxByName(i) == idx ) {
-      m_vecSched.at(i) = 0;
-    }
+  FILE * fp = fopen("log.out","w");
+  CoinMessageHandler handler(fp);
+  BonminSetup bonmin(&handler);
+  bonmin.initializeOptionsAndJournalist();
+  // Here we can change the default value of some Bonmin or Ipopt option
+  bonmin.options()->SetNumericValue("bonmin.time_limit", 1000); //changes bonmin's time limit
+  bonmin.options()->SetStringValue("mu_oracle","loqo");
+  //Here we read several option files
+  bonmin.readOptionsFile("Mybonmin.opt");
+  bonmin.readOptionsFile();// This reads the default file "bonmin.opt"
+  // Options can also be set by using a string with a format similar to the bonmin.opt file
+  bonmin.readOptionsString("bonmin.algorithm B-BB\n");
+
+  //Now initialize from tminlp
+  bonmin.initialize(GetRawPtr(tminlp));
+  //Set up done, now let's branch and bound
+  try {
+    Bab bb;
+    bb(bonmin);//process parameter file using Ipopt and do branch and bound using Cbc
   }
-  return true;
+  catch(TNLPSolver::UnsolvedError *E) {
+    //There has been a failure to solve a problem with Ipopt.
+    std::cerr<<"Ipopt has failed to solve a problem"<<std::endl;
+  }
+  catch(OsiTMINLPInterface::SimpleError &E) {
+    std::cerr << E.className() << "::" << E.methodName()
+	      << std::endl
+	      << E.message() << std::endl;
+  }
+  catch(CoinError &E) {
+    std::cerr << E.className() << "::" << E.methodName()
+	      << std::endl
+	      << E.message() << std::endl;
+  }
+
+  m_matSolution = rawPtr->GetMatSolution();
 }

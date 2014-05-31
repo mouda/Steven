@@ -35,7 +35,7 @@ NonSimplifiedScheduler::ScheduleOneSlot(std::vector<int>& vecSupport )
 }
 
 double
-NonSimplifiedScheduler::ScheduleOneSlot(std::vector<int>& vecSupport, const std::vector<double>& vecVariance)
+NonSimplifiedScheduler::ScheduleOneSlot(std::vector<int>& vecSupport, std::vector<double>& vecPower, const std::vector<double>& vecVariance)
 {
   return 0.0;
 }
