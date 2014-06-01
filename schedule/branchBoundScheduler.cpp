@@ -14,7 +14,7 @@ BranchBoundScheduler::BranchBoundScheduler( const double txTime,
   m_numNodes = m_ptrMap->GetNumNodes();
   m_numMaxHeads = m_ptrMap->GetNumInitHeads();
   m_maxPower = m_ptrMap->GetMaxPower();
-  Eigen::IOFormat CleanFmt(2, 0, ", ", "\n", "[", "]");
+  Eigen::IOFormat CleanFmt(2, 0, " ", "\n", "", "");
   m_A = Eigen::MatrixXd::Zero(m_numMaxHeads, m_numNodes); 
   m_B = Eigen::MatrixXd::Zero(m_numMaxHeads, m_numNodes); 
   m_C = Eigen::MatrixXd::Zero(m_numMaxHeads, m_numNodes);

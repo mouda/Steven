@@ -49,17 +49,21 @@ class MinPowerScheduler: public Scheduler
     const double                      m_bandwidthKhz;
     double                            m_maxPower;
     const int                         m_tier2NumSlot;
+    const double                      m_Gamma;
     Map const * const                 m_ptrMap;
     ClusterStructure const * const    m_ptrCS;
     CORRE_MA_OPE*                     m_ptrMatComputer;
     std::vector<double>               m_vecNodePower;
     const string                      m_type;
 
+    std::vector<double>               m_vecFi;
     Ipopt::SmartPtr<Bonmin::TMINLP>   m_MILP;
     Eigen::MatrixXd                   m_matA;
     Eigen::MatrixXd                   m_matB;
     Eigen::MatrixXd                   m_matO;
     Eigen::MatrixXd                   m_matE;
+
+    Eigen::MatrixXd                   m_matConstraints;
 
     Eigen::MatrixXi                   m_matSolution;
 

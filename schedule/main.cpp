@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() > 14 && vm.size() <= 19 ) {
+    } else if(vm.size() > 13 && vm.size() <= 21 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
