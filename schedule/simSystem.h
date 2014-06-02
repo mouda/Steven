@@ -19,7 +19,7 @@ class SimSystem
   private:
   const static float BSx=0,BSy=0;
   //const static float n0 = 3.981071705534985e-21;// = pow(10,-17.4)/1000;Watt, ref:Wikipwdia Thermal Noise
-  const static float n0 = 1e-19;// = pow(10,-17.4)/1000;Watt, ref:Wikipwdia Thermal Noise
+  const static float n0 = 1e-12;// = pow(10,-17.4)/1000;Watt, ref:Wikipwdia Thermal Noise Steven: 1e-19
 
   const static float pathLoss0_MacroUE = 131.1;// no unit ref:LTE release 9
   const static float pathLossAlpha_MacroUE =42.68; //no unit ref:LTE release 9

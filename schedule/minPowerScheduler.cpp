@@ -40,7 +40,12 @@ MinPowerScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 double
 MinPowerScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecPower, const std::vector<double>& vecVariance)
 {
-  int threshold = m_ptrMap->GetNumNodes() * m_tier2NumSlot + m_slotCounter * m_ptrMap->GetNumNodes(); 
+  int threshold = m_slotCounter * m_ptrMap->GetNumNodes() ; 
+  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+    int solutionIdx = threshold + i;
+    vecPower.at(i) = m_vecSolution.at(solutionIdx);
+  }
+  threshold = m_ptrMap->GetNumNodes() * m_tier2NumSlot + m_slotCounter * m_ptrMap->GetNumNodes();
   for (int i = 0 ; i < m_ptrMap->GetNumNodes(); ++i) {
     int solutionIdx = threshold + i;
     vecSupport.at(i) = static_cast<int>(m_vecSolution.at(solutionIdx));  
