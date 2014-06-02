@@ -56,13 +56,9 @@ class MinPowerScheduler: public Scheduler
     const string                      m_type;
 
     Ipopt::SmartPtr<Bonmin::TMINLP>   m_MILP;
-    Eigen::MatrixXd                   m_matA;
-    Eigen::MatrixXd                   m_matB;
-    Eigen::MatrixXd                   m_matO;
-    Eigen::MatrixXd                   m_matE;
 
-
-    Eigen::MatrixXi                   m_matSolution;
+    std::vector<double>               m_vecSolution;
+    int                               m_slotCounter;
 
 };
 

@@ -73,7 +73,7 @@ Simulator::SequentialRun(int tier2NumSlot)
   Slot* ptrNextSlot = 0;
   m_listSlot.push_back(ptrCurrSlot);
 
-  for (int currSlot = 0; currSlot < tier2NumSlot; ++currSlot) {
+  for (int currSlot = 0; currSlot < tier2NumSlot - 1; ++currSlot) {
     ptrNextSlot = this->GetNextSlot(ptrCurrSlot, vecSlots);
     m_listSlot.push_back(ptrNextSlot);
     ptrCurrSlot = ptrNextSlot;
