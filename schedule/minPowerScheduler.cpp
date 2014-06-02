@@ -13,9 +13,7 @@ MinPowerScheduler::MinPowerScheduler( const double txTime,
     m_bandwidthKhz(bandwidthKhz),
     m_ptrMap(ptrMap), 
     m_ptrCS(ptrCS), m_ptrMatComputer(ptrMatComputer),
-    m_type("MinPower"),
-    m_vecFi(ptrMap->GetNumNodes()),
-    m_Gamma(1.0)
+    m_type("MinPower")
 {
   m_numNodes = m_ptrMap->GetNumNodes();
   m_numHeads =  m_ptrMap->GetNumInitHeads();
@@ -30,124 +28,8 @@ MinPowerScheduler::MinPowerScheduler( const double txTime,
 
   int numConstraints = m_numNodes * m_tier2NumSlot + m_numNodes + m_numHeads + m_numHeads * m_tier2NumSlot;
   int numVariables = 2 * m_numNodes * m_tier2NumSlot;
-  m_matConstraints = Eigen::MatrixXd::Zero(numConstraints, numVariables);
 
-  fill(m_vecFi.begin(), m_vecFi.end(), pow(2.0, m_ptrMap->GetIdtEntropy()/m_txTimePerSlot/m_bandwidthKhz) - 1.0);
-  /* Construct the constraints */
-  /* Interfereence constraints eq 4.6 */
-  Eigen::IOFormat CleanFmt(2, 0, " ", "\n", "", "");
-  for (int n_c = 0; n_c < m_tier2NumSlot; ++n_c) {
-    for (int i_c = 0; i_c < m_numNodes; ++i_c) {
-
-      /* row index of constraint matrix */
-      int index_i = n_c * m_numNodes + i_c; 
-      int headName = m_ptrCS->GetChNameByName(i_c);
-
-      if ( headName < 0 ) continue; /* skip the un-supported node */
-
-      for (int n_q = 0; n_q < m_tier2NumSlot; ++n_q) {
-        for (int i_q = 0; i_q < m_numNodes; ++i_q) {
-
-          /* column index of constraint matrix */
-          int index_j = n_q * m_numNodes +  i_q;
-          if ( n_c == n_q && i_c == i_q ) {
-            m_matConstraints(index_i, index_j ) = m_ptrMap->GetGijByPair(i_q, headName);
-          }
-          else if (n_c == n_q && headName != m_ptrCS->GetChNameByName(i_q) ) {
-            m_matConstraints(index_i, index_j) = -1 * m_Gamma * m_vecFi.at(i_q) * m_ptrMap->GetGijByPair(i_q, headName);  
-          }
-          else {
-            m_matConstraints(index_i, index_j) = 0.0;
-          }
-        }
-      }
-
-      for (int n_y = 0; n_y < m_tier2NumSlot; ++n_y) {
-          for (int i_y = 0; i_y < m_numNodes; ++i_y) {
-          int index_j = m_tier2NumSlot * m_numNodes + n_y * m_numNodes +  i_y;
-          if ( n_c == n_y && i_c == i_y ) {
-            m_matConstraints(index_i, index_j) = 1.0;
-          }
-          else {
-            m_matConstraints(index_i, index_j) = 0.0;
-          }
-        }
-      }
-    }
-  }
-
-
-  /* eq 4.9 */
-  for (int i_c = 0; i_c < m_numNodes; ++i_c) {
-    /* row index of constraint matrix */
-    int index_i = m_numNodes * m_tier2NumSlot + i_c;
-    int headName = m_ptrCS->GetChNameByName(i_c);
-    if ( headName < 0 ) continue;/* skip the un-supported node */
-
-    for (int n_y = 0; n_y < m_tier2NumSlot; ++n_y) {
-      for (int i_y = 0; i_y < m_numNodes; ++i_y) {
-
-        /* column index of constraint matrix */
-        int index_j = m_tier2NumSlot * m_numNodes + n_y * m_numNodes +  i_y;
-        if ( i_c == i_y ) {
-          m_matConstraints(index_i, index_j) = 1.0;
-        }
-        else {
-          m_matConstraints(index_i, index_j) = 0.0;
-        }
-      }
-    }
-  }
-
-  /* eq 4.10 */
-  for (int j_c = 0; j_c < m_numHeads; ++j_c) {
-    /* row index of constraint matrix */
-    int index_i = m_numNodes * m_tier2NumSlot + m_numNodes + j_c;
-
-    for (int n_y = 0; n_y < m_tier2NumSlot; ++n_y) {
-      for (int i_y = 0; i_y < m_numNodes; ++i_y) {
-
-        /* column index of constraint matrix */
-        int index_j = m_tier2NumSlot * m_numNodes + n_y * m_numNodes +  i_y;
-        if (  j_c  ==  m_ptrCS->GetChIdxByName(i_y)) {
-          m_matConstraints(index_i, index_j) = 1.0;
-        }
-        else {
-          m_matConstraints(index_i, index_j) = 0.0;
-        }
-      }
-    }
-  }
-
-  /* eq 4.13 */
-  for (int n_c = 0; n_c < m_tier2NumSlot; ++n_c) {
-    for (int j_c = 0; j_c < m_numHeads; ++j_c) {
-
-      /* row index of constraint matrix */
-      int index_i = m_numNodes * m_tier2NumSlot + m_numNodes + m_numHeads + n_c * m_numHeads + j_c;
-      
-      for (int n_y = 0; n_y < m_tier2NumSlot; ++n_y) {
-        for (int i_y = 0; i_y < m_numNodes; ++i_y) {
-
-          /* column index of constraint matrix */
-          int index_j = m_tier2NumSlot * m_numNodes + n_y * m_numNodes +  i_y;
-          if ( j_c   ==  m_ptrCS->GetChIdxByName(i_y) && n_c == n_y) {
-            m_matConstraints(index_i, index_j) = 1.0;
-          }
-          else {
-            m_matConstraints(index_i, index_j) = 0.0;
-          }
-        }
-      }
-
-    }
-  }
-
-//  fstream testFstream;
-//  testFstream.open("TEST.out", ios::out);
-//  testFstream << m_matConstraints.format(CleanFmt) ;
-//  testFstream.close();
-//  InitSolution();
+  InitSolution();
 }
 
 MinPowerScheduler::~MinPowerScheduler()
@@ -182,12 +64,13 @@ MinPowerScheduler::InitSolution()
   
   SmartPtr<TMINLP> tminlp = 
     new MinPowerMILP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag,
+        m_txTimePerSlot, m_tier2NumSlot, m_bandwidthKhz,  
         m_ptrCS, m_ptrMap);
 //  MinPowerMILP* rawPtr = dynamic_cast<MinPowerMILP*>(GetRawPtr(tminlp));
 //  std::vector<int> tmp(m_ptrMap->GetNumNodes(), 0);
 //  rawPtr->SetExtraConstraints(tmp);
 //  //rawPtr->SetExtraConstraints(m_vecSched);
-//
+
 //  FILE * fp = fopen("log.out","w");
 //  CoinMessageHandler handler(fp);
 //  BonminSetup bonmin(&handler);
