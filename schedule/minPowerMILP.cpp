@@ -40,6 +40,35 @@ MinPowerMILP::MinPowerMILP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
   m_maxPower = m_ptrMap->GetMaxPower();
 
   fill(m_vecFi.begin(), m_vecFi.end(), pow(2.0, m_ptrMap->GetIdtEntropy()/m_txTimePerSlot/m_bandwidthKhz) - 1.0);
+  // -------------------------------------------------------------------------- //
+  // @Description: The constriant matrix 
+  //
+  //          |S| x N (Q_ij)     |S| x N (Y_ij)
+  //         /              \   /              \
+  //       ______________________________________
+  //    / |                   |                  |
+  // |S|  |                   |                  |
+  //  x   |       Eq. 4.6     |                  |
+  //  N   |                   |                  |
+  //    \ |                   |                  |
+  //      |___________________|__________________|
+  //    / |                   |                  |
+  // |S|  |       Eq. 4.9     |                  |
+  //    \ |___________________|__________________|
+  //      |                   |                  |
+  //    / |       Eq. 4.10    |                  |
+  // |H|  |                   |                  |
+  //    \ |___________________|__________________|
+  //      |                   |                  |
+  //    / |                   |                  |
+  // |H|  |       Eq. 4.13    |                  |
+  //  x   |                   |                  |
+  // |S|  |                   |                  |
+  //    \ |___________________|__________________|
+  //
+  // @Provides: 
+  // -------------------------------------------------------------------------- //
+  
   /* Construct the constraints */
   m_matConstraints = Eigen::MatrixXd::Zero(m_numConstraints, m_numVariables);
   /* Interfereence constraints eq 4.6 */
