@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
   string  MSEFName;
   string  solutionFName;
   string  supportFName;
+  string  powerFName; 
   string  strAlgFlag;
   string  CSFormation;
   try {
@@ -74,6 +75,7 @@ int main(int argc, char *argv[])
       ("SupportOutput,U",         po::value<string>(), "Support number output file name")
       ("MSEOutput,M",             po::value<string>(), "MSE output file name")
       ("SolutionOutput,S",        po::value<string>(), "Solution output file name")
+      ("PowerOutput,P",           po::value<string>(), "Power output file name")
       ("ClusterFormation,F",      po::value<string>(), "Cluster Formation Algorithm");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -82,7 +84,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() > 13 && vm.size() <= 21 ) {
+    } else if(vm.size() > 13 && vm.size() <= 22 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -116,6 +118,9 @@ int main(int argc, char *argv[])
       }
       if (vm.count("TotalEntropy")) {
         totalEntropyFName = vm["TotalEntropy"].as<string>();
+      }
+      if (vm.count("PowerOutput")) {
+        powerFName = vm["PowerOutput"].as<string>();
       }
 
       double powerMaxWatt = pow(10,(powerMaxDbm)/10) /1000;
@@ -179,7 +184,8 @@ int main(int argc, char *argv[])
           MSEFName, 
           solutionFName, 
           supportFName,
-          totalEntropyFName
+          totalEntropyFName,
+          powerFName 
           );
       mySimulator.SelfCheck();
       mySimulator.SequentialRun(tier2NumSlot);
@@ -202,6 +208,9 @@ int main(int argc, char *argv[])
       }
       if (vm.count("TotalEntropy")) {
         mySimulator.WriteTotalEntropy();
+      }
+      if (vm.count("PowerOutput")) {
+        mySimulator.WriteVecPower();
       }
 
       delete myCsFactory;

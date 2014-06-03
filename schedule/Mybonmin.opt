@@ -1,2 +1,3 @@
 print_solution no
 bonmin.variable_selection                    strong-branching   #Chooses variable selection strategy
+linear_solver ma97

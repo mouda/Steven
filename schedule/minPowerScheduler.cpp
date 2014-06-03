@@ -41,9 +41,11 @@ double
 MinPowerScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<double>& vecPower, const std::vector<double>& vecVariance)
 {
   int threshold = m_slotCounter * m_ptrMap->GetNumNodes() ; 
+  double totalPower = 0.0;
   for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
     int solutionIdx = threshold + i;
     vecPower.at(i) = m_vecSolution.at(solutionIdx);
+    totalPower += m_vecSolution.at(solutionIdx);
   }
   threshold = m_ptrMap->GetNumNodes() * m_tier2NumSlot + m_slotCounter * m_ptrMap->GetNumNodes();
   for (int i = 0 ; i < m_ptrMap->GetNumNodes(); ++i) {
@@ -51,7 +53,7 @@ MinPowerScheduler::ScheduleOneSlot( std::vector<int>& vecSupport, std::vector<do
     vecSupport.at(i) = static_cast<int>(m_vecSolution.at(solutionIdx));  
   }
   ++m_slotCounter;
-  return 0.0;
+  return totalPower;
 }
 
 
@@ -76,7 +78,7 @@ MinPowerScheduler::InitSolution()
   BonminSetup bonmin(&handler);
   bonmin.initializeOptionsAndJournalist();
   // Here we can change the default value of some Bonmin or Ipopt option
-  bonmin.options()->SetNumericValue("bonmin.time_limit", 1000); //changes bonmin's time limit
+  bonmin.options()->SetNumericValue("bonmin.time_limit", 86400); //changes bonmin's time limit
   bonmin.options()->SetStringValue("mu_oracle","loqo");
   //Here we read several option files
   bonmin.readOptionsFile("Mybonmin.opt");
@@ -94,6 +96,7 @@ MinPowerScheduler::InitSolution()
   catch(TNLPSolver::UnsolvedError *E) {
     //There has been a failure to solve a problem with Ipopt.
     std::cerr<<"Ipopt has failed to solve a problem"<<std::endl;
+    E->printError(std::cerr);
   }
   catch(OsiTMINLPInterface::SimpleError &E) {
     std::cerr << E.className() << "::" << E.methodName()

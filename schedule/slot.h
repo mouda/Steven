@@ -11,6 +11,8 @@ class Slot
     Slot(
         const std::vector<int>&, 
         const std::vector<double>&,
+        const std::vector<double>&,
+        const double,
         const double,
         const double,
         const double
@@ -21,6 +23,7 @@ class Slot
     Slot* GetNextSlot() const;
     const std::vector<int>& GetSupport() const { return m_vecSupport; }
     const std::vector<double>& GetVariance() const { return m_vecVariance;}
+    const std::vector<double>& GetVecPower() const { return m_vecPower; }
     double GetEntropy() const { return m_entropy; }
     double GetTotalEntropy() const { return m_totalEntropy;}
     double GetMSE() const { return m_MSE; } 
@@ -29,6 +32,8 @@ class Slot
 
     std::vector<int>    m_vecSupport;
     std::vector<double> m_vecVariance;
+    std::vector<double> m_vecPower;
+    double              m_totalPower; /* total power per slot */
     double              m_entropy;
     double              m_totalEntropy;
     double              m_MSE;

@@ -35,6 +35,7 @@ class Simulator
         const string&,
         const string&,
         const string&, 
+        const string&,
         const string&);
     ~Simulator();
 
@@ -49,6 +50,7 @@ class Simulator
     void WriteSolution();
     void WriteSupport();
     void WriteTotalEntropy();
+    void WriteVecPower();
 
 
     bool SelfCheck();
@@ -82,5 +84,6 @@ class Simulator
     FileHandler         m_solutionFHandler;
     FileHandler         m_supportNumFHandler;
     FileHandler         m_totalEntropyFHandler;
+    FileHandler         m_vecPowerFHandler;
 };
 #endif
