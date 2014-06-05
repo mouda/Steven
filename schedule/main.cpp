@@ -12,6 +12,7 @@
 #include "csFactory.h"
 #include "kmeansCsFactory.h"
 #include "minResCsFactory.h"
+#include "minPowerSACluster.h"
 #include "scheduler.h"
 #include "maxSNRScheduler.h"
 #include "schedFactory.h"
@@ -159,6 +160,8 @@ int main(int argc, char *argv[])
         (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
         (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
         (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
+      }
+      else if (CSFormation == "MinPower") {
       }
 
       myCS = myCsFactory->CreateClusterStructure();

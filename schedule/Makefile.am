@@ -78,6 +78,9 @@ simulator_SOURCES = main.cpp \
 		    TimeStamp.h TimeStamp.cpp\
 		    ULCS1b.h ULCS1b.cpp\
 		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
+		    MyNLP.h MyNLP.cpp\
+		    minPowerSACluster.h minPowerSACluster.cpp\
+		    minPowerCsFactory.h minPowerCsFactory.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minResCsFactory.h minResCsFactory.cpp\
 		    utility.h utility.cpp \

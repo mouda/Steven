@@ -32,6 +32,7 @@
 #include "ULSAOutputToolSet.cpp"
 #include "TimeStamp.h"
 #include "../lib/SA/SABASE.h"
+#include "MyNLP.h"
 #include "map.h"
 
 template class ULSAOutputToolSet<class MinPowerSACluster>;

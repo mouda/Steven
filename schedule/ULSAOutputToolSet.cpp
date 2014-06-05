@@ -1,3 +1,5 @@
+#ifndef _ULSAOUTPUTTOOLSET_CPP_
+#define _ULSAOUTPUTTOOLSET_CPP_
 #include<iostream>
 #include<cstdio>
 #include<list>
@@ -565,3 +567,5 @@ template<class T> std::string ULSAOutputToolSet<T>::getIpAddr() {
 //template class ULSAOutputToolSet<class ULSA4b2_DC>;
 //template class ULSAOutputToolSet<class ULSA4b3_DC>;
 //template class ULSAOutputToolSet<class ULSAkmeans4b2_DC>;
+
+#endif
