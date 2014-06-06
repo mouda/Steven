@@ -589,9 +589,9 @@ bool MinPowerSACluster::startCool()
   curChNum      =   maxChNum;
   nextChNum     =   curChNum;
   curJEntropy   =   curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-  curPayoff     =   cur1st_ms;
+  m_curPayoff     =   cur1st_ms;
 
-  cout << "curPayoff: " << curPayoff << endl;
+  cout << "m_curPayoff: " << m_curPayoff << endl;
   bestAllServeFound = false;
 
   if ( checkBestClusterStructure_DataCentric(0) ) return true;
@@ -975,7 +975,7 @@ void MinPowerSACluster::confirmNeighbor3i()
     if( nextEventFlag == 1 || nextEventFlag == 2 ) 
       confirmStructureChange();
   }
-  else if ( ( nextPayoff < curPayoff ) && nextAllServe && curAllServe )
+  else if ( ( nextPayoff < m_curPayoff ) && nextAllServe && curAllServe )
   {
     passNext2Cur();
     for(int i=0; i<totalNodes; i++)
@@ -985,10 +985,10 @@ void MinPowerSACluster::confirmNeighbor3i()
   }
   else if( ( ( nextJEntropy < curJEntropy ) && !nextAllServe && !curAllServe ) || 
       ( !nextAllServe && curAllServe ) || 
-      ( ( nextPayoff > curPayoff ) && nextAllServe && curAllServe ) )
+      ( ( nextPayoff > m_curPayoff ) && nextAllServe && curAllServe ) )
   {
-    double probAnnealing = exp (-20*abs(nextPayoff-curPayoff)/temparature);
-    //cout<<"Show Payoff "<<nextPayoff<<"  "<<curPayoff<<endl;
+    double probAnnealing = exp (-20*abs(nextPayoff-m_curPayoff)/temparature);
+    //cout<<"Show Payoff "<<nextPayoff<<"  "<<m_curPayoff<<endl;
     //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
     if ( annealingChoose > probAnnealing )
@@ -1018,7 +1018,7 @@ void MinPowerSACluster::passNext2Cur() {
 
     curChNum=nextChNum;
 
-    curPayoff = nextPayoff;
+    m_curPayoff = nextPayoff;
 
     cur1st_Joule = next1st_Joule;
     cur1st_ms = next1st_ms;
@@ -1137,7 +1137,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
         roundBest = inputRound;
         bestFeasibleJEntropy=curJEntropy;
         bestFeasibleSupNum=curSupNum ;
-        //bestFeasiblePayoff=curPayoff;
+        //bestFeasiblePayoff=m_curPayoff;
         best1st_Joule=cur1st_Joule;
         best1st_ms=cur1st_ms;
         best2nd_Joule=cur2nd_Joule;
@@ -1146,13 +1146,13 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
         bestChNum=curChNum;
 
     }
-    else if ((curPayoff<bestFeasiblePayoff)&&curAllServe)
+    else if ((m_curPayoff<bestFeasiblePayoff)&&curAllServe)
     {
         //cout<<"Find new best"<<endl;
         roundBest = inputRound;
         bestFeasibleJEntropy=curJEntropy;
         bestFeasibleSupNum=curSupNum ;
-        bestFeasiblePayoff=curPayoff;
+        bestFeasiblePayoff=m_curPayoff;
         best1st_Joule=cur1st_Joule;
         best1st_ms=cur1st_ms;
         best2nd_Joule=cur2nd_Joule;
@@ -1261,6 +1261,4 @@ void MinPowerSACluster::resetSA3iSystem() {
     vecBestClusterSize.clear();
     vecBestClusterSize.resize(maxChNum);
 }
-
-
 

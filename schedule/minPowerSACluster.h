@@ -156,7 +156,7 @@ public:
   //--------------------------------------------//
   int nextChNum;
   int curChNum;
-  double curPayoff;
+  double m_curPayoff;
   double  curJEntropy;
   int  curSupNum;
   //bool curFeasible;
