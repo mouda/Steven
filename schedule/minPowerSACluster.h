@@ -25,7 +25,7 @@
 
 #include "ULAGENT.h"
 #include "ULCS1b.h"
-#include "ULConstraintSolver.h"
+//#include "ULConstraintSolver.h"
 #include "CORRE_MA_OPE.h"
 #include "simSystem.h"
 #include "ULSAOutputToolSet.h"
@@ -44,11 +44,18 @@ class MinPowerSACluster :public SABASE
 public:
   MinPowerSACluster();
   //Constructor for scenario wise parameter
-  MinPowerSACluster(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  
-               int inOutputControl,
-               int isStrucOuput,
-               double inputTemprature, double InputSaAlpha, 
-               double inCorrelationFactor, string ipAddr, Map const * const myPtrMap);
+  MinPowerSACluster(
+      FILE *fileReadCursor, 
+      int inputTotalNodes, 
+      int inputMaxChNum, 
+      int inputSAFac,  
+      int inOutputControl,
+      int isStrucOuput,
+      double inputTemprature, 
+      double InputSaAlpha, 
+      double inCorrelationFactor, 
+      string ipAddr, 
+      Map const * const myPtrMap);
 
   ~MinPowerSACluster();
 
@@ -68,7 +75,6 @@ public:
   bool setInitialStucture(char* inputFlag);
   bool setIniStruKmeans();//not public but related to setIniStrucKmeans
   bool setIniStruDistanceKmedoids();
-  bool setIniStruHalfResourceKmedoids();
   bool setIniStruFullResourceKmedoids();
   bool setIniHeadLimited();
 
@@ -85,17 +91,10 @@ public:
 
   //Incomplete!!!
 
-  void do1sttierPowerControlforNext_DataCentric();
-  void do1sttierPowerControlforBest_DataCentric();
-  void do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, double &temp1sMS);
-  void do1sttierPowerMaxforBest_DataCentric();
-  //
-
   void debug_CheckSizeCorrect();
   void computeBestTRR_DataCentric();
   void computeUpperResourceNoCodingNoPowerControl();
   void computeBestAvgInterference();
-  void computeBestAvgPower();
   double computeRate2Nodes(int i, int j);
   double returnComprRatio();
 
@@ -133,7 +132,6 @@ public:
   //---------------------//
   //Module               //
   //---------------------//
-  ULConstraintSolver* consSol;
   CORRE_MA_OPE * matrixComputer;
   double correlationFactor;
   double compRatio;
@@ -253,7 +251,6 @@ public:
 //-------------------------------------------------------------------//
   //After Start Cool
   void addMemberSAIni(int inputHeadIndex0, int inputMemberName0);
-  void do1sttierPowerControlforCur_DataCentric();
   void coolOnce_minResors();
 
   void adaptSearchingProbability();
@@ -262,24 +259,11 @@ public:
   void decideExchangeNode();
   void decideAdd3i_DC_HeadDetMemRan();
   void decideDiscard3b();
-  void decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio();
-  void decideHeadRotate1();
-  void decideHeadRotate2f();
-  void decideHeadRotate3c();
   void decideHeadRotate2i_DC_HeadRanMemDet();
 
   void decideHeadJoining4b();
-  void decideIsolation4b();
-  double estimateJoin2ndTierCost(int JoiningHeadIndex, int testIndex);
-  void computeOriInterference_GivenTarInJoinI(std::vector<double> &oriInterf,std::vector<double> &interfExcept,int JoiningI,int tarHead);
-  void updateJoinEstimatedPower(std::vector<double> &newPower, std::vector<int>&newMem,int JoiningHeadIndex, int targetIndex);
-  void computeNewInterference_FromNewTarHI(std::vector<double> &newInterf,std::vector<double>&newPower,std::vector<int>&newMem,int JoiningHeadIndex, int targetIndex);
 
   void decideIsolate4b();
-  double estimateIsolate2ndTierGain(int IsolatNodeName,int isoCluIndex);
-  void computeOriInterference_GivenIsolate(std::vector<double> &oriInterf,std::vector<double> &interfExcept,int isoCluIndex);
-  void updateIsolateEstimatedpower(std::vector<double> &newPower,int IsolateName,int isoCluIndex);
-  void computeNewInterference_FromIsoCluster(std::vector<double> &newInterf,std::vector<double>&newPower,int IsolateName,int isoCluIndex);
 
 
 
@@ -309,7 +293,6 @@ public:
   bool checkBestClusterStructure_DataCentric(int inputRound);
   void keepBestStructure();
   int  returnClosetNodeIndexInGroup(int tempX,int tempY, std::vector <int> &inputGroup);
-  double returnTransientAveragePower();
   double returnTransientJoule();
   double return1stTotalNcal1stResors_HomoPower();
 

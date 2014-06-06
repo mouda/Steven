@@ -12,7 +12,7 @@
 #include "csFactory.h"
 #include "kmeansCsFactory.h"
 #include "minResCsFactory.h"
-#include "minPowerSACluster.h"
+#include "minPowerCsFactory.h"
 #include "scheduler.h"
 #include "maxSNRScheduler.h"
 #include "schedFactory.h"
@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
   double  spatialCompressionRatio;
   double  temporalCorrFactor;
   double  txTimePerSlot;
+  double  tier1TxTime;
   //double  endTime;
   int     tier2NumSlot;
   int     SAIter;
@@ -64,20 +65,21 @@ int main(int argc, char *argv[])
       ("algorithm,A",             po::value<string>(),  "Scheduling algorithm Baseline|Algorithm ")
       ("nodes,n",                 po::value<int>(),     "Initial number of nodes")
       ("heads,H",                 po::value<int>(),     "Initial number of heads")
-      ("txTime,t",                  po::value<double>(),  "Transmission time per slot (ms) ")
+      ("txTime,t",                po::value<double>(),  "Transmission time per slot (ms) ")
+      ("tier1TxTime,I",           po::value<double>(),  "Tier 1 tx time (ms)")
       ("fidelity,f",              po::value<double>(),  "Fidelity ratio")
       ("iteration,i",             po::value<int>(),     "Number of iteration Simulate Annealing")
       ("spatialCorrelation,c",    po::value<double>(),  "Spatial Correlation level")
-      ("temporalCorrelation,T",   po::value<double>(), "Temproal Correlation factor")
-      ("tier2NumSlot,N",          po::value<int>(), "Number of tier-2 slots")
-      ("ClusterStructureOutput,C",po::value<string>(), "Cluster structure output file name")
-      ("TotalEntropy,O",          po::value<string>(), "Total entropy per slot")
-      ("EntropyOutput,E",         po::value<string>(), "Entropy output file name")
-      ("SupportOutput,U",         po::value<string>(), "Support number output file name")
-      ("MSEOutput,M",             po::value<string>(), "MSE output file name")
-      ("SolutionOutput,S",        po::value<string>(), "Solution output file name")
-      ("PowerOutput,P",           po::value<string>(), "Power output file name")
-      ("ClusterFormation,F",      po::value<string>(), "Cluster Formation Algorithm");
+      ("temporalCorrelation,T",   po::value<double>(),  "Temproal Correlation factor")
+      ("tier2NumSlot,N",          po::value<int>(),     "Number of tier-2 slots")
+      ("ClusterStructureOutput,C",po::value<string>(),  "Cluster structure output file name")
+      ("TotalEntropy,O",          po::value<string>(),  "Total entropy per slot")
+      ("EntropyOutput,E",         po::value<string>(),  "Entropy output file name")
+      ("SupportOutput,U",         po::value<string>(),  "Support number output file name")
+      ("MSEOutput,M",             po::value<string>(),  "MSE output file name")
+      ("SolutionOutput,S",        po::value<string>(),  "Solution output file name")
+      ("PowerOutput,P",           po::value<string>(),  "Power output file name")
+      ("ClusterFormation,F",      po::value<string>(),  "Cluster Formation Algorithm");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
@@ -85,7 +87,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() > 13 && vm.size() <= 22 ) {
+    } else if(vm.size() > 15 && vm.size() <= 24 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -99,6 +101,7 @@ int main(int argc, char *argv[])
       mapFileName =             vm["map"].as<string>();
       strAlgFlag =              vm["algorithm"].as<string>();
       tier2NumSlot   =          vm["tier2NumSlot"].as<int>();
+      tier1TxTime    =          vm["tier1TxTime"].as<double>();
       CSFormation =             vm["ClusterFormation"].as<string>();
 
       /* output control */
@@ -162,6 +165,12 @@ int main(int argc, char *argv[])
         (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
       }
       else if (CSFormation == "MinPower") {
+        myCsFactory = new MinPowerCsFactory(myMap, myMatComputer);
+        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
+        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
+        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
+        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetTier2NumSlot(tier2NumSlot);
+        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetTier1TxTime(tier1TxTime);
       }
 
       myCS = myCsFactory->CreateClusterStructure();

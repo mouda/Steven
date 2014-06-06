@@ -133,7 +133,6 @@ MinPowerSACluster::MinPowerSACluster(FILE *fileReadCursor, int inputTotalNodes, 
     prevAllSupStru = new bool[totalNodes];
     vecBestBpshz_forVerification.resize(totalNodes);
     vecBestSINR_forVerification.resize(totalNodes);
-    vecBestReceivedInterference.reserve(maxChNum);
     vecChooseIndex.reserve(totalNodes);
 
 
@@ -260,10 +259,6 @@ bool MinPowerSACluster::setInitialStucture(char* iniFlag)
       normalFlag = setIniStruKmeans();
     else if (!strcmp(iniFlag, "kmedoids_distance")) 
       normalFlag = setIniStruDistanceKmedoids();
-    else if (!strcmp(iniFlag, "kmedoids_resource_half"))
-      normalFlag = setIniStruHalfResourceKmedoids();
-    else if (!strcmp(iniFlag, "kmedoids_resource_full")) 
-      normalFlag = setIniStruFullResourceKmedoids();
     else if (!strcmp(iniFlag, "HeadLimited")) 
       normalFlag = setIniHeadLimited();
 
@@ -383,40 +378,6 @@ bool MinPowerSACluster::setIniStruKmeans()
         nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
     }
   }
-  /*
-     for(int i=0; i<maxChNum; i++)
-     {
-     cSystem->allSupStru[i]=false;
-
-     for(int j=0; j<totalNodes; j++) {
-     cSystem->clusterStru[i][j]=false;
-
-     }
-     }
-
-
-  //----------------------------------------------------------
-  //Intial Structure: Head Only and :no connection set at all
-  for (int i=0; i<maxChNum; i++)
-  {
-  cSystem->addNewHeadCs(tempHeadList[i]);
-  for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
-  {
-  if(tempGroup[i][j]==tempHeadList[i])
-  addMemberSAIni(i, tempGroup[i][j]);
-  else
-  {
-  cSystem->listUnSupport->push_back(tempGroup[i][j]);
-  //cout<<"Push in list "<<tempGroup[i][j]<<" listSize "<<cSystem->listUnSupport->size()<<endl;
-  }
-  }
-  }
-  for (int i=0; i<maxChNum; i++)
-  {
-  nodes[cSystem->vecHeadName[i]].ptrHead = &(cSystem->vecHeadName[i]);
-  //cout<<cSystem->vecHeadName[i]<<" "<<nodes[cSystem->vecHeadName[i]].ptrHead<<endl;
-  }
-  */
   return true;
 }
 
@@ -429,10 +390,6 @@ bool MinPowerSACluster::setIniHeadLimited()
     }
     sort(sortGib,sortGib+totalNodes);
 
-    /*for(int i=0;i<totalNodes;i++)
-    {
-      cout<<sortGib[i]<<endl;
-    }*/
     headCandidatesNum=maxChNum*3;
     for (int i=0; i<totalNodes; i++)
     {
@@ -591,398 +548,7 @@ bool MinPowerSACluster::setIniStruDistanceKmedoids()
 
   return true;
 }
-bool MinPowerSACluster::setIniStruHalfResourceKmedoids()
-{
-  int retryTimes = 0;
-  float tempHeadX [maxChNum];
-  float tempHeadY [maxChNum];
-  int tempHeadList [maxChNum];
-  vector <vector <int> > tempGroup;
-  vector <int> nodeHeadIdx(totalNodes);
-  bool convergedFlag = false;
-  bool sameHeadFlag = true;
-  bool firstTimeFlag = true;
-  indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
-  cSystem->listCluMember->resize(maxChNum); // important outscope variable
-  cSystem->vecHeadName.resize(maxChNum);   // important outscope variable
-  consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
-      nextNodePower,cSystem->listCluMember );
-  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes, (double)quantizationBits);
-  double checkResource = 0.0;
-  while(sameHeadFlag)
-  {
-    sameHeadFlag = false;
-    convergedFlag = false;
-    //Clear before added members
-    if (retryTimes>(totalNodes-maxChNum+1))
-    {
-      return false;
-    }
-    for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
-    tempGroup.clear();
 
-    for (int i=0; i<maxChNum; i++)
-    {
-      vector <int> tempV;
-      tempGroup.push_back(tempV);
-      tempHeadX[i] = nodes[i+retryTimes].locX;
-      tempHeadY[i] = nodes[i+retryTimes].locY;
-      tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
-      cSystem->vecHeadName[i] = nodes[i+retryTimes].nodeIndex;
-    }
-    while(!convergedFlag) // This loop want to find a new resource-based K-medoids coordinate
-    {
-      for (unsigned int i=0 ; i<tempGroup.size(); i++) tempGroup[i].clear(); //clear all the eixsted group members
-      list<list<int> >::iterator iterClear = cSystem->listCluMember->begin();
-      for (; iterClear != cSystem->listCluMember->end(); iterClear++) iterClear->clear(); 
-
-      if (firstTimeFlag == true) {
-        for (int i=0; i<totalNodes; i++)
-        {
-          float tempDistanceTier_1 = 0.0;
-          float tempDistanceTier_2 = 0.0;
-          float closetDistance = numeric_limits<float>::max();
-          int closetHeadIndex = -1;
-          list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
-          for (int j = 0; j < maxChNum; j++) {
-            iterRow++;
-            tempDistanceTier_1 = 
-              (tempHeadX[j] - nodes[i].locX) * 
-              (tempHeadX[j] - nodes[i].locX) + 
-              (tempHeadY[j] - nodes[i].locY) * 
-              (tempHeadY[j] - nodes[i].locY);
-            tempDistanceTier_2 = 0; 
-            if (tempDistanceTier_1+tempDistanceTier_2 < closetDistance) {
-              closetDistance = tempDistanceTier_1 + tempDistanceTier_2;
-              closetHeadIndex = j;
-            }
-          }
-          list<list<int> >::iterator iterCloset = cSystem->listCluMember->begin();
-          for (int k = 0; k < closetHeadIndex; k++) iterCloset++;
-          //cout <<"closetHeadIndex: "  << closetHeadIndex << ' ' << endl;
-          tempGroup[closetHeadIndex].push_back(i);
-          (*iterCloset).push_back(i);
-          nodeHeadIdx[i] = closetHeadIndex; 
-          cSystem->clusterStru[closetHeadIndex][i] = true;
-        }
-        //firstTimeFlag = false;
-      }
-      else {
-        for (int i = 0; i < totalNodes; i++) {
-          double temp1st_ms = 0;
-          double temp2nd_ms = 0;
-          double temp2tiers_ms = 0;
-          double test2tiers_ms = DBL_MAX;
-          int minHeadName = 0;
-          discardMemberSA(nodeHeadIdx[i],i);
-          for (int j = 0; j < maxChNum; j++) {
-            addMemberSA(j,i);
-            temp2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
-            temp1st_ms = return1stTotalNcal1stResors_HomoPower();
-            temp2tiers_ms = temp1st_ms + temp2nd_ms;
-            if(temp2tiers_ms < test2tiers_ms)
-            {
-              test2tiers_ms = temp2tiers_ms;
-              minHeadName = i;
-            }
-          }
-        }
-
-      }
-//      for (int i = 0; i < maxChNum; i++) {
-//        for (int j = 0; j < totalNodes; j++) {
-//          cout << cSystem->clusterStru[i][j] << ' ';
-//        }
-//        cout << endl;
-//      }
-      convergedFlag = true;
-      //find the k-medoids coordinate of each cluster
-      list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
-      for (int i = 0; iterRow != cSystem->listCluMember->end(); iterRow++, i++) {
-        list<int>::iterator iterCol = iterRow->begin();
-	double temp1st_ms=0;
-	double temp2nd_ms=0;
-	double temp2tiers_ms=0;
-	double test2tiers_ms=DBL_MAX;
-        int minHeadName = 0;
-        for (; iterCol != iterRow->end(); iterCol++) {
-          cSystem->vecHeadName[i] = *iterCol;
-          temp2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
-          temp1st_ms = return1stTotalNcal1stResors_HomoPower();
-          temp2tiers_ms = temp1st_ms + temp2nd_ms;
-          if(temp2tiers_ms < test2tiers_ms)
-          {
-            test2tiers_ms = temp2tiers_ms;
-            minHeadName = *iterCol;
-          }
-        }
-        float newHx = nodes[minHeadName].locX;
-        float newHy = nodes[minHeadName].locY;
-        cSystem->vecHeadName[i] = minHeadName;
-        //if ( (abs(newHx-tempHeadX[i]) > 0.01) || (abs(newHy-tempHeadY[i])>0.01) ) convergedFlag = false; // checkcheck if the original head close enough
-        if ( abs(checkResource - test2tiers_ms) > 0.01 ) convergedFlag = false; // checkcheck if the original head close enough
-        tempHeadX[i] = newHx;
-        tempHeadY[i] = newHy;
-        checkResource = test2tiers_ms;
-
-      }
-      iterRow = cSystem->listCluMember->begin();
-      for (; iterRow != cSystem->listCluMember->end(); iterRow++) {
-        list<int>::iterator  iterCol = iterRow->begin();
-        for (; iterCol != iterRow->end(); iterCol++) {
-          cout << *iterCol << ' ';
-        }
-        cout << endl;
-      }
-      for (int i = 0; i < maxChNum ; i++) {
-        cout << "X: " << tempHeadX[i] << ' ';
-        cout << "Y: " << tempHeadY[i] << ' ';
-      }
-      cout << endl;
-    }
-
-    // leave this loop if 'converged = 1;'
-    list<list<int> >::iterator iterClear = cSystem->listCluMember->begin();
-    for (; iterClear != cSystem->listCluMember->end(); iterClear++) iterClear->clear(); 
-    cSystem->listCluMember->clear();
-    for (int i=0; i<maxChNum; i++) tempHeadList[i] = cSystem->vecHeadName[i]; 
-    //check there is same head exist
-    for (int i=0; i<maxChNum; i++)
-      for (int j=i+1; j<maxChNum; j++) if (tempHeadList[i] == tempHeadList[j]) sameHeadFlag = true;
-    retryTimes++;
-  }
-  delete consSol; 
-  delete matrixComputer;
-  cSystem->vecHeadName.clear();
-  for (int i = 0; i < maxChNum; i++) {
-    for (int j = 0; j < totalNodes; j++) {
-      //cout << cSystem->clusterStru[i][j] << ' ';
-      cSystem->clusterStru[i][j] = false;
-    }
-    //cout << endl;
-  }
-// -------------------------------------------------------------------------- //
-// @Description: confirm initialization of structure
-// @Provides: 
-// -------------------------------------------------------------------------- //
-  for (int i=0; i<maxChNum; i++)
-  {
-    cSystem->addNewHeadCs(tempHeadList[i]);
-    for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
-    {
-      addMemberSAIni(i, tempGroup[i][j]);//we correct the ptrHead later, Because the address will change
-    }
-  }
-  //Re assign the ptrHead NOW
-  for (int i=0; i<maxChNum; i++)
-  {
-    for(int j=0; j<totalNodes; j++)
-    {
-      if(cSystem->clusterStru[i][j]==true)
-        nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
-    }
-  }
-
-  return true;
-
-}
-
-bool MinPowerSACluster::setIniStruFullResourceKmedoids()
-{
-  int retryTimes = 0;
-  float tempHeadX [maxChNum];
-  float tempHeadY [maxChNum];
-  int tempHeadList [maxChNum];
-  vector <vector <int> > tempGroup;
-  vector <int> nodeHeadIdx(totalNodes);
-  bool convergedFlag = false;
-  bool sameHeadFlag = true;
-  bool firstTimeFlag = true;
-  indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
-  cSystem->listCluMember->resize(maxChNum); // important outscope variable
-  cSystem->vecHeadName.resize(maxChNum);   // important outscope variable
-  consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
-      nextNodePower,cSystem->listCluMember );
-  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes, (double)quantizationBits);
-  double checkResource = 0.0;
-  while(sameHeadFlag)
-  {
-    sameHeadFlag = false;
-    convergedFlag = false;
-    //Clear before added members
-    if (retryTimes>(totalNodes-maxChNum+1))
-    {
-      return false;
-    }
-    for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
-    tempGroup.clear();
-
-    for (int i=0; i<maxChNum; i++)
-    {
-      vector <int> tempV;
-      tempGroup.push_back(tempV);
-      tempHeadX[i] = nodes[i+retryTimes].locX;
-      tempHeadY[i] = nodes[i+retryTimes].locY;
-      tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
-      cSystem->vecHeadName[i] = nodes[i+retryTimes].nodeIndex;
-    }
-    while(!convergedFlag) // This loop want to find a new resource-based K-medoids coordinate
-    {
-      for (unsigned int i=0 ; i<tempGroup.size(); i++) tempGroup[i].clear(); //clear all the eixsted group members
-
-      if (firstTimeFlag == true) {
-        list<list<int> >::iterator iterClear = cSystem->listCluMember->begin();
-        for (; iterClear != cSystem->listCluMember->end(); iterClear++) iterClear->clear(); 
-        for (int i=0; i<totalNodes; i++)
-        {
-          float tempDistanceTier_1 = 0.0;
-          float tempDistanceTier_2 = 0.0;
-          float closetDistance = numeric_limits<float>::max();
-          int closetHeadIndex = -1;
-          list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
-          for (int j = 0; j < maxChNum; j++) {
-            iterRow++;
-            tempDistanceTier_1 = 
-              (tempHeadX[j] - nodes[i].locX) * 
-              (tempHeadX[j] - nodes[i].locX) + 
-              (tempHeadY[j] - nodes[i].locY) * 
-              (tempHeadY[j] - nodes[i].locY);
-            tempDistanceTier_2 = 0; 
-            if (tempDistanceTier_1+tempDistanceTier_2 < closetDistance) {
-              closetDistance = tempDistanceTier_1 + tempDistanceTier_2;
-              closetHeadIndex = j;
-            }
-          }
-          list<list<int> >::iterator iterCloset = cSystem->listCluMember->begin();
-          for (int k = 0; k < closetHeadIndex; k++) iterCloset++;
-          //cout <<"closetHeadIndex: "  << closetHeadIndex << ' ' << endl;
-          tempGroup[closetHeadIndex].push_back(i);
-          (*iterCloset).push_back(i);
-          nodeHeadIdx[i] = closetHeadIndex; 
-          cSystem->clusterStru[closetHeadIndex][i] = true;
-        }
-        firstTimeFlag = false;
-      }
-      else {
-        for (int i = 0; i < totalNodes; i++) {
-          double temp1st_ms = 0;
-          double temp2nd_ms = 0;
-          double temp2tiers_ms = 0;
-          double test2tiers_ms = DBL_MAX;
-          int minHeadName = 0;
-          if ( nodeHeadIdx[i] == i ) continue; 
-          discardMemberSA(nodeHeadIdx[i],i);
-          for (int j = 0; j < maxChNum; j++) {
-            addMemberSA(j,i);
-            temp2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
-            temp1st_ms = return1stTotalNcal1stResors_HomoPower();
-            temp2tiers_ms = temp1st_ms + temp2nd_ms;
-            if(temp2tiers_ms < test2tiers_ms)
-            {
-              test2tiers_ms = temp2tiers_ms;
-              minHeadName = j;
-            }
-            discardMemberSA(j,i);
-          }
-          tempGroup[minHeadName].push_back(i);
-          addMemberSA(minHeadName,i);
-          nodeHeadIdx[i] = minHeadName;
-        }
-
-      }
-      convergedFlag = true;
-      //find the k-medoids coordinate of each cluster
-      list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
-      for (int i = 0; iterRow != cSystem->listCluMember->end(); iterRow++, i++) {
-        list<int>::iterator iterCol = iterRow->begin();
-	double temp1st_ms=0;
-	double temp2nd_ms=0;
-	double temp2tiers_ms=0;
-	double test2tiers_ms=DBL_MAX;
-        int minHeadName = 0;
-        for (; iterCol != iterRow->end(); iterCol++) {
-          cSystem->vecHeadName[i] = *iterCol;
-          temp2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
-          temp1st_ms = return1stTotalNcal1stResors_HomoPower();
-          temp2tiers_ms = temp1st_ms + temp2nd_ms;
-          if(temp2tiers_ms < test2tiers_ms)
-          {
-            test2tiers_ms = temp2tiers_ms;
-            minHeadName = *iterCol;
-          }
-        }
-        float newHx = nodes[minHeadName].locX;
-        float newHy = nodes[minHeadName].locY;
-        cSystem->vecHeadName[i] = minHeadName;
-        if ( (abs(newHx-tempHeadX[i]) > 0.01) || (abs(newHy-tempHeadY[i])>0.01) ) convergedFlag = false; // checkcheck if the original head close enough
-        //if ( abs(checkResource - test2tiers_ms) > 0.5 ) convergedFlag = false; // checkcheck if the original head close enough
-        tempHeadX[i] = newHx;
-        tempHeadY[i] = newHy;
-        checkResource = test2tiers_ms;
-
-      }
-//      if (abs(checkResource - consSol->solve_withT2Adj_BinerySearch_2(10) - return1stTotalNcal1stResors_HomoPower()) < 0.5 ) {
-//        convergedFlag = false;
-//      }
-      iterRow = cSystem->listCluMember->begin();
-      for (; iterRow != cSystem->listCluMember->end(); iterRow++) {
-        list<int>::iterator  iterCol = iterRow->begin();
-        for (; iterCol != iterRow->end(); iterCol++) {
-          cout << *iterCol << ' ';
-        }
-        cout << endl;
-      }
-      for (int i = 0; i < maxChNum ; i++) {
-        cout << "X: " << tempHeadX[i] << ' ';
-        cout << "Y: " << tempHeadY[i] << ' ';
-      }
-      cout << endl;
-    }
-
-    // leave this loop if 'converged = 1;'
-    list<list<int> >::iterator iterClear = cSystem->listCluMember->begin();
-    for (; iterClear != cSystem->listCluMember->end(); iterClear++) iterClear->clear(); 
-    cSystem->listCluMember->clear();
-    for (int i=0; i<maxChNum; i++) tempHeadList[i] = cSystem->vecHeadName[i]; 
-    //check there is same head exist
-    for (int i=0; i<maxChNum; i++)
-      for (int j=i+1; j<maxChNum; j++) if (tempHeadList[i] == tempHeadList[j]) sameHeadFlag = true;
-    retryTimes++;
-  }
-  delete consSol; 
-  delete matrixComputer;
-  cSystem->vecHeadName.clear();
-  for (int i = 0; i < maxChNum; i++) {
-    for (int j = 0; j < totalNodes; j++) {
-      //cout << cSystem->clusterStru[i][j] << ' ';
-      cSystem->clusterStru[i][j] = false;
-    }
-    //cout << endl;
-  }
-// -------------------------------------------------------------------------- //
-// @Description: confirm initialization of structure
-// @Provides: 
-// -------------------------------------------------------------------------- //
-  for (int i=0; i<maxChNum; i++)
-  {
-    cSystem->addNewHeadCs(tempHeadList[i]);
-    for(unsigned int j=0 ; j<tempGroup[i].size(); j++)
-    {
-      addMemberSAIni(i, tempGroup[i][j]);//we correct the ptrHead later, Because the address will change
-    }
-  }
-  //Re assign the ptrHead NOW
-  for (int i=0; i<maxChNum; i++)
-  {
-    for(int j=0; j<totalNodes; j++)
-    {
-      if(cSystem->clusterStru[i][j]==true)
-        nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
-    }
-  }
-
-  return true;
-}
 
 
 
@@ -1049,65 +615,6 @@ void MinPowerSACluster::writePayoffEachRound_MinResors_withHead(int round,int he
     fclose(fid);
 
 }
-void MinPowerSACluster::do1sttierPowerControlforNext_DataCentric() {
-// debug_CheckSizeCorrect();
-// cout<<endl;
-    //cout<<"Next1sttier PowerControl"<<endl;
-
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        double  groupRedundancy = matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[i]);
-        double  clusterInfo=cSystem->vecClusterSize[i]*indEntropy +  groupRedundancy;
-        vecClusterHeadBits[i]=clusterInfo;
-    }
-
-    consSol->Do1stTierPowerControl(next1st_Joule,next1st_ms,vecClusterHeadWatt,vecClusterHeadMS,vecClusterHeadBits,\
-                                   rateibMax,Gib);
-    //cout<<"Updated 1st tier energy "<<next1st_Joule<<" Joule "<<endl;
-
-}
-
-void MinPowerSACluster::do1sttierPowerControlforBest_DataCentric() {
-    //debug_CheckSizeCorrect();
-
-    for(unsigned int i=0; i<vecHeadNameBest.size(); i++) {
-        int tempCluSize=0;
-        for (int j=0; j<totalNodes; j++)
-            if (bestMaClusterStru[i][j]==1)tempCluSize++;
-        double groupRedundancy = matrixComputer->computeLog2Det(1.0,bestMaClusterStru[i]);
-        vecClusterHeadBits[i]=tempCluSize*indEntropy + groupRedundancy;
-        //cout<<"Cluster "<<i<<" With data: "<<vecClusterHeadBits[i]<<"bits"<<endl;
-    }
-
-    consSol->Do1stTierPowerControl_ForBest(best1st_Joule,best1st_ms,vecClusterHeadWatt,vecClusterHeadMS,vecClusterHeadBits,\
-                                           rateibMax,Gib,vecHeadNameBest);
-}
-
-void MinPowerSACluster::do1sttierPowerControlforTEMP_DataCentric(double &temp1stJoule, double &temp1stMs) {
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        double  groupRedundancy = matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[i]);
-        double  clusterInfo=cSystem->vecClusterSize[i]*indEntropy +  groupRedundancy;
-        vecClusterHeadBits[i]=clusterInfo;
-    }
-    consSol->Do1stTierPowerControl(temp1stJoule,temp1stMs,vecClusterHeadWatt,vecClusterHeadMS,vecClusterHeadBits,\
-                                   rateibMax,Gib);
-
-
-}
-
-void MinPowerSACluster::do1sttierPowerMaxforBest_DataCentric() {
-
-    double power1st=powerMax;
-    list <list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-    best1st_Joule=0;
-    best1st_ms=0;
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        vecClusterHeadWatt[i]=power1st;
-        vecClusterHeadBits[i] = it_LiInt->size()*indEntropy+ matrixComputer->computeLog2Det(1.0, cSystem->clusterStru[i]);
-        vecClusterHeadMS[i]= vecClusterHeadBits[i]/(bandwidthKhz*log2(1+power1st*Gib[cSystem->vecHeadName[i]]/sysComputing->returnInBandThermalNoise(bandwidthKhz)));
-    }
-}
-
-
 
 
 void MinPowerSACluster::debug_CheckSizeCorrect() {
@@ -1230,25 +737,6 @@ void MinPowerSACluster::computeBestAvgInterference()
 
 }
 
-void MinPowerSACluster::computeBestAvgPower()
-{
-    bestAvgPowerOFAllNodes=0;
-    list<list<int> >::iterator it1=listCluMemBest->begin();
-    for(; it1!=listCluMemBest->end(); it1++)
-    {
-        list<int>::iterator it2=it1->begin();
-        double tempSize = static_cast<double>(it1->size());
-        for(; it2!=it1->end(); it2++)
-        {
-            if(powerBest[*it2]>0)
-                bestAvgPowerOFAllNodes+=(powerBest[*it2]*cur2nd_ms/(tempSize-1));
-        }
-    }
-    bestAvgPowerOFAllNodes/=cur2nd_ms;
-    bestAvgPowerOFAllNodes/=bestFeasibleSupNum;
-}
-
-
 double MinPowerSACluster::returnComprRatio()
 {
 
@@ -1275,16 +763,12 @@ bool MinPowerSACluster::startCool()
   for(int i=0; i<totalNodes; i++)inClu[i]=true;
   double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
   wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
-  consSol = new ULConstraintSolver(maxChNum,totalNodes,powerMax,realNoise,bandwidthKhz,indEntropy,cSystem->vecHeadName,Gij, \
-      nextNodePower,cSystem->listCluMember );
 
   ULSAOutputToolSet<class MinPowerSACluster> resultShow;
   flagAnsFound =false;
   //-----------------------------//
   //Initialize performance matrix//
   //-----------------------------//
-  if( curSupNum > maxChNum ){ cur2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10); }
-  else{ cur2nd_ms = 0; }
   cur1st_ms = return1stTotalNcal1stResors_HomoPower();
   cur2nd_Joule = returnTransientJoule();
   cur1st_Joule = power1st*cur1st_ms/1000.0;
@@ -1293,7 +777,7 @@ bool MinPowerSACluster::startCool()
   curChNum=maxChNum;
   nextChNum=curChNum;
   curJEntropy = curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-  curPayoff=cur1st_ms+cur2nd_ms;
+  curPayoff=cur1st_ms;
 
   cout << "curPayoff: " << curPayoff << endl;
   bestAllServeFound=false;
@@ -1381,7 +865,6 @@ bool MinPowerSACluster::startCool()
 #endif
 
     delete matrixComputer;
-    delete consSol;
     return true;
   }
   else{
@@ -1394,7 +877,6 @@ bool MinPowerSACluster::startCool()
     }
 #endif
     delete matrixComputer;
-    delete consSol;
     return false;
   }
 
@@ -1412,22 +894,6 @@ void MinPowerSACluster::addMemberSAIni(int inputHeadIndex, int inputMemberName)
     nextSupNum = curSupNum + 1;//Serve one more node
 }
 
-//This function only used one time every SA
-void MinPowerSACluster::do1sttierPowerControlforCur_DataCentric() {
-// debug_CheckSizeCorrect();
-//  cout<<endl;
-//  cout<<"Cur1sttier PowerControl"<<endl;
-
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        double  groupRedundancy = matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[i]);
-        double  clusterInfo=cSystem->vecClusterSize[i]*indEntropy +  groupRedundancy;
-        vecClusterHeadBits[i]=clusterInfo;
-    }
-
-    //cout<<endl;
-    consSol->Do1stTierPowerControl(cur1st_Joule,cur1st_ms,vecClusterHeadWatt,vecClusterHeadMS,vecClusterHeadBits,\
-                                   rateibMax,Gib);
-}
 /*
     do one step movement add/discard/
 */
@@ -1565,168 +1031,25 @@ MinPowerSACluster::decideExchangeNode()
     targetNode: randomly proportional to the indepedent information compare to current set
 
 */
- void MinPowerSACluster::decideAdd3i_DC_HeadDetMemRan() {
+void 
+MinPowerSACluster::decideAdd3i_DC_HeadDetMemRan() {
     targetHeadIndex=-1;
     targetNode=-1;
 
-    double curInfo=curSupNum*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-    double residualInformation=wholeSystemEntopy-curInfo;
-    double randomCurs=((double)rand() / ((double)RAND_MAX + 1));
-    double chooseCurs=0;
-    list <int>::iterator it_Int=cSystem->listUnSupport->begin();
-
-    for(; it_Int!=cSystem->listUnSupport->end(); it_Int++) {
-        cSystem->allSupStru[*it_Int]=true;
-        double tmpIndInfo=(curSupNum+1)*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru)-curInfo;
-        chooseCurs+=tmpIndInfo;
-        cSystem->allSupStru[*it_Int]=false;
-        if ((chooseCurs/residualInformation)>randomCurs) {
-            targetNode=*it_Int;
-            break;
-        }
-    }
-    if (targetNode==-1)return;
-
-    double maxGain=0;
-    //find closet head
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        if(Gij[targetNode][cSystem->vecHeadName[i]]>maxGain) {
-            maxGain=Gij[targetNode][cSystem->vecHeadName[i]];
-            targetHeadIndex=i;
-        }
-    }
 }
 /*
-    targetHead: (Randomly) Choose a Head uniformly
+    targetHeadIndex: (Randomly) Choose a Head uniformly
     targetNode: (Deterministically) find The one cause strongest Interference to others
 */
-void MinPowerSACluster::decideDiscard3b()
+void 
+MinPowerSACluster::decideDiscard3b()
 {
     //Compute the discardable size
-    list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
-    int discardableSize=0;
-    for(; itli1!=cSystem->listCluMember->end(); itli1++)if(itli1->size()>1)discardableSize++;
-    assert(discardableSize!=0);
-    //Randomly choose a cluster
-    itli1 = cSystem->listCluMember->begin();
-    targetHeadIndex = -1;
-    int chooseCursor = (int) ((double)rand() / ((double)RAND_MAX + 1) * discardableSize)+1;//+1 Becasue the intial might
-    assert(chooseCursor<=maxChNum&&chooseCursor>=0);
 
-    itli1 = cSystem->listCluMember->begin();
-    targetHeadIndex=0;
-    for(int i=0; i<chooseCursor; itli1++,targetHeadIndex++)
-    {
-        if(itli1->size()>1)i++;
-        if(i==chooseCursor)break;
-    }
-
-    assert(cSystem->vecHeadName[targetHeadIndex]!=-1);
-    assert(cSystem->vecClusterSize[targetHeadIndex]==itli1->size());
-    assert(cSystem->vecClusterSize[targetHeadIndex]>1);
-    double maxInterferenceGen = -1;
-    double tempInter = 0;
-    int    maxInteredName = -1;
-    list<int>::iterator it2=itli1->begin();
-    for(; it2!=itli1->end(); it2++)
-    {
-        tempInter = 0;
-        if(cSystem->vecHeadName[targetHeadIndex]==(*it2))continue;
-        else
-        {
-            for(int j=0; j<maxChNum; j++)
-            {
-                if(j==targetHeadIndex)continue;
-                else if(cSystem->vecHeadName[j]==-1)continue;//Cluster Not Exist;
-                else
-                {
-                    tempInter+= (nodes[(*it2)].power*Gij[cSystem->vecHeadName[j]][(*it2)]);
-                }
-            }
-            //   cout<<"tempInter: "<<tempInter<<endl;
-            if(tempInter>maxInterferenceGen)
-            {
-                maxInterferenceGen=tempInter;
-                maxInteredName = (*it2);
-            }
-        }
-    }
-    assert(maxInteredName!=-1);
-
-    targetNode = maxInteredName;
+    targetNode = -1;
+    assert(targetNode != -1 && targetHeadIndex != -1);
 }
-/*
- * TargetHead: Randomly choosed according to the compression ratio
- * TargetNode: Determinisitcally find the node which provide lowest (side information)/power
- */
 
-void MinPowerSACluster::decideDiscard3i_DC_HeadRanNodeDet_CompressionRatio() {
-    //Choose targetHeadIndex Index//
-    targetNode=-1;
-    targetHeadIndex=-1;
-    double normalizedFactor=0;
-    double ary_CompressionRatio[cSystem->vecHeadName.size()];
-    list <list <int> >::iterator it_LiInt = cSystem->listCluMember->begin();
-    for(unsigned int i=0;i<cSystem->vecHeadName.size();i++,it_LiInt++){
-       int tempMemNum=it_LiInt->size();
-       double tempCompRatio=1-((tempMemNum*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[i]))/(tempMemNum*indEntropy));
-       ary_CompressionRatio[i]=tempCompRatio;
-       normalizedFactor+=tempCompRatio;
-       //cout<<tempMemNum<<" "<<tempCompRatio<<endl;
-    }
-    double randCursor=static_cast<double>(rand())/DBL_MAX;
-    double tempCursorMove=0;
-    for(unsigned int i=0;i<cSystem->vecHeadName.size();i++,it_LiInt++){
-        tempCursorMove+=(ary_CompressionRatio[i]/normalizedFactor);
-        if(tempCursorMove>randCursor){
-            targetHeadIndex=i;
-            break;
-        }
-    }
-    //-----------------------//
-    //cout<<"in dis "<<targetHeadIndex<<endl;
-    //choose targetnode      //
-    it_LiInt=cSystem->listCluMember->begin();
-    for(int i=0;i<targetHeadIndex;i++)it_LiInt++;
-
-    list<int>::iterator it_Int=it_LiInt->begin();
-    double ary_InterfHazard[it_LiInt->size()-1];
-    double ary_extraInfromation[it_LiInt->size()-1];
-    double ary_discardCandidate[it_LiInt->size()-1];
-
-    for(unsigned int i=0;it_Int!=it_LiInt->end();it_Int++){
-        int tempNode=*it_Int;
-        if(tempNode==cSystem->vecHeadName[targetHeadIndex])continue;
-        ary_discardCandidate[i]=tempNode;
-        double interferencHazard=0;
-        for(unsigned int j=0;j<cSystem->vecHeadName.size();j++){
-            if(j==(unsigned)targetHeadIndex)continue;
-            interferencHazard+=(nextNodePower[tempNode]*Gij[tempNode][cSystem->vecHeadName[j]]);
-        }
-        ary_InterfHazard[i]=interferencHazard;
-        double tempBeforeDisInfo=(curSupNum*indEntropy)+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-        cSystem->allSupStru[tempNode]=0;
-        double tempAfterDisInfo=((curSupNum-1)*indEntropy)+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-        cSystem->allSupStru[tempNode]=1;
-        ary_extraInfromation[i]=tempBeforeDisInfo-tempAfterDisInfo;
-
-        i++;
-    }
-     double ary_extInfoOverInterfHazard[it_LiInt->size()-1];
-     double min_extInfoOverInterfHazard=DBL_MAX;
-     int tmpFinalNodeindex=-1;
-     for(unsigned int i=0;i<it_LiInt->size()-1;i++){
-        ary_extInfoOverInterfHazard[i]=ary_extraInfromation[i];
-        assert(ary_extInfoOverInterfHazard>0);
-        if(ary_extInfoOverInterfHazard[i]<min_extInfoOverInterfHazard){
-            min_extInfoOverInterfHazard=ary_extInfoOverInterfHazard[i];
-            targetNode=ary_discardCandidate[i];
-            tmpFinalNodeindex=i;} }
-
-    cout<<"Information lose="<<ary_extraInfromation[tmpFinalNodeindex]<<" Reduce PowerInterference="<<ary_InterfHazard[tmpFinalNodeindex]<<endl;
-    //-----------------------//
-
-}
 void MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
 {
 	//----Uniformly choosed
@@ -1765,7 +1088,7 @@ void MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
  	{
 		if((*it1)==OriginalNode)continue;
 		cSystem->vecHeadName[targetHeadIndex]=(*it1);//==Head Rotate
-		temp2nd_ms=consSol->solve_withT2Adj_BinerySearch_2(10);
+		temp2nd_ms=0;
 		temp1st_ms=return1stTotalNcal1stResors_HomoPower();
 		temp2tiers_ms=temp1st_ms+temp2nd_ms;
 		if(temp2tiers_ms<test2tiers_ms)
@@ -1781,507 +1104,19 @@ void MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
 void MinPowerSACluster::decideHeadJoining4b(){
     int threshold=thresholdd; // To determine the cluster size is large enough 
                               // to perform join operation 
-    double usepower=powerMax; // No use
-    //---
     JoiningHeadIndex=-1;
     targetHeadIndex=-1;
 
-    vector<int> vecJoinCandHeadIndex;
-    vector<int> vecTargetCandIndex;
-    vector<double>vecGain;
-    vecJoinCandHeadIndex.reserve(maxChNum);
-    vecTargetCandIndex.reserve(maxChNum);
-    vecGain.reserve(maxChNum);
-    int count = 0;
-    for(int i=0;i<maxChNum;i++){
-        if( cSystem->vecClusterSize[i] > 0) {
-          count++;
-        }
-        if( cSystem->vecClusterSize[i] > 0 && cSystem->vecClusterSize[i] <= threshold ){
-            vecJoinCandHeadIndex.push_back(i);
-        }
-    }
-
-#ifdef DEBUG
-    cout<<"Cand Size="<<vecJoinCandHeadIndex.size()<<" " << count <<  endl;
-#endif
-    vector<double> firtGainRecord;
-    //only for check
-    firtGainRecord.resize(maxChNum);
-    vector<double> firtCostRecord;
-    firtCostRecord.resize(maxChNum);
-
-
-    for(unsigned int i=0;i<vecJoinCandHeadIndex.size();i++){
-        double tmpTest=-DBL_MAX;
-        double tmpFirstGain=0;
-        double tmpFirstCost=0;
-        int  tmpTarget=-1;
-        for(unsigned int j=0;j<maxChNum;j++){
-
-            if(cSystem->vecClusterSize[j]<=1) continue;
-            else if(vecJoinCandHeadIndex[i]==j){
-              continue; // Skip self join self condition
-            }
-
-            /* Sb */
-            double cluInfo = 
-              /* independent entropy */
-              indEntropy * cSystem->vecClusterSize[vecJoinCandHeadIndex[i]] +
-              /* correlation entropy */  
-              matrixComputer->computeLog2Det( 1.0, 
-                  cSystem->clusterStru[vecJoinCandHeadIndex[i]] ); 
-
-            double firstTierGain = 
-              cluInfo / ( bandwidthKhz*log2( 1 + 
-              power1st * Gib[cSystem->vecHeadName[vecJoinCandHeadIndex[i]]]/
-              realNoise ));
-
-
-            bool tempMerge[totalNodes];
-            /* Sa */
-            for(int k=0;k<totalNodes;k++)
-                tempMerge[k] = 
-                  cSystem->clusterStru[vecJoinCandHeadIndex[i]][k] + 
-                  cSystem->clusterStru[j][k];
-
-            cluInfo = indEntropy * cSystem->vecClusterSize[j] + 
-              matrixComputer->computeLog2Det(1.0,cSystem->clusterStru[j]);
-
-            double cluInfoMerge = indEntropy * 
-              ( cSystem->vecClusterSize[vecJoinCandHeadIndex[i]] + 
-                cSystem->vecClusterSize[j] ) + 
-              matrixComputer->computeLog2Det(1.0,tempMerge);
-
-            double firstTierCost = ( cluInfoMerge - cluInfo ) / 
-              ( (bandwidthKhz*log2(1+power1st*Gib[cSystem->vecHeadName[j]]/
-                                   realNoise)) );
-
-            //assert(firstTierCost>0);
-
-
-            double tmp = firstTierGain - firstTierCost - 
-              estimateJoin2ndTierCost( vecJoinCandHeadIndex[i], j );
-            //Cost = extra mini second spent
-
-
-            if((tmp)>tmpTest){
-                tmpTarget=j;
-                tmpTest=tmp;
-                tmpFirstGain=firstTierGain;
-                tmpFirstCost=firstTierCost;
-            }
-        }
-        if (tmpTarget == -1) {
-          cerr << "tmpTest " << tmpTest << endl; 
-        }
-        assert(tmpTarget!=-1);
-        firtGainRecord[i]=tmpFirstGain;
-        firtCostRecord[i]=tmpFirstCost;
-        vecGain.push_back(tmpTest);
-        vecTargetCandIndex.push_back(tmpTarget);
-    }
-    /*for(unsigned int i=0;i<vecJoinCandHeadIndex.size();i++)
-          cout<<vecGain[i]<<endl;*/
-
-    assert(vecGain.size()==vecTargetCandIndex.size());
-    int ttIndex = -1;
-    double tmpGainTest = -DBL_MAX;
-    for( unsigned int i=0; i < vecJoinCandHeadIndex.size(); i++ ){
-        if( tmpGainTest < vecGain[i] ){
-            ttIndex = i;
-            tmpGainTest = vecGain[i];
-            JoiningHeadIndex = vecJoinCandHeadIndex[i];
-            targetHeadIndex = vecTargetCandIndex[i];
-        }
-    }
-    assert(JoiningHeadIndex!=-1&&targetHeadIndex!=-1);
-    
-    if (isDetailOutputOn) {
-      cout << "Tried to Join " << JoiningHeadIndex 
-        << "-th head:" << cSystem->vecHeadName[JoiningHeadIndex] 
-        << " to "<< targetHeadIndex << "-th Cluster" << endl;
-
-      cout << "Estimate Gain "<< tmpGainTest 
-        <<" first tier gain=" << firtGainRecord[ttIndex]-firtCostRecord[ttIndex];
-      cout <<"Second tier cost=" 
-        << tmpGainTest-firtGainRecord[ttIndex]+firtCostRecord[ttIndex] << endl;
-      cout << "with estimate payoff=" << curPayoff-tmpGainTest << endl;
-      char str[500]; 
-      sprintf(str,"ULSA4b_EstimateJoinGainHN%d.txt",maxChNum);
-    }
-    //FILE *fid=fopen(str,"a+");
-    //fprintf(fid,"%f %d ",tmpGainTest,curChNum);
-    //fclose(fid);
-
 }
 
-double MinPowerSACluster::estimateJoin2ndTierCost(int joinCHIdx, int targetCHIdx){
-    //estimate the power increase of testIndex: assume interference the same;
-    
-    vector<double> originalInterf_FromTargetClu_JoiningClu;
-    vector<double> interference_Except_JoinI_TargetI;
-    originalInterf_FromTargetClu_JoiningClu.resize(maxChNum);
-    interference_Except_JoinI_TargetI.resize(maxChNum);
-
-    computeOriInterference_GivenTarInJoinI(
-        originalInterf_FromTargetClu_JoiningClu,
-        interference_Except_JoinI_TargetI,
-        joinCHIdx, targetCHIdx );
-
-    vector <double> newPower;
-    newPower.resize(totalNodes);
-    vector <int> newTarMem;
-    newTarMem.reserve(totalNodes);
-
-    /* 5.19 */
-    updateJoinEstimatedPower( newPower, newTarMem, joinCHIdx, 
-        targetCHIdx );
-
-    vector<double> newInterf_FromTargetCluster;
-    newInterf_FromTargetCluster.resize(maxChNum);
-
-    /* Compute the new interference vector */
-    computeNewInterference_FromNewTarHI( newInterf_FromTargetCluster,
-        newPower, newTarMem, joinCHIdx, targetCHIdx );
-
-    /* Choose the largest Tau_i */
-    double testMaxRatio = 0;
-    list< list<int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-    for( int i=0; i<maxChNum; i++, it_LiInt++ ){
-
-        if ( cSystem->vecHeadName[i] == -1 || 
-            i == joinCHIdx || i == targetCHIdx )
-          continue;
-
-        list<int>::iterator it_Int=it_LiInt->begin();
-        
-        for(; it_Int!=it_LiInt->end(); it_Int++ ){
-            double tmpRcvPW = 
-              nextNodePower[*it_Int] * Gij[*it_Int][cSystem->vecHeadName[i]];
-            double ratio = 
-              log2(1 + tmpRcvPW / 
-                  (realNoise + originalInterf_FromTargetClu_JoiningClu[i] + 
-                   interference_Except_JoinI_TargetI[i])) /
-              log2(1 + tmpRcvPW / 
-                  (realNoise + newInterf_FromTargetCluster[i] + 
-                   interference_Except_JoinI_TargetI[i]));
-
-#ifdef DEBUG
-            if ( ratio == numeric_limits<double>::infinity() ) {
-              cerr << "De: " << log2(1 + tmpRcvPW / 
-                  (realNoise + originalInterf_FromTargetClu_JoiningClu[i] + 
-                   interference_Except_JoinI_TargetI[i])) << endl;
-              cerr << "No: " << log2(1 + tmpRcvPW / 
-                  (realNoise + newInterf_FromTargetCluster[i] + 
-                   interference_Except_JoinI_TargetI[i])) << endl;
-              cerr << "tmpRcvPW: " << tmpRcvPW << endl;
-              cerr << "Origin Interference: " << originalInterf_FromTargetClu_JoiningClu[i] << endl;
-              cerr << "New Interference: " << newInterf_FromTargetCluster[i] << endl;
-              cerr << "Unchanged Part: " << interference_Except_JoinI_TargetI[i] << endl;
-              cerr << "Join Head Idx:  " << joinCHIdx << endl;
-              cerr << "target Head Idx: " << targetCHIdx << endl;
-              cerr << "Current CH idx: " << i << endl;
-              cerr << "Current CH name: " << cSystem->vecHeadName[i] << endl;
-            }
-            assert(ratio != numeric_limits<double>::infinity()); 
-#endif
-
-            if( ratio > testMaxRatio ) testMaxRatio = ratio;
-        }
-    }
-
-    return ( ( testMaxRatio )/ 10*cur2nd_ms );
-    //(:=upper bound + lower nbound)/2 - lower bound
-}
-
-void MinPowerSACluster::computeOriInterference_GivenTarInJoinI(
-    vector<double> &originalInterf_FromTargetClusterNJoinI,
-    vector<double> &interference_Except_JoinI_TargetI,
-    int joinCHIdx, 
-    int targetCHIdx){
-
-
-    consSol->updateInterference();
-
-    for(int i=0;i<maxChNum;i++){
-        if( cSystem->vecHeadName[i] == -1 ) continue;
-        double tempJointI_TargetI_Interf=0;
-        double tempAllInterf=0;
-        for( int j=0; j < maxChNum; j++ ){
-            if( cSystem->vecHeadName[j]==-1 ) continue;
-            if( j == targetCHIdx || j == joinCHIdx )
-              tempJointI_TargetI_Interf += 
-                consSol->maStrengthInterference[i][j];
-            else tempAllInterf+=consSol->maStrengthInterference[i][j];
-        }
-        originalInterf_FromTargetClusterNJoinI[i]=tempJointI_TargetI_Interf;
-        interference_Except_JoinI_TargetI[i]=tempAllInterf;
-    }
-}
-void MinPowerSACluster::updateJoinEstimatedPower(vector<double> &newPower, 
-    vector<int> &newMem,int joinCHIdx, int targetCHIdx){
-
-    list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-    for(int i=0;i<targetCHIdx;i++)it_LiInt++;
-
-    list<int>::iterator it_Int=it_LiInt->begin();
-    int tarOriSize= cSystem->vecClusterSize[targetCHIdx];
-    int newCluSize= cSystem->vecClusterSize[joinCHIdx]+tarOriSize;
-
-    //update Original Cluster Member 5.19 J(a,b)
-    for(;it_Int!=it_LiInt->end();it_Int++){
-        double tmpPower = 
-          nextNodePower[*it_Int] * 
-          ( pow(2,newCluSize*indEntropy/bandwidthKhz/cur2nd_ms)-1 ) / 
-          ( pow(2,tarOriSize*indEntropy/bandwidthKhz/cur2nd_ms)-1 );
-
-        newPower[*it_Int]=tmpPower;
-        newMem.push_back(*it_Int);
-    }
-
-    //update new Cluster Member, determinet the cluster head?
-    int cursorIndex = 
-      ( newMem[1] != cSystem->vecHeadName[targetCHIdx]) ? newMem[0]:newMem[1];
-
-    it_LiInt = cSystem->listCluMember->begin();
-    for( int i=0; i<joinCHIdx; i++ ) it_LiInt++;
-    it_Int=it_LiInt->begin();
-
-
-    /* 5.19 first term */
-    for(;it_Int!=it_LiInt->end();it_Int++){
-        int tmpHead=cSystem->vecHeadName[targetCHIdx];
-        double tmpPower2 = 
-          newPower[cursorIndex] * 
-          Gij[cursorIndex][tmpHead]/Gij[*it_Int][tmpHead];
-        newPower[*it_Int]=tmpPower2;
-        newMem.push_back(*it_Int);
-    }
-}
-void MinPowerSACluster::computeNewInterference_FromNewTarHI(vector<double> &newInterf,
-    vector<double>&newPower, vector<int>&newMem, int joinCHIdx, 
-    int targetCHIdx){
-
-    for(unsigned int i=0;i<maxChNum;i++){
-        if(i==joinCHIdx||i==targetCHIdx||cSystem->vecHeadName[i]==-1){
-            newInterf[i]=-1;
-            continue;
-        }
-        double tmpRcvPower=0;
-        for( unsigned int j=0; j < newMem.size(); j++ ){
-            double tt = 
-              newPower[newMem[j]]*Gij[newMem[j]][cSystem->vecHeadName[i]];
-            if( tt > tmpRcvPower ){
-                tmpRcvPower = tt;
-            }
-        }
-        newInterf[i] = tmpRcvPower;
-    }
-}
-
-
-
+// -------------------------------------------------------------------------- //
+// @Description: targetHeadIndex, IsolateNodeName
+// @Provides: 
+// -------------------------------------------------------------------------- //
 
 void MinPowerSACluster::decideIsolate4b(){
-    //calculate first tier cost
-    vector<double>vecGain;
-    vecGain.reserve(totalNodes);
-
-    for( int i=0; i < totalNodes; i++ ) {
-        /* no gain if the nodes are not supported */
-        if( nodes[i].ptrHead == NULL ){ 
-          vecGain.push_back(-DBL_MAX);
-          continue; 
-        }
-        /* rateibMax: ? */
-        double firstTierCost = indEntropy/rateibMax[i];
-        firstTierCost *= 1000;
-        assert( firstTierCost > 0 );
-        //cout << "Node: " << i << " in Isolate 1st tier cost = "
-        //<< firstTierCost << endl;
-        vecGain.push_back(-firstTierCost);//Gain = mini second reduced
-    }
-
-    vector<double> firsttierC;
-    firsttierC.resize(totalNodes);
-#ifdef DEBUG
-    //Calculate the cluster number 
-    int count = 0;
-    for (int i = 0; i < maxChNum; i++) {
-      if (cSystem->vecClusterSize[i] > 0 ) count++;
-    }
-    cout << count << endl;
-#endif
-
-
-    //Calculate 2nd tier Gain
-    list<list<int> >::iterator it_LiInt = cSystem->listCluMember->begin();
-    for(unsigned int i=0; i < cSystem->listCluMember->size(); i++,it_LiInt++ ){
-
-        if( cSystem->vecHeadName[i] == -1 )
-          continue;
-        else if( 0 < it_LiInt->size() && it_LiInt->size() <= thresholdd )
-          continue;
-
-        list<int>::iterator it_Int = it_LiInt->begin();
-        for(; it_Int != it_LiInt->end(); it_Int++ ){
-            if( cSystem->vecHeadName[i] == *it_Int ) continue;
-            //Forget the 1st tier gain...
-            double tmp = estimateIsolate2ndTierGain(*it_Int,i);
-            double secondGain = cur2nd_ms - tmp;
-            //if (secondGain<0)cout<<"Node: "
-            //<<*it_Int<<" in Isolate 2nd tier Gain = "<<secondGain<<endl;
-            firsttierC[*it_Int] = vecGain[*it_Int];
-            vecGain[*it_Int] += secondGain;
-            //cout<<"Node:"<<*it_Int<<" Isolation: first tier Gain:"
-            //<<firsttierC[*it_Int]<<" 2nd Gain="<<secondGain
-            //<< " =  "<<vecGain[*it_Int]<<endl;
-        }
-    }
-
-    //Find max Gain
-    double tmpGainTest = -DBL_MAX;
-    it_LiInt=cSystem->listCluMember->begin();
-    for(unsigned int i=0; i < cSystem->listCluMember->size(); i++,it_LiInt++){
-        if(cSystem->vecHeadName[i]==-1)continue;
-        if(it_LiInt->size()<2)continue;
-        list<int>::iterator it_Int=it_LiInt->begin();
-        for(; it_Int!=it_LiInt->end(); it_Int++ ){
-            if(*it_Int==cSystem->vecHeadName[i])continue;
-            if(vecGain[*it_Int]>tmpGainTest){
-                isolatedHeadIndex=i;
-                IsolateNodeName=*it_Int;
-                tmpGainTest=vecGain[*it_Int];
-            }
-        }
-    }
-    //Find an Empty Head slot
-    for(unsigned int i=0;i<cSystem->vecHeadName.size();i++){
-        //cout<<i<<" "<<cSystem->vecHeadName[i]<<endl;
-        if(cSystem->vecHeadName[i]==-1){
-            targetHeadIndex=i;
-            break;
-        }
-    }
-
-
     assert(isolatedHeadIndex!=-1&&IsolateNodeName!=-1);
-
-    if (isDetailOutputOn) {
-      cout << "Tried to Isolate " << IsolateNodeName 
-        <<" from "<< isolatedHeadIndex 
-        << "-th head to be " << targetHeadIndex <<"-th head"<<endl;
-      cout << "Estimate Gain " << tmpGainTest 
-        << " first tier Cost=" << firsttierC[IsolateNodeName] 
-        << ";second tier gain="<< tmpGainTest-firsttierC[IsolateNodeName]
-        <<endl;
-      cout<<"with estimate payoff="<<curPayoff-tmpGainTest<<endl;
-    }
-    //char str[500];
-    //sprintf(str,"ULSA4b_EstimateIsolateGainHN%d.txt",maxChNum);
-    //FILE *fid=fopen(str,"a+");
-    //fprintf(fid,"%f %d ",tmpGainTest,curChNum);
-    //fclose(fid);
 }
-
-double MinPowerSACluster::estimateIsolate2ndTierGain(int IsoNodeName,int isoCluIndex){
-    vector<double> originalInterf_FromIsolatedClu;
-    vector<double> interference_Except_IsolatedClu;
-    originalInterf_FromIsolatedClu.resize(maxChNum);
-    interference_Except_IsolatedClu.resize(maxChNum);
-    computeOriInterference_GivenIsolate(originalInterf_FromIsolatedClu,interference_Except_IsolatedClu,isoCluIndex);
-
-    vector <double> newPower;
-    newPower.resize(totalNodes);
-    updateIsolateEstimatedpower(newPower,IsoNodeName,isoCluIndex);
-
-
-    vector<double> newInterf_FromIsolatedClu;
-    newInterf_FromIsolatedClu.resize(maxChNum);
-    computeNewInterference_FromIsoCluster(newInterf_FromIsolatedClu,newPower,IsoNodeName,isoCluIndex);
-
-    double testMaxRatio=0;
-    list< list<int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-    for(int i=0;i<maxChNum;i++,it_LiInt++){
-        if (cSystem->vecHeadName[i]==-1||i==isoCluIndex)continue;
-        else if (0<cSystem->vecClusterSize[i]&&cSystem->vecClusterSize[i]<=thresholdd)continue;
-        list<int>::iterator it_Int=it_LiInt->begin();
-        for(;it_Int!=it_LiInt->end();it_Int++){
-            if(*it_Int==cSystem->vecHeadName[i])continue;
-            double tmpRcvPW=nextNodePower[*it_Int]*Gij[*it_Int][cSystem->vecHeadName[i]];
-            double ratio=log2(1+tmpRcvPW/(realNoise+originalInterf_FromIsolatedClu[i]+interference_Except_IsolatedClu[i])) \
-            /log2(1+tmpRcvPW/(realNoise+newInterf_FromIsolatedClu[i]+interference_Except_IsolatedClu[i]));
-            if(ratio>1){
-              cout<<i<<"-th new Interference="<<newInterf_FromIsolatedClu[i]<<endl;
-              cout<<i<<"-th cluster Original Inteference="<<originalInterf_FromIsolatedClu[i]<<endl;
-            }
-
-
-            if(ratio>testMaxRatio)testMaxRatio=ratio;
-        }
-
-    }
-    //return ((testMaxRatio*2+1*3)/5*cur2nd_ms);// if no divide => most optimistic attitude
-//    assert(testMaxRatio<1);
-
-
-    return testMaxRatio*cur2nd_ms;
-}
-void MinPowerSACluster::computeOriInterference_GivenIsolate(vector<double> &oriInterf,vector<double> &interfExcept,int isoCluIndex){
-    consSol->updateInterference();
-    for(int i=0;i<maxChNum;i++){
-        if(cSystem->vecHeadName[i]==-1)continue;
-        double tempInterf=0;
-        double tempAllInterf=0;
-        for(int j=0;j<maxChNum;j++){
-            if(cSystem->vecHeadName[j]==-1)continue;
-            if(j==isoCluIndex)tempInterf=consSol->maStrengthInterference[i][j];
-            else tempAllInterf+=consSol->maStrengthInterference[i][j];
-        }
-    //    cout<<i<<"-th Head: "<<cSystem->vecHeadName[i]<<" Receive Interference="<<tempInterf<<" From "<<isoCluIndex<<endl;
-
-        oriInterf[i]=tempInterf;
-        interfExcept[i]=tempAllInterf;
-    }
-}
-void MinPowerSACluster::updateIsolateEstimatedpower(vector<double> &newPower,int IsolName,int isoCluIndex){
-    list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-    for(int i=0;i<isoCluIndex;i++)it_LiInt++;
-    list<int>::iterator it_Int=it_LiInt->begin();
-    int tarOriSize= cSystem->vecClusterSize[isoCluIndex];
-    int newCluSize= tarOriSize-1;
-    //update Original Cluster Member
-    for(;it_Int!=it_LiInt->end();it_Int++){
-        if(*it_Int==IsolName){newPower[*it_Int]=0;}
-        double tmpPower=nextNodePower[*it_Int]*(pow(2,newCluSize*indEntropy/bandwidthKhz/cur2nd_ms)-1)/(pow(2,tarOriSize*indEntropy/bandwidthKhz/cur2nd_ms)-1);
-        newPower[*it_Int]=tmpPower;
-    }
-}
-void MinPowerSACluster::computeNewInterference_FromIsoCluster(vector<double> &newInterf,std::vector<double>&newPower,int IsoName,int isoCluIndex){
-    list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-    for(int i=0;i<isoCluIndex;i++)it_LiInt++;
-
-
-    for(unsigned int i=0;i<maxChNum;i++){
-        if(i==isoCluIndex||cSystem->vecHeadName[i]==-1){
-            newInterf[i]=-1;
-            continue;
-        }
-        list<int>::iterator it_Int=it_LiInt->begin();
-        double tmpRcvPower=0;
-        for(;it_Int!=it_LiInt->end();it_Int++){
-            if(*it_Int==IsoName)continue;
-            double tt=newPower[*it_Int]*Gij[*it_Int][cSystem->vecHeadName[i]];
-            if(tt>tmpRcvPower){
-                tmpRcvPower=tt;
-            }
-        }
-        newInterf[i]=tmpRcvPower;
-    }
-}
-
-
 
 /*
    Movement Function
@@ -2352,7 +1187,7 @@ void MinPowerSACluster::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 
 void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance matircs
 {
-  next2nd_ms = consSol->solve_withT2Adj_BinerySearch_2(10);
+  next2nd_ms = 0;
   next1st_ms = return1stTotalNcal1stResors_HomoPower();
   next2nd_Joule = returnTransientJoule();
   next1st_Joule= power1st*next1st_ms/1000;
@@ -2592,7 +1427,6 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
     //cout<<"In check Best"<<endl;
     if ((curJEntropy>bestFeasibleJEntropy)&&!curAllServe&&!bestAllServeFound)
     {
-        //do1sttierPowerMaxforBest_DataCentric();
         roundBest = inputRound;
         bestFeasibleJEntropy=curJEntropy;
         bestFeasibleSupNum=curSupNum ;
@@ -2602,14 +1436,12 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
         best2nd_Joule=cur2nd_Joule;
         best2nd_ms=cur2nd_ms;
         keepBestStructure();
-        consSol->showVerificationResult(vecBestReceivedInterference,vecBestSINR_forVerification,vecBestBpshz_forVerification);
         bestChNum=curChNum;
 
     }
     else if ((curPayoff<bestFeasiblePayoff)&&curAllServe)
     {
         //cout<<"Find new best"<<endl;
-        //do1sttierPowerMaxforBest_DataCentric();
         roundBest = inputRound;
         bestFeasibleJEntropy=curJEntropy;
         bestFeasibleSupNum=curSupNum ;
@@ -2620,7 +1452,6 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
         best2nd_ms=cur2nd_ms;
         bestChNum=curChNum;
         keepBestStructure();
-        consSol->showVerificationResult(vecBestReceivedInterference,vecBestSINR_forVerification,vecBestBpshz_forVerification);
     }
     //cout<<"best FeasiblePayoff="<<bestFeasiblePayoff<<" with headNum="<<bestChNum<<";Info Ratio="<<bestFeasibleJEntropy/wholeSystemEntopy<<endl;
     return false;
@@ -2673,26 +1504,6 @@ int MinPowerSACluster::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<
         }
     }
     return closetNodeIndex;
-}
-/*
-  Internal tool
-  -Calculate the average power of each node
-*/
-double MinPowerSACluster::returnTransientAveragePower()
-{
-    list <list<int> >::iterator itlist1=cSystem->listCluMember->begin();
-    double accuPower=0;
-    int NodeNHeadNum=0;
-    for(; itlist1!=cSystem->listCluMember->end(); itlist1++)
-    {
-        list<int>::iterator it1=itlist1->begin();
-        for(; it1!=itlist1->end(); it1++)
-        {
-            accuPower+=nextNodePower[(*it1)];
-            NodeNHeadNum+=1;
-        }
-    }
-    return (accuPower/NodeNHeadNum);
 }
 
 double MinPowerSACluster::returnTransientJoule() {
