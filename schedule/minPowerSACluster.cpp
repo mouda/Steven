@@ -14,13 +14,13 @@
 
 using namespace std;
 #include "minPowerSACluster.h"
-MinPowerSACluster::MinPowerSACluster() {};
 
 MinPowerSACluster::MinPowerSACluster(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \
                      int inOutputControl,
                      int isStrucOuput,
                      double inputTemprature, double InputSaAlpha, \
-                     double inCorrelationFactor, string ipAddr, Map const * const myPtrMap)
+                     double inCorrelationFactor, string ipAddr, Map const * const myPtrMap):
+  m_ptrMap(myPtrMap)
 {
 
     sysComputing = new SimSystem;
@@ -549,195 +549,8 @@ bool MinPowerSACluster::setIniStruDistanceKmedoids()
   return true;
 }
 
-
-
-
-void MinPowerSACluster::writeStruSingleRound(int round)
-{
-    FILE *fid;
-    char str[50];
-    cout<<" writeStruSingleRound "<<endl;
-    sprintf(str,"LocalWork/loopStructure/roundStru%d.txt",round);
-    cout<<str<<endl;
-    fid = fopen(str,"w");
-    fprintf(fid,"%d\n",totalNodes);
-    fprintf(fid,"%d\n",maxChNum);
-    fprintf(fid,"%e\n",powerMax);
-    fprintf(fid,"%e\n",C2);
-    fprintf(fid,"%d\n", bestFeasibleSupNum-maxChNum);
-    fprintf(fid,"%d\n", SAIter);
-    fprintf(fid,"%f\n", computingTimes);
-    for (int i= 0; i<maxChNum; i++)
-    {
-        for( int j=0; j<totalNodes; j++)
-        {
-            fprintf(fid,"%d ",cSystem->clusterStru[i][j]);
-        }
-        fprintf(fid,"\n");
-    }
-
-    for (int i= 0; i<maxChNum; i++)
-    {
-        fprintf(fid,"%d ",cSystem->vecHeadName[i]+1);
-    }
-    fprintf(fid,"\n");
-    for (int i= 0; i<totalNodes; i++)
-    {
-        fprintf(fid,"%E ", nodes[i].power);
-    }
-    fprintf(fid,"\n");
-    list <list <int> >::iterator it1=cSystem->listCluMember->begin();
-    for (; it1!=cSystem->listCluMember->end(); it1++ )
-    {
-        list <int>::iterator it2 = it1->begin();
-        for (; it2!=it1->end(); it2++)
-            fprintf(fid,"%d ",(*it2)+1);
-        fprintf(fid,"\n");
-    }
-    fclose(fid);
-}
-
-
-void MinPowerSACluster::writePayoffEachRound_MinResors(int round)
-{
-    char str[]="MinPowerSAClusterEachR.txt";
-    FILE* fid = fopen(str,"a");
-    fprintf(fid,"%f %f %f %f %f %d\n", curJEntropy/wholeSystemEntopy,static_cast<double>(curSupNum)/static_cast<double>(totalNodes), curPayoff, cur1st_ms, cur2nd_ms,  round);
-    fclose(fid);
-
-}
-
-void MinPowerSACluster::writePayoffEachRound_MinResors_withHead(int round,int head)
-{
-    char str[]="MinPowerSAClusterEachR.txt";
-    FILE* fid = fopen(str,"a");
-    fprintf(fid,"%f %f %f %f %f %d %d\n", curJEntropy/wholeSystemEntopy,static_cast<double>(curSupNum)/static_cast<double>(totalNodes), curPayoff, cur1st_ms, cur2nd_ms,  round, head);
-    fclose(fid);
-
-}
-
-
-void MinPowerSACluster::debug_CheckSizeCorrect() {
-    for (unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-        int tempSize = 0;
-        for(int j=0; j<totalNodes; j++) {
-            if(cSystem->clusterStru[i][j]==1)tempSize++;
-        }
-        assert(tempSize == cSystem->vecClusterSize[i]);
-    }
-}
-
-
-
-void MinPowerSACluster::computeBestTRR_DataCentric()
-{
-    best2ndTierTraffic = 0;
-    best1stTierTraffic = 0;
-    int bestGroupSize[maxChNum];
-    for (int i=0; i<maxChNum; i++)bestGroupSize[i]=0;
-    double groupRedundancy=0;
-
-    for(int i=0; i<maxChNum; i++)
-    {
-        for (int j=0; j<totalNodes; j++)
-        {
-            if (bestMaClusterStru[i][j]==true)
-                bestGroupSize[i]++;
-        }
-
-        groupRedundancy = matrixComputer->computeLog2Det(1.0,bestMaClusterStru[i]);
-        best2ndTierTraffic = best2ndTierTraffic+ bestGroupSize[i]*indEntropy;
-        best1stTierTraffic = best1stTierTraffic + bestGroupSize[i]*indEntropy + groupRedundancy;
-    }
-    bestTrafficReductionRatio = best1stTierTraffic/best2ndTierTraffic;
-}
-
-
-void MinPowerSACluster::computeUpperResourceNoCodingNoPowerControl()
-{
-    bestUpperLayerResource=0;
-    double tempDataLoad[maxChNum];
-    for (int i=0; i<maxChNum; i++)
-    {
-        int vecClusterSizeLocal=0;
-        for(int j=0; j<totalNodes; j++)
-        {
-            if(bestMaClusterStru[i][j]==1)
-            {
-                vecClusterSizeLocal++;
-            }
-        }
-        tempDataLoad[i]=vecClusterSizeLocal*dataBits;
-        double tempResor=tempDataLoad[i]*virtualCompression/rateibMax[vecHeadNameBest[i]]*1000;//ms
-        cout<<i<<"-th Cluster  Head "<<vecHeadNameBest[i]<<" RateMax " <<rateibMax[vecHeadNameBest[i]]<<" Data amount "<<dataBits<<" UpperResource"<<tempResor<<endl;
-        bestUpperLayerResource+=tempResor;
-    }
-    char str3[500];
-    sprintf(str3,"HumanDataULSA2iNoCoding%d.txt",maxChNum);
-    FILE *fid=fopen(str3,"a");
-    fprintf(fid,"------------------\n");
-    double totalResors=0;
-    fprintf(fid,"SupNum %d\n" , bestFeasibleSupNum);
-    for(int i=0; i<maxChNum; i++)
-    {
-        fprintf(fid,"CR:%f %d-th Head %d, Rate(bps):%e, DataLoad(bits):%f, 2nd tier Resource:%f, 1st tier Resource:%f \n", \
-                1-virtualCompression,i ,vecHeadNameBest[i] ,rateibMax[vecHeadNameBest[i]], tempDataLoad[i], cur2nd_ms, tempDataLoad[i]*1000/rateibMax[vecHeadNameBest[i]]);
-        totalResors+=(tempDataLoad[i]*1000/rateibMax[vecHeadNameBest[i]]);
-    }
-    totalResors+=cur2nd_ms;
-    fprintf(fid,"totalResors %f\n",totalResors);
-    fclose(fid);
-}
-
-void MinPowerSACluster::computeBestAvgInterference()
-{
-    list<list <int> >::iterator itl = listCluMemBest->begin();
-    for(int i=0; i<maxChNum; i++,itl++) //For each CH we will see there member 1-by-1
-    {
-        list<list <int> >:: iterator itl2 = listCluMemBest->begin(); //search other cluster from start for each CH
-        for (int j=0; j<maxChNum; j++,itl2++) //Search other cluster for each member in cluster (*vecHeadName)[i]
-        {
-            int interferentSource = -1;
-            float maxInterference = -99;
-            if (i==j)//Same headIndex which means this is self head.
-            {
-                maBestInterfernceIndex[i][j]=-1;
-                maBestInterference[i][j]=0;
-                continue;
-
-            }
-            else if (itl2->size()==1)
-            {
-                maBestInterfernceIndex[i][j] = -1;
-                maBestInterference[i][j] = 0;
-                continue;
-            }
-            //Find the strongest interference from other group
-            list<int> ::iterator itl3 = itl2->begin();
-            for(; itl3!=itl2->end(); itl3++) //search every node(itl3) under each cluster(itl2) != self cluster
-            {
-                float tempInterference = powerBest[(*itl3)] * Gij[vecHeadNameBest[i]][(*itl3)];
-                if(vecHeadNameBest[j]==(*itl3))continue;//other head won't transmit power
-                else if (tempInterference>maxInterference )
-                {
-                    interferentSource = (*itl3);
-                    maxInterference = tempInterference;
-                }
-            }
-            maBestInterfernceIndex[i][j] = interferentSource;
-            maBestInterference[i][j] = maxInterference;//Interference form j(HeadIndex) to i(HeadIndex)
-        }
-    }
-
-    bestAvgInterference=0;
-    for (int i=0; i<maxChNum; i++)
-        for(int j=0; j<maxChNum; j++)
-            bestAvgInterference+=maBestInterference[i][j];
-    bestAvgInterference/=maxChNum;
-
-}
-
-double MinPowerSACluster::returnComprRatio()
+double 
+MinPowerSACluster::returnComprRatio()
 {
 
     bool tempAry2[totalNodes];
@@ -753,7 +566,7 @@ bool MinPowerSACluster::startCool()
 {
   begin = clock();
   matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes, (double)quantizationBits);
-  indEntropy = 0.5*log2(2*3.1415*exp(1))+quantizationBits;
+  indEntropy = m_ptrMap->GetIdtEntropy();
   double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
                     (compRatio,indEntropy,static_cast<double>(totalNodes));
   tempAddT=0;
@@ -764,31 +577,27 @@ bool MinPowerSACluster::startCool()
   double sysRedundancy =matrixComputer->computeLog2Det(1.0, inClu);
   wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
 
-  ULSAOutputToolSet<class MinPowerSACluster> resultShow;
-  flagAnsFound =false;
+  flagAnsFound  =  false;
   //-----------------------------//
   //Initialize performance matrix//
   //-----------------------------//
-  cur1st_ms = return1stTotalNcal1stResors_HomoPower();
-  cur2nd_Joule = returnTransientJoule();
-  cur1st_Joule = power1st*cur1st_ms/1000.0;
+  cur1st_ms     = 0;
+  cur2nd_Joule  = returnTransientJoule();
+  cur1st_Joule  = power1st*cur1st_ms/1000.0;
 
-  curSupNum=cSystem->calSupNodes();
-  curChNum=maxChNum;
-  nextChNum=curChNum;
-  curJEntropy = curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-  curPayoff=cur1st_ms;
+  curSupNum     =   cSystem->calSupNodes();
+  curChNum      =   maxChNum;
+  nextChNum     =   curChNum;
+  curJEntropy   =   curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
+  curPayoff     =   cur1st_ms;
 
   cout << "curPayoff: " << curPayoff << endl;
-  bestAllServeFound=false;
+  bestAllServeFound = false;
 
   if ( checkBestClusterStructure_DataCentric(0) ) return true;
-  cout << "Compression Ratio " << returnComprRatio() << 
-    " indEntropy " << indEntropy << endl;
-#ifdef ITERATION 
-  fstream iterFile("guideIterObserve.out",ios::out);
-#endif
-  for(int i=0; i<SAIter; i++)
+  cout << "Compression Ratio " << returnComprRatio() << " indEntropy " << indEntropy << endl;
+
+  for(int i = 1; i < SAIter; ++i)
   {
     coolOnce_minResors();
 
@@ -798,42 +607,30 @@ bool MinPowerSACluster::startCool()
         for(int j=0; j<totalNodes; j++) 
           nodes[j].power = nextNodePower[j];
       }
-      i++;
+      ++i;
       continue;
     }
 
     calculateMatrics_minResors();
     confirmNeighbor3i();
-    if (curJEntropy>(fidelityRatio*wholeSystemEntopy)) {
+    if ( curJEntropy > ( fidelityRatio * wholeSystemEntopy ) ) {
       flagAnsFound=true;
     }
     assert(curSupNum>=0);
-    if(checkBestClusterStructure_DataCentric(i))
-    {
+    if(checkBestClusterStructure_DataCentric(i)) {
       cout<<"Congratulation All nodes are served"<<endl;
       break;
     }
 
-    if (isDetailOutputOn) {
-      writePayoffEachRound_MinResors_withHead(i,curChNum);
-    }
-    int tempche=(signed)cSystem->listUnSupport->size();
+    int tempche = (signed)cSystem->listUnSupport->size();
 
     assert(( curSupNum + tempche) == totalNodes);
-#ifdef ITERATION
-    iterFile << curPayoff << endl;
-#endif
   }
-#ifdef ITERATION
-  iterFile.close();
-#endif
 
   end = clock();
   computingTimes = ((float)(end-begin))/CLOCKS_PER_SEC;
-  cout << "best "<< bestFeasibleSupNum << "   Information Ratio:" 
-    << bestFeasibleJEntropy / wholeSystemEntopy << endl;
-  if(!flagAnsFound)
-  {
+  cout << "best "<< bestFeasibleSupNum << "   Information Ratio:" << bestFeasibleJEntropy / wholeSystemEntopy << endl;
+  if(!flagAnsFound) {
     cout<<"Not Found the answer Yet"<<endl;
     //return false ; // We don't care if the result is feasible.
   }
@@ -849,37 +646,11 @@ bool MinPowerSACluster::startCool()
   char str[500];
   char str2[500];
   char str3[500];
-  if(bestFeasibleJEntropy>=(wholeSystemEntopy*fidelityRatio)) {
+  if( bestFeasibleJEntropy >= ( wholeSystemEntopy * fidelityRatio) ) {
     cout<<timeBuf<<endl;
-#ifdef DEBUG
-    if (isDetailOutputOn) {
-      sprintf(str,"%s_Best4b2Struc2ndN%d_m%d_FR%.1f_r%.1f.txt",timeBuf,totalNodes,maxChNum,fidelityRatio,radius);
-      resultShow.writeBestStru(str,*this);
-      sprintf(str2,"%s_Detail4b2DataULSA3i%d_m%d_FR%.1f_r%.1f.txt",timeBuf, totalNodes,maxChNum,fidelityRatio,radius);
-      resultShow.summaryNwrite2tiers_MinResors_with2ndPowerControl(str2, *this, best2nd_ms);
-    }
-    sprintf(str3,"tmpAll/ULSA4b7_All_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius, strIpAddr.c_str());
-    resultShow.writePeformance_MinResors_with2ndPowerControl_4b(str3,*this, best2nd_ms, fidelityRatio,bestChNum);
-    sprintf(str3,"tmpAll/ULSA4b7_Cluster_N%d_BW%.1fPW%.3f_FR%.2f_r%.1f.%s.txt",totalNodes,bandwidthKhz,powerMax,fidelityRatio,radius, strIpAddr.c_str());
-    resultShow.writeClusterInfo(str3,*this,timeBuf);
-#endif
-
-    delete matrixComputer;
-    return true;
-  }
-  else{
-#ifdef DEBUG
-    if (isDetailOutputOn) {
-      sprintf(str,"%s_Best4b2Struc2ndN%d_m%d_FR%.1f_r%.1f.txt",timeBuf,totalNodes,maxChNum,fidelityRatio,radius);
-      resultShow.writeBestStru(str,*this);
-      sprintf(str2,"%s_Detail4b2DataULSA3i%d_m%d_FR%.1f_r%.1f.txt",timeBuf, totalNodes,maxChNum,fidelityRatio,radius);
-      resultShow.summaryNwrite2tiers_MinResors_with2ndPowerControl(str2, *this, best2nd_ms);
-    }
-#endif
     delete matrixComputer;
     return false;
   }
-
 }
 
 
@@ -931,9 +702,6 @@ void MinPowerSACluster::coolOnce_minResors()
   int eventCursor= (int)((double)rand() / ((double)RAND_MAX + 1) * sumProb);
   nextEventFlag=-1;// this flag tell add or discard or Headrotate
 
-
-
-
   //-------------------------------------//
   //Decide event Flag                    //
   //-------------------------------------//
@@ -959,7 +727,6 @@ void MinPowerSACluster::coolOnce_minResors()
     {
       decideAdd3i_DC_HeadDetMemRan();
       if(targetHeadIndex!=-1&&targetNode!=-1){
-        //cout<<"add "<<targetNode<<" to "<<cSystem->vecHeadName[targetHeadIndex]<<endl;
         addMemberSA(targetHeadIndex,targetNode);
       }
     }
@@ -971,13 +738,10 @@ void MinPowerSACluster::coolOnce_minResors()
     decideDiscard3b();
     discardMemberSA(targetHeadIndex,targetNode);
     nextChNum=curChNum;
-
-    //cout<<"discard "<<targetNode+1<<" from "<<cSystem->vecHeadName[targetHeadIndex]+1<<endl;
   }
   else if (nextEventFlag ==3)
   {
     decideHeadRotate2i_DC_HeadRanMemDet();
-    //cout<<"HR "<<targetNode+1<<" to Replace "<<cSystem->vecHeadName[targetHeadIndex]+1<<endl;
     rotateHeadSA(targetHeadIndex,targetNode);
     nextJEntropy = curJEntropy;
     nextSupNum = curSupNum;
@@ -1052,52 +816,7 @@ MinPowerSACluster::decideDiscard3b()
 
 void MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
 {
-	//----Uniformly choosed
-	int rotateAbleSize=0;
-	for (int i=0; i<maxChNum; i++)
-		if(cSystem->vecClusterSize[i]>1)rotateAbleSize++;
-	//if(cSystem->vecClusterSize[i]>1&&aryFlagHRDone[i]==false)rotateAbleSize++;
-
-	//Notice: no handle of "rotateAbleSize == 0", it handle by coolOnce_minResors
-	//Then we choose the rotate target member cluster
-	int rotateCursor = (int)((double)rand() / ((double)RAND_MAX + 1) * rotateAbleSize)+1;
-
-	list <list<int> > ::iterator itlist1 = cSystem->listCluMember->begin();
-	targetHeadIndex = 0;
-	for(int i=0; i<rotateCursor; itlist1++,targetHeadIndex++) //Disconsecutive Candidate
-	{
-		//if(itlist1->size()>1&&aryFlagHRDone[targetHeadIndex]==false)i++;
-		if(itlist1->size()>1)i++;
-		if(i==rotateCursor)break;//break befor move to next iterator
-	}
-	if (itlist1->size()<=1)cout<<"error, search rotate  error"<<endl;
-	assert(targetHeadIndex>=0&&targetHeadIndex<maxChNum);
-
-
-
-	//Choose targetNode
-	targetNode=cSystem->vecHeadName[targetHeadIndex];
-	double temp1st_ms=0;
-	double temp2nd_ms=0;
-	double temp2tiers_ms=0;
-	double test2tiers_ms=DBL_MAX;
-
-	int OriginalNode=cSystem->vecHeadName[targetHeadIndex];
-	list<int>::iterator it1=itlist1->begin();
-	for(; it1!=itlist1->end(); it1++)//find minimum interference received among nodes in the cluster
- 	{
-		if((*it1)==OriginalNode)continue;
-		cSystem->vecHeadName[targetHeadIndex]=(*it1);//==Head Rotate
-		temp2nd_ms=0;
-		temp1st_ms=return1stTotalNcal1stResors_HomoPower();
-		temp2tiers_ms=temp1st_ms+temp2nd_ms;
-		if(temp2tiers_ms<test2tiers_ms)
-		{
-			test2tiers_ms=temp2tiers_ms;
-			targetNode=*it1;
-		}
-	}
-	cSystem->vecHeadName[targetHeadIndex]=OriginalNode;
+  assert(targetHeadIndex != -1 && targetNode != -1);
 }
 
 
@@ -1188,7 +907,7 @@ void MinPowerSACluster::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance matircs
 {
   next2nd_ms = 0;
-  next1st_ms = return1stTotalNcal1stResors_HomoPower();
+  next1st_ms = 0;
   next2nd_Joule = returnTransientJoule();
   next1st_Joule= power1st*next1st_ms/1000;
   //:<<"MaxPowerLoad="<<returnMaxPowerLoad()<<" Max="<<powerMax<<endl;
@@ -1385,18 +1104,6 @@ void MinPowerSACluster::reverseMoveSA()
     else if(nextEventFlag == 5){
          cSystem->reverseisolate(lastIsolateNodeName,lastIsolatedClusterIndex,targetHeadIndex);
         nodes[lastIsolateNodeName].ptrHead=&cSystem->vecHeadName[lastIsolatedClusterIndex];
-       /* list <list <int> >:: iterator itt=cSystem->listCluMember->begin();
-       for(unsigned ii=0; itt!=cSystem->listCluMember->end(); ii++,itt++)
-        { cout<<ii<<": ";
-        list <int>::iterator itt2 = itt->begin();
-        for(; itt2!=itt->end(); itt2++)
-        {
-            cout<<(*itt2)<<", ";
-        }
-        cout<<endl;
-
-        }*/
-
     }
     else cout<<"Error next flag ="<<nextEventFlag<<"wrong"<<endl;
 }
@@ -1527,22 +1234,6 @@ double MinPowerSACluster::returnTransientJoule() {
     return (accuJoule);
 }
 
-double MinPowerSACluster::return1stTotalNcal1stResors_HomoPower() {
-    power1st=powerMax;
-    double T1=0;
-    list <list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
-    for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++,it_LiInt++) {
-        if ( cSystem->vecHeadName[i] == -1 || it_LiInt->size() == 0 ) continue;
-        double information = it_LiInt->size()*indEntropy+ matrixComputer->computeLog2Det(1.0, cSystem->clusterStru[i]);
-        //cout<<i<<" "<<it_LiInt->size()<<" "<<information<<endl;
-        double temp = (information/(bandwidthKhz*log2(1+power1st*Gib[cSystem->vecHeadName[i]]/realNoise)));
-        vecClusterHeadBits[i]=information;
-        vecClusterHeadMS[i]= temp;
-        vecClusterHeadWatt[i]=power1st;
-        T1+=temp;
-    }
-    return T1;
-}
 void MinPowerSACluster::resetSA3iSystem() {
     iniDone = false;
     bestFeasibleJEntropy = -1;

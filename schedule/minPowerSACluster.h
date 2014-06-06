@@ -25,7 +25,6 @@
 
 #include "ULAGENT.h"
 #include "ULCS1b.h"
-//#include "ULConstraintSolver.h"
 #include "CORRE_MA_OPE.h"
 #include "simSystem.h"
 #include "ULSAOutputToolSet.h"
@@ -42,7 +41,6 @@ class ULAGENT;
 class MinPowerSACluster :public SABASE
 {
 public:
-  MinPowerSACluster();
   //Constructor for scenario wise parameter
   MinPowerSACluster(
       FILE *fileReadCursor, 
@@ -83,19 +81,6 @@ public:
   const list<list<int> >& GetListCluMemeber() const { return *listCluMemBest;}
   vector<int> GetAllSupStru() const;
   
-
-
-  void writeStruSingleRound(int round);
-  void writePayoffEachRound_MinResors(int round);
-  void writePayoffEachRound_MinResors_withHead(int round,int head);
-
-  //Incomplete!!!
-
-  void debug_CheckSizeCorrect();
-  void computeBestTRR_DataCentric();
-  void computeUpperResourceNoCodingNoPowerControl();
-  void computeBestAvgInterference();
-  double computeRate2Nodes(int i, int j);
   double returnComprRatio();
 
   // Main part
@@ -294,7 +279,6 @@ public:
   void keepBestStructure();
   int  returnClosetNodeIndexInGroup(int tempX,int tempY, std::vector <int> &inputGroup);
   double returnTransientJoule();
-  double return1stTotalNcal1stResors_HomoPower();
 
 
   //Display Function
@@ -331,5 +315,7 @@ public:
   string strIpAddr; 
 
   vector<int>       m_vecHeadName;
+
+  Map const * const m_ptrMap;
 };
 #endif
