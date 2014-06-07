@@ -16,12 +16,14 @@
 #ifndef MinPowerSACluster_H
 #define MinPowerSACluster_H
 
-#include<cmath>
-#include<vector>
-#include<cstdlib>
-#include<list>
-#include<ctime>
-#include<map>
+#include <cmath>
+#include <vector>
+#include <cstdlib>
+#include <list>
+#include <ctime>
+#include <map>
+#include <coin/IpIpoptApplication.hpp>
+#include <coin/IpSolveStatistics.hpp>
 
 #include "ULAGENT.h"
 #include "ULCS1b.h"
@@ -68,18 +70,19 @@ public:
 // @Purpose: Public Function
 // @Called: by main
 //-------------------------------------------------------------------//
-  bool setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double fidelity);
-
-  bool setInitialStucture(char* inputFlag);
-  bool setIniStruKmeans();//not public but related to setIniStrucKmeans
-  bool setIniStruDistanceKmedoids();
-  bool setIniStruFullResourceKmedoids();
-  bool setIniHeadLimited();
+  bool                      setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double fidelity);
+  bool                      setInitialStucture(char* inputFlag);
+  bool                      setIniStruKmeans();//not public but related to setIniStrucKmeans
+  bool                      setIniStruDistanceKmedoids();
+  bool                      setIniStruFullResourceKmedoids();
+  bool                      setIniHeadLimited();
 
   /* For Integrate */
-  const vector<int>& GetVecHeadName() const { return vecHeadNameBest; }
-  const list<list<int> >& GetListCluMemeber() const { return *listCluMemBest;}
-  vector<int> GetAllSupStru() const;
+  const vector<int>&        GetVecHeadName() const { return vecHeadNameBest; }
+  const list<list<int> >&   GetListCluMemeber() const { return *listCluMemBest;}
+  vector<int>               GetAllSupStru() const;
+
+  int                       OptimalRateControl( vector<double>& vecRate ) const;
   
   double returnComprRatio();
 

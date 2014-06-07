@@ -13,13 +13,15 @@
 using namespace Ipopt;
 
 /* Constructor. */
-MyNLP::MyNLP()
-{
-  m_index_style = FORTRAN_STYLE;
-}
 
-MyNLP::MyNLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag)
+MyNLP::MyNLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag):
+  m_numVariables(n),
+  m_numConstraints(m),
+  m_numNz_jac_g(nnz_jac_g),
+  m_numNz_h_lag(nnz_h_lag),
+  m_index_style(FORTRAN_STYLE)
 {
+
 
 }
 

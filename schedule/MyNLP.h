@@ -29,7 +29,6 @@ class MyNLP : public TNLP
 {
 public:
   /** default constructor */
-  MyNLP();
   MyNLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag);
 
   /** default destructor */

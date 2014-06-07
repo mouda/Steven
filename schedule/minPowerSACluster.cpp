@@ -653,6 +653,32 @@ bool MinPowerSACluster::startCool()
   }
 }
 
+int
+MinPowerSACluster::
+OptimalRateControl( vector<double>& vecRate ) const
+{
+  Index n = nextChNum;
+  Index m = 1;
+  Index nnz_jac_g = n;
+  Index nnz_h_lag = 2 * n;
+
+  SmartPtr<TNLP> mynlp = new MyNLP(n, m, nnz_jac_g, nnz_h_lag);
+  SmartPtr<IpoptApplication> app = IpoptApplicationFactory();
+  ApplicationReturnStatus status;
+  if (status != Solve_Succeeded) {
+    std::cout << std::endl << std::endl << "*** Error during initialization!" << std::endl;
+    return (int) status;
+  }
+  if (status == Solve_Succeeded) {
+    // Retrieve some statistics about the solve
+    Index iter_count = app->Statistics()->IterationCount();
+    std::cout << std::endl << std::endl << "*** The problem solved in " << iter_count << " iterations!" << std::endl;
+
+    Number final_obj = app->Statistics()->FinalObjective();
+    std::cout << std::endl << std::endl << "*** The final value of the objective function is " << final_obj << '.' << std::endl;
+  }
+
+}
 
 /*
     Movement Function
