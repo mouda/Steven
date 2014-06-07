@@ -15,12 +15,21 @@
 using namespace std;
 #include "minPowerSACluster.h"
 
-MinPowerSACluster::MinPowerSACluster(FILE *fileReadCursor, int inputTotalNodes, int inputMaxChNum,int inputSAFac,  \
-                     int inOutputControl,
-                     int isStrucOuput,
-                     double inputTemprature, double InputSaAlpha, \
-                     double inCorrelationFactor, string ipAddr, Map const * const myPtrMap):
-  m_ptrMap(myPtrMap)
+MinPowerSACluster::MinPowerSACluster(
+    FILE *fileReadCursor, 
+    int inputTotalNodes, 
+    int inputMaxChNum,
+    int inputSAFac,  
+    int inOutputControl,
+    int isStrucOuput,
+    double inputTemprature, 
+    double InputSaAlpha, 
+    double inCorrelationFactor, 
+    string ipAddr, 
+    Map const * const myPtrMap,
+    double tier1TxTime):
+  m_ptrMap(myPtrMap),
+  m_tier1TxTime(tier1TxTime)
 {
 
     sysComputing = new SimSystem;
@@ -662,7 +671,10 @@ OptimalRateControl( vector<double>& vecRate ) const
   Index nnz_jac_g = n;
   Index nnz_h_lag = 2 * n;
 
-  SmartPtr<TNLP> mynlp = new MyNLP(n, m, nnz_jac_g, nnz_h_lag);
+  SmartPtr<TNLP> mynlp = new MyNLP(n, m, nnz_jac_g, nnz_h_lag, 
+      m_ptrMap, 
+      cSystem,
+      m_tier1TxTime);
   SmartPtr<IpoptApplication> app = IpoptApplicationFactory();
   ApplicationReturnStatus status;
   if (status != Solve_Succeeded) {
@@ -677,7 +689,7 @@ OptimalRateControl( vector<double>& vecRate ) const
     Number final_obj = app->Statistics()->FinalObjective();
     std::cout << std::endl << std::endl << "*** The final value of the objective function is " << final_obj << '.' << std::endl;
   }
-
+  return (int) status;
 }
 
 /*

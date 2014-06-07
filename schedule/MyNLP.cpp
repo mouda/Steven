@@ -9,17 +9,25 @@
 #include "MyNLP.h"
 
 #include <cassert>
+#include <cfloat>
+#include <cmath>
 
 using namespace Ipopt;
 
 /* Constructor. */
 
-MyNLP::MyNLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag):
+MyNLP::MyNLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag, 
+    Map const * const ptrMap,
+    ULCS1b const * const cSystem,  
+    double tier1TxTime):
   m_numVariables(n),
   m_numConstraints(m),
   m_numNz_jac_g(nnz_jac_g),
   m_numNz_h_lag(nnz_h_lag),
-  m_index_style(FORTRAN_STYLE)
+  m_index_style(FORTRAN_STYLE),
+  m_tier1TxTime(tier1TxTime),
+  m_cSystem(cSystem),
+  m_ptrMap(ptrMap)
 {
 
 
@@ -53,19 +61,16 @@ bool MyNLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
   assert(m == m_numConstraints);
 
   // x1 has a lower bound of -1 and an upper bound of 1
-  x_l[0] = -1.0;
-  x_u[0] = 1.0;
+  for (int i = 0; i < m_numVariables; ++i) {
+    x_l[i] = 0.0;
+    x_u[i] = DBL_MAX;
+  }
 
-  // x2 has no upper or lower bound, so we set them to
-  // a large negative and a large positive number.
-  // The value that is interpretted as -/+infinity can be
-  // set in the options, but it defaults to -/+1e19
-  x_l[1] = -1.0e19;
-  x_u[1] = +1.0e19;
 
   // we have one equality constraint, so we set the bounds on this constraint
   // to be equal (and zero).
-  g_l[0] = g_u[0] = 0.0;
+  g_l[0] = 0.0;
+  g_u[0] = m_tier1TxTime;
 
   return true;
 }
@@ -83,8 +88,9 @@ bool MyNLP::get_starting_point(Index n, bool init_x, Number* x,
   assert(init_lambda == false);
 
   // we initialize x in bounds, in the upper right quadrant
-  x[0] = 0.5;
-  x[1] = 1.5;
+  for (int i = 0; i < m_numVariables; ++i) {
+    x[i] = 0.0;
+  }
 
   return true;
 }
@@ -92,6 +98,13 @@ bool MyNLP::get_starting_point(Index n, bool init_x, Number* x,
 bool MyNLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
 {
   // return the value of the objective function
+  assert(n == m_numVariables);
+  obj_value = 0.0;
+  for (int i = 0; i < m_ptrMap->GetNumInitHeads(); ++i) {
+    if ( m_cSystem->vecHeadName[i] >= 0) {
+      obj_value += m_ptrMap->GetNoise()/m_ptrMap->GetGi0ByNode(m_cSystem->vecHeadName[i]);
+    }
+  }
   Number x2 = x[1];
   obj_value = -(x2 - 2.0) * (x2 - 2.0);
   return true;

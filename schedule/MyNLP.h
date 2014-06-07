@@ -10,6 +10,8 @@
 #define __MYNLP_HPP__
 
 #include <coin/IpTNLP.hpp>
+#include "map.h"
+#include "ULCS1b.h"
 
 using namespace Ipopt;
 
@@ -29,7 +31,11 @@ class MyNLP : public TNLP
 {
 public:
   /** default constructor */
-  MyNLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag);
+  MyNLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag, 
+      Map const * const,
+      ULCS1b const * const, 
+      double tier1TxTime
+      );
 
   /** default destructor */
   virtual ~MyNLP();
@@ -105,11 +111,16 @@ private:
   MyNLP(const MyNLP&);
   MyNLP& operator=(const MyNLP&);
   //@}
-  Index           m_numVariables;
-  Index           m_numConstraints;
-  Index           m_numNz_jac_g;
-  Index           m_numNz_h_lag;
-  IndexStyleEnum  m_index_style;
+  Index                 m_numVariables;
+  Index                 m_numConstraints;
+  Index                 m_numNz_jac_g;
+  Index                 m_numNz_h_lag;
+  IndexStyleEnum        m_index_style;
+
+  double                m_tier1TxTime;
+  Map const * const     m_ptrMap;
+  ULCS1b const * const  m_cSystem;   // system cluseter structure
+
 };
 
 

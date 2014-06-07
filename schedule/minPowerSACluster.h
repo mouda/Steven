@@ -55,7 +55,9 @@ public:
       double InputSaAlpha, 
       double inCorrelationFactor, 
       string ipAddr, 
-      Map const * const myPtrMap);
+      Map const * const myPtrMap,
+      double tier1TxTime
+      );
 
   ~MinPowerSACluster();
 
@@ -317,8 +319,9 @@ public:
   int isDetailOutputOn;
   string strIpAddr; 
 
-  vector<int>       m_vecHeadName;
+  vector<int>             m_vecHeadName;
 
-  Map const * const m_ptrMap;
+  Map const * const       m_ptrMap;
+  const double            m_tier1TxTime; 
 };
 #endif

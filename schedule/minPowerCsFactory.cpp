@@ -44,7 +44,8 @@ MinPowerCsFactory::CreateClusterStructure()
       alpha, 
       m_compressionRatio, 
       "NULL",
-      m_ptrMap
+      m_ptrMap,
+      m_tier1TxTime
       );
   if(!m_ptrToolSA->setSystem(m_ptrMap->GetMaxPower(), 
         (int)m_ptrMap->GetQBits(), 
