@@ -191,6 +191,7 @@ public:
     CORRE_MA_OPE const * const  m_ptrGField;
 
     double                      m_tier1TxTime;
+    double                      m_obj;
     std::vector<double>         m_vecRate;
     std::vector<int>            m_vecHeadTable;
     std::vector<double>         m_vecClusterEntropy;

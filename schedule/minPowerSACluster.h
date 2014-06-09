@@ -66,7 +66,8 @@ public:
       double inCorrelationFactor, 
       string ipAddr, 
       Map const * const myPtrMap,
-      double tier1TxTime
+      double tier1TxTime,
+      int tier2NumSlot
       );
 
   ~MinPowerSACluster();
@@ -90,11 +91,11 @@ public:
   bool                      setIniHeadLimited();
 
   /* For Integrate */
-  const std::vector<int>&        GetVecHeadName() const { return vecHeadNameBest; }
-  const list<list<int> >&   GetListCluMemeber() const { return *listCluMemBest;}
-  std::vector<int>               GetAllSupStru() const;
+  const std::vector<int>&         GetVecHeadName() const { return vecHeadNameBest; }
+  const list<list<int> >&         GetListCluMemeber() const { return *listCluMemBest;}
+  std::vector<int>                GetAllSupStru() const;
 
-  int                       OptimalRateControl(double & ) const;
+  double                          OptimalRateControl() const;
   
   double returnComprRatio();
 
@@ -239,6 +240,8 @@ public:
   int  roundBest;;
   bool *bestAllSupStru;
   bool *prevAllSupStru;
+  std::vector<int> m_prevVecClusterSize;
+  std::vector<int> m_prevVecHeadName;
   clock_t begin, end;
   float computingTimes;
 
@@ -335,5 +338,6 @@ public:
 
   Map const * const       m_ptrMap;
   const double            m_tier1TxTime; 
+  int                   m_tier2NumSlot;
 };
 #endif

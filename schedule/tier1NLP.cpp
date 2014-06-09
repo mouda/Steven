@@ -14,6 +14,7 @@
 
 using std::cout;
 using std::endl;
+#define KSCALE 1000.0
 
 Tier1NLP::Tier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
     Map const * const ptrMap,
@@ -68,10 +69,9 @@ Tier1NLP::GetMinimalPower()
 {
   double totalPower = 0.0;
   for (int i = 0; i < m_vecHeadTable.size(); ++i) {
-    totalPower += (pow(2.0, m_vecRate.at(i)) - 1.0) * m_ptrMap->GetNoise() / m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i));
+    totalPower += (pow(2.0, m_vecRate.at(i)/KSCALE/m_ptrMap->GetBandwidth()) - 1.0) * m_ptrMap->GetNoise() / m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i));
   }
   return totalPower;
-
 }
 
 bool 
@@ -164,7 +164,7 @@ Tier1NLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
   assert(n==m_numVariables);
   obj_value = 0.0;
   for (int i = 0; i < m_numVariables; ++i) {
-    obj_value += (pow(2.0, x[i]/m_ptrMap->GetBandwidth()) - 1.0 ) * m_ptrMap->GetNoise() / 
+    obj_value += (pow(2.0, x[i]/ KSCALE/m_ptrMap->GetBandwidth()) - 1.0 ) * m_ptrMap->GetNoise() / 
       m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)); 
   }
   return true;
@@ -177,8 +177,8 @@ Tier1NLP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
 
 // cout << "=============================================== here eval_grad_f ======================="<<endl;
   for (int i = 0; i < m_numVariables; ++i) {
-    grad_f[i] = x[i] * pow(2.0, x[i]/m_ptrMap->GetBandwidth()) * m_ptrMap->GetNoise() /
-     m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)) / m_ptrMap->GetBandwidth(); 
+    grad_f[i] = x[i] * pow(2.0, x[i]/KSCALE/m_ptrMap->GetBandwidth()) * m_ptrMap->GetNoise() /
+     m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)) / m_ptrMap->GetBandwidth()/KSCALE; 
 //    cout << m_ptrMap->GetNoise() / m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)) << ' ' ;
   }
 //  cout << endl;
@@ -239,8 +239,9 @@ Tier1NLP::eval_h(Index n, const Number* x, bool new_x,
   }
   else {
     for (Index i = 0; i < m_numVariables; ++i) {
-      values[i] = (pow(2.0, x[i]/m_ptrMap->GetBandwidth()) + pow(x[i], 2.0) * pow (2.0, x[i]/m_ptrMap->GetBandwidth())/ m_ptrMap->GetBandwidth())  * m_ptrMap->GetNoise() /
-        m_ptrMap->GetBandwidth()/m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i));
+      values[i] = (pow(2.0, x[i]/m_ptrMap->GetBandwidth())/KSCALE + pow(x[i], 2.0) * pow (2.0, x[i]/m_ptrMap->GetBandwidth()/KSCALE)/ 
+          m_ptrMap->GetBandwidth()/KSCALE)  * m_ptrMap->GetNoise() /
+        m_ptrMap->GetBandwidth()/KSCALE/m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i));
     }
     for (Index i = 0; i < m_numVariables; ++i) {
       values[i] += lambda[0] * 2 * m_vecClusterEntropy.at(i) * pow(x[i], -3.0); 
@@ -272,5 +273,6 @@ Tier1NLP::finalize_solution(TMINLP::SolverReturn status,
     for (int i = 0; i < m_numVariables; ++i) {
       m_vecRate.at(i) = x[i];
     }
+    m_obj = obj_value;
   }
 }

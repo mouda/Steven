@@ -21,7 +21,7 @@ MinPowerCsFactory::~MinPowerCsFactory()
 ClusterStructure*
 MinPowerCsFactory::CreateClusterStructure()
 {
-  double SAIter = 0;
+  double SAIter = 500;
   double alpha = pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
   m_fid = fopen(m_mapFileName.c_str(), "r");
   if(m_fid == NULL) {
@@ -45,7 +45,8 @@ MinPowerCsFactory::CreateClusterStructure()
       m_compressionRatio, 
       "NULL",
       m_ptrMap,
-      m_tier1TxTime
+      m_tier1TxTime,
+      m_tier2NumSlot
       );
   if(!m_ptrToolSA->setSystem(m_ptrMap->GetMaxPower(), 
         (int)m_ptrMap->GetQBits(), 

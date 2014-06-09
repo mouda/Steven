@@ -27,9 +27,11 @@ MinPowerSACluster::MinPowerSACluster(
     double inCorrelationFactor, 
     std::string ipAddr, 
     Map const * const myPtrMap,
-    double tier1TxTime):
+    double tier1TxTime, 
+    int tier2NumSlot):
   m_ptrMap(myPtrMap),
-  m_tier1TxTime(tier1TxTime)
+  m_tier1TxTime(tier1TxTime),
+  m_tier2NumSlot(tier2NumSlot)
 {
 
     sysComputing = new SimSystem;
@@ -595,10 +597,11 @@ bool MinPowerSACluster::startCool()
   curChNum      =   maxChNum;
   nextChNum     =   curChNum;
   curJEntropy   =   curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-  m_curPayoff     =   cur1st_ms;
 
-  cur1st_ms       = 0;
-  OptimalRateControl(m_cur1st_watt);
+  m_cur1st_watt   = OptimalRateControl();
+  m_curPayoff     = m_cur1st_watt;
+  m_prevVecClusterSize.assign(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
+  m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
   cur2nd_Joule    = returnTransientJoule();
   cur1st_Joule    = power1st*cur1st_ms/1000.0;
 
@@ -664,9 +667,9 @@ bool MinPowerSACluster::startCool()
   }
 }
 
-int
+double
 MinPowerSACluster::
-OptimalRateControl(double& tier1Power) const
+OptimalRateControl() const
 {
   Index numVariables = nextChNum;
   Index numConstraints = 1;
@@ -719,7 +722,7 @@ OptimalRateControl(double& tier1Power) const
   }
 
   //m_vecSolution.assign(rawPtr->GetVecSolution().begin(), rawPtr->GetVecSolution().end());
-  return 0.0;
+  return rawPtr->GetMinimalPower();
 }
 
 
@@ -975,8 +978,6 @@ void MinPowerSACluster::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 
 void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance matircs
 {
-  next2nd_ms = 0;
-  next1st_ms = 0;
   next2nd_Joule = returnTransientJoule();
   next1st_Joule= power1st*next1st_ms/1000;
   //:<<"MaxPowerLoad="<<returnMaxPowerLoad()<<" Max="<<powerMax<<endl;
@@ -1011,7 +1012,7 @@ void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance
     cout<<"Error in calculateMatrics_minResors "<<endl;
     assert(0);
   }
-  nextPayoff =(next1st_ms+next2nd_ms);
+  nextPayoff = OptimalRateControl();
 }
 
 /*
@@ -1027,8 +1028,21 @@ void MinPowerSACluster::confirmNeighbor3i()
 //  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
 //
   //constraint: the all the machine must be supported
-  bool nextAllServe = (find(cSystem->allSupStru, cSystem->allSupStru + totalNodes,false ) == cSystem->allSupStru + totalNodes ); 
-  bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
+//  bool nextAllServe = (find(cSystem->allSupStru, cSystem->allSupStru + totalNodes,false ) == cSystem->allSupStru + totalNodes ); 
+//  bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
+  bool nextAllServe = true;
+  for (int i = 0; i < cSystem->vecHeadName.size(); ++i) {
+    if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) > m_tier2NumSlot) {
+      nextAllServe = false;
+    }
+  }
+  bool curAllServe = true; 
+
+  for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
+    if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot) {
+      nextAllServe = false;
+    }
+  }
   if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
   {
     passNext2Cur();
@@ -1188,6 +1202,8 @@ void MinPowerSACluster::confirmStructureChange()
   for (int i = 0; i < totalNodes; ++i) {
     prevAllSupStru[i] = cSystem->allSupStru[i];
   }
+  m_prevVecClusterSize.assign(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
+  m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
 }
 
 
