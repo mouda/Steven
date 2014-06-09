@@ -22,8 +22,18 @@
 #include <list>
 #include <ctime>
 #include <map>
-#include <coin/IpIpoptApplication.hpp>
-#include <coin/IpSolveStatistics.hpp>
+#include <coin/CoinPragma.hpp>
+#include <coin/CoinTime.hpp>
+#include <coin/CoinError.hpp>
+
+#include <coin/BonOsiTMINLPInterface.hpp>
+#include <coin/BonIpoptSolver.hpp>
+#include <coin/BonCbc.hpp>
+#include <coin/BonBonminSetup.hpp>
+
+#include <coin/BonOACutGenerator2.hpp>
+#include <coin/BonEcpCuts.hpp>
+#include <coin/BonOaNlpOptim.hpp>
 
 #include "ULAGENT.h"
 #include "ULCS1b.h"
@@ -33,7 +43,7 @@
 #include "ULSAOutputToolSet.cpp"
 #include "TimeStamp.h"
 #include "../lib/SA/SABASE.h"
-#include "MyNLP.h"
+#include "tier1NLP.h"
 #include "map.h"
 
 template class ULSAOutputToolSet<class MinPowerSACluster>;
@@ -80,11 +90,11 @@ public:
   bool                      setIniHeadLimited();
 
   /* For Integrate */
-  const vector<int>&        GetVecHeadName() const { return vecHeadNameBest; }
+  const std::vector<int>&        GetVecHeadName() const { return vecHeadNameBest; }
   const list<list<int> >&   GetListCluMemeber() const { return *listCluMemBest;}
-  vector<int>               GetAllSupStru() const;
+  std::vector<int>               GetAllSupStru() const;
 
-  int                       OptimalRateControl( vector<double>& vecRate ) const;
+  int                       OptimalRateControl(double & ) const;
   
   double returnComprRatio();
 
@@ -104,7 +114,7 @@ public:
   double dataBits;
   double virtualCompression;
   int headCandidatesNum;
-  vector<int> vecHeadCandidates;
+  std::vector<int> vecHeadCandidates;
 
 
   //We use the struct as class
@@ -171,6 +181,8 @@ public:
   double cur2nd_ms;
   double cur2nd_Joule;
 
+  double m_cur1st_watt;
+
 
   double nextPayoff;
   double  nextJEntropy;
@@ -197,15 +209,15 @@ public:
   int    bestFeasibleSupNum;
   int    bestChNum;
 
-  vector<double> vecBestClusterBits;
-  vector<int> vecBestClusterSize;
-  vector<double> vecBestClusterHeadMS;
-  vector<double> vecBestClusterHeadWatt;
+  std::vector<double> vecBestClusterBits;
+  std::vector<int> vecBestClusterSize;
+  std::vector<double> vecBestClusterHeadMS;
+  std::vector<double> vecBestClusterHeadWatt;
 
-  vector<double> vecBestReceivedInterference;
-  vector<double> vecBestSINR_forVerification;
-  vector<double> vecBestBpshz_forVerification;
-  vector<double> vecChooseIndex;
+  std::vector<double> vecBestReceivedInterference;
+  std::vector<double> vecBestSINR_forVerification;
+  std::vector<double> vecBestBpshz_forVerification;
+  std::vector<double> vecChooseIndex;
   double best1stTierTraffic;
   double best2ndTierTraffic;
   double bestTrafficReductionRatio;
@@ -219,7 +231,7 @@ public:
   double bestAvgPowerOFAllNodes;
   double bestUpperLayerResource;
   //@Best Structure
-  vector <int> vecHeadNameBest;
+  std::vector <int> vecHeadNameBest;
   list <list <int> > *listCluMemBest;
   bool** bestMaClusterStru;
   double ** maStrengthInterBest;
@@ -271,7 +283,7 @@ public:
   void calculateMatrics_minResors();
 
 
-  vector<int> lastJoingingMachine;
+  std::vector<int> lastJoingingMachine;
   void confirmNeighbor3i();
   void passNext2Cur();
   void reverseMoveSA();
@@ -298,9 +310,9 @@ public:
   double realNoise;
 
   void resetSA3iSystem();
-  vector<double> vecClusterHeadBits;
-  vector<double> vecClusterHeadWatt;
-  vector<double> vecClusterHeadMS;
+  std::vector<double> vecClusterHeadBits;
+  std::vector<double> vecClusterHeadWatt;
+  std::vector<double> vecClusterHeadMS;
   SimSystem *sysComputing;
   map <int, int>  *mapNodeName2DistanceRank;
   int ** maIndexSortDecGain;
@@ -319,7 +331,7 @@ public:
   int isDetailOutputOn;
   string strIpAddr; 
 
-  vector<int>             m_vecHeadName;
+  std::vector<int>             m_vecHeadName;
 
   Map const * const       m_ptrMap;
   const double            m_tier1TxTime; 

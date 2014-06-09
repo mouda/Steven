@@ -25,7 +25,7 @@ MinPowerSACluster::MinPowerSACluster(
     double inputTemprature, 
     double InputSaAlpha, 
     double inCorrelationFactor, 
-    string ipAddr, 
+    std::string ipAddr, 
     Map const * const myPtrMap,
     double tier1TxTime):
   m_ptrMap(myPtrMap),
@@ -129,7 +129,7 @@ MinPowerSACluster::MinPowerSACluster(
     for(int i=0; i<maxChNum; i++)aryFlagHRDone[i]=false;
 
     //-----Best Performance Index-----//
-    listCluMemBest = new list<list <int> >;
+    listCluMemBest = new std::list<std::list <int> >;
 
     //Interference Matrix Keep the interference index/Name set from othe cluster for each cluster.
     bestMaClusterStru = new bool *[maxChNum];
@@ -176,12 +176,12 @@ MinPowerSACluster::~MinPowerSACluster()
     if(!terminated)releaseMemory();
 }
 
-vector<int>
+std::vector<int>
 MinPowerSACluster::GetAllSupStru() const {
-  vector<int> myAllSupStru(totalNodes,0);
-  list<list<int> >::const_iterator iterRow = listCluMemBest->begin();
+  std::vector<int> myAllSupStru(totalNodes,0);
+  std::list<std::list<int> >::const_iterator iterRow = listCluMemBest->begin();
   for (;iterRow != listCluMemBest->end(); ++iterRow) {
-    list<int>::const_iterator iterCol = iterRow->begin();
+    std::list<int>::const_iterator iterCol = iterRow->begin();
     for (; iterCol != iterRow->end(); ++iterCol) {
       myAllSupStru.at(*iterCol) = 1;
     }
@@ -250,7 +250,7 @@ bool MinPowerSACluster::setSystem(float inPowerMaxWatt, int inQuantizationBits,d
 /*
     Purpose:coonstruct a initialized Clustering Stucture
     Flag: "kemans",..,
-    and set the initial interference list for each node
+    and set the initial interference std::list for each node
 */
 bool MinPowerSACluster::setInitialStucture(char* iniFlag)
 {
@@ -290,7 +290,7 @@ bool MinPowerSACluster::setIniStruKmeans()
   float tempHeadX [maxChNum];
   float tempHeadY [maxChNum];
   int tempHeadList [maxChNum];
-  vector <vector <int> > tempGroup;
+  std::vector <std::vector <int> > tempGroup;
   bool convergedFlag = false;
   bool sameHeadFlag = true;
   while(sameHeadFlag)
@@ -307,7 +307,7 @@ bool MinPowerSACluster::setIniStruKmeans()
 
     for (int i=0; i<maxChNum; i++)
     {
-      vector <int> tempV;
+      std::vector <int> tempV;
       tempGroup.push_back(tempV);
       tempHeadX[i] = nodes[i+retryTimes].locX;
       tempHeadY[i] = nodes[i+retryTimes].locY;
@@ -438,7 +438,7 @@ bool MinPowerSACluster::setIniStruDistanceKmedoids()
   float tempHeadX [maxChNum];
   float tempHeadY [maxChNum];
   int tempHeadList [maxChNum];
-  vector <vector <int> > tempGroup;
+  std::vector <std::vector <int> > tempGroup;
   bool convergedFlag = false;
   bool sameHeadFlag = true;
   while(sameHeadFlag)
@@ -455,7 +455,7 @@ bool MinPowerSACluster::setIniStruDistanceKmedoids()
 
     for (int i=0; i<maxChNum; i++)
     {
-      vector <int> tempV;
+      std::vector <int> tempV;
       tempGroup.push_back(tempV);
       tempHeadX[i] = nodes[i+retryTimes].locX;
       tempHeadY[i] = nodes[i+retryTimes].locY;
@@ -590,15 +590,17 @@ bool MinPowerSACluster::startCool()
   //-----------------------------//
   //Initialize performance matrix//
   //-----------------------------//
-  cur1st_ms     = 0;
-  cur2nd_Joule  = returnTransientJoule();
-  cur1st_Joule  = power1st*cur1st_ms/1000.0;
 
   curSupNum     =   cSystem->calSupNodes();
   curChNum      =   maxChNum;
   nextChNum     =   curChNum;
   curJEntropy   =   curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
   m_curPayoff     =   cur1st_ms;
+
+  cur1st_ms       = 0;
+  OptimalRateControl(m_cur1st_watt);
+  cur2nd_Joule    = returnTransientJoule();
+  cur1st_Joule    = power1st*cur1st_ms/1000.0;
 
   cout << "m_curPayoff: " << m_curPayoff << endl;
   bestAllServeFound = false;
@@ -664,33 +666,62 @@ bool MinPowerSACluster::startCool()
 
 int
 MinPowerSACluster::
-OptimalRateControl( vector<double>& vecRate ) const
+OptimalRateControl(double& tier1Power) const
 {
-  Index n = nextChNum;
-  Index m = 1;
-  Index nnz_jac_g = n;
-  Index nnz_h_lag = 2 * n;
+  Index numVariables = nextChNum;
+  Index numConstraints = 1;
+  Index numNz_jac_g = numVariables;
+  Index numNz_h_lag = numVariables;
+  
+  SmartPtr<TMINLP> tminlp = 
+    new Tier1NLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag,
+        m_ptrMap,
+        cSystem,
+        matrixComputer,
+        m_tier1TxTime
+        );
+  Tier1NLP* rawPtr = dynamic_cast<Tier1NLP*>(GetRawPtr(tminlp));
 
-  SmartPtr<TNLP> mynlp = new MyNLP(n, m, nnz_jac_g, nnz_h_lag, 
-      m_ptrMap, 
-      cSystem,
-      m_tier1TxTime);
-  SmartPtr<IpoptApplication> app = IpoptApplicationFactory();
-  ApplicationReturnStatus status;
-  if (status != Solve_Succeeded) {
-    std::cout << std::endl << std::endl << "*** Error during initialization!" << std::endl;
-    return (int) status;
-  }
-  if (status == Solve_Succeeded) {
-    // Retrieve some statistics about the solve
-    Index iter_count = app->Statistics()->IterationCount();
-    std::cout << std::endl << std::endl << "*** The problem solved in " << iter_count << " iterations!" << std::endl;
+  FILE * fp = fopen("log.out","w");
+  CoinMessageHandler handler(fp);
+  BonminSetup bonmin(&handler);
+  bonmin.initializeOptionsAndJournalist();
+  // Here we can change the default value of some Bonmin or Ipopt option
+  bonmin.options()->SetNumericValue("bonmin.time_limit", 86400); //changes bonmin's time limit
+  bonmin.options()->SetStringValue("mu_oracle","loqo");
+  //Here we read several option files
+  bonmin.readOptionsFile("Mybonmin.opt");
+  bonmin.readOptionsFile();// This reads the default file "bonmin.opt"
+  // Options can also be set by using a std::string with a format similar to the bonmin.opt file
+  bonmin.readOptionsString("bonmin.algorithm B-BB\n");
 
-    Number final_obj = app->Statistics()->FinalObjective();
-    std::cout << std::endl << std::endl << "*** The final value of the objective function is " << final_obj << '.' << std::endl;
+  //Now initialize from tminlp
+  bonmin.initialize(GetRawPtr(tminlp));
+  //Set up done, now let's branch and bound
+  try {
+    Bab bb;
+    bb(bonmin);//process parameter file using Ipopt and do branch and bound using Cbc
   }
-  return (int) status;
+  catch(TNLPSolver::UnsolvedError *E) {
+    //There has been a failure to solve a problem with Ipopt.
+    std::cerr<<"Ipopt has failed to solve a problem"<<std::endl;
+    E->printError(std::cerr);
+  }
+  catch(OsiTMINLPInterface::SimpleError &E) {
+    std::cerr << E.className() << "::" << E.methodName()
+	      << std::endl
+	      << E.message() << std::endl;
+  }
+  catch(CoinError &E) {
+    std::cerr << E.className() << "::" << E.methodName()
+	      << std::endl
+	      << E.message() << std::endl;
+  }
+
+  //m_vecSolution.assign(rawPtr->GetVecSolution().begin(), rawPtr->GetVecSolution().end());
+  return 0.0;
 }
+
 
 /*
     Movement Function
@@ -928,9 +959,9 @@ void MinPowerSACluster::join_fromHeadSA(int JoiningHeadIndex,int targetH){
      lastJoingingMachine.clear();
      lastJoiningHeadIndex=JoiningHeadIndex;
      lastJoiningHead=cSystem->vecHeadName[lastJoiningHeadIndex];
-     list<list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
+     std::list<std::list <int> >::iterator it_LiInt=cSystem->listCluMember->begin();
      for(int i=0;i<JoiningHeadIndex;i++)it_LiInt++;
-     list<int>::iterator it_Int=it_LiInt->begin();
+     std::list<int>::iterator it_Int=it_LiInt->begin();
      for(int i=0;i<it_LiInt->size();i++,it_Int++){
          lastJoingingMachine.push_back(*it_Int);
          nodes[*it_Int].ptrHead=&(cSystem->vecHeadName[targetH]);
@@ -1232,7 +1263,7 @@ void MinPowerSACluster::keepBestStructure()
     Purpose: return the closet node index from a certain (X,Y)
 
 */
-int MinPowerSACluster::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<int> &inputGroup)
+int MinPowerSACluster::returnClosetNodeIndexInGroup(int tempX,int tempY, std::vector<int> &inputGroup)
 {
     float closetNodeDistance =  numeric_limits<float>::max( );
     float tempD = 0;
@@ -1252,11 +1283,11 @@ int MinPowerSACluster::returnClosetNodeIndexInGroup(int tempX,int tempY, vector<
 }
 
 double MinPowerSACluster::returnTransientJoule() {
-    list <list<int> >::iterator itlist1=cSystem->listCluMember->begin();
+    std::list <std::list<int> >::iterator itlist1=cSystem->listCluMember->begin();
     double accuJoule=0;
     for(int i =0; itlist1!=cSystem->listCluMember->end(); itlist1++,i++)
     {
-        list<int>::iterator it1=itlist1->begin();
+        std::list<int>::iterator it1=itlist1->begin();
         double tempSize = static_cast<double> (itlist1->size());
         if (tempSize==1)continue;
         for(; it1!=itlist1->end(); it1++) {

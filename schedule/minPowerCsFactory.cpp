@@ -21,7 +21,7 @@ MinPowerCsFactory::~MinPowerCsFactory()
 ClusterStructure*
 MinPowerCsFactory::CreateClusterStructure()
 {
-  double SAIter = 5000;
+  double SAIter = 0;
   double alpha = pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
   m_fid = fopen(m_mapFileName.c_str(), "r");
   if(m_fid == NULL) {
@@ -62,8 +62,8 @@ MinPowerCsFactory::CreateClusterStructure()
   }
 
   if (m_ptrCS == 0) {
-    vector<int> myVecHeadNames;
-    list<list<int> > myListCluMembers;
+    std::vector<int> myVecHeadNames;
+    std::list<std::list<int> > myListCluMembers;
     m_ptrToolSA->startCool();
     m_ptrCS = new ClusterStructure(
         m_ptrMap->GetNumNodes(), 
@@ -79,7 +79,7 @@ MinPowerCsFactory::CreateClusterStructure()
 }
 
 bool
-MinPowerCsFactory::Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listCluMembers )
+MinPowerCsFactory::Kmedoid( std::vector<int>& vecHeadNames, std::list<std::list<int> >& listCluMembers )
 {
   int retryTimes = 0;
   double* tempHeadX  = new double [m_numMaxHeads];
@@ -87,7 +87,7 @@ MinPowerCsFactory::Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listClu
   int* tempHeadList  = new int [m_numMaxHeads];
   bool convergedFlag = false;
   bool sameHeadFlag = true;
-  vector <vector <int> > tempGroup;
+  std::vector <std::vector <int> > tempGroup;
 
   while(sameHeadFlag) {
     sameHeadFlag = false;
@@ -99,7 +99,7 @@ MinPowerCsFactory::Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listClu
     for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); 
     tempGroup.clear();
     for (int i = 0; i < m_numMaxHeads; i++) {
-      vector <int> tempV;
+      std::vector <int> tempV;
       tempGroup.push_back(tempV);
       tempHeadX[i]    = m_ptrMap->GetNodeXPos(i);
       tempHeadY[i]    = m_ptrMap->GetNodeYPos(i);
@@ -167,7 +167,7 @@ MinPowerCsFactory::Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listClu
 
   vecHeadNames.assign(tempHeadList, tempHeadList + m_numMaxHeads);
   listCluMembers.resize(m_numMaxHeads);
-  list<list<int> >::iterator iterRows = listCluMembers.begin();
+  std::list<std::list<int> >::iterator iterRows = listCluMembers.begin();
   for (int i = 0; iterRows != listCluMembers.end(); ++iterRows, ++i) {
     iterRows->assign(tempGroup[i].begin(), tempGroup[i].end());
   }
@@ -175,17 +175,17 @@ MinPowerCsFactory::Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listClu
 #ifdef DEBUG 
   iterRows = listCluMembers.begin();
   for (int i = 0; iterRows != listCluMembers.end(); ++iterRows, ++i) {
-    list<int>::iterator iterCols = iterRows->begin();
-    cout << "cluster: " << i <<"-th ";
+    std::list<int>::iterator iterCols = iterRows->begin();
+    std::cout << "cluster: " << i <<"-th ";
     for (; iterCols != iterRows->end(); ++iterCols) {
-      cout << *iterCols << ' '; 
+      std::cout << *iterCols << ' '; 
     }
-    cout << endl;
+    std::cout << endl;
   }
   for (int i = 0; i < m_numMaxHeads; ++i) {
-    cout << tempHeadList[i] << ' ';
+    std::cout << tempHeadList[i] << ' ';
   }
-  cout << endl;
+  std::cout << endl;
 #endif
 
   delete [] tempHeadX;

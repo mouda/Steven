@@ -19,6 +19,7 @@ using namespace Ipopt;
 MyNLP::MyNLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag, 
     Map const * const ptrMap,
     ULCS1b const * const cSystem,  
+    CORRE_MA_OPE const * const ptrGField,  
     double tier1TxTime):
   m_numVariables(n),
   m_numConstraints(m),
@@ -27,18 +28,54 @@ MyNLP::MyNLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
   m_index_style(FORTRAN_STYLE),
   m_tier1TxTime(tier1TxTime),
   m_cSystem(cSystem),
+  m_ptrGField(ptrGField),
   m_ptrMap(ptrMap)
 {
+  /* construct the vector of head index and variable index*/
+  for (int i = 0; i < m_ptrMap->GetNumInitHeads(); ++i) {
+    if (m_cSystem->vecHeadName.at(i) >= 0) {
+      m_vecHeadTable.push_back(m_cSystem->vecHeadName.at(i)); 
+    }
+  }
+  assert ( m_vecHeadTable.size() == m_numVariables);
 
+  /* construct the vector of cluster entropy */
+  list<list<int> >::const_iterator iterRow = m_cSystem->listCluMember->begin();
+  vector<int> tmpIndicator(m_ptrMap->GetNumNodes(), 0);
+  vector<double> tmpVariance(m_ptrMap->GetNumNodes(), 0.0);
 
+  for (; iterRow != m_cSystem->listCluMember->end(); ++iterRow) {
+    list<int>::const_iterator iterCol = iterRow->begin();
+    if ( (*iterCol) >= 0) {
+      for (; iterCol != iterRow->end(); ++iterCol) {
+        tmpIndicator.at(*iterCol) = 1;
+      }
+    }
+    m_vecClusterEntropy.push_back(m_ptrGField->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits()));
+  }
+
+  assert ( m_vecClusterEntropy.size() == m_numVariables);
 }
 
 MyNLP::~MyNLP()
 {}
 
+double
+MyNLP::GetMinimalPower()
+{
+  double totalPower = 0.0;
+  for (int i = 0; i < m_vecHeadTable.size(); ++i) {
+    totalPower += (pow(2.0, m_vecRate.at(i)) - 1.0) * m_ptrMap->GetNoise() / m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i));
+  }
+  return totalPower;
+
+}
+
 bool MyNLP::get_nlp_info(Index& n, Index& m, Index& nnz_jac_g,
                          Index& nnz_h_lag, IndexStyleEnum& index_style)
 {
+
+ cout << "=============================================== here get_nlp_info ======================="<<endl;
   n = m_numVariables;
 
   m = m_numConstraints;
@@ -57,6 +94,7 @@ bool MyNLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
 {
   // here, the n and m we gave IPOPT in get_nlp_info are passed back to us.
   // If desired, we could assert to make sure they are what we think they are.
+ cout << "=============================================== here get_bounds_info ======================="<<endl;
   assert(n == m_numVariables);
   assert(m == m_numConstraints);
 
@@ -100,13 +138,10 @@ bool MyNLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
   // return the value of the objective function
   assert(n == m_numVariables);
   obj_value = 0.0;
-  for (int i = 0; i < m_ptrMap->GetNumInitHeads(); ++i) {
-    if ( m_cSystem->vecHeadName[i] >= 0) {
-      obj_value += m_ptrMap->GetNoise()/m_ptrMap->GetGi0ByNode(m_cSystem->vecHeadName[i]);
-    }
+  for (int i = 0; i < m_numVariables; ++i) {
+    obj_value += (pow(2.0, x[i]) - 1.0 ) * m_ptrMap->GetNoise() / 
+      m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)); 
   }
-  Number x2 = x[1];
-  obj_value = -(x2 - 2.0) * (x2 - 2.0);
   return true;
 }
 
@@ -114,12 +149,11 @@ bool MyNLP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
 {
   // return the gradient of the objective function grad_{x} f(x)
 
-  // grad_{x1} f(x): x1 is not in the objective
-  grad_f[0] = 0.0;
-
-  // grad_{x2} f(x):
-  Number x2 = x[1];
-  grad_f[1] = -2.0*(x2 - 2.0);
+  assert(n == m_numVariables);
+  for (int i = 0; i < m_numVariables; ++i) {
+    grad_f[i] = x[i] * pow(2.0, x[i]) * m_ptrMap->GetNoise() /
+     m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)); 
+  }
 
   return true;
 }
@@ -127,10 +161,11 @@ bool MyNLP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
 bool MyNLP::eval_g(Index n, const Number* x, bool new_x, Index m, Number* g)
 {
   // return the value of the constraints: g(x)
-  Number x1 = x[0];
-  Number x2 = x[1];
 
-  g[0] = -(x1*x1 + x2 - 1.0);
+  g[0] = 0.0;
+  for (int i = 0; i < m_numVariables; ++i) {
+    g[0] += m_vecClusterEntropy.at(i)/x[i];
+  }
 
   return true;
 }
@@ -139,16 +174,13 @@ bool MyNLP::eval_jac_g(Index n, const Number* x, bool new_x,
                        Index m, Index nele_jac, Index* iRow, Index *jCol,
                        Number* values)
 {
+  assert(n == m_numVariables);
+  assert(m == m_numConstraints);
   if (values == NULL) {
-    // return the structure of the jacobian of the constraints
-
-    // element at 1,1: grad_{x1} g_{1}(x)
-    iRow[0] = 1;
-    jCol[0] = 1;
-
-    // element at 1,2: grad_{x2} g_{1}(x)
-    iRow[1] = 1;
-    jCol[1] = 2;
+    for (int i = 0; i < m_numVariables; ++i) {
+      iRow[i] = 1;
+      jCol[i] = i + 1;
+    }
   }
   else {
     // return the values of the jacobian of the constraints
@@ -208,4 +240,6 @@ void MyNLP::finalize_solution(SolverReturn status,
   // here is where we would store the solution to variables, or write to a file, etc
   // so we could use the solution. Since the solution is displayed to the console,
   // we currently do nothing here.
+  cout << "Status: " << status << endl;
+  cout << "Obj_value: " << obj_value << endl;
 }

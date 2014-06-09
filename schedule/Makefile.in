@@ -51,7 +51,7 @@ am_simulator_OBJECTS = main.$(OBJEXT) map.$(OBJEXT) \
 	csPowerUpdater.$(OBJEXT) csFactory.$(OBJEXT) \
 	ULConstraintSolver.$(OBJEXT) ULSAOutputToolSet.$(OBJEXT) \
 	timesearch.$(OBJEXT) TimeStamp.$(OBJEXT) ULCS1b.$(OBJEXT) \
-	ULSA4b7_DC.$(OBJEXT) MyNLP.$(OBJEXT) \
+	ULSA4b7_DC.$(OBJEXT) MyNLP.$(OBJEXT) tier1NLP.$(OBJEXT) \
 	minPowerSACluster.$(OBJEXT) minPowerCsFactory.$(OBJEXT) \
 	kmeansCsFactory.$(OBJEXT) minResCsFactory.$(OBJEXT) \
 	utility.$(OBJEXT) scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) \
@@ -253,6 +253,7 @@ simulator_SOURCES = main.cpp \
 		    ULCS1b.h ULCS1b.cpp\
 		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
 		    MyNLP.h MyNLP.cpp\
+		    tier1NLP.h tier1NLP.cpp\
 		    minPowerSACluster.h minPowerSACluster.cpp\
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
@@ -395,6 +396,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simSystem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simulator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/slot.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tier1NLP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timesearch.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility.Po@am__quote@
 

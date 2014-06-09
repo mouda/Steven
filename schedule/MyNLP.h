@@ -12,34 +12,25 @@
 #include <coin/IpTNLP.hpp>
 #include "map.h"
 #include "ULCS1b.h"
+#include "CORRE_MA_OPE.h"
 
 using namespace Ipopt;
 
-/** C++ Example NLP for interfacing a problem with IPOPT.
- *  MyNLP implements a C++ example showing how to interface with IPOPT
- *  through the TNLP interface. This example is designed to go along with
- *  the tutorial document (see Examples/CppTutorial/).
- *  This class implements the following NLP.
- *
- * min_x f(x) = -(x2-2)^2
- *  s.t.
- *       0 = x1^2 + x2 - 1
- *       -1 <= x1 <= 1
- *
- */
 class MyNLP : public TNLP
 {
 public:
   /** default constructor */
   MyNLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag, 
       Map const * const,
-      ULCS1b const * const, 
+      ULCS1b const * const,
+      CORRE_MA_OPE const * const,  
       double tier1TxTime
       );
 
   /** default destructor */
   virtual ~MyNLP();
 
+  double GetMinimalPower();
   /**@name Overloaded from TNLP */
   //@{
   /** Method to return some info about the nlp */
@@ -111,15 +102,19 @@ private:
   MyNLP(const MyNLP&);
   MyNLP& operator=(const MyNLP&);
   //@}
-  Index                 m_numVariables;
-  Index                 m_numConstraints;
-  Index                 m_numNz_jac_g;
-  Index                 m_numNz_h_lag;
-  IndexStyleEnum        m_index_style;
+  Index                       m_numVariables;
+  Index                       m_numConstraints;
+  Index                       m_numNz_jac_g;
+  Index                       m_numNz_h_lag;
+  IndexStyleEnum              m_index_style;
 
-  double                m_tier1TxTime;
-  Map const * const     m_ptrMap;
-  ULCS1b const * const  m_cSystem;   // system cluseter structure
+  double                      m_tier1TxTime;
+  Map const * const           m_ptrMap;
+  ULCS1b const * const        m_cSystem;   // system cluseter structure
+  CORRE_MA_OPE const * const  m_ptrGField;
+  std::vector<int>            m_vecHeadTable;
+  std::vector<double>         m_vecClusterEntropy;
+  std::vector<double>         m_vecRate;
 
 };
 

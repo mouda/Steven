@@ -58,6 +58,7 @@ class Map
     double**                      m_matDistance;
     vector<double>                m_vecPower;
     SimSystem*                    m_systemComputer;
+    vector<int>                   m_vecHeadName;
 
 };
 #endif

@@ -12,7 +12,7 @@ figure;
 
 
 CSPath = ['data/clusterStructure_bb_Kmeans.out'];
-SchedulePath = ['data/solution_bb_Kmeans.out'];
+SchedulePath = ['data/solution_N50_Slot1.out'];
 mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_1.txt'];
 matSolution = dlmread(SchedulePath);
 
