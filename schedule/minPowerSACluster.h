@@ -66,6 +66,7 @@ public:
       double inCorrelationFactor, 
       string ipAddr, 
       Map const * const myPtrMap,
+      CORRE_MA_OPE const * const,
       double tier1TxTime,
       int tier2NumSlot
       );
@@ -133,7 +134,7 @@ public:
   //---------------------//
   //Module               //
   //---------------------//
-  CORRE_MA_OPE * matrixComputer;
+  CORRE_MA_OPE const * const matrixComputer;
   double correlationFactor;
   double compRatio;
 
@@ -263,6 +264,7 @@ public:
 
   void decideExchangeNode();
   void decideAdd3i_DC_HeadDetMemRan();
+  void decideCloset();
   void decideDiscard3b();
   void decideHeadRotate2i_DC_HeadRanMemDet();
 

@@ -27,11 +27,13 @@ MinPowerSACluster::MinPowerSACluster(
     double inCorrelationFactor, 
     std::string ipAddr, 
     Map const * const myPtrMap,
+    CORRE_MA_OPE const * const myPtrGField,
     double tier1TxTime, 
     int tier2NumSlot):
   m_ptrMap(myPtrMap),
   m_tier1TxTime(tier1TxTime),
-  m_tier2NumSlot(tier2NumSlot)
+  m_tier2NumSlot(tier2NumSlot),
+  matrixComputer(myPtrGField)
 {
 
     sysComputing = new SimSystem;
@@ -170,7 +172,8 @@ MinPowerSACluster::MinPowerSACluster(
         {
             mapNodeName2DistanceRank[i][maIndexSortDecGain[i][j]]=j;
         }
-    }
+    }//
+    bestFeasiblePayoff = DBL_MAX;
 
 }
 MinPowerSACluster::~MinPowerSACluster()
@@ -576,10 +579,7 @@ MinPowerSACluster::returnComprRatio()
 bool MinPowerSACluster::startCool()
 {
   begin = clock();
-  matrixComputer = new CORRE_MA_OPE(totalNodes, correlationFactor, distanceOf2Nodes, (double)quantizationBits);
   indEntropy = m_ptrMap->GetIdtEntropy();
-  double tmpCompR = matrixComputer->returnNSetCorrelationFactorByCompressionRatio \
-                    (compRatio,indEntropy,static_cast<double>(totalNodes));
   tempAddT=0;
   tempDisT=0;
   tempHRT=0;
@@ -662,7 +662,6 @@ bool MinPowerSACluster::startCool()
   char str3[500];
   if( bestFeasibleJEntropy >= ( wholeSystemEntopy * fidelityRatio) ) {
     cout<<timeBuf<<endl;
-    delete matrixComputer;
     return false;
   }
 }
@@ -753,7 +752,7 @@ void MinPowerSACluster::coolOnce_minResors()
     if( aryFlagHRDone[i] == false && cSystem->vecClusterSize[i] > 1 )
       checkRotateble=true;
   }
-  int probHeadRotate = (((curSupNum>2*maxChNum)&&checkRotateble) ?10000:0);//Don't do head rotate if there are only a few nodes
+  int probHeadRotate = ((checkRotateble) ?10000:0);//Don't do head rotate if there are only a few nodes
 
 
 
@@ -761,12 +760,14 @@ void MinPowerSACluster::coolOnce_minResors()
   bool chkLessCluster=cSystem->returnIfClusterSmall(thresholdd,tmpJoinCan);
 
   //int probJoin = (chkLessCluster&&curJEntropy>(fidelityRatio*wholeSystemEntopy))?tmpJoinCan*50:0;
-  int probJoin = (chkLessCluster)?tmpJoinCan*30:0;
+  //int probJoin = (chkLessCluster)?tmpJoinCan*30:0;
+  int probJoin = 0;
 
   //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
 
-  int probIsoltae=((curChNum<maxChNum)?30:0);
+  //int probIsoltae=((curChNum<maxChNum)?30:0);
   //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
+  int probIsoltae = 0;
 
 
 //  int sumProb = probAdd + probDiscard + probExchange + probHeadRotate+probJoin+probIsoltae;
@@ -797,7 +798,7 @@ void MinPowerSACluster::coolOnce_minResors()
     if (cSystem->listUnSupport->size()==0) cout<<"Error, it should haven't come in here with empty addlist and add."<<endl;
     else
     {
-      decideAdd3i_DC_HeadDetMemRan();
+      decideCloset();
       if(targetHeadIndex!=-1&&targetNode!=-1){
         addMemberSA(targetHeadIndex,targetNode);
       }
@@ -868,10 +869,69 @@ MinPowerSACluster::decideExchangeNode()
 
 */
 void 
-MinPowerSACluster::decideAdd3i_DC_HeadDetMemRan() {
-    targetHeadIndex=-1;
-    targetNode=-1;
+MinPowerSACluster::decideCloset() {
+  targetHeadIndex=-1;
+  targetNode=-1;
+  double curInfo=curSupNum*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
+  double residualInformation=wholeSystemEntopy-curInfo;
+  double randomCurs=((double)rand() / ((double)RAND_MAX + 1));
+  double chooseCurs=0;
+  std::vector<int>::const_iterator maxIter = std::min_element(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
+  int chIdx = 0;
+  for (std::vector<int>::const_iterator iter = cSystem->vecClusterSize.begin(); iter != maxIter; ++iter) ++chIdx; 
+  cout << "Min Ch idx: " << chIdx << "with size: " << cSystem->vecClusterSize.at(chIdx) <<endl;
 
+  double maxGain = -DBL_MAX;
+  int    maxName = -1; 
+  list <int>::iterator itList=cSystem->listUnSupport->begin();
+
+  for(; itList!=cSystem->listUnSupport->end(); ++itList) {
+    double tmpGain = m_ptrMap->GetGijByPair(*itList, cSystem->vecHeadName.at(chIdx) );
+    if (tmpGain > maxGain) {
+      maxGain = tmpGain;
+      maxName = *itList;
+    }
+  }
+  targetNode = maxName;
+  targetHeadIndex = chIdx;
+
+}
+
+void 
+MinPowerSACluster::decideAdd3i_DC_HeadDetMemRan() {
+  targetHeadIndex=-1;
+  targetNode=-1;
+
+  double curInfo=curSupNum*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
+  double residualInformation=wholeSystemEntopy-curInfo;
+  double randomCurs=((double)rand() / ((double)RAND_MAX + 1));
+  double chooseCurs=0;
+  list <int>::iterator it_Int=cSystem->listUnSupport->begin();
+  std::vector<int>::const_iterator maxIter = std::min_element(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
+  int chIdx = 0;
+  for (std::vector<int>::const_iterator iter = cSystem->vecClusterSize.begin(); iter != maxIter; ++iter) ++chIdx; 
+  cout << "Min Ch idx: " << chIdx << "with size: " << cSystem->vecClusterSize.at(chIdx) <<endl;
+
+  for(; it_Int!=cSystem->listUnSupport->end(); it_Int++) {
+    cSystem->allSupStru[*it_Int]=true;
+    double tmpIndInfo=(curSupNum+1)*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru)-curInfo;
+    chooseCurs+=tmpIndInfo;
+    cSystem->allSupStru[*it_Int]=false;
+    if ((chooseCurs/residualInformation)>randomCurs) {
+      targetNode=*it_Int;
+      break;
+    }
+  }
+  if (targetNode==-1)return;
+
+  double maxGain=0;
+  //find closet head
+  for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
+    if(Gij[targetNode][cSystem->vecHeadName[i]]>maxGain) {
+      maxGain=Gij[targetNode][cSystem->vecHeadName[i]];
+      targetHeadIndex=i;
+    }
+  }
 }
 /*
     targetHeadIndex: (Randomly) Choose a Head uniformly
@@ -880,14 +940,73 @@ MinPowerSACluster::decideAdd3i_DC_HeadDetMemRan() {
 void 
 MinPowerSACluster::decideDiscard3b()
 {
-    //Compute the discardable size
+  //Compute the discardable size
 
-    targetNode = -1;
-    assert(targetNode != -1 && targetHeadIndex != -1);
+  targetNode = -1;
+  std::vector<int>::const_iterator maxIter = std::max_element(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
+  int chIdx = 0;
+  for (std::vector<int>::const_iterator iter = cSystem->vecClusterSize.begin(); iter != maxIter; ++iter) ++chIdx; 
+  cout << "Max Ch idx: " << chIdx << "with size: " << cSystem->vecClusterSize.at(chIdx) <<endl;
+  std::list<std::list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();
+  for (int i = 0; i < chIdx; ++i) { ++iterRow; }
+  std::list<int>::const_iterator iterCol = iterRow->begin();
+  double minGain = DBL_MAX;
+  int    minName = -1; 
+  for (; iterCol != iterRow->end(); ++iterCol) {
+    double tmpGain = m_ptrMap->GetGijByPair(*iterCol, cSystem->vecHeadName.at(chIdx) );
+    if (tmpGain < minGain) {
+      minGain = tmpGain;
+      minName = *iterCol; 
+    }
+  }
+
+  /* Decide Result */
+  targetNode = minName;
+  targetHeadIndex = chIdx;
+  assert(targetNode != -1 && targetHeadIndex != -1);
 }
 
 void MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
 {
+  //----Uniformly choosed
+  int rotateAbleSize=0;
+  for (int i=0; i<maxChNum; i++)
+    if(cSystem->vecClusterSize[i]>1)rotateAbleSize++;
+  //if(cSystem->vecClusterSize[i]>1&&aryFlagHRDone[i]==false)rotateAbleSize++;
+
+  //Notice: no handle of "rotateAbleSize == 0", it handle by coolOnce_minResors
+  //Then we choose the rotate target member cluster
+  int rotateCursor = (int)((double)rand() / ((double)RAND_MAX + 1) * rotateAbleSize)+1;
+
+  list <list<int> > ::iterator itlist1 = cSystem->listCluMember->begin();
+  targetHeadIndex = 0;
+  for(int i=0; i<rotateCursor; itlist1++,targetHeadIndex++) //Disconsecutive Candidate
+  {
+    //if(itlist1->size()>1&&aryFlagHRDone[targetHeadIndex]==false)i++;
+    if(itlist1->size()>1)i++;
+    if(i==rotateCursor)break;//break befor move to next iterator
+  }
+  if (itlist1->size()<=1)cout<<"error, search rotate  error"<<endl;
+  assert(targetHeadIndex>=0&&targetHeadIndex<maxChNum);
+
+
+
+  //Choose targetNode
+  targetNode=cSystem->vecHeadName[targetHeadIndex];
+  double minTier1Gain = DBL_MAX;
+
+  int OriginalNode= cSystem->vecHeadName[targetHeadIndex];
+  list<int>::iterator it1=itlist1->begin();
+  for(; it1!=itlist1->end(); it1++)//find minimum interference received among nodes in the cluster
+  {
+    if((*it1)==OriginalNode)continue;
+    double tmpTier1Gain = m_ptrMap->GetGi0ByNode(*it1);//==Head Rotate
+    if( tmpTier1Gain < minTier1Gain )
+    {
+      minTier1Gain = tmpTier1Gain;
+      targetNode=*it1;
+    }
+  }
   assert(targetHeadIndex != -1 && targetNode != -1);
 }
 
@@ -1030,28 +1149,29 @@ void MinPowerSACluster::confirmNeighbor3i()
   //constraint: the all the machine must be supported
 //  bool nextAllServe = (find(cSystem->allSupStru, cSystem->allSupStru + totalNodes,false ) == cSystem->allSupStru + totalNodes ); 
 //  bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
-  bool nextAllServe = true;
+  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
   for (int i = 0; i < cSystem->vecHeadName.size(); ++i) {
-    if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) > m_tier2NumSlot) {
+    if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) > m_tier2NumSlot + 1) {
       nextAllServe = false;
     }
   }
-  bool curAllServe = true; 
+  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false); 
 
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
-    if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot) {
-      nextAllServe = false;
+    if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
+      curAllServe = false;
     }
   }
-  if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
+  /* decision flow */
+  /*  if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
   {
     passNext2Cur();
     for(int i=0; i<totalNodes; i++) 
       nodes[i].power = nextNodePower[i];
     if( nextEventFlag == 1 || nextEventFlag == 2 ) 
       confirmStructureChange();
-  }
-  else if ( !curAllServe && nextAllServe ) {
+  }*/
+  if ( !curAllServe && nextAllServe ) {
     passNext2Cur();
     for(int i=0; i<totalNodes; i++) 
       nodes[i].power = nextNodePower[i];
@@ -1066,7 +1186,7 @@ void MinPowerSACluster::confirmNeighbor3i()
     if( nextEventFlag == 1 || nextEventFlag == 2 )
       confirmStructureChange();
   }
-  else if( ( ( nextJEntropy < curJEntropy ) && !nextAllServe && !curAllServe ) || 
+  else if( (  !nextAllServe && !curAllServe ) || 
       ( !nextAllServe && curAllServe ) || 
       ( ( nextPayoff > m_curPayoff ) && nextAllServe && curAllServe ) )
   {
@@ -1214,39 +1334,51 @@ void MinPowerSACluster::confirmStructureChange()
 bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
 {
 //    bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
-    bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
-    if(curAllServe)bestAllServeFound=true;
-    //cout<<"In check Best"<<endl;
-    if ((curJEntropy>bestFeasibleJEntropy)&&!curAllServe&&!bestAllServeFound)
-    {
-        roundBest = inputRound;
-        bestFeasibleJEntropy=curJEntropy;
-        bestFeasibleSupNum=curSupNum ;
-        //bestFeasiblePayoff=m_curPayoff;
-        best1st_Joule=cur1st_Joule;
-        best1st_ms=cur1st_ms;
-        best2nd_Joule=cur2nd_Joule;
-        best2nd_ms=cur2nd_ms;
-        keepBestStructure();
-        bestChNum=curChNum;
+//    bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
+  /* new constraint */
+  bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false); 
+//  cout << curJEntropy <<": " << curAllServe << endl;
+  for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
+//    cout << m_prevVecClusterSize.at(i) << ' ';
+    if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
+      curAllServe = false;
+    }
+  }
+//  cout <<": " << m_tier2NumSlot + 1<<endl;
+//  cout << curJEntropy <<": " << curAllServe << endl;
+  if(curAllServe)bestAllServeFound=true;
+  //cout<<"In check Best"<<endl;
+  if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)
+  {
+    cout<<"In check Best"<<endl;
+    roundBest = inputRound;
+    bestFeasibleJEntropy=curJEntropy;
+    bestFeasibleSupNum=curSupNum ;
+    //bestFeasiblePayoff=m_curPayoff;
+    best1st_Joule=cur1st_Joule;
+    best1st_ms=cur1st_ms;
+    best2nd_Joule=cur2nd_Joule;
+    best2nd_ms=cur2nd_ms;
+    keepBestStructure();
+    bestChNum=curChNum;
 
-    }
-    else if ((m_curPayoff<bestFeasiblePayoff)&&curAllServe)
-    {
-        //cout<<"Find new best"<<endl;
-        roundBest = inputRound;
-        bestFeasibleJEntropy=curJEntropy;
-        bestFeasibleSupNum=curSupNum ;
-        bestFeasiblePayoff=m_curPayoff;
-        best1st_Joule=cur1st_Joule;
-        best1st_ms=cur1st_ms;
-        best2nd_Joule=cur2nd_Joule;
-        best2nd_ms=cur2nd_ms;
-        bestChNum=curChNum;
-        keepBestStructure();
-    }
-    //cout<<"best FeasiblePayoff="<<bestFeasiblePayoff<<" with headNum="<<bestChNum<<";Info Ratio="<<bestFeasibleJEntropy/wholeSystemEntopy<<endl;
-    return false;
+  }
+  else if ((m_curPayoff<bestFeasiblePayoff) && curAllServe)
+  {
+    cout<<"Find new best"<<endl;
+    roundBest = inputRound;
+    bestFeasibleJEntropy=curJEntropy;
+    bestFeasibleSupNum=curSupNum ;
+    bestFeasiblePayoff=m_curPayoff;
+    best1st_Joule=cur1st_Joule;
+    best1st_ms=cur1st_ms;
+    best2nd_Joule=cur2nd_Joule;
+    best2nd_ms=cur2nd_ms;
+    bestChNum=curChNum;
+    keepBestStructure();
+  }
+  //cout<<"best FeasiblePayoff="<<bestFeasiblePayoff<<" with headNum="<<bestChNum<<";Info Ratio="<<bestFeasibleJEntropy/wholeSystemEntopy<<endl;
+  return false;
 }
 
 

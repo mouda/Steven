@@ -311,7 +311,7 @@ MinPowerMILP::get_bounds_info(Index n, Number* x_l, Number* x_u,
   for (int j_c = 0 ; j_c < m_numHeads; ++j_c, ++iterRow) {
     /* row index of constraint matrix */
     int index_i = m_numNodes * m_tier2NumSlot + m_numNodes + j_c;
-    g_l[index_i] = 0; 
+    g_l[index_i] = static_cast<double>(iterRow->size() - 1); 
     g_u[index_i] = static_cast<double>(iterRow->size() - 1);
   }
 
@@ -322,7 +322,7 @@ MinPowerMILP::get_bounds_info(Index n, Number* x_l, Number* x_u,
       /* row index of constraint matrix */
       int index_i = m_numNodes * m_tier2NumSlot + m_numNodes + m_numHeads + n_c * m_numHeads + j_c;
       
-      g_l[index_i] = 1.0;
+      g_l[index_i] = 0.0;
       g_u[index_i] = 1.0;
 
     }
@@ -448,7 +448,6 @@ void
 MinPowerMILP::finalize_solution(TMINLP::SolverReturn status,
                             Index n, const Number* x, Number obj_value)
 {
-#ifdef DEBUG
   std::cout<<"Problem status: "<<status<<std::endl;
   std::cout<<"Objective value: "<<obj_value<<std::endl;
   if(printSol_ && x != NULL){
@@ -458,7 +457,6 @@ MinPowerMILP::finalize_solution(TMINLP::SolverReturn status,
       if(i < n-1) std::cout<<", ";}
     std::cout<<std::endl;
   }
-#endif
 
   /* Fill the solution here */
   if(x != NULL) {
