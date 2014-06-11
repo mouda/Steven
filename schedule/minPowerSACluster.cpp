@@ -613,7 +613,7 @@ bool MinPowerSACluster::startCool()
 
   for(int i = 1; i < SAIter; ++i)
   {
-    coolOnce_minResors();
+    coolOnce_minResors(i);
 
     if( targetHeadIndex == -1 || targetHeadIndex == -1 ) {
       if ( nextEventFlag == 4 ) {
@@ -739,10 +739,10 @@ void MinPowerSACluster::addMemberSAIni(int inputHeadIndex, int inputMemberName)
 /*
     do one step movement add/discard/
 */
-void MinPowerSACluster::coolOnce_minResors()
+void MinPowerSACluster::coolOnce_minResors( const int iterSA)
 {
   int probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
-  int probDiscard = ((curSupNum<(maxChNum+1)) ?0:30000);
+  int probDiscard = ((curSupNum<(maxChNum+1)) ?0:20000);
 //  int probAdd = 0;
 //  int probDiscard = 0;
   int probExchange = 0;
@@ -778,6 +778,10 @@ void MinPowerSACluster::coolOnce_minResors()
   //-------------------------------------//
   //Decide event Flag                    //
   //-------------------------------------//
+  for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
+    cout << cSystem->vecClusterSize.at(i) << ' ';
+  }
+  cout << endl;
 
   if (eventCursor<probAdd) nextEventFlag = 1;
   else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
@@ -798,7 +802,7 @@ void MinPowerSACluster::coolOnce_minResors()
     if (cSystem->listUnSupport->size()==0) cout<<"Error, it should haven't come in here with empty addlist and add."<<endl;
     else
     {
-      decideCloset();
+      decideAddClosetAddableNode();
       if(targetHeadIndex!=-1&&targetNode!=-1){
         addMemberSA(targetHeadIndex,targetNode);
       }
@@ -808,7 +812,8 @@ void MinPowerSACluster::coolOnce_minResors()
   }
   else if (nextEventFlag ==2)
   {
-    decideDiscard3b();
+    //decideDiscard3b();
+    decideDiscardMinGain();
     discardMemberSA(targetHeadIndex,targetNode);
     nextChNum=curChNum;
   }
@@ -869,7 +874,7 @@ MinPowerSACluster::decideExchangeNode()
 
 */
 void 
-MinPowerSACluster::decideCloset() {
+MinPowerSACluster::decideAddSmallestSize() {
   targetHeadIndex=-1;
   targetNode=-1;
   double curInfo=curSupNum*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
@@ -892,46 +897,37 @@ MinPowerSACluster::decideCloset() {
       maxName = *itList;
     }
   }
+  /* Decide Result */
   targetNode = maxName;
   targetHeadIndex = chIdx;
 
 }
 
 void 
-MinPowerSACluster::decideAdd3i_DC_HeadDetMemRan() {
+MinPowerSACluster::decideAddClosetAddableNode() {
   targetHeadIndex=-1;
   targetNode=-1;
 
-  double curInfo=curSupNum*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-  double residualInformation=wholeSystemEntopy-curInfo;
-  double randomCurs=((double)rand() / ((double)RAND_MAX + 1));
-  double chooseCurs=0;
-  list <int>::iterator it_Int=cSystem->listUnSupport->begin();
-  std::vector<int>::const_iterator maxIter = std::min_element(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
-  int chIdx = 0;
-  for (std::vector<int>::const_iterator iter = cSystem->vecClusterSize.begin(); iter != maxIter; ++iter) ++chIdx; 
-  cout << "Min Ch idx: " << chIdx << "with size: " << cSystem->vecClusterSize.at(chIdx) <<endl;
-
-  for(; it_Int!=cSystem->listUnSupport->end(); it_Int++) {
-    cSystem->allSupStru[*it_Int]=true;
-    double tmpIndInfo=(curSupNum+1)*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru)-curInfo;
-    chooseCurs+=tmpIndInfo;
-    cSystem->allSupStru[*it_Int]=false;
-    if ((chooseCurs/residualInformation)>randomCurs) {
-      targetNode=*it_Int;
-      break;
+  double maxGain = -DBL_MAX;
+  int    maxName = -1; 
+  int    chIdx = -1;
+  for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
+    if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) < m_tier2NumSlot + 1) {
+      std::list<int>::const_iterator itList = cSystem->listUnSupport->begin();
+      for (; itList != cSystem->listUnSupport->end(); ++itList) {
+        double tmpGain = m_ptrMap->GetGijByPair(*itList, cSystem->vecHeadName.at(i) );
+        if (tmpGain > maxGain) {
+          maxGain = tmpGain;
+          maxName = *itList;
+          chIdx = i;
+        }
+      }
     }
   }
-  if (targetNode==-1)return;
+  /* Decide Result */
+  targetNode = maxName;
+  targetHeadIndex = chIdx;
 
-  double maxGain=0;
-  //find closet head
-  for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-    if(Gij[targetNode][cSystem->vecHeadName[i]]>maxGain) {
-      maxGain=Gij[targetNode][cSystem->vecHeadName[i]];
-      targetHeadIndex=i;
-    }
-  }
 }
 /*
     targetHeadIndex: (Randomly) Choose a Head uniformly
@@ -943,10 +939,9 @@ MinPowerSACluster::decideDiscard3b()
   //Compute the discardable size
 
   targetNode = -1;
-  std::vector<int>::const_iterator maxIter = std::max_element(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
+  std::vector<int>::const_iterator minIter = std::max_element(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
   int chIdx = 0;
-  for (std::vector<int>::const_iterator iter = cSystem->vecClusterSize.begin(); iter != maxIter; ++iter) ++chIdx; 
-  cout << "Max Ch idx: " << chIdx << "with size: " << cSystem->vecClusterSize.at(chIdx) <<endl;
+  for (std::vector<int>::const_iterator iter = cSystem->vecClusterSize.begin(); iter != minIter; ++iter) ++chIdx; 
   std::list<std::list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();
   for (int i = 0; i < chIdx; ++i) { ++iterRow; }
   std::list<int>::const_iterator iterCol = iterRow->begin();
@@ -965,8 +960,40 @@ MinPowerSACluster::decideDiscard3b()
   targetHeadIndex = chIdx;
   assert(targetNode != -1 && targetHeadIndex != -1);
 }
+void
+MinPowerSACluster::decideDiscardMinGain()
+{
+  //Compute the discardable size
 
-void MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
+  targetNode = -1;
+  targetHeadIndex = -1;
+
+  double  minGain   = DBL_MAX;
+  int     minChIdx  = -1;
+  int     minNode   = -1;
+  std::list<std::list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();
+  for (int i = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++i) {
+    if (iterRow->size() > 1) {
+      std::list<int>::const_iterator iterCol = iterRow->begin();
+      for (; iterCol != iterRow->end(); ++iterCol) {
+        double tmpGain = m_ptrMap->GetGijByPair(*iterCol,i);
+        if (tmpGain < minGain) {
+          minGain   = tmpGain;
+          minChIdx  = i;
+          minNode   = *iterCol; 
+        }
+      }
+    }
+  }
+
+  /* Decide Result */
+  targetNode = minNode;
+  targetHeadIndex = minChIdx;
+  assert(targetNode != -1 && targetHeadIndex != -1);
+}
+
+void 
+MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
 {
   //----Uniformly choosed
   int rotateAbleSize=0;
@@ -1346,6 +1373,8 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
   }
 //  cout <<": " << m_tier2NumSlot + 1<<endl;
 //  cout << curJEntropy <<": " << curAllServe << endl;
+  cout << "bestFeasiblePayoff: " << bestFeasiblePayoff << endl;
+  cout << "m_curPayoff: " << m_curPayoff << endl;
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)

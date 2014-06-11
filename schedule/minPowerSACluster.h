@@ -257,15 +257,16 @@ public:
 //-------------------------------------------------------------------//
   //After Start Cool
   void addMemberSAIni(int inputHeadIndex0, int inputMemberName0);
-  void coolOnce_minResors();
+  void coolOnce_minResors( const int iterSA);
 
   void adaptSearchingProbability();
   void updateHeadLocation();
 
   void decideExchangeNode();
-  void decideAdd3i_DC_HeadDetMemRan();
-  void decideCloset();
+  void decideAddClosetAddableNode();
+  void decideAddSmallestSize();
   void decideDiscard3b();
+  void decideDiscardMinGain();
   void decideHeadRotate2i_DC_HeadRanMemDet();
 
   void decideHeadJoining4b();
