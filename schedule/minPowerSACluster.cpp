@@ -778,6 +778,7 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   //-------------------------------------//
   //Decide event Flag                    //
   //-------------------------------------//
+  cout << "IterSA: " << iterSA << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
     cout << cSystem->vecClusterSize.at(i) << ' ';
   }
@@ -1217,7 +1218,7 @@ void MinPowerSACluster::confirmNeighbor3i()
       ( !nextAllServe && curAllServe ) || 
       ( ( nextPayoff > m_curPayoff ) && nextAllServe && curAllServe ) )
   {
-    double probAnnealing = exp (-20*abs(nextPayoff-m_curPayoff)/temparature);
+    double probAnnealing = exp (-20.0*abs(nextPayoff-m_curPayoff)/temparature);
     //cout<<"Show Payoff "<<nextPayoff<<"  "<<m_curPayoff<<endl;
     //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
