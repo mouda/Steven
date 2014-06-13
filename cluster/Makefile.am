@@ -1,4 +1,4 @@
-bin_PROGRAMS = simulator
+bin_PROGRAMS = genCluster 
 INCLUDES =-I../lib
 #scheduler_CFLAGS = 
 LIBS = -lopenblas \
@@ -63,27 +63,10 @@ AM_LDFLAGS = -lopenblas \
 	     -lcoinlapack\
 	     -lz\
 	     -lbz2
-simulator_SOURCES = main.cpp \
-		    csPowerUpdater.h csPowerUpdater.cpp\
-		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
+genCluster_SOURCES = main.cpp \
 		    tier1NLP.h tier1NLP.cpp\
 		    minPowerSACluster.h minPowerSACluster.cpp\
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
-		    kmeansCsFactory.h kmeansCsFactory.cpp\
-		    minResCsFactory.h minResCsFactory.cpp\
-		    scheduler.h scheduler.cpp \
-		    MyTMINLP.hpp MyTMINLP.cpp \
-		    branchBoundScheduler.h branchBoundScheduler.cpp \
-		    maxSNRScheduler.h maxSNRScheduler.cpp \
-		    greedyPhysical.h greedyPhysical.cpp \
-		    bruteForceScheduler.h bruteForceScheduler.cpp\
-		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
-		    minPowerScheduler.h minPowerScheduler.cpp\
-		    minPowerMILP.h minPowerMILP.cpp\
-		    SASolver.h SASolver.cpp\
-		    powerUpdater.h powerUpdater.cpp\
-		    schedFactory.h schedFactory.cpp \
-		    slot.h slot.cpp \
 		    simulator.h simulator.cpp 
 
 LOCAL_INCLUDE = -I../lib/
@@ -94,7 +77,7 @@ else
 AM_CFLAGS = $(DEPS_CFLAGS) $(LOCAL_INCLUDE)  -I../ -O2
 AM_CXXFLAGS = $(DEPS_CFLAGS) $(LOCAL_INCLUDE)  -I../ -O2
 endif
-simulator_LDADD = $(DEPS_CFLAGS) ../lib/libfileHandler.la \
+genCluster_LDADD = $(DEPS_CFLAGS) ../lib/libfileHandler.la \
 		  ../lib/libfileHandler.la \
                   ../lib/libutility.la \
                   ../lib/libmapFactory.la \

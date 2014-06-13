@@ -1,1 +1,1 @@
-SUBDIRS = schedule 
+SUBDIRS = lib cluster schedule 

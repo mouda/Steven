@@ -8,12 +8,11 @@
 #include <vector>
 #include "map.h"
 #include "slot.h"
-#include "event.h"
 #include "clusterStructure.h"
 #include "scheduler.h"
 #include "maxSNRScheduler.h"
 #include "CORRE_MA_OPE.h"
-#include "fileHandler.h"
+#include "../lib/fileHandler.h"
 
 using std::string;
 using std::pair;
@@ -39,7 +38,6 @@ class Simulator
         const string&);
     ~Simulator();
 
-    void SetEvents(double t_ms);
     void SequentialRun(int tier2NumSlot);
     void SequentialFree();
     void Run();
@@ -76,7 +74,6 @@ class Simulator
     /* event driven simulation data structure */
     std::list<Slot*>    m_listSlot;
     Slot*               m_ptrSlotHead;
-    std::list<Event*>   m_listEvent;
 
     /* output  */
     FileHandler         m_entropyFHandler;

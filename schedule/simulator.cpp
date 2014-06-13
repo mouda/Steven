@@ -42,11 +42,6 @@ Simulator::~Simulator()
   this->SequentialFree();
 }
 
-void
-Simulator::SetEvents(double t_ms)
-{
-
-}
 
 void
 Simulator::SequentialRun(int tier2NumSlot)

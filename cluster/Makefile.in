@@ -34,9 +34,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = simulator$(EXEEXT)
-subdir = schedule
-DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+bin_PROGRAMS = genCluster$(EXEEXT)
+subdir = cluster
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -47,19 +47,11 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_simulator_OBJECTS = main.$(OBJEXT) csPowerUpdater.$(OBJEXT) \
-	ULSA4b7_DC.$(OBJEXT) tier1NLP.$(OBJEXT) \
+am_genCluster_OBJECTS = main.$(OBJEXT) tier1NLP.$(OBJEXT) \
 	minPowerSACluster.$(OBJEXT) minPowerCsFactory.$(OBJEXT) \
-	kmeansCsFactory.$(OBJEXT) minResCsFactory.$(OBJEXT) \
-	scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) \
-	branchBoundScheduler.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
-	greedyPhysical.$(OBJEXT) bruteForceScheduler.$(OBJEXT) \
-	nonSimplifiedScheduler.$(OBJEXT) minPowerScheduler.$(OBJEXT) \
-	minPowerMILP.$(OBJEXT) SASolver.$(OBJEXT) \
-	powerUpdater.$(OBJEXT) schedFactory.$(OBJEXT) slot.$(OBJEXT) \
 	simulator.$(OBJEXT)
-simulator_OBJECTS = $(am_simulator_OBJECTS)
-simulator_DEPENDENCIES = ../lib/libfileHandler.la \
+genCluster_OBJECTS = $(am_genCluster_OBJECTS)
+genCluster_DEPENDENCIES = ../lib/libfileHandler.la \
 	../lib/libfileHandler.la ../lib/libutility.la \
 	../lib/libmapFactory.la ../lib/libcsFactory.la \
 	../lib/libCORRE_MA_OPE.la ../lib/libULAGENT.la \
@@ -88,8 +80,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(simulator_SOURCES)
-DIST_SOURCES = $(simulator_SOURCES)
+SOURCES = $(genCluster_SOURCES)
+DIST_SOURCES = $(genCluster_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -274,27 +266,10 @@ AM_LDFLAGS = -lopenblas \
 	     -lz\
 	     -lbz2
 
-simulator_SOURCES = main.cpp \
-		    csPowerUpdater.h csPowerUpdater.cpp\
-		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
+genCluster_SOURCES = main.cpp \
 		    tier1NLP.h tier1NLP.cpp\
 		    minPowerSACluster.h minPowerSACluster.cpp\
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
-		    kmeansCsFactory.h kmeansCsFactory.cpp\
-		    minResCsFactory.h minResCsFactory.cpp\
-		    scheduler.h scheduler.cpp \
-		    MyTMINLP.hpp MyTMINLP.cpp \
-		    branchBoundScheduler.h branchBoundScheduler.cpp \
-		    maxSNRScheduler.h maxSNRScheduler.cpp \
-		    greedyPhysical.h greedyPhysical.cpp \
-		    bruteForceScheduler.h bruteForceScheduler.cpp\
-		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
-		    minPowerScheduler.h minPowerScheduler.cpp\
-		    minPowerMILP.h minPowerMILP.cpp\
-		    SASolver.h SASolver.cpp\
-		    powerUpdater.h powerUpdater.cpp\
-		    schedFactory.h schedFactory.cpp \
-		    slot.h slot.cpp \
 		    simulator.h simulator.cpp 
 
 LOCAL_INCLUDE = -I../lib/
@@ -302,7 +277,7 @@ LOCAL_INCLUDE = -I../lib/
 @DEBUG_TRUE@AM_CFLAGS = $(DEPS_CFLAGS) $(LOCAL_INCLUDE)  -I../ -g3 -O0
 @DEBUG_FALSE@AM_CXXFLAGS = $(DEPS_CFLAGS) $(LOCAL_INCLUDE)  -I../ -O2
 @DEBUG_TRUE@AM_CXXFLAGS = $(DEPS_CFLAGS) $(LOCAL_INCLUDE) -I../ -g3 -O0
-simulator_LDADD = $(DEPS_CFLAGS) ../lib/libfileHandler.la \
+genCluster_LDADD = $(DEPS_CFLAGS) ../lib/libfileHandler.la \
 		  ../lib/libfileHandler.la \
                   ../lib/libutility.la \
                   ../lib/libmapFactory.la \
@@ -328,9 +303,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu schedule/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu cluster/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu schedule/Makefile
+	  $(AUTOMAKE) --gnu cluster/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -392,9 +367,9 @@ clean-binPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
-simulator$(EXEEXT): $(simulator_OBJECTS) $(simulator_DEPENDENCIES) 
-	@rm -f simulator$(EXEEXT)
-	$(CXXLINK) $(simulator_OBJECTS) $(simulator_LDADD) $(LIBS)
+genCluster$(EXEEXT): $(genCluster_OBJECTS) $(genCluster_DEPENDENCIES) 
+	@rm -f genCluster$(EXEEXT)
+	$(CXXLINK) $(genCluster_OBJECTS) $(genCluster_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -402,27 +377,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MyTMINLP.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SASolver.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ULSA4b7_DC.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/branchBoundScheduler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bruteForceScheduler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csPowerUpdater.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/greedyPhysical.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kmeansCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxSNRScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerCsFactory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerMILP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerSACluster.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerScheduler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minResCsFactory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nonSimplifiedScheduler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/powerUpdater.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schedFactory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simulator.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/slot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tier1NLP.Po@am__quote@
 
 .cpp.o:

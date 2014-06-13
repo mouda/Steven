@@ -9,6 +9,7 @@ AC_CONFIG_SRCDIR([schedule/main.cpp])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
+LT_INIT
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_MAKE_SET
@@ -50,5 +51,7 @@ AC_FUNC_ERROR_AT_LINE
 AC_CHECK_FUNCS([floor mkdir pow socket sqrt])
 
 AC_CONFIG_FILES([Makefile
-		 schedule/Makefile])
+		 cluster/Makefile
+		 schedule/Makefile
+		 lib/Makefile])
 AC_OUTPUT
