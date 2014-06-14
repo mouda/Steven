@@ -88,13 +88,13 @@ simulator_SOURCES = main.cpp \
 
 LOCAL_INCLUDE = -I../lib/
 if DEBUG
-AM_CFLAGS = $(DEPS_CFLAGS) $(LOCAL_INCLUDE)  -I../ -g3 -O0
-AM_CXXFLAGS = $(DEPS_CFLAGS) $(LOCAL_INCLUDE) -I../ -g3 -O0
+AM_CFLAGS = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS)  $(LOCAL_INCLUDE)  -I../ -g3 -O0
+AM_CXXFLAGS = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) -I../ -g3 -O0
 else
-AM_CFLAGS = $(DEPS_CFLAGS) $(LOCAL_INCLUDE)  -I../ -O2
-AM_CXXFLAGS = $(DEPS_CFLAGS) $(LOCAL_INCLUDE)  -I../ -O2
+AM_CFLAGS = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS)  -I../ -O2
+AM_CXXFLAGS = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS)  -I../ -O2
 endif
-simulator_LDADD = $(DEPS_CFLAGS) ../lib/libfileHandler.la \
+simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
 		  ../lib/libfileHandler.la \
                   ../lib/libutility.la \
                   ../lib/libmapFactory.la \

@@ -22,7 +22,7 @@ Tier1NLP::Tier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
     CORRE_MA_OPE const * const ptrGField,  
     double tier1TxTime
     ):
-  m_numVariables(n),
+  m_numVariables(n+1),
   m_numConstraints(m),
   m_numNz_jac_g(nnz_jac_g),
   m_numNz_h_lag(nnz_h_lag),
@@ -56,10 +56,10 @@ Tier1NLP::Tier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
     m_vecClusterEntropy.push_back(m_ptrGField->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits()));
     std::fill(tmpIndicator.begin(), tmpIndicator.end(), 0);
   }
-//  for (int i = 0; i < m_vecClusterEntropy.size(); i++) {
-//    std::cout << i << ':' <<m_vecClusterEntropy.at(i) << ' ';
-//  }
-//  std::cout << endl;
+  for (int i = 0; i < m_vecClusterEntropy.size(); i++) {
+    std::cout << i << ':' <<m_vecClusterEntropy.at(i) << ' ';
+  }
+  std::cout << endl;
 
   assert ( m_vecClusterEntropy.size() == m_numVariables);
 }
@@ -78,9 +78,10 @@ bool
 Tier1NLP::get_variables_types(Index n, VariableType* var_types)
 {
 // cout << "=============================================== here get_variables_types ======================="<<endl;
-  for (int i = 0; i < m_numVariables; ++i) {
+  for (int i = 0; i < m_numVariables-1; ++i) {
     var_types[i] = CONTINUOUS;
   }
+  var_types[m_numVariables-1] = BINARY;
   return true;
 }
 
@@ -179,9 +180,9 @@ Tier1NLP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
   for (int i = 0; i < m_numVariables; ++i) {
     grad_f[i] = x[i] * pow(2.0, x[i]/KSCALE/m_ptrMap->GetBandwidth()) * m_ptrMap->GetNoise() /
      m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)) / m_ptrMap->GetBandwidth()/KSCALE; 
-//    cout << m_ptrMap->GetNoise() / m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)) << ' ' ;
+    cout << m_ptrMap->GetNoise() / m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)) << ' ' ;
   }
-//  cout << endl;
+  cout << endl;
   return true;
 }
 
