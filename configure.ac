@@ -55,6 +55,7 @@ AC_FUNC_ERROR_AT_LINE
 AC_CHECK_FUNCS([floor mkdir pow socket sqrt])
 
 AC_CONFIG_FILES([Makefile
+                 cluster/Makefile
 		 schedule/Makefile
 		 lib/Makefile])
 AC_OUTPUT

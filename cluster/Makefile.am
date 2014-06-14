@@ -12,8 +12,6 @@ LIBS = -lopenblas \
        -lboost_math_c99 \
        -lboost_math_tr1 \
        -lipopt\
-       -lbonmin\
-       -lbonminampl\
        -lipoptamplinterface\
        -lCbc\
        -lCbcSolver\
@@ -43,8 +41,6 @@ AM_LDFLAGS = -lopenblas \
 	     -lboost_math_c99 \
 	     -lboost_math_tr1 \
 	     -lipopt\
-	     -lbonmin\
-	     -lbonminampl\
 	     -lipoptamplinterface\
 	     -lCbc\
 	     -lCbcSolver\
@@ -64,20 +60,20 @@ AM_LDFLAGS = -lopenblas \
 	     -lz\
 	     -lbz2
 genCluster_SOURCES = main.cpp \
-		    tier1NLP.h tier1NLP.cpp\
+		    myTier1NLP.h myTier1NLP.cpp\
 		    minPowerSACluster.h minPowerSACluster.cpp\
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
 		    simulator.h simulator.cpp 
 
 LOCAL_INCLUDE = -I../lib/
 if DEBUG
-AM_CFLAGS = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) $(LOCAL_INCLUDE)  -I../ -g3 -O0
-AM_CXXFLAGS = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) $(LOCAL_INCLUDE) -I../ -g3 -O0
+AM_CFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -g3 -O0
+AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE) -I../ -g3 -O0
 else
-AM_CFLAGS = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
-AM_CXXFLAGS = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
+AM_CFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
+AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
 endif
-genCluster_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
+genCluster_LDADD = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) ../lib/libfileHandler.la \
 		  ../lib/libfileHandler.la \
                   ../lib/libutility.la \
                   ../lib/libmapFactory.la \

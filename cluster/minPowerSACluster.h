@@ -22,18 +22,9 @@
 #include <list>
 #include <ctime>
 #include <map>
-#include <coin/CoinPragma.hpp>
-#include <coin/CoinTime.hpp>
-#include <coin/CoinError.hpp>
+#include <coin/IpIpoptApplication.hpp>
+#include <coin/IpSolveStatistics.hpp>
 
-#include <coin/BonOsiTMINLPInterface.hpp>
-#include <coin/BonIpoptSolver.hpp>
-#include <coin/BonCbc.hpp>
-#include <coin/BonBonminSetup.hpp>
-
-#include <coin/BonOACutGenerator2.hpp>
-#include <coin/BonEcpCuts.hpp>
-#include <coin/BonOaNlpOptim.hpp>
 
 #include "ULAGENT.h"
 #include "ULCS1b.h"
@@ -43,7 +34,7 @@
 #include "ULSAOutputToolSet.cpp"
 #include "TimeStamp.h"
 #include "../lib/SA/SABASE.h"
-#include "tier1NLP.h"
+#include "myTier1NLP.h"
 #include "map.h"
 
 template class ULSAOutputToolSet<class MinPowerSACluster>;

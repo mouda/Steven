@@ -1,5 +1,5 @@
 #include <iostream>
-#include<iomanip>
+#include <iomanip>
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
@@ -670,6 +670,7 @@ double
 MinPowerSACluster::
 OptimalRateControl() const
 {
+  /*
   Index numVariables = nextChNum;
   Index numConstraints = 1;
   Index numNz_jac_g = numVariables;
@@ -722,6 +723,8 @@ OptimalRateControl() const
 
   //m_vecSolution.assign(rawPtr->GetVecSolution().begin(), rawPtr->GetVecSolution().end());
   return rawPtr->GetMinimalPower();
+  */
+  return 0.0;
 }
 
 
