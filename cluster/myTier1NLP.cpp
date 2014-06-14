@@ -2,7 +2,7 @@
 // All Rights Reserved.
 // This code is published under the Eclipse Public License.
 //
-// $Id: MyNLP.cpp 2005 2011-06-06 12:55:16Z stefan $
+// $Id: MyTier1NLP.cpp 2005 2011-06-06 12:55:16Z stefan $
 //
 // Authors:  Carl Laird, Andreas Waechter     IBM    2004-11-05
 
@@ -13,16 +13,16 @@
 using namespace Ipopt;
 
 /* Constructor. */
-MyNLP::MyNLP()
+MyTier1NLP::MyTier1NLP()
 {}
 
-MyNLP::~MyNLP()
+MyTier1NLP::~MyTier1NLP()
 {}
 
-bool MyNLP::get_nlp_info(Index& n, Index& m, Index& nnz_jac_g,
+bool MyTier1NLP::get_nlp_info(Index& n, Index& m, Index& nnz_jac_g,
                          Index& nnz_h_lag, IndexStyleEnum& index_style)
 {
-  // The problem described in MyNLP.hpp has 2 variables, x1, & x2,
+  // The problem described in MyTier1NLP.hpp has 2 variables, x1, & x2,
   n = 2;
 
   // one equality constraint,
@@ -42,7 +42,7 @@ bool MyNLP::get_nlp_info(Index& n, Index& m, Index& nnz_jac_g,
   return true;
 }
 
-bool MyNLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
+bool MyTier1NLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
                             Index m, Number* g_l, Number* g_u)
 {
   // here, the n and m we gave IPOPT in get_nlp_info are passed back to us.
@@ -68,7 +68,7 @@ bool MyNLP::get_bounds_info(Index n, Number* x_l, Number* x_u,
   return true;
 }
 
-bool MyNLP::get_starting_point(Index n, bool init_x, Number* x,
+bool MyTier1NLP::get_starting_point(Index n, bool init_x, Number* x,
                                bool init_z, Number* z_L, Number* z_U,
                                Index m, bool init_lambda,
                                Number* lambda)
@@ -87,7 +87,7 @@ bool MyNLP::get_starting_point(Index n, bool init_x, Number* x,
   return true;
 }
 
-bool MyNLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
+bool MyTier1NLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
 {
   // return the value of the objective function
   Number x2 = x[1];
@@ -95,7 +95,7 @@ bool MyNLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
   return true;
 }
 
-bool MyNLP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
+bool MyTier1NLP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
 {
   // return the gradient of the objective function grad_{x} f(x)
 
@@ -109,7 +109,7 @@ bool MyNLP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
   return true;
 }
 
-bool MyNLP::eval_g(Index n, const Number* x, bool new_x, Index m, Number* g)
+bool MyTier1NLP::eval_g(Index n, const Number* x, bool new_x, Index m, Number* g)
 {
   // return the value of the constraints: g(x)
   Number x1 = x[0];
@@ -120,7 +120,7 @@ bool MyNLP::eval_g(Index n, const Number* x, bool new_x, Index m, Number* g)
   return true;
 }
 
-bool MyNLP::eval_jac_g(Index n, const Number* x, bool new_x,
+bool MyTier1NLP::eval_jac_g(Index n, const Number* x, bool new_x,
                        Index m, Index nele_jac, Index* iRow, Index *jCol,
                        Number* values)
 {
@@ -149,7 +149,7 @@ bool MyNLP::eval_jac_g(Index n, const Number* x, bool new_x,
   return true;
 }
 
-bool MyNLP::eval_h(Index n, const Number* x, bool new_x,
+bool MyTier1NLP::eval_h(Index n, const Number* x, bool new_x,
                    Number obj_factor, Index m, const Number* lambda,
                    bool new_lambda, Index nele_hess, Index* iRow,
                    Index* jCol, Number* values)
@@ -183,7 +183,7 @@ bool MyNLP::eval_h(Index n, const Number* x, bool new_x,
   return true;
 }
 
-void MyNLP::finalize_solution(SolverReturn status,
+void MyTier1NLP::finalize_solution(SolverReturn status,
                               Index n, const Number* x, const Number* z_L, const Number* z_U,
                               Index m, const Number* g, const Number* lambda,
                               Number obj_value,

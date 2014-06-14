@@ -2,7 +2,7 @@
 // All Rights Reserved.
 // This code is published under the Eclipse Public License.
 //
-// $Id: MyNLP.hpp 1861 2010-12-21 21:34:47Z andreasw $
+// $Id: MyTier1NLP.hpp 1861 2010-12-21 21:34:47Z andreasw $
 //
 // Authors:  Carl Laird, Andreas Waechter     IBM    2004-11-05
 
@@ -10,11 +10,16 @@
 #define __MYNLP_HPP__
 
 #include <coin/IpTNLP.hpp>
+#include "clusterStructure.h"
+#include "map.h"
+#include "map.h"
+#include "ULCS1b.h"
+#include "CORRE_MA_OPE.h"
 
 using namespace Ipopt;
 
 /** C++ Example NLP for interfacing a problem with IPOPT.
- *  MyNLP implements a C++ example showing how to interface with IPOPT
+ *  MyTier1NLP implements a C++ example showing how to interface with IPOPT
  *  through the TNLP interface. This example is designed to go along with
  *  the tutorial document (see Examples/CppTutorial/).
  *  This class implements the following NLP.
@@ -25,14 +30,18 @@ using namespace Ipopt;
  *       -1 <= x1 <= 1
  *
  */
-class MyNLP : public TNLP
+class MyTier1NLP : public TNLP
 {
 public:
-  /** default constructor */
-  MyNLP();
+  MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
+    Map const * const ptrMap,
+    ULCS1b const * const cSystem,  
+    CORRE_MA_OPE const * const ptrGField,  
+    double tier1TxTime
+    );
 
   /** default destructor */
-  virtual ~MyNLP();
+  virtual ~MyTier1NLP();
 
   /**@name Overloaded from TNLP */
   //@{
@@ -101,9 +110,9 @@ private:
    *  
    */
   //@{
-  //  MyNLP();
-  MyNLP(const MyNLP&);
-  MyNLP& operator=(const MyNLP&);
+  //  MyTier1NLP();
+  MyTier1NLP(const MyTier1NLP&);
+  MyTier1NLP& operator=(const MyTier1NLP&);
   //@}
 };
 
