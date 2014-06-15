@@ -114,6 +114,27 @@ private:
   MyTier1NLP(const MyTier1NLP&);
   MyTier1NLP& operator=(const MyTier1NLP&);
   //@}
+  bool                        printSol_;
+  int                         m_numNodes;
+  int                         m_numHeads;
+  double                      m_maxPower;
+
+  Index                       m_numVariables;
+  Index                       m_numConstraints;
+  Index                       m_numNz_jac_g;
+  Index                       m_numNz_h_lag;
+  TNLP::IndexStyleEnum        m_index_style;
+  Eigen::MatrixXd             m_Signma;
+  Eigen::MatrixXd             m_Constriants;
+  Map const * const           m_ptrMap;
+  ULCS1b const * const        m_cSystem;   // system cluseter structure
+  CORRE_MA_OPE const * const  m_ptrGField;
+
+  double                      m_tier1TxTime;
+  double                      m_obj;
+  std::vector<double>         m_vecRate;
+  std::vector<int>            m_vecHeadTable;
+  std::vector<double>         m_vecClusterEntropy;
 };
 
 

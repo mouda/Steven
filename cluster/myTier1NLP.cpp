@@ -12,9 +12,53 @@
 
 using namespace Ipopt;
 
-/* Constructor. */
-MyTier1NLP::MyTier1NLP()
-{}
+MyTier1NLP::MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
+    Map const * const ptrMap,
+    ULCS1b const * const cSystem,  
+    CORRE_MA_OPE const * const ptrGField,  
+    double tier1TxTime
+    ):
+  m_numVariables(n),
+  m_numConstraints(m),
+  m_numNz_jac_g(nnz_jac_g),
+  m_numNz_h_lag(nnz_h_lag),
+  m_index_style(TNLP::FORTRAN_STYLE),
+  m_tier1TxTime(tier1TxTime),
+  m_cSystem(cSystem),
+  m_ptrGField(ptrGField),
+  m_ptrMap(ptrMap),
+  printSol_(true)
+{
+  /* construct the std::vector of head index and variable index*/
+  for (int i = 0; i < m_ptrMap->GetNumInitHeads(); ++i) {
+    if (m_cSystem->vecHeadName.at(i) >= 0) {
+      m_vecHeadTable.push_back(m_cSystem->vecHeadName.at(i)); 
+    }
+  }
+  assert ( m_vecHeadTable.size() == m_numVariables);
+
+  /* construct the std::vector of cluster entropy */
+  std::list<std::list<int> >::const_iterator iterRow = m_cSystem->listCluMember->begin();
+  std::vector<int> tmpIndicator(m_ptrMap->GetNumNodes(), 0);
+  std::vector<double> tmpVariance(m_ptrMap->GetNumNodes(), 1.0);
+
+  for (; iterRow != m_cSystem->listCluMember->end(); ++iterRow) {
+    std::list<int>::const_iterator iterCol = iterRow->begin();
+    if ( (*iterCol) >= 0) {
+      for (; iterCol != iterRow->end(); ++iterCol) {
+        tmpIndicator.at(*iterCol) = 1;
+      }
+    }
+    m_vecClusterEntropy.push_back(m_ptrGField->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits()));
+    std::fill(tmpIndicator.begin(), tmpIndicator.end(), 0);
+  }
+//  for (int i = 0; i < m_vecClusterEntropy.size(); i++) {
+//    std::cout << i << ':' <<m_vecClusterEntropy.at(i) << ' ';
+//  }
+//  std::cout << endl;
+
+  assert ( m_vecClusterEntropy.size() == m_numVariables);
+}
 
 MyTier1NLP::~MyTier1NLP()
 {}

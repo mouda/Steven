@@ -670,12 +670,12 @@ double
 MinPowerSACluster::
 OptimalRateControl() const
 {
-  /*
   Index numVariables = nextChNum;
   Index numConstraints = 1;
   Index numNz_jac_g = numVariables;
   Index numNz_h_lag = numVariables;
   
+  /*
   SmartPtr<TMINLP> tminlp = 
     new Tier1NLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag,
         m_ptrMap,
@@ -724,6 +724,40 @@ OptimalRateControl() const
   //m_vecSolution.assign(rawPtr->GetVecSolution().begin(), rawPtr->GetVecSolution().end());
   return rawPtr->GetMinimalPower();
   */
+
+  // Create an instance of your nlp...
+  SmartPtr<MyTier1NLP> mynlp = 
+    new MyTier1NLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag,
+        m_ptrMap,
+        cSystem,
+        matrixComputer,
+        m_tier1TxTime
+        );
+
+  // Create an instance of the IpoptApplication
+  //
+  // We are using the factory, since this allows us to compile this
+  // example with an Ipopt Windows DLL
+  SmartPtr<IpoptApplication> app = IpoptApplicationFactory();
+
+  // Initialize the IpoptApplication and process the options
+  ApplicationReturnStatus status;
+  status = app->Initialize();
+  if (status != Solve_Succeeded) {
+    std::cout << std::endl << std::endl << "*** Error during initialization!" << std::endl;
+    return (int) status;
+  }
+
+  status = app->OptimizeTNLP(mynlp);
+
+  if (status == Solve_Succeeded) {
+    // Retrieve some statistics about the solve
+    Index iter_count = app->Statistics()->IterationCount();
+    std::cout << std::endl << std::endl << "*** The problem solved in " << iter_count << " iterations!" << std::endl;
+
+    Number final_obj = app->Statistics()->FinalObjective();
+    std::cout << std::endl << std::endl << "*** The final value of the objective function is " << final_obj << '.' << std::endl;
+  }
   return 0.0;
 }
 
