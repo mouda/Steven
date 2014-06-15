@@ -10,6 +10,7 @@
 #define __MYNLP_HPP__
 
 #include <coin/IpTNLP.hpp>
+#include <vector>
 #include "clusterStructure.h"
 #include "map.h"
 #include "map.h"
@@ -43,6 +44,7 @@ public:
   /** default destructor */
   virtual ~MyTier1NLP();
 
+  double GetMinimalPower();
   /**@name Overloaded from TNLP */
   //@{
   /** Method to return some info about the nlp */

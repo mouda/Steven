@@ -733,6 +733,7 @@ OptimalRateControl() const
         matrixComputer,
         m_tier1TxTime
         );
+  MyTier1NLP* rawPtr = dynamic_cast<MyTier1NLP*>(GetRawPtr(mynlp));
 
   // Create an instance of the IpoptApplication
   //
@@ -758,7 +759,7 @@ OptimalRateControl() const
     Number final_obj = app->Statistics()->FinalObjective();
     std::cout << std::endl << std::endl << "*** The final value of the objective function is " << final_obj << '.' << std::endl;
   }
-  return 0.0;
+  return rawPtr->GetMinimalPower();
 }
 
 
