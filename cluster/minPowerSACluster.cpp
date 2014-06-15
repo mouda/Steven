@@ -754,10 +754,10 @@ OptimalRateControl() const
   if (status == Solve_Succeeded) {
     // Retrieve some statistics about the solve
     Index iter_count = app->Statistics()->IterationCount();
-    std::cout << std::endl << std::endl << "*** The problem solved in " << iter_count << " iterations!" << std::endl;
+    //std::cout << std::endl << std::endl << "*** The problem solved in " << iter_count << " iterations!" << std::endl;
 
     Number final_obj = app->Statistics()->FinalObjective();
-    std::cout << std::endl << std::endl << "*** The final value of the objective function is " << final_obj << '.' << std::endl;
+    //std::cout << std::endl << std::endl << "*** The final value of the objective function is " << final_obj << '.' << std::endl;
   }
   return rawPtr->GetMinimalPower();
 }
