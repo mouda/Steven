@@ -32,6 +32,8 @@ class Simulator
 
 
     void WriteCS( const string& );
+    void WriteLabel( const string& );
+    void WriteMetis( const string& );
 
     bool SelfCheck();
 
@@ -45,9 +47,7 @@ class Simulator
     ClusterStructure*   m_ptrCS;
     CORRE_MA_OPE*       m_ptrGField;
     std::vector<int>*   m_vecSupport;
-
     std::vector<int>    m_vecTotal;
-
 
 };
 #endif

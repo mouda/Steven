@@ -11,8 +11,8 @@ figure;
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
 
-CSPath = ['data/test_CS_N50_H13_new_1.out'];
-SchedulePath = ['data/test_solution_N50_H13_new_1.out'];
+CSPath = ['data/test_CS_N50_H5_new_1.out'];
+SchedulePath = ['data/test_solution_N50_H5_new_1.out'];
 mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_1.txt'];
 matSolution = dlmread(SchedulePath);
 

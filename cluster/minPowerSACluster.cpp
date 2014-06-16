@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <iomanip>
 #include <cstdio>
 #include <cstdlib>
@@ -113,11 +114,6 @@ MinPowerSACluster::MinPowerSACluster(
         }
     }
 
-    /* for (int i=0;i<totalNodes;i++){
-       for(int j=0;j<totalNodes;j++)
-         cout<<setw(14)<<Gij[i][j]<<" ";
-       cout<<endl;
-     }*/
     cSystem = new ULCS1b(inputTotalNodes, inputMaxChNum);
     powerBest = new double [totalNodes];
     nextNodePower = new double [totalNodes];
@@ -273,9 +269,8 @@ bool MinPowerSACluster::setInitialStucture(char* iniFlag)
       normalFlag = setIniStruKmeans();
     else if (!strcmp(iniFlag, "kmedoids_distance")) 
       normalFlag = setIniStruDistanceKmedoids();
-    else if (!strcmp(iniFlag, "HeadLimited")) 
-      normalFlag = setIniHeadLimited();
-
+    else if (!strcmp(iniFlag, "GraphPartition"))
+      normalFlag = setIniGraphPartition();
 
     //--------------------------------------------------------------//
     //Check the initial constraint and drop node form the furtherest//
@@ -396,46 +391,6 @@ bool MinPowerSACluster::setIniStruKmeans()
 }
 
 
-bool MinPowerSACluster::setIniHeadLimited()
-{
-    double sortGib[totalNodes];
-    for(int i=0; i<totalNodes; i++) {
-        sortGib[i]=Gib[i];
-    }
-    sort(sortGib,sortGib+totalNodes);
-
-    headCandidatesNum=maxChNum*3;
-    for (int i=0; i<totalNodes; i++)
-    {
-        double targetGainL=(i==totalNodes-1)?0:sortGib[totalNodes-i-2];
-        double targetGainR = sortGib[totalNodes-i-1];
-        for(int j=0; j<totalNodes; j++) {
-            if(Gib[j]<=targetGainR&&Gib[j]>targetGainL&&i<maxChNum) {
-                vecHeadCandidates.push_back(j);
-                cSystem->addNewHeadCs(j);
-                addMemberSAIni(i, j);
-                break;
-            }
-            else if (Gib[j]<=targetGainR&&Gib[j]>targetGainL&&i<headCandidatesNum) {
-
-                vecHeadCandidates.push_back(j);
-                cSystem->listUnSupport->push_back(j);
-                break;
-            }
-            else if (Gib[j]<=targetGainR&&Gib[j]>targetGainL) {
-
-                cSystem->listUnSupport->push_back(j);
-                break;
-            }
-        }
-    }
-
-    for (int i=0; i<maxChNum; i++)
-    {
-        nodes[cSystem->vecHeadName[i]].ptrHead = &(cSystem->vecHeadName[i]);
-    }
-    return true;
-}
 
 bool MinPowerSACluster::setIniStruDistanceKmedoids() 
 {
@@ -561,6 +516,54 @@ bool MinPowerSACluster::setIniStruDistanceKmedoids()
   }
 
   return true;
+}
+
+bool
+MinPowerSACluster::setIniGraphPartition()
+{
+  /* read file */
+  fstream fpart;
+  fpart.open("testMetis.out.part.10",std::ios::in);
+  std::vector<std::vector<int> > tmpGroup(maxChNum);
+  int nodeName = 0;
+  while(nodeName < m_ptrMap->GetNumNodes()) {
+    int k;
+    fpart >> k;
+    tmpGroup.at(k).push_back(nodeName);
+    ++nodeName;
+  }
+  /* determine the initial head */
+  std::vector<int> tmpVecHead(maxChNum);
+  std::vector<std::vector<int> >::const_iterator constIterRow = tmpGroup.begin();
+  int clusterIdx = 0;
+  for (; constIterRow != tmpGroup.end(); ++constIterRow, ++clusterIdx) {
+    std::vector<int>::const_iterator constIterCol = constIterRow->begin();
+    double  maxGain = -DBL_MAX;
+    int     maxGainIdx = -1;
+    for (; constIterCol != constIterRow->end(); ++constIterCol) {
+      if (maxGain < m_ptrMap->GetGi0ByNode(*constIterCol)) {
+        maxGain = m_ptrMap->GetGi0ByNode(*constIterCol);
+        maxGainIdx = *constIterCol;
+      }
+    }
+    assert(maxGainIdx != -1 );
+    tmpVecHead.at(clusterIdx) = maxGainIdx;
+  }
+
+  for (int i = 0; i < maxChNum; ++i) {
+    cSystem->addNewHeadCs(tmpVecHead.at(i));
+    for(unsigned int j=0 ; j < tmpGroup.at(i).size(); ++j) {
+      addMemberSAIni(i, tmpGroup[i][j]);//we correct the ptrHead later, Because the address will change
+    }
+  }
+  //Re assign the ptrHead NOW
+  for (int i=0; i<maxChNum; i++) {
+    for(int j=0; j<totalNodes; j++) {
+      if(cSystem->clusterStru[i][j]==true)
+        nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
+    }
+  }
+
 }
 
 double 
@@ -841,7 +844,7 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
     if (cSystem->listUnSupport->size()==0) cout<<"Error, it should haven't come in here with empty addlist and add."<<endl;
     else
     {
-      decideAddClosetAddableNode();
+      decideAdd3i_DC_HeadDetMemRan();
       if(targetHeadIndex!=-1&&targetNode!=-1){
         addMemberSA(targetHeadIndex,targetNode);
       }
@@ -852,7 +855,7 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   else if (nextEventFlag ==2)
   {
     //decideDiscard3b();
-    decideDiscardMinGain();
+    decideDiscard3o();
     discardMemberSA(targetHeadIndex,targetNode);
     nextChNum=curChNum;
   }
@@ -941,6 +944,38 @@ MinPowerSACluster::decideAddSmallestSize() {
   targetHeadIndex = chIdx;
 
 }
+void 
+MinPowerSACluster::decideAdd3i_DC_HeadDetMemRan() {
+  targetHeadIndex=-1;
+  targetNode=-1;
+
+  double curInfo=curSupNum*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
+  double residualInformation=wholeSystemEntopy-curInfo;
+  double randomCurs=((double)rand() / ((double)RAND_MAX + 1));
+  double chooseCurs=0;
+  list <int>::iterator it_Int=cSystem->listUnSupport->begin();
+
+  for(; it_Int!=cSystem->listUnSupport->end(); it_Int++) {
+    cSystem->allSupStru[*it_Int]=true;
+    double tmpIndInfo=(curSupNum+1)*indEntropy+matrixComputer->computeLog2Det(1.0,cSystem->allSupStru)-curInfo;
+    chooseCurs+=tmpIndInfo;
+    cSystem->allSupStru[*it_Int]=false;
+    if ((chooseCurs/residualInformation)>randomCurs) {
+      targetNode=*it_Int;
+      break;
+    }
+  }
+  if (targetNode==-1)return;
+
+  double maxGain=0;
+  //find closet head
+  for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
+    if( cSystem->vecClusterSize.at(i) < m_tier2NumSlot + 1 && Gij[targetNode][cSystem->vecHeadName[i]]>maxGain) {
+      maxGain=Gij[targetNode][cSystem->vecHeadName[i]];
+      targetHeadIndex=i;
+    }
+  }
+}
 
 void 
 MinPowerSACluster::decideAddClosetAddableNode() {
@@ -998,6 +1033,62 @@ MinPowerSACluster::decideDiscard3b()
   targetNode = minName;
   targetHeadIndex = chIdx;
   assert(targetNode != -1 && targetHeadIndex != -1);
+}
+void 
+MinPowerSACluster::decideDiscard3o()
+{
+    //Compute the discardable size
+    list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
+    int discardableSize=0;
+    for(; itli1!=cSystem->listCluMember->end(); itli1++)if(itli1->size()>1)discardableSize++;
+    assert(discardableSize!=0);
+    //Randomly choose a cluster
+    itli1 = cSystem->listCluMember->begin();
+    targetHeadIndex = -1;
+    int chooseCursor = (int) ((double)rand() / ((double)RAND_MAX + 1) * discardableSize)+1;//+1 Becasue the intial might
+    assert(chooseCursor<=maxChNum&&chooseCursor>=0);
+
+    itli1 = cSystem->listCluMember->begin();
+    targetHeadIndex=0;
+    for(int i=0; i<chooseCursor; itli1++,targetHeadIndex++)
+    {
+        if(itli1->size()>1)i++;
+        if(i==chooseCursor)break;
+    }
+
+    assert(cSystem->vecHeadName[targetHeadIndex]!=-1);
+    assert(cSystem->vecClusterSize[targetHeadIndex]==itli1->size());
+    assert(cSystem->vecClusterSize[targetHeadIndex]>1);
+    double maxInterferenceGen = -1;
+    double tempInter = 0;
+    int    maxInteredName = -1;
+    list<int>::iterator it2=itli1->begin();
+    for(; it2!=itli1->end(); it2++)
+    {
+        tempInter = 0;
+        if(cSystem->vecHeadName[targetHeadIndex]==(*it2))continue;
+        else
+        {
+            for(int j=0; j<maxChNum; j++)
+            {
+                if(j==targetHeadIndex)continue;
+                else if(cSystem->vecHeadName[j]==-1)continue;//Cluster Not Exist;
+                else
+                {
+                    tempInter+= (nodes[(*it2)].power*Gij[cSystem->vecHeadName[j]][(*it2)]);
+                }
+            }
+            //   cout<<"tempInter: "<<tempInter<<endl;
+            if(tempInter>maxInterferenceGen)
+            {
+                maxInterferenceGen=tempInter;
+                maxInteredName = (*it2);
+            }
+        }
+    }
+    assert(maxInteredName!=-1);
+
+    targetNode = maxInteredName;
 }
 void
 MinPowerSACluster::decideDiscardMinGain()
@@ -1256,7 +1347,7 @@ void MinPowerSACluster::confirmNeighbor3i()
       ( !nextAllServe && curAllServe ) || 
       ( ( nextPayoff > m_curPayoff ) && nextAllServe && curAllServe ) )
   {
-    double probAnnealing = exp (-20.0*abs(nextPayoff-m_curPayoff)/temparature);
+    double probAnnealing = exp (-30.0*abs(nextPayoff-m_curPayoff)/temparature);
     //cout<<"Show Payoff "<<nextPayoff<<"  "<<m_curPayoff<<endl;
     //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
@@ -1411,7 +1502,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
     }
   }
 //  cout <<": " << m_tier2NumSlot + 1<<endl;
-//  cout << curJEntropy <<": " << curAllServe << endl;
+  cout << curJEntropy <<": " << curAllServe << endl;
   cout << "bestFeasiblePayoff: " << bestFeasiblePayoff << endl;
   cout << "m_curPayoff: " << m_curPayoff << endl;
   if(curAllServe)bestAllServeFound=true;

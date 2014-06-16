@@ -24,6 +24,7 @@
 #include <map>
 #include <coin/IpIpoptApplication.hpp>
 #include <coin/IpSolveStatistics.hpp>
+#include <kaHIP_interface.h>
 
 
 #include "ULAGENT.h"
@@ -79,8 +80,7 @@ public:
   bool                      setInitialStucture(char* inputFlag);
   bool                      setIniStruKmeans();//not public but related to setIniStrucKmeans
   bool                      setIniStruDistanceKmedoids();
-  bool                      setIniStruFullResourceKmedoids();
-  bool                      setIniHeadLimited();
+  bool                      setIniGraphPartition();
 
   /* For Integrate */
   const std::vector<int>&         GetVecHeadName() const { return vecHeadNameBest; }
@@ -255,8 +255,10 @@ public:
 
   void decideExchangeNode();
   void decideAddClosetAddableNode();
+  void decideAdd3i_DC_HeadDetMemRan();
   void decideAddSmallestSize();
   void decideDiscard3b();
+  void decideDiscard3o();
   void decideDiscardMinGain();
   void decideHeadRotate2i_DC_HeadRanMemDet();
 

@@ -11,7 +11,9 @@
 #include "clusterStructure.h"
 #include "csFactory.h"
 #include "minPowerCsFactory.h"
+#include "kmeansCsFactory.h"
 #include "simulator.h"
+#include "fileHandler.h"
 
 #define SA_INI_TEMP 3.0
 #define SA_FIN_TEMP 0.5
@@ -41,7 +43,9 @@ int main(int argc, char *argv[])
   string  mapFileName;
   /* output file name string */
   string  CSFName;
+  string  MetisFName;
   string  CSFormation;
+  string  labelFName;
   try {
     po::options_description desc("Allowed options");
     desc.add_options()
@@ -60,6 +64,8 @@ int main(int argc, char *argv[])
       ("temporalCorrelation,T",   po::value<double>(),  "Temproal Correlation factor")
       ("tier2NumSlot,N",          po::value<int>(),     "Number of tier-2 slots")
       ("ClusterStructureOutput,C",po::value<string>(),  "Cluster structure output file name")
+      ("MetisGraph,M",            po::value<string>(),  "MetisGraph format output")
+      ("Label,L",                 po::value<string>(),  "Label output")
       ("ClusterFormation,F",      po::value<string>(),  "Cluster Formation Algorithm");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -68,7 +74,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 14 ) {
+    } else if(vm.size() == 14  || vm.size() == 15) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -117,31 +123,45 @@ int main(int argc, char *argv[])
       ClusterStructure* myCS = 0;
       CsFactory* myCsFactory = 0;
       
-      if (CSFormation == "MinPower") {
-        myCsFactory = new MinPowerCsFactory(myMap, myMatComputer);
-        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
-        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
-        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
-        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetTier2NumSlot(tier2NumSlot);
-        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetTier1TxTime(tier1TxTime);
-      }
-
-      myCS = myCsFactory->CreateClusterStructure();
-
-      if (!myCS) {
-        cerr << "Error: Failed to initalize cluster structure" << endl;
-        return 1;
-      }
-
-      Simulator mySimulator(
-          myMap, 
-          myCS, 
-          myMatComputer
-          );
-
-      /* output control */
       if (vm.count("ClusterStructureOutput")) {
+        if (CSFormation == "MinPower") {
+          myCsFactory = new MinPowerCsFactory(myMap, myMatComputer);
+          (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
+          (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
+          (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
+          (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetTier2NumSlot(tier2NumSlot);
+          (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetTier1TxTime(tier1TxTime);
+        }
+
+        myCS = myCsFactory->CreateClusterStructure();
+
+        if (!myCS) {
+          cerr << "Error: Failed to initalize cluster structure" << endl;
+          return 1;
+        }
+
+        Simulator mySimulator(
+            myMap, 
+            myCS, 
+            myMatComputer
+            );
+
+        /* output control */
         mySimulator.WriteCS( CSFName );
+      }
+
+      if (vm.count("MetisGraph") && vm.count("Label")){
+        MetisFName = vm["MetisGraph"].as<string>();
+        labelFName = vm["Label"].as<string>();
+        myCsFactory = new KmeansCsFactory(myMap, myMatComputer);
+        myCS = myCsFactory->CreateClusterStructure();
+        Simulator mySimulator(
+            myMap, 
+            myCS, 
+            myMatComputer
+            );
+        mySimulator.WriteMetis(MetisFName);
+        mySimulator.WriteLabel(labelFName);
       }
 
       delete myCsFactory;

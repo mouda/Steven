@@ -1,5 +1,6 @@
 #include "simulator.h"
 #include <cstdio>
+#include <sstream>
 
 
 
@@ -169,3 +170,44 @@ Simulator::WriteCS( const string& fileName )
     fclose(fid);
 }
 
+/* @brief    To output the metis file format
+ * @param    
+ * @retval   
+ */
+
+void
+Simulator::WriteMetis( const string& FName)
+{
+  FileHandler MetisFHandler(FName);
+  /* Output the header */
+  std::stringstream ssHead;
+  ssHead << m_ptrMap->GetNumNodes();
+  ssHead << ' ';
+  ssHead << m_ptrMap->GetNumNodes() * ( m_ptrMap->GetNumNodes() - 1) / 2;
+  ssHead << ' ';
+  ssHead << "1";
+  MetisFHandler.WriteString(ssHead.str());
+
+  /* Output the adjency structure */
+  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+    std::stringstream ssLine;
+    for (int j = 0; j < m_ptrMap->GetNumNodes(); ++j) {
+      if (i != j) {
+        ssLine << j + 1  << ' ' << static_cast<int>(m_ptrMap->GetGijByPair(i,j) * 1e11)  << ' ';
+      }
+    }
+    MetisFHandler.WriteString(ssLine.str());
+  }
+
+}
+
+void
+Simulator::WriteLabel(const string& FName )
+{
+  FileHandler labelFHandler(FName);
+  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+    std::stringstream ssLine;
+    ssLine << m_ptrCS->GetChIdxByName(i);
+    labelFHandler.WriteString(ssLine.str());
+  }
+}
