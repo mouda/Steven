@@ -120,16 +120,12 @@ MinPowerSACluster::MinPowerSACluster(
     for (int i=0; i<maxChNum; i++ )
         for(int j=0; j<totalNodes; j++)
             cSystem->clusterStru[i][j] = false;
-    maIndexSortDecGain = new int* [totalNodes];
-    for (int i =0; i<totalNodes; i++)
-        maIndexSortDecGain[i]= new int [totalNodes];
     sortIndex = -1;//Just a check point
     //Keep the sturcture for best Structure
     aryFlagHRDone = new bool [maxChNum];
     for(int i=0; i<maxChNum; i++)aryFlagHRDone[i]=false;
 
     //-----Best Performance Index-----//
-    listCluMemBest = new std::list<std::list <int> >;
 
     //Interference Matrix Keep the interference index/Name set from othe cluster for each cluster.
     bestMaClusterStru = new bool *[maxChNum];
@@ -153,22 +149,6 @@ MinPowerSACluster::MinPowerSACluster(
     for (int i=0; i<maxChNum; i++)
         maBestInterfernceIndex[i] = new int[maxChNum];
 
-    mapNodeName2DistanceRank = new map<int, int> [totalNodes];
-
-    for(int i=0; i<totalNodes; i++)
-    {
-        for(int j=0; j<totalNodes; j++) maIndexSortDecGain[i][j] = j;
-        sortIndex = i;
-        sort(maIndexSortDecGain[i], maIndexSortDecGain[i]+totalNodes, compareDis(*this));
-    }
-
-    for(int i=0; i<totalNodes; i++)
-    {
-        for(int j=0; j<totalNodes; j++)
-        {
-            mapNodeName2DistanceRank[i][maIndexSortDecGain[i][j]]=j;
-        }
-    }//
     bestFeasiblePayoff = DBL_MAX;
 
 }
@@ -180,11 +160,13 @@ MinPowerSACluster::~MinPowerSACluster()
 std::vector<int>
 MinPowerSACluster::GetAllSupStru() const {
   std::vector<int> myAllSupStru(totalNodes,0);
-  std::list<std::list<int> >::const_iterator iterRow = listCluMemBest->begin();
-  for (;iterRow != listCluMemBest->end(); ++iterRow) {
+  std::list<std::list<int> >::const_iterator iterRow = listCluMemBest.begin();
+  for (;iterRow != listCluMemBest.end(); ++iterRow) {
     std::list<int>::const_iterator iterCol = iterRow->begin();
-    for (; iterCol != iterRow->end(); ++iterCol) {
-      myAllSupStru.at(*iterCol) = 1;
+    if (*iterCol > 0 ) {
+      for (; iterCol != iterRow->end(); ++iterCol) {
+        myAllSupStru.at(*iterCol) = 1;
+      }
     }
   }
   return myAllSupStru;
@@ -204,9 +186,6 @@ void MinPowerSACluster::releaseMemory()
     delete [] rateibMax;
     delete [] bestAllSupStru;
     delete [] prevAllSupStru;
-    //release maIndexSortDecGain
-    for (int i = 0; i<totalNodes; i++) delete [] maIndexSortDecGain[i];
-    delete maIndexSortDecGain;
     //release bestMaClusterStru
     for(int i=0; i<maxChNum; i++) delete [] bestMaClusterStru[i];
     delete [] bestMaClusterStru;
@@ -222,10 +201,8 @@ void MinPowerSACluster::releaseMemory()
     //delete  cSystem and  share same pointer we ony need to delete once.
     delete [] powerBest;
     delete [] nextNodePower;
-    delete listCluMemBest;
-    delete []  mapNodeName2DistanceRank;
     delete [] aryFlagHRDone;
-    delete [] sysComputing;
+    delete sysComputing;
     terminated=true;
 }
 
@@ -677,56 +654,6 @@ OptimalRateControl() const
   Index numConstraints = 1;
   Index numNz_jac_g = numVariables;
   Index numNz_h_lag = numVariables;
-  
-  /*
-  SmartPtr<TMINLP> tminlp = 
-    new Tier1NLP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag,
-        m_ptrMap,
-        cSystem,
-        matrixComputer,
-        m_tier1TxTime
-        );
-  Tier1NLP* rawPtr = dynamic_cast<Tier1NLP*>(GetRawPtr(tminlp));
-
-  FILE * fp = fopen("log.out","w");
-  CoinMessageHandler handler(fp);
-  BonminSetup bonmin(&handler);
-  bonmin.initializeOptionsAndJournalist();
-  // Here we can change the default value of some Bonmin or Ipopt option
-  bonmin.options()->SetNumericValue("bonmin.time_limit", 86400); //changes bonmin's time limit
-  bonmin.options()->SetStringValue("mu_oracle","loqo");
-  //Here we read several option files
-  bonmin.readOptionsFile("Mybonmin.opt");
-  bonmin.readOptionsFile();// This reads the default file "bonmin.opt"
-  // Options can also be set by using a std::string with a format similar to the bonmin.opt file
-  bonmin.readOptionsString("bonmin.algorithm B-BB\n");
-
-  //Now initialize from tminlp
-  bonmin.initialize(GetRawPtr(tminlp));
-  //Set up done, now let's branch and bound
-  try {
-    Bab bb;
-    bb(bonmin);//process parameter file using Ipopt and do branch and bound using Cbc
-  }
-  catch(TNLPSolver::UnsolvedError *E) {
-    //There has been a failure to solve a problem with Ipopt.
-    std::cerr<<"Ipopt has failed to solve a problem"<<std::endl;
-    E->printError(std::cerr);
-  }
-  catch(OsiTMINLPInterface::SimpleError &E) {
-    std::cerr << E.className() << "::" << E.methodName()
-	      << std::endl
-	      << E.message() << std::endl;
-  }
-  catch(CoinError &E) {
-    std::cerr << E.className() << "::" << E.methodName()
-	      << std::endl
-	      << E.message() << std::endl;
-  }
-
-  //m_vecSolution.assign(rawPtr->GetVecSolution().begin(), rawPtr->GetVecSolution().end());
-  return rawPtr->GetMinimalPower();
-  */
 
   // Create an instance of your nlp...
   SmartPtr<MyTier1NLP> mynlp = 
@@ -801,8 +728,8 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   bool chkLessCluster=cSystem->returnIfClusterSmall(thresholdd,tmpJoinCan);
 
   //int probJoin = (chkLessCluster&&curJEntropy>(fidelityRatio*wholeSystemEntopy))?tmpJoinCan*50:0;
-  //int probJoin = (chkLessCluster)?tmpJoinCan*30:0;
-  int probJoin = 0;
+  int probJoin = (chkLessCluster)?tmpJoinCan*30:0;
+  //int probJoin = 0;
 
   //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
 
@@ -970,9 +897,11 @@ MinPowerSACluster::decideAdd3i_DC_HeadDetMemRan() {
   double maxGain=0;
   //find closet head
   for(unsigned int i=0; i<cSystem->vecHeadName.size(); i++) {
-    if( cSystem->vecClusterSize.at(i) < m_tier2NumSlot + 1 && Gij[targetNode][cSystem->vecHeadName[i]]>maxGain) {
-      maxGain=Gij[targetNode][cSystem->vecHeadName[i]];
-      targetHeadIndex=i;
+    if (cSystem->vecHeadName.at(i) > 0 ) {
+      if( cSystem->vecClusterSize.at(i) < m_tier2NumSlot + 1 && Gij[targetNode][cSystem->vecHeadName[i]] > maxGain) {
+        maxGain=Gij[targetNode][cSystem->vecHeadName[i]];
+        targetHeadIndex=i;
+      }
     }
   }
 }
@@ -1075,7 +1004,7 @@ MinPowerSACluster::decideDiscard3o()
                 else if(cSystem->vecHeadName[j]==-1)continue;//Cluster Not Exist;
                 else
                 {
-                    tempInter+= (nodes[(*it2)].power*Gij[cSystem->vecHeadName[j]][(*it2)]);
+                    tempInter+= Gij[cSystem->vecHeadName[j]][(*it2)];
                 }
             }
             //   cout<<"tempInter: "<<tempInter<<endl;
@@ -1167,13 +1096,89 @@ MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
   assert(targetHeadIndex != -1 && targetNode != -1);
 }
 
+// -------------------------------------------------------------------------- //
+// @Description: decideHeadJoining4b
+// @Provides: 
+// -------------------------------------------------------------------------- //
 
-void MinPowerSACluster::decideHeadJoining4b(){
+
+void 
+MinPowerSACluster::decideHeadJoining4b(){
     int threshold=thresholdd; // To determine the cluster size is large enough 
                               // to perform join operation 
     JoiningHeadIndex=-1;
     targetHeadIndex=-1;
+    /* maximal rate reduction */
+    double maxEntropyDiff = -DBL_MAX;
+    int lChIdx = -1;
+    int rChIdx = -1;
+    for (int i = 0; i < maxChNum; ++i) {
+      for (int j = 0; j < maxChNum; ++j) {
+        if ( (i != j) &&
+              ( cSystem->vecClusterSize.at(i) > 0) &&
+              ( cSystem->vecClusterSize.at(j) > 0) &&
+              ( cSystem->vecClusterSize.at(i) + cSystem->vecClusterSize.at(j) <= m_tier2NumSlot + 1) 
+              ) {
+          double lEntropy = GetClusterEntropy(i);
+          double rEntropy = GetClusterEntropy(j);
+          double jEntropy = GetJoinHeadEntropy(i,j);
+          if (lEntropy + rEntropy - jEntropy > maxEntropyDiff) {
+            maxEntropyDiff = lEntropy + rEntropy - jEntropy;
+            lChIdx = i;
+            rChIdx = j;
+          }
+        }
+      }
+    }
+    JoiningHeadIndex = lChIdx;
+    targetHeadIndex = rChIdx; 
 
+}
+
+double
+MinPowerSACluster::GetClusterEntropy(const int chIdx)
+{
+  assert ( chIdx >= 0 && chIdx < maxChNum );
+  std::list<std::list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();
+  std::vector<int> tmpIndicator(m_ptrMap->GetNumNodes(), 0);
+  std::vector<double> tmpVariance(m_ptrMap->GetNumNodes(), 1.0);
+
+  for (int i = 0; i < chIdx; ++i) ++iterRow; 
+  std::list<int>::const_iterator iterCol = iterRow->begin();
+  for (; iterCol != iterRow->end(); ++iterCol) {
+    if (*iterCol > 0 ) {
+      tmpIndicator.at(*iterCol) = 1;
+    }
+  }
+  return matrixComputer->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits());
+}
+
+double
+MinPowerSACluster::GetJoinHeadEntropy(const int lChIdx, const int rChIdx)
+{
+  assert ( lChIdx >= 0 && lChIdx < maxChNum );
+  assert ( rChIdx >= 0 && rChIdx < maxChNum );
+  std::list<std::list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();
+  std::vector<int>    tmpIndicator(m_ptrMap->GetNumNodes(), 0);
+  std::vector<double> tmpVariance(m_ptrMap->GetNumNodes(), 1.0);
+  /* l ChIdx */
+  for (int i = 0; i < lChIdx; ++i) ++iterRow; 
+  std::list<int>::const_iterator iterCol = iterRow->begin();
+  for (; iterCol != iterRow->end(); ++iterCol) {
+    if (*iterCol > 0 ) {
+      tmpIndicator.at(*iterCol) = 1;
+    }
+  }
+  /* r ChIdx*/
+  iterRow = cSystem->listCluMember->begin();
+  for (int i = 0; i < rChIdx; ++i) ++iterRow; 
+  iterCol = iterRow->begin();
+  for (; iterCol != iterRow->end(); ++iterCol) {
+    if (*iterCol > 0 ) {
+      tmpIndicator.at(*iterCol) = 1;
+    }
+  }
+  return matrixComputer->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits());
 }
 
 // -------------------------------------------------------------------------- //
@@ -1183,6 +1188,8 @@ void MinPowerSACluster::decideHeadJoining4b(){
 
 void MinPowerSACluster::decideIsolate4b(){
     assert(isolatedHeadIndex!=-1&&IsolateNodeName!=-1);
+
+    /* minimal rate increasing */
 }
 
 /*
@@ -1192,8 +1199,8 @@ void MinPowerSACluster::decideIsolate4b(){
 */
 void MinPowerSACluster::addMemberSA(int inputHeadIndex, int inputMemberName)
 {
-	cSystem->addMemberCs(inputHeadIndex,inputMemberName,iniDone);
-	nodes[inputMemberName].ptrHead = cSystem->returnHeadPtr(inputHeadIndex);
+  cSystem->addMemberCs(inputHeadIndex,inputMemberName,iniDone);
+  nodes[inputMemberName].ptrHead = cSystem->returnHeadPtr(inputHeadIndex);
 }
 /*
    Movement Function
@@ -1201,11 +1208,11 @@ void MinPowerSACluster::addMemberSA(int inputHeadIndex, int inputMemberName)
    */
 void MinPowerSACluster::discardMemberSA(int inputHeadIndex, int inputMemberName)
 {
-	cSystem->discardMemberCs(inputHeadIndex,inputMemberName);
-	ptrHeadLastDiscard = nodes[inputMemberName].ptrHead;
-	powerLastDiscard = nodes[inputMemberName].power;
-	nodes[inputMemberName].ptrHead=NULL;
-	nodes[inputMemberName].power =0;
+  cSystem->discardMemberCs(inputHeadIndex,inputMemberName);
+  ptrHeadLastDiscard = nodes[inputMemberName].ptrHead;
+  powerLastDiscard = nodes[inputMemberName].power;
+  nodes[inputMemberName].ptrHead=NULL;
+  nodes[inputMemberName].power =0;
 }
 
 
@@ -1544,7 +1551,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
 void MinPowerSACluster::keepBestStructure()
 {
     vecHeadNameBest.assign(cSystem->vecHeadName.begin(),cSystem->vecHeadName.end());
-    listCluMemBest->assign(cSystem->listCluMember->begin(), cSystem->listCluMember->end());
+    listCluMemBest.assign(cSystem->listCluMember->begin(), cSystem->listCluMember->end());
     //1st tier computation has been done in the calculateMatrics_minResors()
     vecBestClusterBits.assign(vecClusterHeadBits.begin(),vecClusterHeadBits.end());
     vecBestClusterSize.assign(cSystem->vecClusterSize.begin(),cSystem->vecClusterSize.end());

@@ -103,6 +103,12 @@ SASolver::Solve(std::vector<int>& vecSolution)
   vecSolution.assign(m_minVecSolution.begin(), m_minVecSolution.end());
 }
 
+bool 
+SASolver::CoolProcess( const double Test)
+{
+  return true;
+}
+
 void
 SASolver::Move(std::vector<int>& vecSupport)
 {

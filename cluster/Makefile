@@ -199,7 +199,7 @@ BONMIN_CPPFLAGS = -I/opt/bonmin174/include
 BONMIN_LIBS = -L/opt/bonmin174/lib
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
+CFLAGS = -g -O2 -g
 CPP = gcc -E
 CPPFLAGS = -I/opt/boost1550/include -I/opt/armadillo40002/include -I/opt/eigen320/include -I/opt/KaHIPv0.62/deploy 
 CXX = g++
@@ -227,7 +227,7 @@ INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 IPOPT_CPPFLAGS = -I/opt/ipopt/include
 IPOPT_LIBS = -L/opt/ipopt/lib
 LD = /usr/bin/ld -m elf_x86_64
-LDFLAGS = -L/opt/boost1550/lib -L/opt/armadillo40002/lib -L/opt/openblas/lib -L/opt/lapack/lib -L/optKaHIPv0.62/deploy
+LDFLAGS = -L/opt/boost1550/lib -L/opt/armadillo40002/lib -L/opt/openblas/lib -L/opt/lapack/lib -L/optKaHIPv0.62/deploy -static
 LIBOBJS = 
 #scheduler_CFLAGS = 
 LIBS = -lopenblas \
@@ -380,10 +380,10 @@ genCluster_SOURCES = main.cpp \
 		    simulator.h simulator.cpp 
 
 LOCAL_INCLUDE = -I../lib/
-AM_CFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
-#AM_CFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -g3 -O0
-AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
-#AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE) -I../ -g3 -O0
+#AM_CFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
+AM_CFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -g3 -ggdb -O0
+#AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
+AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE) -I../ -g3 -ggdb -O0
 genCluster_LDADD = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) ../lib/libfileHandler.la \
 		  ../lib/libfileHandler.la \
                   ../lib/libutility.la \

@@ -31,14 +31,11 @@
 #include "ULCS1b.h"
 #include "CORRE_MA_OPE.h"
 #include "simSystem.h"
-#include "ULSAOutputToolSet.h"
-#include "ULSAOutputToolSet.cpp"
 #include "TimeStamp.h"
 #include "../lib/SA/SABASE.h"
 #include "myTier1NLP.h"
 #include "map.h"
 
-template class ULSAOutputToolSet<class MinPowerSACluster>;
 
 class ULCS1b;
 class ULAGENT;
@@ -67,7 +64,6 @@ public:
 
 
   //Make a friend with template function
-  template <class T>friend class ULSAOutputToolSet;
   //alpha is SA parameter in the paper.
   void releaseMemory();
   bool terminated;
@@ -84,7 +80,7 @@ public:
 
   /* For Integrate */
   const std::vector<int>&         GetVecHeadName() const { return vecHeadNameBest; }
-  const list<list<int> >&         GetListCluMemeber() const { return *listCluMemBest;}
+  const list<list<int> >&         GetListCluMemeber() const { return listCluMemBest;}
   std::vector<int>                GetAllSupStru() const;
 
   double                          OptimalRateControl() const;
@@ -225,7 +221,7 @@ public:
   double bestUpperLayerResource;
   //@Best Structure
   std::vector <int> vecHeadNameBest;
-  list <list <int> > *listCluMemBest;
+  list <list <int> > listCluMemBest;
   bool** bestMaClusterStru;
   double ** maStrengthInterBest;
   double *powerBest;
@@ -263,6 +259,8 @@ public:
   void decideHeadRotate2i_DC_HeadRanMemDet();
 
   void decideHeadJoining4b();
+  double GetClusterEntropy(const int name );
+  double GetJoinHeadEntropy(const int lName, const int rName);
 
   void decideIsolate4b();
 
@@ -313,8 +311,6 @@ public:
   std::vector<double> vecClusterHeadWatt;
   std::vector<double> vecClusterHeadMS;
   SimSystem *sysComputing;
-  map <int, int>  *mapNodeName2DistanceRank;
-  int ** maIndexSortDecGain;
   ULCS1b*  cSystem;   // system cluseter structure
   double fidelityRatio;// Temporary set by here 2013/02/21
   double tempAddT;

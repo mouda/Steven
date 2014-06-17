@@ -12,7 +12,7 @@ CsFactory::CsFactory( Map const * const myMap,
 
 CsFactory::~CsFactory()
 {
-  if (m_ptrCS != 0) {
+  if (m_ptrCS != NULL) {
     delete m_ptrCS;
   }
 }

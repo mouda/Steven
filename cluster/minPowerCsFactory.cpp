@@ -14,8 +14,9 @@ MinPowerCsFactory::MinPowerCsFactory( Map const * const myMap,
 MinPowerCsFactory::~MinPowerCsFactory()
 {
   fclose(m_fid);
-  delete m_ptrToolSA;
-
+  if (m_ptrToolSA != NULL) {
+    delete m_ptrToolSA;
+  }
 }
 
 ClusterStructure*

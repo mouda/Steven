@@ -48,12 +48,12 @@ MyTier1NLP::MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
 
   for (; iterRow != m_cSystem->listCluMember->end(); ++iterRow) {
     std::list<int>::const_iterator iterCol = iterRow->begin();
-    if ( (*iterCol) >= 0) {
+    if ( *iterCol >= 0) {
       for (; iterCol != iterRow->end(); ++iterCol) {
         tmpIndicator.at(*iterCol) = 1;
       }
+      m_vecClusterEntropy.push_back(m_ptrGField->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits()));
     }
-    m_vecClusterEntropy.push_back(m_ptrGField->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits()));
     std::fill(tmpIndicator.begin(), tmpIndicator.end(), 0);
   }
 //  for (int i = 0; i < m_vecClusterEntropy.size(); i++) {
