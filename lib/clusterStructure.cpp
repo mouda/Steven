@@ -39,7 +39,7 @@ ClusterStructure::SetRecord(
   list<list<int> >::const_iterator iterRow = m_listCluMember.begin();
   for (int i = 0; iterRow != m_listCluMember.end(); ++i, ++iterRow) {
     list<int>::const_iterator iterCol = iterRow->begin();
-    if (*iterCol > 0 ) {
+    if (*iterCol >= 0 ) {
       for (; iterCol != iterRow->end(); ++iterCol) {
         m_vecCHIdxForNodes[*iterCol] = i; 
         m_vecCHNameForNodes[*iterCol] = m_vecHeadName[i];

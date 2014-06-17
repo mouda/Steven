@@ -618,7 +618,7 @@ bool MinPowerSACluster::startCool()
 
     int tempche = (signed)cSystem->listUnSupport->size();
 
-    assert(( curSupNum + tempche) == totalNodes);
+    assert(( curSupNum + tempche) <= totalNodes);
   }
 
   end = clock();
@@ -709,7 +709,7 @@ void MinPowerSACluster::addMemberSAIni(int inputHeadIndex, int inputMemberName)
 */
 void MinPowerSACluster::coolOnce_minResors( const int iterSA)
 {
-  int probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
+  int probAdd = ((curSupNum<(totalNodes)) ?25000 :0);
   int probDiscard = ((curSupNum<(maxChNum+1)) ?0:20000);
 //  int probAdd = 0;
 //  int probDiscard = 0;
@@ -728,14 +728,14 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   bool chkLessCluster=cSystem->returnIfClusterSmall(thresholdd,tmpJoinCan);
 
   //int probJoin = (chkLessCluster&&curJEntropy>(fidelityRatio*wholeSystemEntopy))?tmpJoinCan*50:0;
-  int probJoin = (chkLessCluster)?tmpJoinCan*30:0;
+  int probJoin = (chkLessCluster)?tmpJoinCan*300:0;
   //int probJoin = 0;
 
   //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
 
-  //int probIsoltae=((curChNum<maxChNum)?30:0);
+  int probIsoltae=((curChNum<maxChNum)?200:0);
   //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
-  int probIsoltae = 0;
+  //int probIsoltae = 0;
 
 
 //  int sumProb = probAdd + probDiscard + probExchange + probHeadRotate+probJoin+probIsoltae;
@@ -988,36 +988,23 @@ MinPowerSACluster::decideDiscard3o()
     assert(cSystem->vecHeadName[targetHeadIndex]!=-1);
     assert(cSystem->vecClusterSize[targetHeadIndex]==itli1->size());
     assert(cSystem->vecClusterSize[targetHeadIndex]>1);
-    double maxInterferenceGen = -1;
+    double minGain = DBL_MAX;
     double tempInter = 0;
-    int    maxInteredName = -1;
+    int    minGainName = -1;
     list<int>::iterator it2=itli1->begin();
-    for(; it2!=itli1->end(); it2++)
-    {
+    for(; it2!=itli1->end(); it2++) {
         tempInter = 0;
         if(cSystem->vecHeadName[targetHeadIndex]==(*it2))continue;
-        else
-        {
-            for(int j=0; j<maxChNum; j++)
-            {
-                if(j==targetHeadIndex)continue;
-                else if(cSystem->vecHeadName[j]==-1)continue;//Cluster Not Exist;
-                else
-                {
-                    tempInter+= Gij[cSystem->vecHeadName[j]][(*it2)];
-                }
-            }
-            //   cout<<"tempInter: "<<tempInter<<endl;
-            if(tempInter>maxInterferenceGen)
-            {
-                maxInterferenceGen=tempInter;
-                maxInteredName = (*it2);
+        else {
+            if( m_ptrMap->GetGijByPair(cSystem->vecHeadName[targetHeadIndex], (*it2) ) < minGain) {
+                minGain = m_ptrMap->GetGijByPair(cSystem->vecHeadName[targetHeadIndex], (*it2) ) ;
+                minGainName = (*it2);
             }
         }
     }
-    assert(maxInteredName!=-1);
+    assert(minGainName!=-1);
 
-    targetNode = maxInteredName;
+    targetNode = minGainName;
 }
 void
 MinPowerSACluster::decideDiscardMinGain()
@@ -1079,7 +1066,7 @@ MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
 
   //Choose targetNode
   targetNode=cSystem->vecHeadName[targetHeadIndex];
-  double minTier1Gain = DBL_MAX;
+  double maxTier1Gain = -DBL_MAX;
 
   int OriginalNode= cSystem->vecHeadName[targetHeadIndex];
   list<int>::iterator it1=itlist1->begin();
@@ -1087,9 +1074,9 @@ MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
   {
     if((*it1)==OriginalNode)continue;
     double tmpTier1Gain = m_ptrMap->GetGi0ByNode(*it1);//==Head Rotate
-    if( tmpTier1Gain < minTier1Gain )
+    if( tmpTier1Gain > maxTier1Gain )
     {
-      minTier1Gain = tmpTier1Gain;
+      maxTier1Gain = tmpTier1Gain;
       targetNode=*it1;
     }
   }
@@ -1187,9 +1174,54 @@ MinPowerSACluster::GetJoinHeadEntropy(const int lChIdx, const int rChIdx)
 // -------------------------------------------------------------------------- //
 
 void MinPowerSACluster::decideIsolate4b(){
-    assert(isolatedHeadIndex!=-1&&IsolateNodeName!=-1);
 
     /* minimal rate increasing */
+    list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
+    int discardableSize=0;
+    for(; itli1!=cSystem->listCluMember->end(); itli1++)if(itli1->size()>1)discardableSize++;
+    assert(discardableSize!=0);
+    //Randomly choose a cluster
+    itli1 = cSystem->listCluMember->begin();
+    isolatedHeadIndex = -1;
+    int chooseCursor = (int) ((double)rand() / ((double)RAND_MAX + 1) * discardableSize)+1;//+1 Becasue the intial might
+    assert(chooseCursor<=maxChNum&&chooseCursor>=0);
+
+    itli1 = cSystem->listCluMember->begin();
+    isolatedHeadIndex=0;
+    for(int i=0; i<chooseCursor; itli1++,isolatedHeadIndex++)
+    {
+        if(itli1->size()>1)i++;
+        if(i==chooseCursor)break;
+    }
+
+    assert(cSystem->vecHeadName[isolatedHeadIndex]!=-1);
+    assert(cSystem->vecClusterSize[isolatedHeadIndex]==itli1->size());
+    assert(cSystem->vecClusterSize[isolatedHeadIndex]>1);
+    double minGain = DBL_MAX;
+    double tempInter = 0;
+    int    minGainName = -1;
+    list<int>::iterator it2=itli1->begin();
+    for(; it2!=itli1->end(); it2++) {
+        tempInter = 0;
+        if(cSystem->vecHeadName[isolatedHeadIndex]==(*it2))continue;
+        else {
+            if( m_ptrMap->GetGijByPair(cSystem->vecHeadName[isolatedHeadIndex], (*it2) ) < minGain) {
+                minGain = m_ptrMap->GetGijByPair(cSystem->vecHeadName[isolatedHeadIndex], (*it2) ) ;
+                minGainName = (*it2);
+            }
+        }
+    }
+    assert(minGainName!=-1);
+    for(int i=0;i<cSystem->vecHeadName.size();i++){
+        //cout<<i<<" "<<cSystem->vecHeadName[i]<<endl;
+        if(cSystem->vecHeadName[i]==-1){
+            targetHeadIndex=i;
+            break;
+        }
+    }
+
+    IsolateNodeName = minGainName;
+    assert(isolatedHeadIndex!=-1 && IsolateNodeName!=-1);
 }
 
 /*
@@ -1466,11 +1498,13 @@ void MinPowerSACluster::reverseMoveSA()
             nodes[lastJoingingMachine[i]].ptrHead=&cSystem->vecHeadName[lastJoiningHeadIndex];
         }
         lastJoingingMachine.clear();
+        --nextChNum = curChNum ;
 
     }
     else if(nextEventFlag == 5){
          cSystem->reverseisolate(lastIsolateNodeName,lastIsolatedClusterIndex,targetHeadIndex);
         nodes[lastIsolateNodeName].ptrHead=&cSystem->vecHeadName[lastIsolatedClusterIndex];
+        --nextChNum ;
     }
     else cout<<"Error next flag ="<<nextEventFlag<<"wrong"<<endl;
 }
