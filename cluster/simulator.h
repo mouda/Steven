@@ -34,6 +34,7 @@ class Simulator
     void WriteCS( const string& );
     void WriteLabel( const string& );
     void WriteMetis( const string& );
+    void WriteWeightedMatrix( const string& );
 
     bool SelfCheck();
 

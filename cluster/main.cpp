@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
   string  MetisFName;
   string  CSFormation;
   string  labelFName;
+  string  WeightMatrixFName;
   try {
     po::options_description desc("Allowed options");
     desc.add_options()
@@ -66,6 +67,7 @@ int main(int argc, char *argv[])
       ("ClusterStructureOutput,C",po::value<string>(),  "Cluster structure output file name")
       ("MetisGraph,M",            po::value<string>(),  "MetisGraph format output")
       ("Label,L",                 po::value<string>(),  "Label output")
+      ("WeightedMatrix,W",       po::value<string>(),  "Matrix form of Weght matrix")
       ("ClusterFormation,F",      po::value<string>(),  "Cluster Formation Algorithm");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -162,6 +164,17 @@ int main(int argc, char *argv[])
             );
         mySimulator.WriteMetis(MetisFName);
         mySimulator.WriteLabel(labelFName);
+      }
+      if(vm.count("WeightedMatrix")) {
+        WeightMatrixFName = vm["WeightedMatrix"].as<string>();
+        myCsFactory = new KmeansCsFactory(myMap, myMatComputer);
+        myCS = myCsFactory->CreateClusterStructure();
+        Simulator mySimulator(
+            myMap, 
+            myCS, 
+            myMatComputer
+            );
+        mySimulator.WriteWeightedMatrix(WeightMatrixFName);
       }
 
       delete myCsFactory;

@@ -125,7 +125,7 @@ void
 Simulator::WriteCS( const string& fileName )
 {
     FILE  *fid; 
-    fid = fopen(fileName.c_str(), "a");
+    fid = fopen(fileName.c_str(), "w");
     fprintf( fid,"%d\n", m_ptrMap->GetNumNodes()   );
     fprintf( fid,"%d\n", m_ptrCS->GetNumHeads()    );
     fprintf( fid,"%e\n", m_ptrMap->GetMaxPower()   );
@@ -178,7 +178,7 @@ Simulator::WriteCS( const string& fileName )
 void
 Simulator::WriteMetis( const string& FName)
 {
-  FileHandler MetisFHandler(FName);
+  FileHandler MetisFHandler(FName, "out");
   /* Output the header */
   std::stringstream ssHead;
   ssHead << m_ptrMap->GetNumNodes();
@@ -209,5 +209,25 @@ Simulator::WriteLabel(const string& FName )
     std::stringstream ssLine;
     ssLine << m_ptrCS->GetChIdxByName(i);
     labelFHandler.WriteString(ssLine.str());
+  }
+}
+
+void
+Simulator::WriteWeightedMatrix( const string& FName ) 
+{
+  FileHandler WeightedMatrixFHandler(FName, "out");
+
+  
+  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+    std::stringstream ssLine;
+    for (int j = 0; j < m_ptrMap->GetNumNodes(); ++j) {
+      if (i == j) {
+        ssLine << 0 << ' ';
+      }
+      else {
+        ssLine << static_cast<int>(log10(m_ptrMap->GetGijByPair(i,j)) + 20.0)<< ' ';
+      }
+    }
+    WeightedMatrixFHandler.WriteString(ssLine.str());
   }
 }

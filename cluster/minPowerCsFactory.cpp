@@ -1,6 +1,6 @@
 #include "minPowerCsFactory.h"
-#define SA_INI_TEMP 10.0
-#define SA_FIN_TEMP 1.0
+#define SA_INI_TEMP 3.0
+#define SA_FIN_TEMP 0.1
 
 MinPowerCsFactory::MinPowerCsFactory( Map const * const myMap, 
     CORRE_MA_OPE const * const myMatComputer):
@@ -58,7 +58,7 @@ MinPowerCsFactory::CreateClusterStructure()
     cerr << "Set parameter failed! " << endl;
     return NULL;
   }
-  char iniFlag[]="kmedoids_distance";
+  char iniFlag[]="GraphPartition";
   if (!m_ptrToolSA->setInitialStucture (iniFlag)) {
     cerr<<"The MinRes can't be initialized! " << endl;
     return NULL;

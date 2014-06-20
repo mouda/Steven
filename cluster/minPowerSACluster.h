@@ -253,6 +253,7 @@ public:
   void decideAddClosetAddableNode();
   void decideAdd3i_DC_HeadDetMemRan();
   void decideAddSmallestSize();
+  void decideAddRandSelectCluster();
   void decideDiscard3b();
   void decideDiscard3o();
   void decideDiscardMinGain();
