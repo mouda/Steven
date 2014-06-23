@@ -37,6 +37,8 @@
 #include "map.h"
 
 
+bool pairCompare(const std::pair<int,double>& lPair, const std::pair<int,double>& rPair);
+
 class ULCS1b;
 class ULAGENT;
 class MinPowerSACluster :public SABASE
@@ -77,6 +79,8 @@ public:
   bool                      setIniStruKmeans();//not public but related to setIniStrucKmeans
   bool                      setIniStruDistanceKmedoids();
   bool                      setIniGraphPartition();
+  bool                      setIniBanancedModelCluster();
+  double                    GetNodeDistance( const int lName, const int rName);
 
   /* For Integrate */
   const std::vector<int>&         GetVecHeadName() const { return vecHeadNameBest; }

@@ -15,6 +15,10 @@
 
 using namespace std;
 #include "minPowerSACluster.h"
+bool pairCompare(const std::pair<int,double>& lPair, const std::pair<int,double>& rPair)
+{
+  return lPair.second > rPair.second;
+}
 
 MinPowerSACluster::MinPowerSACluster(
     FILE *fileReadCursor, 
@@ -36,120 +40,110 @@ MinPowerSACluster::MinPowerSACluster(
   m_tier2NumSlot(tier2NumSlot),
   matrixComputer(myPtrGField)
 {
+  sysComputing = new SimSystem;
+  terminated=false;
+  //----------------------//
+  //Simulation Control    //`
+  //----------------------//
 
-    sysComputing = new SimSystem;
-    terminated=false;
-    //----------------------//
-    //Simulation Control    //`
-    //----------------------//
+  SAIter = inputSAFac;
+  temparature  = inputTemprature;
+  constantIniTemprature=inputTemprature;
+  alpha = InputSaAlpha;
+  outCtrl = inOutputControl;
 
-    SAIter = inputSAFac;
-    temparature  = inputTemprature;
-    constantIniTemprature=inputTemprature;
-    alpha = InputSaAlpha;
-    outCtrl = inOutputControl;
-
-    isDetailOutputOn = isStrucOuput;
-    strIpAddr = ipAddr;
-    //----------------------//
-    //System Parameter      //
-    //----------------------//
-    totalNodes = inputTotalNodes;
-    maxChNum = inputMaxChNum;
-    //correlationFactor = inCorrelationFactor;
-    compRatio=inCorrelationFactor;//temporary name
-    bestFeasibleJEntropy=0;
-    bestFeasibleSupNum=0;
-    float dx, dy;
-    int inputIndex = 0;
-    ULAGENT inputNode;
-    //*********************//
-    //Read Topology        //
-    //*********************//
-    while(inputIndex<totalNodes)
-    {
-        if( fscanf(fileReadCursor, "%f", &dx)<0 || fscanf(fileReadCursor, "%f", &dy)<0 )
-        {
-            cout << "File map's content is wrong!!\n";
-            assert(0);
-        }
-        else
-        {
-            inputNode.aryConstructor(inputIndex,myPtrMap->GetNodeXPos(inputIndex), myPtrMap->GetNodeYPos(inputIndex));
-            nodes.push_back(inputNode);
-        }
-        inputIndex++;
+  isDetailOutputOn = isStrucOuput;
+  strIpAddr = ipAddr;
+  //----------------------//
+  //System Parameter      //
+  //----------------------//
+  totalNodes = inputTotalNodes;
+  maxChNum = inputMaxChNum;
+  //correlationFactor = inCorrelationFactor;
+  compRatio=inCorrelationFactor;//temporary name
+  bestFeasibleJEntropy=0;
+  bestFeasibleSupNum=0;
+  float dx, dy;
+  int inputIndex = 0;
+  ULAGENT inputNode;
+  //*********************//
+  //Read Topology        //
+  //*********************//
+  while(inputIndex<totalNodes) {
+    if( fscanf(fileReadCursor, "%f", &dx)<0 || fscanf(fileReadCursor, "%f", &dy)<0 ) {
+      cout << "File map's content is wrong!!\n";
+      assert(0);
     }
-
-    //********************************//
-    //Compute Gij distanceOf2Nodes Gib//
-    //********************************//
-    Gib = new float   [totalNodes];
-    rateibMax = new double [totalNodes];
-    distanceOf2Nodes = new double* [totalNodes];
-    Gij = new float* [totalNodes];
-    for(int i=0; i<totalNodes; i++)
-    {
-        distanceOf2Nodes[i] = new double [totalNodes];
-        Gij[i] = new float [totalNodes];
-        Gib[i] = sysComputing->returnChannelGain_BS(nodes[i]);
-        for(int j = 0; j<totalNodes; j++)
-        {
-            if (i==j)
-            {
-                distanceOf2Nodes[i][j]=0.0;
-                Gij[i][j] = 1.0;
-            }
-            else if (i>j)
-            {
-                distanceOf2Nodes[i][j]=distanceOf2Nodes[j][i];
-                Gij[i][j] = Gij[j][i];
-            }
-            else
-            {
-                Gij[i][j] = sysComputing->returnChannelGain_2Nodes(nodes[i],nodes[j]);
-                double tempDib = pow(nodes[i].locX-nodes[j].locX,2) +pow(nodes[i].locY - nodes[j].locY,2);
-                distanceOf2Nodes[i][j] = tempDib;
-            }
-        }
+    else {
+      inputNode.aryConstructor(inputIndex,myPtrMap->GetNodeXPos(inputIndex), myPtrMap->GetNodeYPos(inputIndex));
+      nodes.push_back(inputNode);
     }
+    inputIndex++;
+  }
 
-    cSystem = new ULCS1b(inputTotalNodes, inputMaxChNum);
-    powerBest = new double [totalNodes];
-    nextNodePower = new double [totalNodes];
-    for (int i=0; i<maxChNum; i++ )
-        for(int j=0; j<totalNodes; j++)
-            cSystem->clusterStru[i][j] = false;
-    sortIndex = -1;//Just a check point
-    //Keep the sturcture for best Structure
-    aryFlagHRDone = new bool [maxChNum];
-    for(int i=0; i<maxChNum; i++)aryFlagHRDone[i]=false;
-
-    //-----Best Performance Index-----//
-
-    //Interference Matrix Keep the interference index/Name set from othe cluster for each cluster.
-    bestMaClusterStru = new bool *[maxChNum];
-    for (int i=0; i<maxChNum; i++)
-    {
-        bestMaClusterStru[i]= new bool [totalNodes];
+  //********************************//
+  //Compute Gij distanceOf2Nodes Gib//
+  //********************************//
+  Gib = new float   [totalNodes];
+  rateibMax = new double [totalNodes];
+  distanceOf2Nodes = new double* [totalNodes];
+  Gij = new float* [totalNodes];
+  for(int i=0; i<totalNodes; i++) {
+    distanceOf2Nodes[i] = new double [totalNodes];
+    Gij[i] = new float [totalNodes];
+    Gib[i] = sysComputing->returnChannelGain_BS(nodes[i]);
+    for(int j = 0; j<totalNodes; j++) {
+      if (i==j) {
+        distanceOf2Nodes[i][j]=0.0;
+        Gij[i][j] = 1.0;
+      }
+      else if (i>j) {
+        distanceOf2Nodes[i][j]=distanceOf2Nodes[j][i];
+        Gij[i][j] = Gij[j][i];
+      }
+      else {
+        Gij[i][j] = sysComputing->returnChannelGain_2Nodes(nodes[i],nodes[j]);
+        double tempDib = pow(nodes[i].locX-nodes[j].locX,2) +pow(nodes[i].locY - nodes[j].locY,2);
+        distanceOf2Nodes[i][j] = tempDib;
+      }
     }
+  }
 
-    bestAllSupStru = new bool[totalNodes];
-    prevAllSupStru = new bool[totalNodes];
-    vecBestBpshz_forVerification.resize(totalNodes);
-    vecBestSINR_forVerification.resize(totalNodes);
-    vecChooseIndex.reserve(totalNodes);
+  cSystem = new ULCS1b(inputTotalNodes, inputMaxChNum);
+  powerBest = new double [totalNodes];
+  nextNodePower = new double [totalNodes];
+  for (int i=0; i<maxChNum; i++ )
+    for(int j=0; j<totalNodes; j++)
+      cSystem->clusterStru[i][j] = false;
+  sortIndex = -1;//Just a check point
+  //Keep the sturcture for best Structure
+  aryFlagHRDone = new bool [maxChNum];
+  for(int i=0; i<maxChNum; i++)aryFlagHRDone[i]=false;
+
+  //-----Best Performance Index-----//
+
+  //Interference Matrix Keep the interference index/Name set from othe cluster for each cluster.
+  bestMaClusterStru = new bool *[maxChNum];
+  for (int i=0; i<maxChNum; i++) {
+    bestMaClusterStru[i]= new bool [totalNodes];
+  }
+
+  bestAllSupStru = new bool[totalNodes];
+  prevAllSupStru = new bool[totalNodes];
+  vecBestBpshz_forVerification.resize(totalNodes);
+  vecBestSINR_forVerification.resize(totalNodes);
+  vecChooseIndex.reserve(totalNodes);
 
 
-    maBestInterference= new double* [maxChNum];
-    for (int i=0; i<maxChNum; i++)
-        maBestInterference[i] = new double[maxChNum];
+  maBestInterference= new double* [maxChNum];
+  for (int i=0; i<maxChNum; i++)
+    maBestInterference[i] = new double[maxChNum];
 
-    maBestInterfernceIndex= new int* [maxChNum];
-    for (int i=0; i<maxChNum; i++)
-        maBestInterfernceIndex[i] = new int[maxChNum];
+  maBestInterfernceIndex= new int* [maxChNum];
+  for (int i=0; i<maxChNum; i++)
+    maBestInterfernceIndex[i] = new int[maxChNum];
 
-    bestFeasiblePayoff = DBL_MAX;
+  bestFeasiblePayoff = DBL_MAX;
 
 }
 MinPowerSACluster::~MinPowerSACluster()
@@ -248,6 +242,9 @@ bool MinPowerSACluster::setInitialStucture(char* iniFlag)
       normalFlag = setIniStruDistanceKmedoids();
     else if (!strcmp(iniFlag, "GraphPartition"))
       normalFlag = setIniGraphPartition();
+    else if (!strcmp(iniFlag, "BalancedModelCluster"))
+      normalFlag = setIniBanancedModelCluster();
+
 
     //--------------------------------------------------------------//
     //Check the initial constraint and drop node form the furtherest//
@@ -544,6 +541,139 @@ MinPowerSACluster::setIniGraphPartition()
 
 }
 
+bool
+MinPowerSACluster::setIniBanancedModelCluster()
+{
+  int retryTimes = 0;
+  float tempHeadX [maxChNum];
+  float tempHeadY [maxChNum];
+  int tempHeadList [maxChNum];
+  std::vector <std::vector <int> > tempGroup;
+  bool convergedFlag = false;
+  bool sameHeadFlag = true;
+  while(sameHeadFlag) {
+    sameHeadFlag = false;
+    convergedFlag = false;
+    //Clear before added members
+    if (retryTimes>(totalNodes-maxChNum+1)) {
+      return false;
+    }
+    for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
+    tempGroup.clear();
+
+    for (int i=0; i<maxChNum; i++) {
+      std::vector <int> tempV;
+      tempGroup.push_back(tempV);
+      tempHeadX[i] = nodes[i+retryTimes].locX;
+      tempHeadY[i] = nodes[i+retryTimes].locY;
+      tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
+    }
+    while(!convergedFlag) { // This loop want to find a new K-means coordinate 
+      //choose "maxChNum" nember of node to use as the intial Cluster head
+      //Find the closet head to form a cluster
+
+      //Same number cluster head but clear in the converge process
+      for (unsigned int i=0 ; i<tempGroup.size(); i++) tempGroup.at(i).clear(); //clear all the eixsted group members
+      std::vector<bool> vecAssigned(totalNodes, false);
+      for (int j = 0; j < maxChNum - 1; ++j) {
+        std::vector<std::pair<int,double> > vecDVi;
+        for (int i = 0; i < totalNodes; ++i) {
+          if (vecAssigned.at(i) ) continue; 
+          double minDistance = DBL_MAX;
+          int    minDisChIdx = -1;
+          for (int k = j+1; k < maxChNum; ++k) {
+            if (GetNodeDistance(k,i) < minDistance) {
+              minDistance = GetNodeDistance(k,i);
+              minDisChIdx = k;
+            }
+          }
+          double dVi = minDistance - GetNodeDistance(j,i);
+          vecDVi.push_back(std::make_pair(i, dVi));
+        }
+        std::sort(vecDVi.begin(), vecDVi.end(), pairCompare);
+        for (int l = 0; l <= m_tier2NumSlot; ++l) {
+          tempGroup.at(j).push_back(vecDVi.at(l).first);
+          vecAssigned.at(vecDVi.at(l).first) = true;
+        }
+      }
+      for (int i = 0; i < totalNodes; ++i) {
+        if (vecAssigned.at(i) != true) {
+          tempGroup.at(maxChNum-1).push_back(i);
+        }
+      }
+      
+      convergedFlag = true;
+      //find the k-means coordinate of each cluster
+      for (int i = 0; i < tempGroup.size(); i++) {
+        cout << "cluster: " << i <<"-th ";
+        for (int j = 0; j < tempGroup[i].size(); j++) {
+          cout << tempGroup[i][j] << ' ';
+        }
+        cout << endl;
+      }
+      for(int i=0; i<maxChNum; i++) {
+        float newHx = 0;
+        float newHy = 0;
+        arma::vec vecDistance = arma::zeros<arma::vec>(tempGroup[i].size());
+        for(unsigned int j=0; j<tempGroup[i].size(); j++) {
+          float tempDistance = 0.0;
+          for (int k = 0; k < tempGroup[i].size(); k++) {
+            if ( j == k ) continue;
+            tempDistance += 
+              sqrt ( (nodes[tempGroup[i][j]].locX - nodes[tempGroup[i][k]].locX ) * 
+                  (nodes[tempGroup[i][j]].locX - nodes[tempGroup[i][k]].locX) + 
+                  (nodes[tempGroup[i][j]].locY - nodes[tempGroup[i][k]].locY) * 
+                  (nodes[tempGroup[i][j]].locY - nodes[tempGroup[i][k]].locY) ) ;
+          }
+          vecDistance.at(j) = tempDistance; 
+        }
+        arma::uword idx;
+        vecDistance.min(idx);
+        newHx = nodes[tempGroup[i][idx]].locX;
+        newHy = nodes[tempGroup[i][idx]].locY;
+        if ( (abs(newHx-tempHeadX[i]) > 0.01) || (abs(newHy-tempHeadY[i])>0.01) ) convergedFlag = false; // checkcheck if the original head close enough
+        //find the new approriate location of the head
+        tempHeadX[i] = newHx;
+        tempHeadY[i] = newHy;
+        tempHeadList[i] = tempGroup[i][idx];
+      }
+    }
+    for (int i=0; i<maxChNum; i++)
+      for (int j=i+1; j<maxChNum; j++)if (tempHeadList[i] == tempHeadList[j]) sameHeadFlag = true;
+
+    retryTimes++;
+  }
+  // -------------------------------------------------------------------------- //
+  // @Description: confirm initialization of structure
+  // @Provides: 
+  // -------------------------------------------------------------------------- //
+  for (int i=0; i<maxChNum; i++) {
+    cSystem->addNewHeadCs(tempHeadList[i]);
+    for(unsigned int j=0 ; j<tempGroup[i].size(); j++) {
+      addMemberSAIni(i, tempGroup[i][j]);//we correct the ptrHead later, Because the address will change
+    }
+  }
+  //Re assign the ptrHead NOW
+  for (int i=0; i<maxChNum; i++) {
+    for(int j=0; j<totalNodes; j++)
+    {
+      if(cSystem->clusterStru[i][j]==true)
+        nodes[j].ptrHead = &(cSystem->vecHeadName[i]);
+    }
+  }
+
+  return true;
+}
+
+double
+MinPowerSACluster::GetNodeDistance( const int lName, const int rName)
+{
+  return sqrt( 
+      (nodes[lName].locX - nodes[rName].locX) * (nodes[lName].locX - nodes[rName].locX) +
+      (nodes[lName].locY - nodes[rName].locY) * (nodes[lName].locY - nodes[rName].locY)
+      );
+}
+
 double 
 MinPowerSACluster::returnComprRatio()
 {
@@ -710,7 +840,7 @@ void MinPowerSACluster::addMemberSAIni(int inputHeadIndex, int inputMemberName)
 */
 void MinPowerSACluster::coolOnce_minResors( const int iterSA)
 {
-  int probAdd = ((curSupNum<(totalNodes)) ?30000 :0);
+  int probAdd = ((curSupNum<(totalNodes)) ?100 :0);
   int probDiscard = ((curSupNum<(maxChNum+1)) ?0:20000);
 //  int probAdd = 0;
 //  int probDiscard = 0;
@@ -721,8 +851,8 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
     if( aryFlagHRDone[i] == false && cSystem->vecClusterSize[i] > 1 )
       checkRotateble=true;
   }
-  //int probHeadRotate = ((checkRotateble) ?1000:0);//Don't do head rotate if there are only a few nodes
-  int probHeadRotate = 0;
+  int probHeadRotate = ((checkRotateble) ?1000:0);//Don't do head rotate if there are only a few nodes
+  //int probHeadRotate = 0;
 
 
 

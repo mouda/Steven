@@ -22,7 +22,7 @@ MinPowerCsFactory::~MinPowerCsFactory()
 ClusterStructure*
 MinPowerCsFactory::CreateClusterStructure()
 {
-  double SAIter = 5000;
+  double SAIter = 10;
   double alpha = pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
   m_fid = fopen(m_mapFileName.c_str(), "r");
   if(m_fid == NULL) {
@@ -58,7 +58,7 @@ MinPowerCsFactory::CreateClusterStructure()
     cerr << "Set parameter failed! " << endl;
     return NULL;
   }
-  char iniFlag[]="GraphPartition";
+  char iniFlag[]="BalancedModelCluster";
   if (!m_ptrToolSA->setInitialStucture (iniFlag)) {
     cerr<<"The MinRes can't be initialized! " << endl;
     return NULL;
