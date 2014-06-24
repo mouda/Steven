@@ -67,8 +67,7 @@ simulator_SOURCES = main.cpp \
 		    csPowerUpdater.h csPowerUpdater.cpp\
 		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
 		    tier1NLP.h tier1NLP.cpp\
-		    minPowerSACluster.h minPowerSACluster.cpp\
-		    minPowerCsFactory.h minPowerCsFactory.cpp\
+		    fileCSFactory.h fileCSFactory.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minResCsFactory.h minResCsFactory.cpp\
 		    scheduler.h scheduler.cpp \

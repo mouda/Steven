@@ -13,11 +13,11 @@
 #include "csFactory.h"
 #include "kmeansCsFactory.h"
 #include "minResCsFactory.h"
-#include "minPowerCsFactory.h"
 #include "scheduler.h"
 #include "maxSNRScheduler.h"
 #include "schedFactory.h"
 #include "simulator.h"
+#include "fileCSFactory.h"
 
 #define SA_INI_TEMP 3.0
 #define SA_FIN_TEMP 0.5
@@ -80,7 +80,8 @@ int main(int argc, char *argv[])
       ("MSEOutput,M",             po::value<string>(),  "MSE output file name")
       ("SolutionOutput,S",        po::value<string>(),  "Solution output file name")
       ("PowerOutput,P",           po::value<string>(),  "Power output file name")
-      ("ClusterFormation,F",      po::value<string>(),  "Cluster Formation Algorithm");
+      ("ClusterFormation,F",      po::value<string>(),  "Cluster Formation Algorithm")
+      ("ClusterStructureFile,s",  po::value<string>(),  "Cluster Structure Name");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
@@ -88,7 +89,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() > 15 && vm.size() <= 24 ) {
+    } else if(vm.size() > 13 && vm.size() <= 24 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -165,13 +166,15 @@ int main(int argc, char *argv[])
         (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
         (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
       }
-      else if (CSFormation == "MinPower") {
-        myCsFactory = new MinPowerCsFactory(myMap, myMatComputer);
-        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
-        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
-        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
-        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetTier2NumSlot(tier2NumSlot);
-        (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetTier1TxTime(tier1TxTime);
+      else if (CSFormation == "CSFile") {
+        if (vm.count("ClusterStructureFile")) {
+          myCsFactory = new FileCSFactory(myMap, myMatComputer);
+          (dynamic_cast<FileCSFactory*>(myCsFactory)->SetFileName(vm["ClusterStructureFile"].as<string>()));
+        }
+        else {
+          cerr << "Error: No Cluster Structure File Specified" << endl;
+          return 1;
+        }
       }
 
       myCS = myCsFactory->CreateClusterStructure();

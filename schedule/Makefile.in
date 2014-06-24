@@ -94,15 +94,14 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_simulator_OBJECTS = main.$(OBJEXT) csPowerUpdater.$(OBJEXT) \
 	ULSA4b7_DC.$(OBJEXT) tier1NLP.$(OBJEXT) \
-	minPowerSACluster.$(OBJEXT) minPowerCsFactory.$(OBJEXT) \
-	kmeansCsFactory.$(OBJEXT) minResCsFactory.$(OBJEXT) \
-	scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) \
-	branchBoundScheduler.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
-	greedyPhysical.$(OBJEXT) bruteForceScheduler.$(OBJEXT) \
-	nonSimplifiedScheduler.$(OBJEXT) minPowerScheduler.$(OBJEXT) \
-	minPowerMILP.$(OBJEXT) SASolver.$(OBJEXT) \
-	powerUpdater.$(OBJEXT) schedFactory.$(OBJEXT) slot.$(OBJEXT) \
-	simulator.$(OBJEXT)
+	fileCSFactory.$(OBJEXT) kmeansCsFactory.$(OBJEXT) \
+	minResCsFactory.$(OBJEXT) scheduler.$(OBJEXT) \
+	MyTMINLP.$(OBJEXT) branchBoundScheduler.$(OBJEXT) \
+	maxSNRScheduler.$(OBJEXT) greedyPhysical.$(OBJEXT) \
+	bruteForceScheduler.$(OBJEXT) nonSimplifiedScheduler.$(OBJEXT) \
+	minPowerScheduler.$(OBJEXT) minPowerMILP.$(OBJEXT) \
+	SASolver.$(OBJEXT) powerUpdater.$(OBJEXT) \
+	schedFactory.$(OBJEXT) slot.$(OBJEXT) simulator.$(OBJEXT)
 simulator_OBJECTS = $(am_simulator_OBJECTS)
 am__DEPENDENCIES_1 =
 simulator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -388,8 +387,7 @@ simulator_SOURCES = main.cpp \
 		    csPowerUpdater.h csPowerUpdater.cpp\
 		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
 		    tier1NLP.h tier1NLP.cpp\
-		    minPowerSACluster.h minPowerSACluster.cpp\
-		    minPowerCsFactory.h minPowerCsFactory.cpp\
+		    fileCSFactory.h fileCSFactory.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minResCsFactory.h minResCsFactory.cpp\
 		    scheduler.h scheduler.cpp \
@@ -525,13 +523,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/branchBoundScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bruteForceScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csPowerUpdater.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fileCSFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/greedyPhysical.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kmeansCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxSNRScheduler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerMILP.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerSACluster.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minResCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nonSimplifiedScheduler.Po@am__quote@
