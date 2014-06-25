@@ -81,6 +81,9 @@ public:
   bool                      setIniGraphPartition();
   bool                      setIniBanancedModelCluster();
   double                    GetNodeDistance( const int lName, const int rName);
+  bool                      CheckTwoLinkFeasible(const int lChName, const int lName, const int rChName, const int rName);
+  bool                      CheckLinkFeasible(const int chName, const int name);
+  bool                      CheckAllFeasible();
 
   /* For Integrate */
   const std::vector<int>&         GetVecHeadName() const { return vecHeadNameBest; }
@@ -260,6 +263,7 @@ public:
   void decideAddRandSelectCluster();
   void decideDiscard3b();
   void decideDiscard3o();
+  void decideDiscard3f();
   void decideDiscardMinGain();
   void decideHeadRotate2i_DC_HeadRanMemDet();
 

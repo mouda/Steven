@@ -1,88 +1,37 @@
-#include "minPowerCsFactory.h"
-#define SA_INI_TEMP 3.0
-#define SA_FIN_TEMP 0.5
+#include "kmeansCsFactory.h"
 
-MinPowerCsFactory::MinPowerCsFactory( Map const * const myMap, 
+KmeansCsFactory::KmeansCsFactory( Map const * const myMap, 
     CORRE_MA_OPE const * const myMatComputer):
-  CsFactory(myMap, myMatComputer),
-  m_fid(NULL),
-  m_mapFileName(""),
-  m_compressionRatio(-1.0)
+  CsFactory(myMap, myMatComputer)
 {
+
 }
 
-MinPowerCsFactory::~MinPowerCsFactory()
+KmeansCsFactory::~KmeansCsFactory()
 {
-  fclose(m_fid);
-  if (m_ptrToolSA != NULL) {
-    delete m_ptrToolSA;
-  }
+
 }
 
 ClusterStructure*
-MinPowerCsFactory::CreateClusterStructure()
+KmeansCsFactory::CreateClusterStructure()
 {
-  double SAIter = 10000;
-  double alpha = pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
-  m_fid = fopen(m_mapFileName.c_str(), "r");
-  if(m_fid == NULL) {
-    cerr << "Read map file failed!!" << endl;
-    return NULL;
-  }
-  else if ( m_compressionRatio < 0.0){
-    cerr << "Compression Not Initialized" << endl;
-    return NULL;
-
-  }
-  m_ptrToolSA = new MinPowerSACluster(
-      m_fid, 
-      m_ptrMap->GetNumNodes(), 
-      m_ptrMap->GetNumInitHeads(), 
-      SAIter, 
-      false, 
-      false, 
-      SA_INI_TEMP, 
-      alpha, 
-      m_compressionRatio, 
-      "NULL",
-      m_ptrMap,
-      m_ptrMatComputer,
-      m_tier1TxTime,
-      m_tier2NumSlot
-      );
-  if(!m_ptrToolSA->setSystem(m_ptrMap->GetMaxPower(), 
-        (int)m_ptrMap->GetQBits(), 
-        m_ptrMap->GetBandwidth(), 
-        m_fidelityRatio)
-      ) {
-    cerr << "Set parameter failed! " << endl;
-    return NULL;
-  }
-  char iniFlag[]="BalancedModelCluster";
-  if (!m_ptrToolSA->setInitialStucture (iniFlag)) {
-    cerr<<"The MinRes can't be initialized! " << endl;
-    return NULL;
-  }
-
   if (m_ptrCS == 0) {
-    std::vector<int> myVecHeadNames;
-    std::list<std::list<int> > myListCluMembers;
-    m_ptrToolSA->startCool();
-    m_ptrCS = new ClusterStructure(
-        m_ptrMap->GetNumNodes(), 
-        m_ptrMap->GetNumInitHeads() 
-        );
-    m_ptrCS->SetRecord(
-        m_ptrToolSA->GetVecHeadName(), 
-        m_ptrToolSA->GetListCluMemeber(),
-        m_ptrToolSA->GetAllSupStru()
-        );
-    return m_ptrCS;
+    vector<int> myVecHeadNames;
+    list<list<int> > myListCluMembers;
+    if (Kmedoid(myVecHeadNames, myListCluMembers)) {
+      m_ptrCS = new ClusterStructure(m_ptrMap->GetNumNodes(), 
+          m_ptrMap->GetNumInitHeads() );
+      m_ptrCS->SetRecord(myVecHeadNames, myListCluMembers, vector<int>(m_ptrMap->GetNumNodes(),1));
+      return m_ptrCS;
+    }
+    else{
+      return NULL;
+    }
   }
 }
 
 bool
-MinPowerCsFactory::Kmedoid( std::vector<int>& vecHeadNames, std::list<std::list<int> >& listCluMembers )
+KmeansCsFactory::Kmedoid( vector<int>& vecHeadNames, list<list<int> >& listCluMembers )
 {
   int retryTimes = 0;
   double* tempHeadX  = new double [m_numMaxHeads];
@@ -90,7 +39,7 @@ MinPowerCsFactory::Kmedoid( std::vector<int>& vecHeadNames, std::list<std::list<
   int* tempHeadList  = new int [m_numMaxHeads];
   bool convergedFlag = false;
   bool sameHeadFlag = true;
-  std::vector <std::vector <int> > tempGroup;
+  vector <vector <int> > tempGroup;
 
   while(sameHeadFlag) {
     sameHeadFlag = false;
@@ -102,7 +51,7 @@ MinPowerCsFactory::Kmedoid( std::vector<int>& vecHeadNames, std::list<std::list<
     for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); 
     tempGroup.clear();
     for (int i = 0; i < m_numMaxHeads; i++) {
-      std::vector <int> tempV;
+      vector <int> tempV;
       tempGroup.push_back(tempV);
       tempHeadX[i]    = m_ptrMap->GetNodeXPos(i);
       tempHeadY[i]    = m_ptrMap->GetNodeYPos(i);
@@ -170,7 +119,7 @@ MinPowerCsFactory::Kmedoid( std::vector<int>& vecHeadNames, std::list<std::list<
 
   vecHeadNames.assign(tempHeadList, tempHeadList + m_numMaxHeads);
   listCluMembers.resize(m_numMaxHeads);
-  std::list<std::list<int> >::iterator iterRows = listCluMembers.begin();
+  list<list<int> >::iterator iterRows = listCluMembers.begin();
   for (int i = 0; iterRows != listCluMembers.end(); ++iterRows, ++i) {
     iterRows->assign(tempGroup[i].begin(), tempGroup[i].end());
   }
@@ -178,17 +127,17 @@ MinPowerCsFactory::Kmedoid( std::vector<int>& vecHeadNames, std::list<std::list<
 #ifdef DEBUG 
   iterRows = listCluMembers.begin();
   for (int i = 0; iterRows != listCluMembers.end(); ++iterRows, ++i) {
-    std::list<int>::iterator iterCols = iterRows->begin();
-    std::cout << "cluster: " << i <<"-th ";
+    list<int>::iterator iterCols = iterRows->begin();
+    cout << "cluster: " << i <<"-th ";
     for (; iterCols != iterRows->end(); ++iterCols) {
-      std::cout << *iterCols << ' '; 
+      cout << *iterCols << ' '; 
     }
-    std::cout << endl;
+    cout << endl;
   }
   for (int i = 0; i < m_numMaxHeads; ++i) {
-    std::cout << tempHeadList[i] << ' ';
+    cout << tempHeadList[i] << ' ';
   }
-  std::cout << endl;
+  cout << endl;
 #endif
 
   delete [] tempHeadX;
@@ -198,4 +147,3 @@ MinPowerCsFactory::Kmedoid( std::vector<int>& vecHeadNames, std::list<std::list<
   return true;
 
 }
-

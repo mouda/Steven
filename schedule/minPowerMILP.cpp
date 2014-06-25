@@ -180,10 +180,10 @@ MinPowerMILP::MinPowerMILP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
     }
   }
 
-//  fstream testFstream;
-//  testFstream.open("TEST.out", ios::out);
-//  testFstream << m_matConstraints.format(CleanFmt);
-//  testFstream.close();
+  fstream testFstream;
+  testFstream.open("TEST.out", ios::out);
+  testFstream << m_matConstraints.format(CleanFmt);
+  testFstream.close();
 }
 
 bool 

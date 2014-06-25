@@ -840,8 +840,16 @@ void MinPowerSACluster::addMemberSAIni(int inputHeadIndex, int inputMemberName)
 */
 void MinPowerSACluster::coolOnce_minResors( const int iterSA)
 {
-  int probAdd = ((curSupNum<(totalNodes)) ?100 :0);
-  int probDiscard = ((curSupNum<(maxChNum+1)) ?0:20000);
+  int probAdd = 0;
+  int probDiscard = 0;
+  if (iterSA < SAIter/2) {
+    probAdd = ((curSupNum<(totalNodes)) ?5000 :0);
+    probDiscard = ((curSupNum<(maxChNum+1)) ?0:25000);
+  }
+  else {
+    probAdd = ((curSupNum<(totalNodes)) ?30000 :0);
+    probDiscard = ((curSupNum<(maxChNum+1)) ?0:20000);
+  }
 //  int probAdd = 0;
 //  int probDiscard = 0;
   int probExchange = 0;
@@ -869,6 +877,9 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
   //int probIsoltae = 0;
 
+  if (iterSA < 10) {
+    bestFeasiblePayoff = DBL_MAX;
+  }
 
 //  int sumProb = probAdd + probDiscard + probExchange + probHeadRotate+probJoin+probIsoltae;
   int sumProb = probAdd + probDiscard + probHeadRotate+probJoin+probIsoltae;
@@ -1099,6 +1110,11 @@ MinPowerSACluster::decideAddRandSelectCluster()
       maxGainName = *itList;
     }
   }
+  cout << "Feasible: " << CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName) << endl;
+//  if (!CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName)) {
+//    maxGainName = -1;
+//    targetHeadIndex = -1;
+//  }
 
   targetNode = maxGainName;
 
@@ -1178,6 +1194,52 @@ MinPowerSACluster::decideDiscard3o()
 
     targetNode = minGainName;
 }
+
+void
+MinPowerSACluster::decideDiscard3f()
+{
+    //Compute the discardable size
+    list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
+    int discardableSize=0;
+    for(; itli1!=cSystem->listCluMember->end(); itli1++)if(itli1->size()>1)discardableSize++;
+    assert(discardableSize!=0);
+    //Randomly choose a cluster
+    itli1 = cSystem->listCluMember->begin();
+    targetHeadIndex = -1;
+    int chooseCursor = (int) ((double)rand() / ((double)RAND_MAX + 1) * discardableSize)+1;//+1 Becasue the intial might
+    assert(chooseCursor<=maxChNum&&chooseCursor>=0);
+
+    itli1 = cSystem->listCluMember->begin();
+    targetHeadIndex=0;
+    for(int i=0; i<chooseCursor; itli1++,targetHeadIndex++)
+    {
+        if(itli1->size()>1)i++;
+        if(i==chooseCursor)break;
+    }
+
+    assert(cSystem->vecHeadName[targetHeadIndex]!=-1);
+    assert(cSystem->vecClusterSize[targetHeadIndex]==itli1->size());
+    assert(cSystem->vecClusterSize[targetHeadIndex]>1);
+    double minGain = DBL_MAX;
+    double tempInter = 0;
+    int    minGainName = -1;
+    list<int>::iterator it2=itli1->begin();
+    for(; it2!=itli1->end(); it2++) {
+        tempInter = 0;
+        if(cSystem->vecHeadName[targetHeadIndex]==(*it2))continue;
+        else {
+          if (!CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), *it2)) {
+            minGainName = *it2;
+            break;
+          }
+        }
+    }
+    assert(minGainName!=-1);
+
+    targetNode = minGainName;
+
+}
+
 void
 MinPowerSACluster::decideDiscardMinGain()
 {
@@ -1338,6 +1400,45 @@ MinPowerSACluster::GetJoinHeadEntropy(const int lChIdx, const int rChIdx)
     }
   }
   return matrixComputer->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits());
+}
+
+bool
+MinPowerSACluster::CheckTwoLinkFeasible(const int lChName, const int lMemberName, const int rChName, const int rMemberName)
+{
+  double Gamma = 1.0;
+  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy()/m_tier1TxTime/m_ptrMap->GetBandwidth()) - 1.0);  
+  double lDecisionValue = (snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(lMemberName, lChName) + 
+      snr_require * snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(rMemberName,lChName)) /
+    (m_ptrMap->GetGijByPair(lMemberName, lChName)* m_ptrMap->GetGijByPair(rMemberName, rChName) - 
+     snr_require * snr_require  * m_ptrMap->GetGijByPair(lMemberName, rChName) * m_ptrMap->GetGijByPair(rMemberName, lChName));
+  double rDecisionValue = (snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(rMemberName, rChName) + 
+      snr_require * snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(lMemberName,rChName)) /
+    (m_ptrMap->GetGijByPair(lMemberName, lChName)* m_ptrMap->GetGijByPair(rMemberName, rChName) - 
+     snr_require * snr_require * m_ptrMap->GetGijByPair(lMemberName, rChName) * m_ptrMap->GetGijByPair(rMemberName, lChName));
+//  cout <<m_ptrMap->GetMaxPower()<<' ' << lDecisionValue << ' ' << rDecisionValue << endl;
+  if (lDecisionValue > 0 && lDecisionValue < m_ptrMap->GetMaxPower() && rDecisionValue > 0 && rDecisionValue < m_ptrMap->GetMaxPower()) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+bool
+MinPowerSACluster::CheckLinkFeasible(const int chName, const int name)
+{
+  std::list<std::list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();
+  for (int idx = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++idx) {
+    std::list<int>::const_iterator iterCol = iterRow->begin();
+    for (; iterCol != iterRow->end(); ++iterCol) {
+      if ((*iterCol) != name && *iterCol != cSystem->vecHeadName.at(idx) ) {
+        if(!CheckTwoLinkFeasible(chName, name, cSystem->vecHeadName.at(idx), *iterCol))
+            return false;
+      }
+    }
+  }
+  return true;
+
 }
 
 // -------------------------------------------------------------------------- //
@@ -1576,7 +1677,7 @@ void MinPowerSACluster::confirmNeighbor3i()
   }
   else if ((  !nextAllServe && !curAllServe ) || ( !nextAllServe && curAllServe ) )
   {
-    double probAnnealing = exp (-.5*abs(curJEntropy - nextJEntropy)/temparature);
+    double probAnnealing = exp (-1.0*abs(curJEntropy - nextJEntropy)/temparature);
     //cout<<"Show Payoff "<<nextPayoff<<"  "<<m_curPayoff<<endl;
     //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
