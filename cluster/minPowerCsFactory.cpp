@@ -22,7 +22,7 @@ MinPowerCsFactory::~MinPowerCsFactory()
 ClusterStructure*
 MinPowerCsFactory::CreateClusterStructure()
 {
-  double SAIter = 10000;
+  double SAIter = 20000;
   double alpha = pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
   m_fid = fopen(m_mapFileName.c_str(), "r");
   if(m_fid == NULL) {

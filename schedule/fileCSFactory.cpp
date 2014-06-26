@@ -64,12 +64,12 @@ FileCSFactory::ReadCSFromFile(std::vector<int>& vecHeadNames, std::list<list<int
   for (int i = 0; i < numHeads; ++i) {
     CSFile >> headName; 
     vecHeadNames.at(i)= headName - 1;
-    cout << headName  - 1<< endl;
+//    cout << headName  - 1<< endl;
   }
-  for (int i = 0; i < vecHeadNames.size(); ++i) {
-    cout << vecHeadNames.at(i) << ' ';
-  }
-  cout << endl;
+//  for (int i = 0; i < vecHeadNames.size(); ++i) {
+//    cout << vecHeadNames.at(i) << ' ';
+//  }
+//  cout << endl;
   double nodePower = 0.0;
   for (int i = 0; i < numNodes; ++i) {
     CSFile >> nodePower;

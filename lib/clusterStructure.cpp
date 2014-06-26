@@ -55,7 +55,12 @@ ClusterStructure::Print() const
   for (int i = 0;iterRows != m_listCluMember.end(); ++iterRows, ++i) {
     cout << "cluster: " << i <<"-th, Head:" ;
     list<int>::const_iterator iterCols = iterRows->begin();
-    cout << m_vecCHNameForNodes.at(*iterCols) << ", ";
+    if (*iterCols < 0) {
+      cout << "NULL, NULL";
+    }
+    else {
+      cout << m_vecCHNameForNodes.at(*iterCols) << ", ";
+    }
     for (;iterCols != iterRows->end(); ++iterCols) {
       cout << *iterCols << ' ';
     }

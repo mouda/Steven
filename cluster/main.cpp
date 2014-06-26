@@ -14,6 +14,7 @@
 #include "kmeansCsFactory.h"
 #include "simulator.h"
 #include "fileHandler.h"
+#include "minResCsFactory.h"
 
 #define SA_INI_TEMP 3.0
 #define SA_FIN_TEMP 0.5
@@ -126,7 +127,14 @@ int main(int argc, char *argv[])
       CsFactory* myCsFactory = 0;
       
       if (vm.count("ClusterStructureOutput")) {
-        if (CSFormation == "MinPower") {
+        if (CSFormation == "MinRes"){
+          myCsFactory = new MinResCsFactory(myMap, myMatComputer); 
+          (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
+          (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
+          (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
+          (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetTier2NumSlot(tier2NumSlot);
+          (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetTier1TxTime(tier1TxTime);
+        } else if (CSFormation == "MinPower") {
           myCsFactory = new MinPowerCsFactory(myMap, myMatComputer);
           (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
           (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);

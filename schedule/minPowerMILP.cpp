@@ -141,6 +141,7 @@ MinPowerMILP::MinPowerMILP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
     /* row index of constraint matrix */
     int index_i = m_numNodes * m_tier2NumSlot + m_numNodes + j_c;
 
+    if(m_ptrCS->GetVecHeadName().at(j_c) < 0 ) continue;
     for (int n_y = 0; n_y < m_tier2NumSlot; ++n_y) {
       for (int i_y = 0; i_y < m_numNodes; ++i_y) {
 
@@ -161,6 +162,7 @@ MinPowerMILP::MinPowerMILP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
     for (int j_c = 0; j_c < m_numHeads; ++j_c) {
 
       /* row index of constraint matrix */
+      if (m_ptrCS->GetVecHeadName().at(j_c) < 0) continue;
       int index_i = m_numNodes * m_tier2NumSlot + m_numNodes + m_numHeads + n_c * m_numHeads + j_c;
       
       for (int n_y = 0; n_y < m_tier2NumSlot; ++n_y) {
@@ -308,11 +310,20 @@ MinPowerMILP::get_bounds_info(Index n, Number* x_l, Number* x_u,
 
   /* eq 4.10 */
   list<list<int> >::const_iterator iterRow = m_ptrCS->GetListCluMemeber().begin();
+  std::vector<int> vecCluSize(m_ptrMap->GetNumInitHeads(), -1);
   for (int j_c = 0 ; j_c < m_numHeads; ++j_c, ++iterRow) {
     /* row index of constraint matrix */
     int index_i = m_numNodes * m_tier2NumSlot + m_numNodes + j_c;
-    g_l[index_i] = static_cast<double>(iterRow->size() - 1); 
-    g_u[index_i] = static_cast<double>(iterRow->size() - 1);
+    if(m_ptrCS->GetVecHeadName().at(j_c) < 0 ) {
+      g_l[index_i] = -DBL_MAX;
+      g_u[index_i] = DBL_MAX;
+    }
+    else {
+      //g_l[index_i] = static_cast<double>(iterRow->size() - 1); 
+      g_l[index_i] = 0; 
+      g_u[index_i] = static_cast<double>(iterRow->size() - 1);
+      vecCluSize.at(j_c) = iterRow->size() - 1;
+    }
   }
 
   /* eq 4.13 */
@@ -320,12 +331,26 @@ MinPowerMILP::get_bounds_info(Index n, Number* x_l, Number* x_u,
     for (int j_c = 0; j_c < m_numHeads; ++j_c) {
 
       /* row index of constraint matrix */
+      cout << vecCluSize.at(j_c) << ' ';
       int index_i = m_numNodes * m_tier2NumSlot + m_numNodes + m_numHeads + n_c * m_numHeads + j_c;
-      
-      g_l[index_i] = 0.0;
-      g_u[index_i] = 1.0;
+      if (m_ptrCS->GetVecHeadName().at(j_c) < 0) {
+        g_l[index_i] = -DBL_MAX;
+        g_u[index_i] = DBL_MAX;
+      }
+      else {
+        if (vecCluSize.at(j_c) > 0 ) {
+          g_l[index_i] = 1.0;
+          g_u[index_i] = 1.0;
+          vecCluSize.at(j_c) = vecCluSize.at(j_c) -1;
+        }
+        else {
+          g_l[index_i] = 0.0;
+          g_u[index_i] = 0.0;
+        }
+      }
 
     }
+    cout << endl;
   }
 
   return true;
@@ -357,7 +382,7 @@ bool
 MinPowerMILP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
 {
   assert(n==m_numVariables);
-  double powerSum = 0.0;
+  Number powerSum = 0.0;
   for (int i = 0; i < m_tier2NumSlot * m_numNodes; ++i) {
     powerSum += x[i];
   }

@@ -842,8 +842,8 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
 {
   int probAdd = 0;
   int probDiscard = 0;
-  if (iterSA < SAIter/2) {
-    probAdd = ((curSupNum<(totalNodes)) ?5000 :0);
+  if (iterSA < SAIter/5) {
+    probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
     probDiscard = ((curSupNum<(maxChNum+1)) ?0:25000);
   }
   else {
@@ -1441,6 +1441,24 @@ MinPowerSACluster::CheckLinkFeasible(const int chName, const int name)
 
 }
 
+bool
+MinPowerSACluster::CheckAllFeasible()
+{
+  std::list<std::list<int> >::const_iterator iterRow =  cSystem->listCluMember->begin();
+  for (; iterRow != cSystem->listCluMember->end(); ++iterRow) {
+    std::list<int>::const_iterator iterCol = iterRow->begin();
+    for (int idx = 0; iterCol != iterRow->end(); ++iterCol, ++idx) {
+      if (cSystem->vecHeadName.at(idx) != *iterCol) {
+        if (!CheckLinkFeasible(cSystem->vecHeadName.at(idx), *iterCol)) {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+
+}
+
 // -------------------------------------------------------------------------- //
 // @Description: targetHeadIndex, IsolateNodeName
 // @Provides: 
@@ -1618,13 +1636,13 @@ void MinPowerSACluster::confirmNeighbor3i()
   //constraint: the all the machine must be supported
 //  bool nextAllServe = (find(cSystem->allSupStru, cSystem->allSupStru + totalNodes,false ) == cSystem->allSupStru + totalNodes ); 
 //  bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
-  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
+  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible();
   for (int i = 0; i < cSystem->vecHeadName.size(); ++i) {
     if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) > m_tier2NumSlot + 1) {
       nextAllServe = false;
     }
   }
-  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false); 
+  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible() ; 
 
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
     if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
@@ -1826,7 +1844,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
 //    bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
 //    bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
   /* new constraint */
-  bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false); 
+  bool curAllServe = ((curJEntropy>fidelityRatio*wholeSystemEntopy?true:false) && CheckAllFeasible()); 
 //  cout << curJEntropy <<": " << curAllServe << endl;
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
 //    cout << m_prevVecClusterSize.at(i) << ' ';
@@ -1838,6 +1856,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
   cout << curJEntropy <<": " << curAllServe << endl;
   cout << "bestFeasiblePayoff: " << bestFeasiblePayoff << endl;
   cout << "m_curPayoff: " << m_curPayoff << endl;
+  cout << "Tier2: " << CheckAllFeasible() << endl;
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)

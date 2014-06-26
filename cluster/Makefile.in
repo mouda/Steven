@@ -93,6 +93,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_genCluster_OBJECTS = main.$(OBJEXT) myTier1NLP.$(OBJEXT) \
+	ULSA4b7_DC.$(OBJEXT) minResCsFactory.$(OBJEXT) \
 	kmeansCsFactory.$(OBJEXT) minPowerSACluster.$(OBJEXT) \
 	minPowerCsFactory.$(OBJEXT) simulator.$(OBJEXT)
 genCluster_OBJECTS = $(am_genCluster_OBJECTS)
@@ -374,6 +375,8 @@ AM_LDFLAGS = -lopenblas \
 
 genCluster_SOURCES = main.cpp \
 		    myTier1NLP.h myTier1NLP.cpp\
+		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
+		    minResCsFactory.h minResCsFactory.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minPowerSACluster.h minPowerSACluster.cpp\
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
@@ -491,10 +494,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ULSA4b7_DC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kmeansCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerSACluster.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minResCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myTier1NLP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simulator.Po@am__quote@
 

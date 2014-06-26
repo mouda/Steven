@@ -61,6 +61,8 @@ AM_LDFLAGS = -lopenblas \
 	     -lbz2
 genCluster_SOURCES = main.cpp \
 		    myTier1NLP.h myTier1NLP.cpp\
+		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
+		    minResCsFactory.h minResCsFactory.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minPowerSACluster.h minPowerSACluster.cpp\
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
