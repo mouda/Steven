@@ -843,11 +843,11 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   int probAdd = 0;
   int probDiscard = 0;
   if (iterSA < SAIter/5) {
-    probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
+    probAdd = ((curSupNum<(totalNodes)) ?5000 :0);
     probDiscard = ((curSupNum<(maxChNum+1)) ?0:25000);
   }
   else {
-    probAdd = ((curSupNum<(totalNodes)) ?30000 :0);
+    probAdd = ((curSupNum<(totalNodes)) ?15000 :0);
     probDiscard = ((curSupNum<(maxChNum+1)) ?0:20000);
   }
 //  int probAdd = 0;
@@ -873,7 +873,7 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
 
   //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
 
-  int probIsoltae=((curChNum<maxChNum)?500:0);
+  int probIsoltae=((curChNum<maxChNum)?750:0);
   //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
   //int probIsoltae = 0;
 
@@ -1111,10 +1111,10 @@ MinPowerSACluster::decideAddRandSelectCluster()
     }
   }
   cout << "Feasible: " << CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName) << endl;
-//  if (!CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName)) {
-//    maxGainName = -1;
-//    targetHeadIndex = -1;
-//  }
+  if (!CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName)) {
+    maxGainName = -1;
+    targetHeadIndex = -1;
+  }
 
   targetNode = maxGainName;
 
@@ -1431,7 +1431,7 @@ MinPowerSACluster::CheckLinkFeasible(const int chName, const int name)
   for (int idx = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++idx) {
     std::list<int>::const_iterator iterCol = iterRow->begin();
     for (; iterCol != iterRow->end(); ++iterCol) {
-      if ((*iterCol) != name && *iterCol != cSystem->vecHeadName.at(idx) ) {
+      if ((*iterCol) != name && *iterCol != cSystem->vecHeadName.at(idx) && cSystem->vecHeadName.at(idx) != chName) {
         if(!CheckTwoLinkFeasible(chName, name, cSystem->vecHeadName.at(idx), *iterCol))
             return false;
       }
@@ -1445,9 +1445,9 @@ bool
 MinPowerSACluster::CheckAllFeasible()
 {
   std::list<std::list<int> >::const_iterator iterRow =  cSystem->listCluMember->begin();
-  for (; iterRow != cSystem->listCluMember->end(); ++iterRow) {
+  for (int idx = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++idx) {
     std::list<int>::const_iterator iterCol = iterRow->begin();
-    for (int idx = 0; iterCol != iterRow->end(); ++iterCol, ++idx) {
+    for (; iterCol != iterRow->end(); ++iterCol) {
       if (cSystem->vecHeadName.at(idx) != *iterCol) {
         if (!CheckLinkFeasible(cSystem->vecHeadName.at(idx), *iterCol)) {
           return false;
@@ -1845,7 +1845,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
 //    bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
   /* new constraint */
   bool curAllServe = ((curJEntropy>fidelityRatio*wholeSystemEntopy?true:false) && CheckAllFeasible()); 
-//  cout << curJEntropy <<": " << curAllServe << endl;
+  cout << curJEntropy <<": " << curAllServe << endl;
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
 //    cout << m_prevVecClusterSize.at(i) << ' ';
     if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {

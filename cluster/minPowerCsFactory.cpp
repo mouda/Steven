@@ -58,7 +58,7 @@ MinPowerCsFactory::CreateClusterStructure()
     cerr << "Set parameter failed! " << endl;
     return NULL;
   }
-  char iniFlag[]="BalancedModelCluster";
+  char iniFlag[]="kmedoids_distance";
   if (!m_ptrToolSA->setInitialStucture (iniFlag)) {
     cerr<<"The MinRes can't be initialized! " << endl;
     return NULL;
