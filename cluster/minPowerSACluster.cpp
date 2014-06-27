@@ -843,11 +843,11 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   int probAdd = 0;
   int probDiscard = 0;
   if (iterSA < SAIter/5) {
-    probAdd = ((curSupNum<(totalNodes)) ?5000 :0);
+    probAdd = ((curSupNum<(totalNodes)) ?10000 :0);
     probDiscard = ((curSupNum<(maxChNum+1)) ?0:25000);
   }
   else {
-    probAdd = ((curSupNum<(totalNodes)) ?15000 :0);
+    probAdd = ((curSupNum<(totalNodes)) ?30000 :0);
     probDiscard = ((curSupNum<(maxChNum+1)) ?0:20000);
   }
 //  int probAdd = 0;
@@ -873,7 +873,7 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
 
   //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
 
-  int probIsoltae=((curChNum<maxChNum)?750:0);
+  int probIsoltae=((curChNum<maxChNum)?1250:0);
   //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
   //int probIsoltae = 0;
 
@@ -1408,11 +1408,11 @@ MinPowerSACluster::CheckTwoLinkFeasible(const int lChName, const int lMemberName
   double Gamma = 1.0;
   double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy()/m_tier1TxTime/m_ptrMap->GetBandwidth()) - 1.0);  
   double lDecisionValue = (snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(lMemberName, lChName) + 
-      snr_require * snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(rMemberName,lChName)) /
+      snr_require * snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(lMemberName,rChName)) /
     (m_ptrMap->GetGijByPair(lMemberName, lChName)* m_ptrMap->GetGijByPair(rMemberName, rChName) - 
      snr_require * snr_require  * m_ptrMap->GetGijByPair(lMemberName, rChName) * m_ptrMap->GetGijByPair(rMemberName, lChName));
   double rDecisionValue = (snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(rMemberName, rChName) + 
-      snr_require * snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(lMemberName,rChName)) /
+      snr_require * snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(rMemberName,lChName)) /
     (m_ptrMap->GetGijByPair(lMemberName, lChName)* m_ptrMap->GetGijByPair(rMemberName, rChName) - 
      snr_require * snr_require * m_ptrMap->GetGijByPair(lMemberName, rChName) * m_ptrMap->GetGijByPair(rMemberName, lChName));
 //  cout <<m_ptrMap->GetMaxPower()<<' ' << lDecisionValue << ' ' << rDecisionValue << endl;
