@@ -10,10 +10,10 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-path = {'data/test_CS_N100_H25_new_3_F0.8.out'};
+path = {'data/test_CS_N50_H13_new_1_F0.8.out'};
 
 strtitle2={'Graph partition'};
-mapString = ['../../runSimulation/mapFile/mapFile_uni_100_r150/mapFile_uniR150_N100_3.txt'];
+mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_1.txt'];
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
 for ii=1:length(path)

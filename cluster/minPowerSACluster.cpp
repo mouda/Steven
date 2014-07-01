@@ -868,7 +868,7 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   bool chkLessCluster=cSystem->returnIfClusterSmall(thresholdd,tmpJoinCan);
 
   //int probJoin = (chkLessCluster&&curJEntropy>(fidelityRatio*wholeSystemEntopy))?tmpJoinCan*50:0;
-  int probJoin = (chkLessCluster)?tmpJoinCan*500:0;
+  int probJoin = (chkLessCluster)?tmpJoinCan*125:0;
   //int probJoin = 0;
 
   //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
