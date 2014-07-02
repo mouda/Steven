@@ -868,7 +868,13 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   bool chkLessCluster=cSystem->returnIfClusterSmall(thresholdd,tmpJoinCan);
 
   //int probJoin = (chkLessCluster&&curJEntropy>(fidelityRatio*wholeSystemEntopy))?tmpJoinCan*50:0;
-  int probJoin = (chkLessCluster)?tmpJoinCan*125:0;
+  int probJoin = 0;
+  if (iterSA < SAIter*3/5) {
+     probJoin = (chkLessCluster)?tmpJoinCan*125:0;
+  }
+  else {
+     probJoin = (chkLessCluster)?tmpJoinCan*1250:0;
+  } 
   //int probJoin = 0;
 
   //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
@@ -889,11 +895,13 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   //-------------------------------------//
   //Decide event Flag                    //
   //-------------------------------------//
+#ifdef DEBUG
   cout << "IterSA: " << iterSA << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
     cout << cSystem->vecClusterSize.at(i) << ' ';
   }
   cout << endl;
+#endif
 
   if (eventCursor<probAdd) nextEventFlag = 1;
   else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
@@ -1110,7 +1118,7 @@ MinPowerSACluster::decideAddRandSelectCluster()
       maxGainName = *itList;
     }
   }
-  cout << "Feasible: " << CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName) << endl;
+  //cout << "Feasible: " << CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName) << endl;
   if (!CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName)) {
     maxGainName = -1;
     targetHeadIndex = -1;
@@ -1676,7 +1684,7 @@ void MinPowerSACluster::confirmNeighbor3i()
   else if( 
        ( nextPayoff > m_curPayoff ) && nextAllServe && curAllServe  )
   {
-    double probAnnealing = exp (-30.0*abs(nextPayoff-m_curPayoff)/temparature);
+    double probAnnealing = exp (-15.0*abs(nextPayoff-m_curPayoff)/temparature);
     //cout<<"Show Payoff "<<nextPayoff<<"  "<<m_curPayoff<<endl;
     //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
@@ -1845,7 +1853,9 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
 //    bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
   /* new constraint */
   bool curAllServe = ((curJEntropy>fidelityRatio*wholeSystemEntopy?true:false) && CheckAllFeasible()); 
+#ifdef DEBUG
   cout << curJEntropy <<": " << curAllServe << endl;
+#endif
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
 //    cout << m_prevVecClusterSize.at(i) << ' ';
     if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
@@ -1853,15 +1863,17 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
     }
   }
 //  cout <<": " << m_tier2NumSlot + 1<<endl;
+#ifdef DEBUG
   cout << curJEntropy <<": " << curAllServe << endl;
   cout << "bestFeasiblePayoff: " << bestFeasiblePayoff << endl;
   cout << "m_curPayoff: " << m_curPayoff << endl;
   cout << "Tier2: " << CheckAllFeasible() << endl;
+#endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)
   {
-    cout<<"In check Best"<<endl;
+    //cout<<"In check Best"<<endl;
     roundBest = inputRound;
     bestFeasibleJEntropy=curJEntropy;
     bestFeasibleSupNum=curSupNum ;
@@ -1876,7 +1888,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
   }
   else if ((m_curPayoff<bestFeasiblePayoff) && curAllServe)
   {
-    cout<<"Find new best"<<endl;
+    ///cout<<"Find new best"<<endl;
     roundBest = inputRound;
     bestFeasibleJEntropy=curJEntropy;
     bestFeasibleSupNum=curSupNum ;

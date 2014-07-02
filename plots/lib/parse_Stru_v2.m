@@ -11,7 +11,7 @@ if expTotalNodes == fscanf(fid,'%d',1);
   maxChNum = fscanf (fid,'%d',1);
   powerMax = fscanf(fid,'%e',1);
   indEntropy = fscanf(fid,'%e',1);
-  payoffs=fscanf(fid,'%d',1);
+  payoffs=fscanf(fid,'%e',1);
   SAFac=fscanf(fid,'%d',1);  
   TimeMs1st= fscanf(fid,'%e',1);
   TimeMs2nd = fscanf(fid,'%e',1);

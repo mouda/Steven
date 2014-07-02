@@ -77,6 +77,7 @@ MinPowerCsFactory::CreateClusterStructure()
         m_ptrToolSA->GetListCluMemeber(),
         m_ptrToolSA->GetAllSupStru()
         );
+    m_ptrCS->SetTier1TotalPower(m_ptrToolSA->GetBestPayoff());
     return m_ptrCS;
   }
 }

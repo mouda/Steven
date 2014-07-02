@@ -130,7 +130,7 @@ Simulator::WriteCS( const string& fileName )
     fprintf( fid,"%d\n", m_ptrCS->GetNumHeads()    );
     fprintf( fid,"%e\n", m_ptrMap->GetMaxPower()   );
     fprintf( fid,"%e\n", m_ptrMap->GetIdtEntropy() );
-    fprintf( fid,"%d\n", 0                         );  // Payoff (objective)
+    fprintf( fid,"%e\n", m_ptrCS->GetTier1TotalPower());  // Payoff (objective)
     fprintf( fid,"%d\n", 0                         );  // SA iteration
     fprintf( fid,"%5e\n", 0.0                      );  // 1st tier tx time (ms)
     fprintf( fid,"%5e\n", 0.0                      );  // 2nd tier tx time (ms)

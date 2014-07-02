@@ -20,11 +20,13 @@ class ClusterStructure
     void                          SetNotSupport( const int idx){ m_allSupStru.at(idx) = 0; }
     void                          SetSupport( const int idx){ m_allSupStru.at(idx) = 1; }
     void                          SetVecHeadNameByIdx( const int idx, const int name){ m_vecHeadName.at(idx) = name; }
+    void                          SetTier1TotalPower( const double tier1Power){m_tier1TotalPower = tier1Power; }
 
     int                           GetChIdxByName( const int& nodeName ) const;
     int                           GetChNameByName( const int& nodeName ) const;
     int                           GetNumNodes() const {return m_numNodes;}
     int                           GetNumHeads() const {return m_maxNumHeads;}
+    double                        GetTier1TotalPower() const { return m_tier1TotalPower;}
 
     const vector<int>&            GetVecHeadName() const { return m_vecHeadName; }
     const list<list<int> >&       GetListCluMemeber() const{return m_listCluMember; }
@@ -57,6 +59,7 @@ class ClusterStructure
     const int                     m_maxNumHeads;
     int                           m_numHeads;
     bool                          m_systemon;
+    double                        m_tier1TotalPower;
 
     list<list<int> >              m_listCluMember;
     vector<int>                   m_vecSupport;

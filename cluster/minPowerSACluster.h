@@ -89,6 +89,7 @@ public:
   const std::vector<int>&         GetVecHeadName() const { return vecHeadNameBest; }
   const list<list<int> >&         GetListCluMemeber() const { return listCluMemBest;}
   std::vector<int>                GetAllSupStru() const;
+  double                          GetBestPayoff() const { return bestFeasiblePayoff;}
 
   double                          OptimalRateControl() const;
   

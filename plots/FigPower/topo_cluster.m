@@ -12,7 +12,7 @@ figure;
 
 path = {'data/test_CS_N50_H13_new_1_F0.8.out'};
 
-strtitle2={'Graph partition'};
+strtitle2={'SA'};
 mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_1.txt'];
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
@@ -129,7 +129,7 @@ axis([-(radius+10) (radius+10) -(radius+10) (radius+10)]);
 
 %str = sprintf('UL Structure(N%d-HN%d-Served:%d-RT%.3f(bps/Hz)-Density(%.3f/km^2)-PowerMax %.3f(W/Hz). SAloop %d in %.2f seconds)',totalNodes, maxChNum,payoffs, C2W, density, powerBound,SAFac,computingTime);
 strtitle2{ii};
-str = sprintf('Machines=195, \\lambda=0.95 \\eta=0.48:%s ',strtitle2{ii});
+str = sprintf('Machines=50, \\lambda=0.8 \\eta=0.477:%s ',strtitle2{ii});
 
 title(str);
 %plot X-Y Axis
