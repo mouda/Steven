@@ -35,4 +35,4 @@ LDFLAGS="-L/home/share/armadillo39202/lib -L/home/share/bonmin174/lib -L/home/sh
  LDFLAGS=-L/home/share/armadillo39202/lib -L/home/share/bonmin174/lib -L/home/share/openblas/lib -L/home/share/lapack/lib -L/home/share/boost1550/lib   CPPFLAGS=-I/home/share/lapack/include/ -I/home/share/boost1550/include -I/home/share/armadillo39202/include -I/home/share/eigen320/include -I/home/share/bonmin174/include ./configure --enable-debug
 
 
- LDFLAGS="-L/opt/boost/lib -L/opt/armadillo/lib -L/opt/openblas/lib -L/opt/lapack/lib" CPPFLAGS="-I/opt/boost/include -I/opt/armadillo/include -I/opt/eigen/include" CXXFLAGS="-Wl,--no-as-needed" BONMIN_CPPFLAGS="-I/opt/bonmin/include" BONMIN_LIBS="-L/opt/bonmin/lib" ./configure 
+ LDFLAGS="-L/opt/boost/lib -L/opt/armadillo/lib -L/opt/openblas/lib -L/opt/lapack/lib" CPPFLAGS="-I/opt/boost/include -I/opt/armadillo/include -I/opt/eigen/include" CXXFLAGS="-Wl,--no-as-needed" BONMIN_CPPFLAGS="-I/opt/bonmin/include" BONMIN_LIBS="-L/opt/ipopt/lib" IPOPT_CPPFLAGS="-I/opt/ipopt/include" IPOPT_LIBS="-L/opt/bonmin/lib"./configure 
