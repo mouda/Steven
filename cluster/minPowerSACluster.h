@@ -24,7 +24,6 @@
 #include <map>
 #include <coin/IpIpoptApplication.hpp>
 #include <coin/IpSolveStatistics.hpp>
-#include <kaHIP_interface.h>
 
 
 #include "ULAGENT.h"
