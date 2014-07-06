@@ -15,6 +15,7 @@ class MinPowerCsFactory: public CsFactory
     void                    SetFidelityRatio( const double fidelityRatio){ m_fidelityRatio = fidelityRatio; }
     void                    SetTier2NumSlot(const int tier2NumSlot){ m_tier2NumSlot = tier2NumSlot; }
     void                    SetTier1TxTime( const double tier1NumSlot ){ m_tier1TxTime = tier1NumSlot;}
+    void                    SetIterationLog( const bool flag ){ m_logFlag = flag; }
     ClusterStructure*       CreateClusterStructure();
   private:
     bool Kmedoid( std::vector<int>&, std::list<std::list<int> >& );
@@ -26,6 +27,7 @@ class MinPowerCsFactory: public CsFactory
     double                m_fidelityRatio;
     int                   m_tier2NumSlot;
     double                m_tier1TxTime;
+    bool                  m_logFlag;
 };
 
 #endif

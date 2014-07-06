@@ -58,7 +58,8 @@ public:
       Map const * const myPtrMap,
       CORRE_MA_OPE const * const,
       double tier1TxTime,
-      int tier2NumSlot
+      int tier2NumSlot,
+      bool  logFlag
       );
 
   ~MinPowerSACluster();
@@ -340,5 +341,7 @@ public:
   Map const * const       m_ptrMap;
   const double            m_tier1TxTime; 
   int                   m_tier2NumSlot;
+  fstream               m_logFile; 
+  bool                  m_logFlag;
 };
 #endif

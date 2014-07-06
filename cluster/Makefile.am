@@ -66,6 +66,8 @@ genCluster_SOURCES = main.cpp \
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minPowerSACluster.h minPowerSACluster.cpp\
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
+		    nonGuidedSACluster.cpp nonGuidedSACluster.h\
+		    nonGuidedCsFactory.cpp nonGuidedCsFactory.h\
 		    simulator.h simulator.cpp 
 
 LOCAL_INCLUDE = -I../lib/

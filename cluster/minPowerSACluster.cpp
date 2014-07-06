@@ -34,11 +34,13 @@ MinPowerSACluster::MinPowerSACluster(
     Map const * const myPtrMap,
     CORRE_MA_OPE const * const myPtrGField,
     double tier1TxTime, 
-    int tier2NumSlot):
+    int tier2NumSlot,
+    bool logFlag):
   m_ptrMap(myPtrMap),
   m_tier1TxTime(tier1TxTime),
   m_tier2NumSlot(tier2NumSlot),
-  matrixComputer(myPtrGField)
+  matrixComputer(myPtrGField),
+  m_logFlag(logFlag)
 {
   sysComputing = new SimSystem;
   terminated=false;
@@ -149,6 +151,7 @@ MinPowerSACluster::MinPowerSACluster(
 MinPowerSACluster::~MinPowerSACluster()
 {
     if(!terminated)releaseMemory();
+    m_logFile.close();
 }
 
 std::vector<int>
@@ -419,7 +422,7 @@ bool MinPowerSACluster::setIniStruDistanceKmedoids()
         tempGroup[closetHeadIndex].push_back(i);
       }
       convergedFlag = true;
-#ifdef DEBUG
+//#ifdef DEBUG
       //find the k-means coordinate of each cluster
       for (int i = 0; i < tempGroup.size(); i++) {
         cout << "cluster: " << i <<"-th ";
@@ -428,7 +431,7 @@ bool MinPowerSACluster::setIniStruDistanceKmedoids()
         }
         cout << endl;
       }
-#endif
+//#endif
       for(int i=0; i<maxChNum; i++)
       {
         float newHx = 0;
@@ -715,6 +718,7 @@ bool MinPowerSACluster::startCool()
   m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
   cur2nd_Joule    = returnTransientJoule();
   cur1st_Joule    = power1st*cur1st_ms/1000.0;
+  m_logFile.open("minPoweriLog.out",std::ios::out);
 
   cout << "m_curPayoff: " << m_curPayoff << endl;
   bestAllServeFound = false;
@@ -895,13 +899,13 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   //-------------------------------------//
   //Decide event Flag                    //
   //-------------------------------------//
-#ifdef DEBUG
+//#ifdef DEBUG
   cout << "IterSA: " << iterSA << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
     cout << cSystem->vecClusterSize.at(i) << ' ';
   }
   cout << endl;
-#endif
+//#endif
 
   if (eventCursor<probAdd) nextEventFlag = 1;
   else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
@@ -1657,6 +1661,9 @@ void MinPowerSACluster::confirmNeighbor3i()
       curAllServe = false;
     }
   }
+  if (m_logFlag) {
+    m_logFile << curAllServe << ' ' << m_curPayoff <<' ' << bestFeasiblePayoff << endl;
+  }
   /* decision flow */
   /*  if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
   {
@@ -1853,9 +1860,9 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
 //    bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
   /* new constraint */
   bool curAllServe = ((curJEntropy>fidelityRatio*wholeSystemEntopy?true:false) && CheckAllFeasible()); 
-#ifdef DEBUG
+//#ifdef DEBUG
   cout << curJEntropy <<": " << curAllServe << endl;
-#endif
+//#endif
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
 //    cout << m_prevVecClusterSize.at(i) << ' ';
     if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
@@ -1863,12 +1870,12 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
     }
   }
 //  cout <<": " << m_tier2NumSlot + 1<<endl;
-#ifdef DEBUG
+//#ifdef DEBUG
   cout << curJEntropy <<": " << curAllServe << endl;
   cout << "bestFeasiblePayoff: " << bestFeasiblePayoff << endl;
   cout << "m_curPayoff: " << m_curPayoff << endl;
   cout << "Tier2: " << CheckAllFeasible() << endl;
-#endif
+//#endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)

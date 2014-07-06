@@ -7,7 +7,8 @@ MinPowerCsFactory::MinPowerCsFactory( Map const * const myMap,
   CsFactory(myMap, myMatComputer),
   m_fid(NULL),
   m_mapFileName(""),
-  m_compressionRatio(-1.0)
+  m_compressionRatio(-1.0),
+  m_logFlag(false)
 {
 }
 
@@ -48,7 +49,8 @@ MinPowerCsFactory::CreateClusterStructure()
       m_ptrMap,
       m_ptrMatComputer,
       m_tier1TxTime,
-      m_tier2NumSlot
+      m_tier2NumSlot,
+      m_logFlag
       );
   if(!m_ptrToolSA->setSystem(m_ptrMap->GetMaxPower(), 
         (int)m_ptrMap->GetQBits(), 

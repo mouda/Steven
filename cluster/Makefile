@@ -95,7 +95,8 @@ PROGRAMS = $(bin_PROGRAMS)
 am_genCluster_OBJECTS = main.$(OBJEXT) myTier1NLP.$(OBJEXT) \
 	ULSA4b7_DC.$(OBJEXT) minResCsFactory.$(OBJEXT) \
 	kmeansCsFactory.$(OBJEXT) minPowerSACluster.$(OBJEXT) \
-	minPowerCsFactory.$(OBJEXT) simulator.$(OBJEXT)
+	minPowerCsFactory.$(OBJEXT) nonGuidedSACluster.$(OBJEXT) \
+	nonGuidedCsFactory.$(OBJEXT) simulator.$(OBJEXT)
 genCluster_OBJECTS = $(am_genCluster_OBJECTS)
 am__DEPENDENCIES_1 =
 genCluster_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -380,6 +381,8 @@ genCluster_SOURCES = main.cpp \
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minPowerSACluster.h minPowerSACluster.cpp\
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
+		    nonGuidedSACluster.cpp nonGuidedSACluster.h\
+		    nonGuidedCsFactory.cpp nonGuidedCsFactory.h\
 		    simulator.h simulator.cpp 
 
 LOCAL_INCLUDE = -I../lib/
@@ -501,6 +504,8 @@ include ./$(DEPDIR)/minPowerCsFactory.Po
 include ./$(DEPDIR)/minPowerSACluster.Po
 include ./$(DEPDIR)/minResCsFactory.Po
 include ./$(DEPDIR)/myTier1NLP.Po
+include ./$(DEPDIR)/nonGuidedCsFactory.Po
+include ./$(DEPDIR)/nonGuidedSACluster.Po
 include ./$(DEPDIR)/simulator.Po
 
 .cpp.o:

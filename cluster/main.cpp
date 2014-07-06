@@ -15,6 +15,7 @@
 #include "simulator.h"
 #include "fileHandler.h"
 #include "minResCsFactory.h"
+#include "nonGuidedCsFactory.h"
 
 #define SA_INI_TEMP 3.0
 #define SA_FIN_TEMP 0.5
@@ -68,8 +69,9 @@ int main(int argc, char *argv[])
       ("ClusterStructureOutput,C",po::value<string>(),  "Cluster structure output file name")
       ("MetisGraph,M",            po::value<string>(),  "MetisGraph format output")
       ("Label,L",                 po::value<string>(),  "Label output")
-      ("WeightedMatrix,W",       po::value<string>(),  "Matrix form of Weght matrix")
-      ("ClusterFormation,F",      po::value<string>(),  "Cluster Formation Algorithm");
+      ("WeightedMatrix,W",        po::value<string>(),  "Matrix form of Weght matrix")
+      ("ClusterFormation,F",      po::value<string>(),  "Cluster Formation Algorithm")
+      ("iterationlog,l",          "Iteration log");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
@@ -77,7 +79,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 14  || vm.size() == 15) {
+    } else if(vm.size() == 14  || vm.size() == 15 || vm.size() == 16) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -141,6 +143,19 @@ int main(int argc, char *argv[])
           (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
           (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetTier2NumSlot(tier2NumSlot);
           (dynamic_cast<MinPowerCsFactory*>(myCsFactory))->SetTier1TxTime(tier1TxTime);
+          if (vm.count("iterationlog")) {
+            (dynamic_cast<MinPowerCsFactory*>(myCsFactory)->SetIterationLog(true));
+          }
+        } else if (CSFormation == "NonGuided") {
+          myCsFactory = new NonGuidedCsFactory(myMap, myMatComputer);
+          (dynamic_cast<NonGuidedCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
+          (dynamic_cast<NonGuidedCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
+          (dynamic_cast<NonGuidedCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
+          (dynamic_cast<NonGuidedCsFactory*>(myCsFactory))->SetTier2NumSlot(tier2NumSlot);
+          (dynamic_cast<NonGuidedCsFactory*>(myCsFactory))->SetTier1TxTime(tier1TxTime);
+          if (vm.count("iterationlog")) {
+            (dynamic_cast<NonGuidedCsFactory*>(myCsFactory)->SetIterationLog(true));
+          }
         }
 
         myCS = myCsFactory->CreateClusterStructure();
