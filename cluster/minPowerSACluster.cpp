@@ -713,7 +713,13 @@ bool MinPowerSACluster::startCool()
   curJEntropy   =   curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
 
   m_cur1st_watt   = OptimalRateControl();
-  m_curPayoff     = m_cur1st_watt;
+  double product = 1.0;
+  for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
+    if (cSystem->vecClusterSize.at(k) != 0) {
+      product *= static_cast<double>(cSystem->vecClusterSize.at(k)); 
+    }
+  }
+  m_curPayoff     = m_cur1st_watt + 0.001*product;
   m_prevVecClusterSize.assign(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
   m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
   cur2nd_Joule    = returnTransientJoule();
@@ -729,6 +735,15 @@ bool MinPowerSACluster::startCool()
   for(int i = 1; i < SAIter; ++i)
   {
     coolOnce_minResors(i);
+    bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible() ; 
+    for (int m = 0; m < m_prevVecClusterSize.size(); ++m) {
+      if (m_prevVecHeadName.at(m) >= 0 && m_prevVecClusterSize.at(m) > m_tier2NumSlot + 1) {
+        curAllServe = false;
+      }
+    }
+    if (m_logFlag) {
+      m_logFile << curAllServe << ' ' << m_curPayoff <<' ' << bestFeasiblePayoff << endl;
+    }
 
     if( targetHeadIndex == -1 || targetHeadIndex == -1 ) {
       if ( nextEventFlag == 4 ) {
@@ -1630,7 +1645,13 @@ void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance
     cout<<"Error in calculateMatrics_minResors "<<endl;
     assert(0);
   }
-  nextPayoff = OptimalRateControl();
+  double product = 1.0;
+  for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
+    if (cSystem->vecClusterSize.at(k) != 0) {
+      product *= static_cast<double>(cSystem->vecClusterSize.at(k)); 
+    }
+  }
+  nextPayoff = OptimalRateControl()+ 0.001* product;
 }
 
 /*
@@ -1660,9 +1681,6 @@ void MinPowerSACluster::confirmNeighbor3i()
     if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
       curAllServe = false;
     }
-  }
-  if (m_logFlag) {
-    m_logFile << curAllServe << ' ' << m_curPayoff <<' ' << bestFeasiblePayoff << endl;
   }
   /* decision flow */
   /*  if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
