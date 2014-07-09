@@ -713,13 +713,14 @@ bool MinPowerSACluster::startCool()
   curJEntropy   =   curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
 
   m_cur1st_watt   = OptimalRateControl();
-  double product = 1.0;
+  double product = 0.0;
   for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
-    if (cSystem->vecClusterSize.at(k) != 0) {
-      product *= static_cast<double>(cSystem->vecClusterSize.at(k)); 
+    if (cSystem->vecClusterSize.at(k) != 0
+        && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
+      product += pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
     }
   }
-  m_curPayoff     = m_cur1st_watt + 0.001*product;
+  m_curPayoff     = m_cur1st_watt + 10.*product;
   m_prevVecClusterSize.assign(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
   m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
   cur2nd_Joule    = returnTransientJoule();
@@ -1486,6 +1487,39 @@ MinPowerSACluster::CheckAllFeasible()
 
 }
 
+double
+MinPowerSACluster::GetTier2ExpectPower(const int Name, const int chName)
+{
+  double denomiator = m_ptrMap->GetNoise();
+  list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
+  for (int chIdx = 0; iterRow !=cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
+    list<int>::const_iterator iterCol = iterRow->begin();
+    for (; iterCol != iterRow->end(); ++iterCol) {
+      if (cSystem->vecHeadName.at(chIdx) != -1  && cSystem->vecHeadName.at(chIdx) != chName) {
+        denomiator += m_ptrMap->GetGijByPair(chName, *iterCol)* m_ptrMap->GetMaxPower();
+      }
+    }
+  }
+  return denomiator/m_ptrMap->GetGijByPair(Name, chName);
+}
+
+bool
+MinPowerSACluster::CheckTier2Feasible()
+{
+  list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
+  for (int chIdx = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
+    list<int>::const_iterator iterCol = iterRow->begin();
+    for (; iterCol != iterRow->end(); ++iterCol) {
+      if (cSystem->vecHeadName.at(chIdx) != -1 && 
+          GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) > m_ptrMap->GetMaxPower()) {
+        cout << GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) <<' ' <<m_ptrMap->GetMaxPower()<<endl; 
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 // -------------------------------------------------------------------------- //
 // @Description: targetHeadIndex, IsolateNodeName
 // @Provides: 
@@ -1645,13 +1679,14 @@ void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance
     cout<<"Error in calculateMatrics_minResors "<<endl;
     assert(0);
   }
-  double product = 1.0;
+  double product = 0.0;
   for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
-    if (cSystem->vecClusterSize.at(k) != 0) {
-      product *= static_cast<double>(cSystem->vecClusterSize.at(k)); 
+    if (cSystem->vecClusterSize.at(k) != 0 &&
+        (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
+      product +=  pow((static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0),5) ; 
     }
   }
-  nextPayoff = OptimalRateControl()+ 0.001* product;
+  nextPayoff = OptimalRateControl()+ 10.* product;
 }
 
 /*
@@ -1881,6 +1916,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
 //#ifdef DEBUG
   cout << curJEntropy <<": " << curAllServe << endl;
 //#endif
+  cout << "**********" << CheckTier2Feasible() << endl;
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
 //    cout << m_prevVecClusterSize.at(i) << ' ';
     if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
