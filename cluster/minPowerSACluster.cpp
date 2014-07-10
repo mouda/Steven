@@ -713,14 +713,14 @@ bool MinPowerSACluster::startCool()
   curJEntropy   =   curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
 
   m_cur1st_watt   = OptimalRateControl();
-  double product = 0.0;
+  double sizePenalty = 0.0;
   for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
     if (cSystem->vecClusterSize.at(k) != 0
         && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
-      product += pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
+      sizePenalty += pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
     }
   }
-  m_curPayoff     = m_cur1st_watt + 10.*product;
+  m_curPayoff     = m_cur1st_watt + 10.*sizePenalty + 1.*GetTier2Penalty() + 10.*GetEntropyPenalty();
   m_prevVecClusterSize.assign(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
   m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
   cur2nd_Joule    = returnTransientJoule();
@@ -736,7 +736,7 @@ bool MinPowerSACluster::startCool()
   for(int i = 1; i < SAIter; ++i)
   {
     coolOnce_minResors(i);
-    bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible() ; 
+    bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible() ; 
     for (int m = 0; m < m_prevVecClusterSize.size(); ++m) {
       if (m_prevVecHeadName.at(m) >= 0 && m_prevVecClusterSize.at(m) > m_tier2NumSlot + 1) {
         curAllServe = false;
@@ -1491,16 +1491,25 @@ double
 MinPowerSACluster::GetTier2ExpectPower(const int Name, const int chName)
 {
   double denomiator = m_ptrMap->GetNoise();
+  double Gamma = 1.0;
+  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy()/m_tier1TxTime/m_ptrMap->GetBandwidth()) - 1.0);  
   list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
   for (int chIdx = 0; iterRow !=cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
     list<int>::const_iterator iterCol = iterRow->begin();
+    if ( cSystem->vecHeadName.at(chIdx) == -1  || 
+        cSystem->vecHeadName.at(chIdx) == chName || 
+        cSystem->vecClusterSize.at(chIdx) == 1) continue;
+    double maxInterfere = -DBL_MAX;
+    int maxIterfereNode = -1;
     for (; iterCol != iterRow->end(); ++iterCol) {
-      if (cSystem->vecHeadName.at(chIdx) != -1  && cSystem->vecHeadName.at(chIdx) != chName) {
-        denomiator += m_ptrMap->GetGijByPair(chName, *iterCol)* m_ptrMap->GetMaxPower();
+      if ( cSystem->vecHeadName.at(chIdx) != *iterCol &&  m_ptrMap->GetGijByPair(chName, *iterCol) > maxInterfere) {
+        maxInterfere = m_ptrMap->GetGijByPair(chName, *iterCol);
+        maxIterfereNode = *iterCol;
       }
     }
+    denomiator += maxInterfere* m_ptrMap->GetMaxPower();
   }
-  return denomiator/m_ptrMap->GetGijByPair(Name, chName);
+  return snr_require*denomiator/m_ptrMap->GetGijByPair(Name, chName);
 }
 
 bool
@@ -1508,16 +1517,45 @@ MinPowerSACluster::CheckTier2Feasible()
 {
   list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
   for (int chIdx = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
+    if (cSystem->vecHeadName.at(chIdx) == -1 ) continue; 
     list<int>::const_iterator iterCol = iterRow->begin();
     for (; iterCol != iterRow->end(); ++iterCol) {
-      if (cSystem->vecHeadName.at(chIdx) != -1 && 
-          GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) > m_ptrMap->GetMaxPower()) {
-        cout << GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) <<' ' <<m_ptrMap->GetMaxPower()<<endl; 
+//        cout << GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) <<' ' <<m_ptrMap->GetMaxPower() << ' '
+//          <<*iterCol << ' ' << cSystem->vecHeadName.at(chIdx) <<endl; 
+      if ( GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) > m_ptrMap->GetMaxPower()) {
         return false;
       }
     }
   }
   return true;
+}
+double
+MinPowerSACluster::GetTier2Penalty()
+{
+  double penalty = 0.0;
+  list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
+  for (int chIdx = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
+    if (cSystem->vecHeadName.at(chIdx) == -1 ) continue; 
+    list<int>::const_iterator iterCol = iterRow->begin();
+    for (; iterCol != iterRow->end(); ++iterCol) {
+      if ( GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) > m_ptrMap->GetMaxPower()) {
+        penalty += GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) - m_ptrMap->GetMaxPower();
+      }
+    }
+  }
+  return penalty;
+}
+
+double
+MinPowerSACluster::GetEntropyPenalty()
+{
+  nextJEntropy = nextSupNum*indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
+  if (fidelityRatio*wholeSystemEntopy - nextJEntropy < 0) {
+    return 0.0;
+  }
+  else {
+    return fidelityRatio*wholeSystemEntopy - nextJEntropy;
+  }
 }
 
 // -------------------------------------------------------------------------- //
@@ -1679,14 +1717,14 @@ void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance
     cout<<"Error in calculateMatrics_minResors "<<endl;
     assert(0);
   }
-  double product = 0.0;
+  double sizePenalty = 0.0;
   for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
     if (cSystem->vecClusterSize.at(k) != 0 &&
         (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
-      product +=  pow((static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0),5) ; 
+      sizePenalty +=  pow((static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0),5) ; 
     }
   }
-  nextPayoff = OptimalRateControl()+ 10.* product;
+  nextPayoff = OptimalRateControl()+ 10.* sizePenalty + 1.*GetTier2Penalty() + 10.*GetEntropyPenalty();
 }
 
 /*
@@ -1704,19 +1742,21 @@ void MinPowerSACluster::confirmNeighbor3i()
   //constraint: the all the machine must be supported
 //  bool nextAllServe = (find(cSystem->allSupStru, cSystem->allSupStru + totalNodes,false ) == cSystem->allSupStru + totalNodes ); 
 //  bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
-  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible();
+  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible();
   for (int i = 0; i < cSystem->vecHeadName.size(); ++i) {
     if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) > m_tier2NumSlot + 1) {
       nextAllServe = false;
     }
   }
-  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible() ; 
+  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible() ; 
 
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
     if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
       curAllServe = false;
     }
   }
+  nextAllServe = true;
+  curAllServe = true;
   /* decision flow */
   /*  if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
   {

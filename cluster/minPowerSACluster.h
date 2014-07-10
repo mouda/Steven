@@ -84,8 +84,10 @@ public:
   bool                      CheckTwoLinkFeasible(const int lChName, const int lName, const int rChName, const int rName);
   bool                      CheckLinkFeasible(const int chName, const int name);
   bool                      CheckAllFeasible();
-  double                      GetTier2ExpectPower(const int Name,const int ChName);
+  double                    GetTier2ExpectPower(const int Name,const int ChName);
   bool                      CheckTier2Feasible();
+  double                    GetTier2Penalty();
+  double                    GetEntropyPenalty();
 
   /* For Integrate */
   const std::vector<int>&         GetVecHeadName() const { return vecHeadNameBest; }
