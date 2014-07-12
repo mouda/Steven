@@ -256,7 +256,7 @@ public:
 //-------------------------------------------------------------------//
   //After Start Cool
   void addMemberSAIni(int inputHeadIndex0, int inputMemberName0);
-  void coolOnce_minResors( const int iterSA);
+  void GetNeighbor1( const int iterSA);
 
   void adaptSearchingProbability();
   void updateHeadLocation();

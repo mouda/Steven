@@ -735,7 +735,7 @@ bool MinPowerSACluster::startCool()
 
   for(int i = 1; i < SAIter; ++i)
   {
-    coolOnce_minResors(i);
+    GetNeighbor1(i);
     bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible() ; 
     for (int m = 0; m < m_prevVecClusterSize.size(); ++m) {
       if (m_prevVecHeadName.at(m) >= 0 && m_prevVecClusterSize.at(m) > m_tier2NumSlot + 1) {
@@ -749,10 +749,7 @@ bool MinPowerSACluster::startCool()
     if( targetHeadIndex == -1 || targetHeadIndex == -1 ) {
       if ( nextEventFlag == 4 ) {
         passNext2Cur();
-        for(int j=0; j<totalNodes; j++) 
-          nodes[j].power = nextNodePower[j];
       }
-      ++i;
       continue;
     }
 
@@ -858,7 +855,7 @@ void MinPowerSACluster::addMemberSAIni(int inputHeadIndex, int inputMemberName)
 /*
     do one step movement add/discard/
 */
-void MinPowerSACluster::coolOnce_minResors( const int iterSA)
+void MinPowerSACluster::GetNeighbor1( const int iterSA)
 {
   int probAdd = 0;
   int probDiscard = 0;
@@ -915,13 +912,6 @@ void MinPowerSACluster::coolOnce_minResors( const int iterSA)
   //-------------------------------------//
   //Decide event Flag                    //
   //-------------------------------------//
-//#ifdef DEBUG
-  cout << "IterSA: " << iterSA << endl;
-  for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
-    cout << cSystem->vecClusterSize.at(i) << ' ';
-  }
-  cout << endl;
-//#endif
 
   if (eventCursor<probAdd) nextEventFlag = 1;
   else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
@@ -1309,7 +1299,7 @@ MinPowerSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
     if(cSystem->vecClusterSize[i]>1)rotateAbleSize++;
   //if(cSystem->vecClusterSize[i]>1&&aryFlagHRDone[i]==false)rotateAbleSize++;
 
-  //Notice: no handle of "rotateAbleSize == 0", it handle by coolOnce_minResors
+  //Notice: no handle of "rotateAbleSize == 0", it handle by GetNeighbor1
   //Then we choose the rotate target member cluster
   int rotateCursor = (int)((double)rand() / ((double)RAND_MAX + 1) * rotateAbleSize)+1;
 
@@ -1735,10 +1725,6 @@ void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance
    */
 void MinPowerSACluster::confirmNeighbor3i()
 {
-  //constraint: the fidelity ratio must be satisfied
-//  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
-//  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
-//
   //constraint: the all the machine must be supported
 //  bool nextAllServe = (find(cSystem->allSupStru, cSystem->allSupStru + totalNodes,false ) == cSystem->allSupStru + totalNodes ); 
 //  bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
@@ -1758,14 +1744,6 @@ void MinPowerSACluster::confirmNeighbor3i()
   nextAllServe = true;
   curAllServe = true;
   /* decision flow */
-  /*  if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
-  {
-    passNext2Cur();
-    for(int i=0; i<totalNodes; i++) 
-      nodes[i].power = nextNodePower[i];
-    if( nextEventFlag == 1 || nextEventFlag == 2 ) 
-      confirmStructureChange();
-  }*/
   if ( !curAllServe && nextAllServe ) {
     passNext2Cur();
     for(int i=0; i<totalNodes; i++) 
@@ -1773,7 +1751,7 @@ void MinPowerSACluster::confirmNeighbor3i()
     if( nextEventFlag == 1 || nextEventFlag == 2 ) 
       confirmStructureChange();
   }
-  else if ( ( nextPayoff < m_curPayoff ) && nextAllServe && curAllServe )
+  else if ( ( nextPayoff < m_curPayoff )  )
   {
     passNext2Cur();
     for(int i=0; i<totalNodes; i++)
@@ -1782,7 +1760,7 @@ void MinPowerSACluster::confirmNeighbor3i()
       confirmStructureChange();
   }
   else if( 
-       ( nextPayoff > m_curPayoff ) && nextAllServe && curAllServe  )
+       ( nextPayoff > m_curPayoff )  )
   {
     double probAnnealing = exp (-15.0*abs(nextPayoff-m_curPayoff)/temparature);
     //cout<<"Show Payoff "<<nextPayoff<<"  "<<m_curPayoff<<endl;
@@ -1800,26 +1778,6 @@ void MinPowerSACluster::confirmNeighbor3i()
       if(nextEventFlag==1||nextEventFlag==2)
         confirmStructureChange();
     }
-  }
-  else if ((  !nextAllServe && !curAllServe ) || ( !nextAllServe && curAllServe ) )
-  {
-    double probAnnealing = exp (-1.0*abs(curJEntropy - nextJEntropy)/temparature);
-    //cout<<"Show Payoff "<<nextPayoff<<"  "<<m_curPayoff<<endl;
-    //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
-    double annealingChoose = (double)rand()/((double)RAND_MAX+1);
-    if ( annealingChoose > probAnnealing )
-    {
-      reverseMoveSA();
-    }
-    else//accept the move
-    {
-      passNext2Cur();
-      for(int i=0; i<totalNodes; i++)
-        nodes[i].power = nextNodePower[i];
-      if(nextEventFlag==1||nextEventFlag==2)
-        confirmStructureChange();
-    }
-
   }
   targetHeadIndex = -1;
   targetNode = -1;
@@ -1950,25 +1908,24 @@ void MinPowerSACluster::confirmStructureChange()
 bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
 {
 //    bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
-//    bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
   /* new constraint */
-  bool curAllServe = ((curJEntropy>fidelityRatio*wholeSystemEntopy?true:false) && CheckAllFeasible()); 
-//#ifdef DEBUG
-  cout << curJEntropy <<": " << curAllServe << endl;
-//#endif
-  cout << "**********" << CheckTier2Feasible() << endl;
+  bool curAllServe = ((curJEntropy >= fidelityRatio*wholeSystemEntopy?true:false) && CheckTier2Feasible()); 
+  bool sizeFeasible = true;
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
-//    cout << m_prevVecClusterSize.at(i) << ' ';
     if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
       curAllServe = false;
+      sizeFeasible = false;
     }
   }
-//  cout <<": " << m_tier2NumSlot + 1<<endl;
 //#ifdef DEBUG
-  cout << curJEntropy <<": " << curAllServe << endl;
-  cout << "bestFeasiblePayoff: " << bestFeasiblePayoff << endl;
-  cout << "m_curPayoff: " << m_curPayoff << endl;
-  cout << "Tier2: " << CheckAllFeasible() << endl;
+  cout << "IterSA: " << inputRound << endl;
+  for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
+    cout << cSystem->vecClusterSize.at(i) << ' ';
+  }
+  cout << endl;
+  cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
+  cout << "min payoff: " << bestFeasiblePayoff << ", ";
+  cout << "curr Payoff: " << m_curPayoff << endl;
 //#endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
