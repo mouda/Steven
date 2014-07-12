@@ -13,7 +13,7 @@
 #include <armadillo>
 #include <iterator>
 
-#define PENALTYSIZE 10e-6
+#define PENALTYSIZE 1
 using namespace std;
 #include "minPowerSACluster.h"
 bool pairCompare(const std::pair<int,double>& lPair, const std::pair<int,double>& rPair)
@@ -1914,7 +1914,6 @@ MinPowerSACluster::ConfirmNeighbor2(
       sizePenalty.assign(tmpSizePenalty.begin(), tmpSizePenalty.end());
       tier2Penalty.assign(tmpTier2Penalty.begin(), tmpTier2Penalty.end());
       entropyPenalty = tmpEntropyPenalty;
-      m_curPayoff = tmpPayoff;
     }
   }
   else {
