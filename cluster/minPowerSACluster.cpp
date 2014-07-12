@@ -13,6 +13,7 @@
 #include <armadillo>
 #include <iterator>
 
+#define PENALTYSIZE 10e-6
 using namespace std;
 #include "minPowerSACluster.h"
 bool pairCompare(const std::pair<int,double>& lPair, const std::pair<int,double>& rPair)
@@ -713,14 +714,15 @@ bool MinPowerSACluster::startCool()
   curJEntropy   =   curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
 
   m_cur1st_watt   = OptimalRateControl();
-  double sizePenalty = 0.0;
-  for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
-    if (cSystem->vecClusterSize.at(k) != 0
-        && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
-      sizePenalty += pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
-    }
-  }
-  m_curPayoff     = m_cur1st_watt + 10.*sizePenalty + 1.*GetTier2Penalty() + 10.*GetEntropyPenalty();
+
+  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
+  vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 1.0);
+  double          entropyPenalty = 10.0;
+  vector<double>  tmpSizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
+  vector<double>  tmpTier2Penalty(m_ptrMap->GetNumNodes(), 10.0);
+  double          tmpEntropyPenalty = 10.0;
+
+  m_curPayoff     = GetPayOff(sizePenalty, tier2Penalty, entropyPenalty);
   m_prevVecClusterSize.assign(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
   m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
   cur2nd_Joule    = returnTransientJoule();
@@ -735,26 +737,33 @@ bool MinPowerSACluster::startCool()
 
   for(int i = 1; i < SAIter; ++i)
   {
-    GetNeighbor1(i);
-    bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible() ; 
-    for (int m = 0; m < m_prevVecClusterSize.size(); ++m) {
-      if (m_prevVecHeadName.at(m) >= 0 && m_prevVecClusterSize.at(m) > m_tier2NumSlot + 1) {
-        curAllServe = false;
+    if (i%2 == 0) {
+      GetNeighbor1(i);
+      bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible() ; 
+      for (int m = 0; m < m_prevVecClusterSize.size(); ++m) {
+        if (m_prevVecHeadName.at(m) >= 0 && m_prevVecClusterSize.at(m) > m_tier2NumSlot + 1) {
+          curAllServe = false;
+        }
       }
+      if (m_logFlag) {
+        m_logFile << curAllServe << ' ' << m_curPayoff <<' ' << bestFeasiblePayoff << endl;
+      }
+
+      if( targetHeadIndex == -1 || targetHeadIndex == -1 ) {
+        if ( nextEventFlag == 4 ) {
+          passNext2Cur();
+        }
+        continue;
+      }
+
+      calculateMatrics_minResors(sizePenalty, tier2Penalty, entropyPenalty);
+      ConfirmNeighbor1();
     }
-    if (m_logFlag) {
-      m_logFile << curAllServe << ' ' << m_curPayoff <<' ' << bestFeasiblePayoff << endl;
+    else {
+      GetNeighbor2(i, sizePenalty, tier2Penalty, entropyPenalty, tmpSizePenalty, tmpTier2Penalty, tmpEntropyPenalty );
+      ConfirmNeighbor2(sizePenalty, tier2Penalty, entropyPenalty, tmpSizePenalty, tmpTier2Penalty, tmpEntropyPenalty );
     }
 
-    if( targetHeadIndex == -1 || targetHeadIndex == -1 ) {
-      if ( nextEventFlag == 4 ) {
-        passNext2Cur();
-      }
-      continue;
-    }
-
-    calculateMatrics_minResors();
-    confirmNeighbor3i();
     if ( curJEntropy > ( fidelityRatio * wholeSystemEntopy ) ) {
       flagAnsFound=true;
     }
@@ -763,10 +772,11 @@ bool MinPowerSACluster::startCool()
       cout<<"Congratulation All nodes are served"<<endl;
       break;
     }
-
     int tempche = (signed)cSystem->listUnSupport->size();
 
     assert(( curSupNum + tempche) <= totalNodes);
+    temparature*=alpha;
+
   }
 
   end = clock();
@@ -860,11 +870,11 @@ void MinPowerSACluster::GetNeighbor1( const int iterSA)
   int probAdd = 0;
   int probDiscard = 0;
   if (iterSA < SAIter/5) {
-    probAdd = ((curSupNum<(totalNodes)) ?10000 :0);
+    probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
     probDiscard = ((curSupNum<(maxChNum+1)) ?0:25000);
   }
   else {
-    probAdd = ((curSupNum<(totalNodes)) ?30000 :0);
+    probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
     probDiscard = ((curSupNum<(maxChNum+1)) ?0:20000);
   }
 //  int probAdd = 0;
@@ -989,6 +999,98 @@ void MinPowerSACluster::GetNeighbor1( const int iterSA)
     cout<<"SumProb "<<sumProb<<endl;
   }
 }
+void
+MinPowerSACluster::GetNeighbor2( const int iterSA, 
+    const vector<double>& sizePenalty, 
+    const vector<double>& tier2Penalty, 
+    const double& entropyPenalty,
+    vector<double>& tmpSizePenalty,
+    vector<double>& tmpTier2Penalty,
+    double& tmpEntropyPenalty)
+{
+  /* Neighbor of Cluster Size */
+  tmpSizePenalty.assign(sizePenalty.begin(), sizePenalty.end());
+  tmpTier2Penalty.assign(tier2Penalty.begin(), tier2Penalty.end());
+  tmpEntropyPenalty = entropyPenalty;
+  for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
+    if (cSystem->vecClusterSize.at(k) != 0
+        && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
+      if (sizePenalty.at(k) > 0 ) {
+        if (rand()%2  == 1) {
+          tmpSizePenalty.at(k) = sizePenalty.at(k) + 1 * PENALTYSIZE; 
+        }
+        else {
+          tmpSizePenalty.at(k) = sizePenalty.at(k) - 1 * PENALTYSIZE; 
+        }
+      }
+      else {
+        tmpSizePenalty.at(k) = sizePenalty.at(k) + 1 * PENALTYSIZE; 
+      } 
+    }
+    else {
+      tmpSizePenalty.at(k) = sizePenalty.at(k);
+    }
+  }
+  /* Neighbor of Link feasibity */
+  list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
+  for (int chIdx = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
+    if (cSystem->vecHeadName.at(chIdx) == -1 ) continue; 
+    list<int>::const_iterator iterCol = iterRow->begin();
+    for (; iterCol != iterRow->end(); ++iterCol) {
+      if ( GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) > m_ptrMap->GetMaxPower()) {
+        if (tier2Penalty.at(*iterCol) > 0 ) {
+          if (rand()%2  == 1) {
+            tmpTier2Penalty.at(*iterCol) = tier2Penalty.at(*iterCol) + 1 * PENALTYSIZE; 
+          }
+          else {
+            tmpTier2Penalty.at(*iterCol) = tier2Penalty.at(*iterCol) - 1 * PENALTYSIZE; 
+          }
+        }
+        else {
+          tmpTier2Penalty.at(*iterCol) = tier2Penalty.at(*iterCol) + 1 * PENALTYSIZE;
+        } 
+      }
+      else {
+        tmpTier2Penalty.at(*iterCol) = tier2Penalty.at(*iterCol);
+      }
+    }
+  }
+
+  /* Neighbor of Entropy */
+  double tmpJEntropy = nextSupNum*indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
+  if (fidelityRatio*wholeSystemEntopy - tmpJEntropy > 0) {
+    if (entropyPenalty > 0 ) {
+      if (rand()%2  == 1) {
+        tmpEntropyPenalty = entropyPenalty + 1 * PENALTYSIZE; 
+      }
+      else {
+        tmpEntropyPenalty = entropyPenalty - 1 * PENALTYSIZE; 
+      }
+    }
+    else {
+      tmpEntropyPenalty = entropyPenalty + 1 * PENALTYSIZE;
+    } 
+  }
+  else {
+    tmpEntropyPenalty = entropyPenalty;
+  }
+}
+
+double
+MinPowerSACluster::GetPayOff( 
+    const vector<double>& sizePenalty, 
+    const vector<double>& tier2Penalty, 
+    const double& entropyPenalty)
+{
+  cout << "S: " << GetSizePenalty(sizePenalty) << ", T: " << GetTier2Penalty(tier2Penalty) << ", E: " << GetEntropyPenalty(entropyPenalty) << endl;
+  for (int i = 0; i < sizePenalty.size(); ++i) {
+    cout << sizePenalty.at(i) << ' ';
+  }
+  cout << endl;
+  return OptimalRateControl()+GetSizePenalty(sizePenalty) + GetTier2Penalty(tier2Penalty) + GetEntropyPenalty(entropyPenalty);
+}
+
+
 /*
  * to exchange the node randomly
  */
@@ -1129,10 +1231,10 @@ MinPowerSACluster::decideAddRandSelectCluster()
     }
   }
   //cout << "Feasible: " << CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName) << endl;
-  if (!CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName)) {
-    maxGainName = -1;
-    targetHeadIndex = -1;
-  }
+//  if (!CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName)) {
+//    maxGainName = -1;
+//    targetHeadIndex = -1;
+//  }
 
   targetNode = maxGainName;
 
@@ -1519,8 +1621,23 @@ MinPowerSACluster::CheckTier2Feasible()
   }
   return true;
 }
+
 double
-MinPowerSACluster::GetTier2Penalty()
+MinPowerSACluster::GetSizePenalty( const vector<double>& sizePenalty)
+{
+  double tmpSizePenalty = 0.0;
+  for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
+    if (cSystem->vecClusterSize.at(k) != 0
+        && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
+      tmpSizePenalty += sizePenalty.at(k) *
+        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
+    }
+  }
+  return tmpSizePenalty;
+
+}
+double
+MinPowerSACluster::GetTier2Penalty( const vector<double>& tier2Penalty )
 {
   double penalty = 0.0;
   list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
@@ -1529,7 +1646,8 @@ MinPowerSACluster::GetTier2Penalty()
     list<int>::const_iterator iterCol = iterRow->begin();
     for (; iterCol != iterRow->end(); ++iterCol) {
       if ( GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) > m_ptrMap->GetMaxPower()) {
-        penalty += GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) - m_ptrMap->GetMaxPower();
+        penalty += tier2Penalty.at(*iterCol) * 
+          GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) - m_ptrMap->GetMaxPower();
       }
     }
   }
@@ -1537,14 +1655,14 @@ MinPowerSACluster::GetTier2Penalty()
 }
 
 double
-MinPowerSACluster::GetEntropyPenalty()
+MinPowerSACluster::GetEntropyPenalty(const double entropyPenalty)
 {
-  nextJEntropy = nextSupNum*indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
-  if (fidelityRatio*wholeSystemEntopy - nextJEntropy < 0) {
+  double tmpJEntropy = nextSupNum*indEntropy + matrixComputer->computeLog2Det(1.0, cSystem->allSupStru);
+  if (fidelityRatio*wholeSystemEntopy - tmpJEntropy < 0) {
     return 0.0;
   }
   else {
-    return fidelityRatio*wholeSystemEntopy - nextJEntropy;
+    return entropyPenalty * (fidelityRatio*wholeSystemEntopy - tmpJEntropy);
   }
 }
 
@@ -1671,7 +1789,10 @@ void MinPowerSACluster::join_fromHeadSA(int JoiningHeadIndex,int targetH){
 }
 
 
-void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance matircs
+void MinPowerSACluster::calculateMatrics_minResors(//Calculate next performance matircs
+    const vector<double>& sizePenalty, 
+    const vector<double>& tier2Penalty, 
+    const double& entropyPenalty)
 {
   next2nd_Joule = returnTransientJoule();
   next1st_Joule= power1st*next1st_ms/1000;
@@ -1707,14 +1828,7 @@ void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance
     cout<<"Error in calculateMatrics_minResors "<<endl;
     assert(0);
   }
-  double sizePenalty = 0.0;
-  for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
-    if (cSystem->vecClusterSize.at(k) != 0 &&
-        (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
-      sizePenalty +=  pow((static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0),5) ; 
-    }
-  }
-  nextPayoff = OptimalRateControl()+ 10.* sizePenalty + 1.*GetTier2Penalty() + 10.*GetEntropyPenalty();
+  nextPayoff = GetPayOff(sizePenalty, tier2Penalty, entropyPenalty);
 }
 
 /*
@@ -1723,11 +1837,9 @@ void MinPowerSACluster::calculateMatrics_minResors()//Calculate next performance
    -confirm3c add reset some metric if structure change(add,discard)
    by"if(nextEventFlag==1||nextEventFlag==2)confirmStructureChange();"
    */
-void MinPowerSACluster::confirmNeighbor3i()
+void MinPowerSACluster::ConfirmNeighbor1()
 {
   //constraint: the all the machine must be supported
-//  bool nextAllServe = (find(cSystem->allSupStru, cSystem->allSupStru + totalNodes,false ) == cSystem->allSupStru + totalNodes ); 
-//  bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
   bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible();
   for (int i = 0; i < cSystem->vecHeadName.size(); ++i) {
     if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) > m_tier2NumSlot + 1) {
@@ -1762,7 +1874,7 @@ void MinPowerSACluster::confirmNeighbor3i()
   else if( 
        ( nextPayoff > m_curPayoff )  )
   {
-    double probAnnealing = exp (-15.0*abs(nextPayoff-m_curPayoff)/temparature);
+    double probAnnealing = exp (-1.0*abs(nextPayoff-m_curPayoff)/temparature);
     //cout<<"Show Payoff "<<nextPayoff<<"  "<<m_curPayoff<<endl;
     //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
@@ -1782,10 +1894,39 @@ void MinPowerSACluster::confirmNeighbor3i()
   targetHeadIndex = -1;
   targetNode = -1;
   nextEventFlag = -1;
-  temparature*=alpha;
 }
 
-void MinPowerSACluster::passNext2Cur() {
+void
+MinPowerSACluster::ConfirmNeighbor2(
+    vector<double>& sizePenalty, 
+    vector<double>& tier2Penalty, 
+    double& entropyPenalty,
+    const vector<double>& tmpSizePenalty,
+    const vector<double>& tmpTier2Penalty,
+    const double& tmpEntropyPenalty)
+{
+  double tmpPayoff = GetPayOff(tmpSizePenalty, tmpTier2Penalty, tmpEntropyPenalty);
+
+  if (tmpPayoff < m_curPayoff) {
+    double probAnnealing = exp (-1.0*abs(tmpPayoff-m_curPayoff)/temparature);
+    double annealingChoose = (double)rand()/((double)RAND_MAX+1);
+    if ( annealingChoose < probAnnealing ) {//accept the move
+      sizePenalty.assign(tmpSizePenalty.begin(), tmpSizePenalty.end());
+      tier2Penalty.assign(tmpTier2Penalty.begin(), tmpTier2Penalty.end());
+      entropyPenalty = tmpEntropyPenalty;
+      m_curPayoff = tmpPayoff;
+    }
+  }
+  else {
+      sizePenalty.assign(tmpSizePenalty.begin(), tmpSizePenalty.end());
+      tier2Penalty.assign(tmpTier2Penalty.begin(), tmpTier2Penalty.end());
+      entropyPenalty = tmpEntropyPenalty;
+  }
+}
+
+void 
+MinPowerSACluster::passNext2Cur() 
+{
 
 
     curJEntropy = nextJEntropy;

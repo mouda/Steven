@@ -1,6 +1,6 @@
 #include "minPowerCsFactory.h"
 #define SA_INI_TEMP 3.0
-#define SA_FIN_TEMP 0.1
+#define SA_FIN_TEMP 10e-6
 
 MinPowerCsFactory::MinPowerCsFactory( Map const * const myMap, 
     CORRE_MA_OPE const * const myMatComputer):

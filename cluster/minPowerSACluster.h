@@ -86,8 +86,10 @@ public:
   bool                      CheckAllFeasible();
   double                    GetTier2ExpectPower(const int Name,const int ChName);
   bool                      CheckTier2Feasible();
-  double                    GetTier2Penalty();
-  double                    GetEntropyPenalty();
+
+  double                    GetSizePenalty(const vector<double>& );  
+  double                    GetTier2Penalty(const vector<double>& );
+  double                    GetEntropyPenalty( const double );
 
   /* For Integrate */
   const std::vector<int>&         GetVecHeadName() const { return vecHeadNameBest; }
@@ -257,9 +259,12 @@ public:
   //After Start Cool
   void addMemberSAIni(int inputHeadIndex0, int inputMemberName0);
   void GetNeighbor1( const int iterSA);
-
-  void adaptSearchingProbability();
-  void updateHeadLocation();
+  void GetNeighbor2( const int iterSA, const vector<double>&, const vector<double>&, const double&, 
+      vector<double>&, vector<double>&, double& );
+  double GetPayOff( const vector<double>&, const vector<double>&, const double& );
+  void calculateMatrics_minResors(const vector<double>&, const vector<double>&, const double& );
+  void ConfirmNeighbor1();
+  void ConfirmNeighbor2(vector<double>&, vector<double>&, double&, const vector<double>&, const vector<double>&, const double& );
 
   void decideExchangeNode();
   void decideAddClosetAddableNode();
@@ -291,11 +296,9 @@ public:
 
   int lastIsolateNodeName;
   int lastIsolatedClusterIndex;
-  void calculateMatrics_minResors();
 
 
   std::vector<int> lastJoingingMachine;
-  void confirmNeighbor3i();
   void passNext2Cur();
   void reverseMoveSA();
   void confirmStructureChange();
