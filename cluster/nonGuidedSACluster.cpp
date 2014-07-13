@@ -719,7 +719,7 @@ bool NonGuidedSACluster::startCool()
   }
 
   m_cur1st_watt   = OptimalRateControl();
-  m_curPayoff     = m_cur1st_watt+10.*product;
+  m_curPayoff     = m_cur1st_watt+0.*product;
   m_prevVecClusterSize.assign(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
   m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
   cur2nd_Joule    = returnTransientJoule();
@@ -1112,7 +1112,7 @@ NonGuidedSACluster::decideAddRandSelectCluster()
   targetNode = -1;
   list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
   int addableSize=0;
-  for(; itli1 != cSystem->listCluMember->end(); itli1++) if(itli1->size()> 1 )addableSize++;
+  for(; itli1 != cSystem->listCluMember->end(); itli1++) if(itli1->size()> 1 && itli1->size() < m_tier2NumSlot + 1)addableSize++;
 
   if (addableSize == 0) {
     return;
@@ -1124,7 +1124,7 @@ NonGuidedSACluster::decideAddRandSelectCluster()
   itli1 = cSystem->listCluMember->begin();
   targetHeadIndex=0;
   for(int i=0; i<chooseCursor; itli1++,targetHeadIndex++) {
-    if(itli1->size()> 1  ) ++i;
+    if(itli1->size()> 1 && itli1->size() < m_tier2NumSlot + 1 ) ++i;
     if(i==chooseCursor)break;
   }
   double maxGain = -DBL_MAX;
@@ -1133,14 +1133,16 @@ NonGuidedSACluster::decideAddRandSelectCluster()
   list <int>::iterator itList=cSystem->listUnSupport->begin();
   for(; itList!=cSystem->listUnSupport->end(); ++itList) {
     double tmpGain = m_ptrMap->GetGijByPair(*itList, cSystem->vecHeadName.at(targetHeadIndex) );
+    if (tmpGain > maxGain) {
       maxGain = tmpGain;
       maxGainName = *itList;
       break;
+    }
   }
   //cout << "Feasible: " << CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName) << endl;
   if (!CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName)) {
-    maxGainName = -1;
-    targetHeadIndex = -1;
+      maxGainName = -1;
+      targetHeadIndex = -1;
   }
 
   targetNode = maxGainName;
@@ -1210,10 +1212,10 @@ NonGuidedSACluster::decideDiscard3o()
         tempInter = 0;
         if(cSystem->vecHeadName[targetHeadIndex]==(*it2))continue;
         else {
-            //if( m_ptrMap->GetGijByPair(cSystem->vecHeadName[targetHeadIndex], (*it2) ) < minGain) {
+            if( m_ptrMap->GetGijByPair(cSystem->vecHeadName[targetHeadIndex], (*it2) ) < minGain) {
                 minGain = m_ptrMap->GetGijByPair(cSystem->vecHeadName[targetHeadIndex], (*it2) ) ;
                 minGainName = (*it2);
-            //}
+            }
         }
     }
     assert(minGainName!=-1);
@@ -1334,11 +1336,11 @@ NonGuidedSACluster::decideHeadRotate2i_DC_HeadRanMemDet()
   {
     if((*it1)==OriginalNode)continue;
     double tmpTier1Gain = m_ptrMap->GetGi0ByNode(*it1);//==Head Rotate
-    //if( tmpTier1Gain > maxTier1Gain )
-    //{
+    if( tmpTier1Gain > maxTier1Gain )
+    {
       maxTier1Gain = tmpTier1Gain;
       targetNode=*it1;
-    //}
+    }
   }
   assert(targetHeadIndex != -1 && targetNode != -1);
 }
@@ -1485,6 +1487,49 @@ NonGuidedSACluster::CheckAllFeasible()
 
 }
 
+double
+NonGuidedSACluster::GetTier2ExpectPower(const int Name, const int chName)
+{
+  double denomiator = m_ptrMap->GetNoise();
+  double Gamma = 1.0;
+  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy()/m_tier1TxTime/m_ptrMap->GetBandwidth()) - 1.0);  
+  list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
+  for (int chIdx = 0; iterRow !=cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
+    list<int>::const_iterator iterCol = iterRow->begin();
+    if ( cSystem->vecHeadName.at(chIdx) == -1  || 
+        cSystem->vecHeadName.at(chIdx) == chName || 
+        cSystem->vecClusterSize.at(chIdx) == 1) continue;
+    double maxInterfere = -DBL_MAX;
+    int maxIterfereNode = -1;
+    for (; iterCol != iterRow->end(); ++iterCol) {
+      if ( cSystem->vecHeadName.at(chIdx) != *iterCol &&  m_ptrMap->GetGijByPair(chName, *iterCol) > maxInterfere) {
+        maxInterfere = m_ptrMap->GetGijByPair(chName, *iterCol);
+        maxIterfereNode = *iterCol;
+      }
+    }
+    denomiator += maxInterfere* m_ptrMap->GetMaxPower();
+  }
+  return snr_require*denomiator/m_ptrMap->GetGijByPair(Name, chName);
+}
+
+bool
+NonGuidedSACluster::CheckTier2Feasible()
+{
+  list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
+  for (int chIdx = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
+    if (cSystem->vecHeadName.at(chIdx) == -1 ) continue; 
+    list<int>::const_iterator iterCol = iterRow->begin();
+    for (; iterCol != iterRow->end(); ++iterCol) {
+//        cout << GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) <<' ' <<m_ptrMap->GetMaxPower() << ' '
+//          <<*iterCol << ' ' << cSystem->vecHeadName.at(chIdx) <<endl; 
+      if ( GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) > m_ptrMap->GetMaxPower()) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 // -------------------------------------------------------------------------- //
 // @Description: targetHeadIndex, IsolateNodeName
 // @Provides: 
@@ -1522,9 +1567,11 @@ void NonGuidedSACluster::decideIsolate4b(){
         tempInter = 0;
         if(cSystem->vecHeadName[isolatedHeadIndex]==(*it2))continue;
         else {
+            if( m_ptrMap->GetGijByPair(cSystem->vecHeadName[isolatedHeadIndex], (*it2) ) < minGain) {
                 minGain = m_ptrMap->GetGijByPair(cSystem->vecHeadName[isolatedHeadIndex], (*it2) ) ;
                 minGainName = (*it2);
                 break;
+            }
         }
     }
     assert(minGainName!=-1);
@@ -1650,7 +1697,7 @@ void NonGuidedSACluster::calculateMatrics_minResors()//Calculate next performanc
       product += pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
     }
   }
-  nextPayoff = OptimalRateControl()+10.* product;
+  nextPayoff = OptimalRateControl()+0.* product;
 }
 
 /*
@@ -1661,26 +1708,20 @@ void NonGuidedSACluster::calculateMatrics_minResors()//Calculate next performanc
    */
 void NonGuidedSACluster::confirmNeighbor3i()
 {
-  //constraint: the fidelity ratio must be satisfied
-//  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
-//  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
-//
   //constraint: the all the machine must be supported
-//  bool nextAllServe = (find(cSystem->allSupStru, cSystem->allSupStru + totalNodes,false ) == cSystem->allSupStru + totalNodes ); 
-//  bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
   bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible();
-//  for (int i = 0; i < cSystem->vecHeadName.size(); ++i) {
-//    if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) > m_tier2NumSlot + 1) {
-//      nextAllServe = false;
-//    }
-//  }
+  for (int i = 0; i < cSystem->vecHeadName.size(); ++i) {
+    if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) > m_tier2NumSlot + 1) {
+      nextAllServe = false;
+    }
+  }
   bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible() ; 
 
-//  for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
-//    if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
-//      curAllServe = false;
-//    }
-//  }
+  for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
+    if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
+      curAllServe = false;
+    }
+  }
   /* decision flow */
   /*  if  ( ( nextJEntropy >= curJEntropy )&& !nextAllServe && !curAllServe )
   {
@@ -1874,25 +1915,24 @@ void NonGuidedSACluster::confirmStructureChange()
 bool NonGuidedSACluster::checkBestClusterStructure_DataCentric(int inputRound)
 {
 //    bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
-//    bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
-  /* new constraint */
+  bool sizeFeasible = true;
   bool curAllServe = ((curJEntropy>fidelityRatio*wholeSystemEntopy?true:false) && CheckAllFeasible()); 
-//#ifdef DEBUG
-  cout << curJEntropy <<": " << curAllServe << endl;
-//#ifdef
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
-//    cout << m_prevVecClusterSize.at(i) << ' ';
     if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
       curAllServe = false;
+      sizeFeasible = false;
     }
   }
-//  cout <<": " << m_tier2NumSlot + 1<<endl;
-//#ifdef DEBUG
-  cout << curJEntropy <<": " << curAllServe << endl;
-  cout << "bestFeasiblePayoff: " << bestFeasiblePayoff << endl;
-  cout << "m_curPayoff: " << m_curPayoff << endl;
-  cout << "Tier2: " << CheckAllFeasible() << endl;
-//#ifdef
+#ifdef DEBUG
+  cout << "IterSA: " << inputRound << endl;
+  for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
+    cout << cSystem->vecClusterSize.at(i) << ' ';
+  }
+  cout << endl;
+  cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
+  cout << "min payoff: " << bestFeasiblePayoff << ", ";
+  cout << "curr Payoff: " << m_curPayoff << endl;
+#endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)

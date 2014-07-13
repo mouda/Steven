@@ -157,6 +157,10 @@ int main(int argc, char *argv[])
             (dynamic_cast<NonGuidedCsFactory*>(myCsFactory)->SetIterationLog(true));
           }
         }
+        if (!myCsFactory) {
+          cerr << "Error: Failed to initalize cluster structure factory" << endl;
+          return 1;
+        }
 
         myCS = myCsFactory->CreateClusterStructure();
 

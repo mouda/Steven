@@ -13,7 +13,7 @@ figure;
 path = {'data/testCS.out'};
 
 strtitle2={'SA'};
-mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_6.txt'];
+mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_2.txt'];
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
 for ii=1:length(path)

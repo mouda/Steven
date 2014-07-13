@@ -13,7 +13,7 @@
 #include <armadillo>
 #include <iterator>
 
-#define PENALTYSIZE 1
+#define PENALTYSIZE 10e-6
 using namespace std;
 #include "minPowerSACluster.h"
 bool pairCompare(const std::pair<int,double>& lPair, const std::pair<int,double>& rPair)
@@ -716,7 +716,7 @@ bool MinPowerSACluster::startCool()
   m_cur1st_watt   = OptimalRateControl();
 
   vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
-  vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 1.0);
+  vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 10.0);
   double          entropyPenalty = 10.0;
   vector<double>  tmpSizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
   vector<double>  tmpTier2Penalty(m_ptrMap->GetNumNodes(), 10.0);
@@ -1082,11 +1082,14 @@ MinPowerSACluster::GetPayOff(
     const vector<double>& tier2Penalty, 
     const double& entropyPenalty)
 {
-  cout << "S: " << GetSizePenalty(sizePenalty) << ", T: " << GetTier2Penalty(tier2Penalty) << ", E: " << GetEntropyPenalty(entropyPenalty) << endl;
+#ifdef DEBUG
+  cout << "S: " << GetSizePenalty(sizePenalty) << ", T: " << 
+    GetTier2Penalty(tier2Penalty) << ", E: " << GetEntropyPenalty(entropyPenalty) << endl;
   for (int i = 0; i < sizePenalty.size(); ++i) {
     cout << sizePenalty.at(i) << ' ';
   }
   cout << endl;
+#endif
   return OptimalRateControl()+GetSizePenalty(sizePenalty) + GetTier2Penalty(tier2Penalty) + GetEntropyPenalty(entropyPenalty);
 }
 
@@ -1908,7 +1911,7 @@ MinPowerSACluster::ConfirmNeighbor2(
   double tmpPayoff = GetPayOff(tmpSizePenalty, tmpTier2Penalty, tmpEntropyPenalty);
 
   if (tmpPayoff < m_curPayoff) {
-    double probAnnealing = exp (-1.0*abs(tmpPayoff-m_curPayoff)/temparature);
+    double probAnnealing = exp (-15.0*abs(tmpPayoff-m_curPayoff)/temparature);
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
     if ( annealingChoose < probAnnealing ) {//accept the move
       sizePenalty.assign(tmpSizePenalty.begin(), tmpSizePenalty.end());
@@ -2057,7 +2060,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
       sizeFeasible = false;
     }
   }
-//#ifdef DEBUG
+#ifdef DEBUG
   cout << "IterSA: " << inputRound << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
     cout << cSystem->vecClusterSize.at(i) << ' ';
@@ -2066,7 +2069,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
   cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
   cout << "min payoff: " << bestFeasiblePayoff << ", ";
   cout << "curr Payoff: " << m_curPayoff << endl;
-//#endif
+#endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)
