@@ -152,7 +152,7 @@ MinPowerSACluster::MinPowerSACluster(
 MinPowerSACluster::~MinPowerSACluster()
 {
     if(!terminated)releaseMemory();
-    m_logFile.close();
+    if(m_logFlag) m_logFile.close();
 }
 
 std::vector<int>
@@ -727,7 +727,7 @@ bool MinPowerSACluster::startCool()
   m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
   cur2nd_Joule    = returnTransientJoule();
   cur1st_Joule    = power1st*cur1st_ms/1000.0;
-  m_logFile.open("minPoweriLog.out",std::ios::out);
+  if (m_logFlag) m_logFile.open("minPoweriLog.out",std::ios::out);
 
   cout << "m_curPayoff: " << m_curPayoff << endl;
   bestAllServeFound = false;
