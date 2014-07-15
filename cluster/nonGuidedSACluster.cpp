@@ -1915,7 +1915,7 @@ bool NonGuidedSACluster::checkBestClusterStructure_DataCentric(int inputRound)
       curAllServe = false;
     }
   }
-//#ifdef DEBUG
+#ifdef DEBUG
   cout << "IterSA: " << inputRound << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
     cout << cSystem->vecClusterSize.at(i) << ' ';
@@ -1924,7 +1924,7 @@ bool NonGuidedSACluster::checkBestClusterStructure_DataCentric(int inputRound)
   cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
   cout << "min payoff: " << bestFeasiblePayoff << ", ";
   cout << "curr Payoff: " << m_curPayoff << endl;
-//#endif
+#endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)
