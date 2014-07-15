@@ -1916,14 +1916,14 @@ bool NonGuidedSACluster::checkBestClusterStructure_DataCentric(int inputRound)
     }
   }
 #ifdef DEBUG
-  cout << "IterSA: " << inputRound << endl;
-  for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
-    cout << cSystem->vecClusterSize.at(i) << ' ';
-  }
-  cout << endl;
-  cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
-  cout << "min payoff: " << bestFeasiblePayoff << ", ";
-  cout << "curr Payoff: " << m_curPayoff << endl;
+//  cout << "IterSA: " << inputRound << endl;
+//  for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
+//    cout << cSystem->vecClusterSize.at(i) << ' ';
+//  }
+//  cout << endl;
+//  cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
+//  cout << "min payoff: " << bestFeasiblePayoff << ", ";
+//  cout << "curr Payoff: " << m_curPayoff << endl;
 #endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
