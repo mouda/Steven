@@ -39,8 +39,7 @@ NonGuidedSACluster::NonGuidedSACluster(
   m_ptrMap(myPtrMap),
   m_tier1TxTime(tier1TxTime),
   m_tier2NumSlot(tier2NumSlot),
-  matrixComputer(myPtrGField),
-  m_logFlag(logFlag)
+  matrixComputer(myPtrGField)
 {
   sysComputing = new SimSystem;
   terminated=false;
@@ -421,7 +420,7 @@ bool NonGuidedSACluster::setIniStruDistanceKmedoids()
         tempGroup[closetHeadIndex].push_back(i);
       }
       convergedFlag = true;
-//#ifdef DEBUG
+#ifdef DEBUG
       //find the k-means coordinate of each cluster
       for (int i = 0; i < tempGroup.size(); i++) {
         cout << "cluster: " << i <<"-th ";
@@ -430,7 +429,7 @@ bool NonGuidedSACluster::setIniStruDistanceKmedoids()
         }
         cout << endl;
       }
-//#ifdef
+#endif
       for(int i=0; i<maxChNum; i++)
       {
         float newHx = 0;
@@ -710,21 +709,13 @@ bool NonGuidedSACluster::startCool()
   curChNum      =   maxChNum;
   nextChNum     =   curChNum;
   curJEntropy   =   curSupNum*indEntropy + matrixComputer->computeLog2Det(1.0,cSystem->allSupStru);
-  double product = 0.0;
-  for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
-    if (cSystem->vecClusterSize.at(k) != 0
-        && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
-      product += pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
-    }
-  }
 
   m_cur1st_watt   = OptimalRateControl();
-  m_curPayoff     = m_cur1st_watt+0.*product;
+  m_curPayoff     = m_cur1st_watt;
   m_prevVecClusterSize.assign(cSystem->vecClusterSize.begin(), cSystem->vecClusterSize.end());
   m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
   cur2nd_Joule    = returnTransientJoule();
   cur1st_Joule    = power1st*cur1st_ms/1000.0;
-  m_logFile.open("randomSelectLog.out",std::ios::out);
 
   cout << "m_curPayoff: " << m_curPayoff << endl;
   bestAllServeFound = false;
@@ -905,23 +896,13 @@ void NonGuidedSACluster::coolOnce_minResors( const int iterSA)
   //-------------------------------------//
   //Decide event Flag                    //
   //-------------------------------------//
-//#ifdef DEBUG
+#ifdef DEBUG
   cout << "IterSA: " << iterSA << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
     cout << cSystem->vecClusterSize.at(i) << ' ';
   }
   cout << endl;
-//#ifdef
-  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible() ; 
-
-  for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
-    if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
-      curAllServe = false;
-    }
-  }
-  if (m_logFlag) {
-    m_logFile << curAllServe << ' ' << m_curPayoff <<' ' << bestFeasiblePayoff << endl;
-  }
+#endif
 
   if (eventCursor<probAdd) nextEventFlag = 1;
   else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
@@ -1124,7 +1105,7 @@ NonGuidedSACluster::decideAddRandSelectCluster()
   itli1 = cSystem->listCluMember->begin();
   targetHeadIndex=0;
   for(int i=0; i<chooseCursor; itli1++,targetHeadIndex++) {
-    if(itli1->size()> 1 && itli1->size() < m_tier2NumSlot + 1 ) ++i;
+    if(itli1->size()> 1  && itli1->size() < m_tier2NumSlot + 1) ++i;
     if(i==chooseCursor)break;
   }
   double maxGain = -DBL_MAX;
@@ -1136,13 +1117,12 @@ NonGuidedSACluster::decideAddRandSelectCluster()
     if (tmpGain > maxGain) {
       maxGain = tmpGain;
       maxGainName = *itList;
-      break;
     }
   }
   //cout << "Feasible: " << CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName) << endl;
   if (!CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), maxGainName)) {
-      maxGainName = -1;
-      targetHeadIndex = -1;
+    maxGainName = -1;
+    targetHeadIndex = -1;
   }
 
   targetNode = maxGainName;
@@ -1169,9 +1149,10 @@ NonGuidedSACluster::decideDiscard3b()
   int    minName = -1; 
   for (; iterCol != iterRow->end(); ++iterCol) {
     double tmpGain = m_ptrMap->GetGijByPair(*iterCol, cSystem->vecHeadName.at(chIdx) );
+    if (tmpGain < minGain) {
       minGain = tmpGain;
       minName = *iterCol; 
-      break;
+    }
   }
 
   /* Decide Result */
@@ -1570,7 +1551,6 @@ void NonGuidedSACluster::decideIsolate4b(){
             if( m_ptrMap->GetGijByPair(cSystem->vecHeadName[isolatedHeadIndex], (*it2) ) < minGain) {
                 minGain = m_ptrMap->GetGijByPair(cSystem->vecHeadName[isolatedHeadIndex], (*it2) ) ;
                 minGainName = (*it2);
-                break;
             }
         }
     }
@@ -1690,14 +1670,7 @@ void NonGuidedSACluster::calculateMatrics_minResors()//Calculate next performanc
     cout<<"Error in calculateMatrics_minResors "<<endl;
     assert(0);
   }
-  double product = 0.0;
-  for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
-    if (cSystem->vecClusterSize.at(k) != 0
-        && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
-      product += pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
-    }
-  }
-  nextPayoff = OptimalRateControl()+0.* product;
+  nextPayoff = OptimalRateControl();
 }
 
 /*
@@ -1708,14 +1681,20 @@ void NonGuidedSACluster::calculateMatrics_minResors()//Calculate next performanc
    */
 void NonGuidedSACluster::confirmNeighbor3i()
 {
+  //constraint: the fidelity ratio must be satisfied
+//  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
+//  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false);
+//
   //constraint: the all the machine must be supported
-  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible();
+//  bool nextAllServe = (find(cSystem->allSupStru, cSystem->allSupStru + totalNodes,false ) == cSystem->allSupStru + totalNodes ); 
+//  bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
+  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible();
   for (int i = 0; i < cSystem->vecHeadName.size(); ++i) {
     if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) > m_tier2NumSlot + 1) {
       nextAllServe = false;
     }
   }
-  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckAllFeasible() ; 
+  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible() ; 
 
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
     if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
@@ -1915,15 +1894,16 @@ void NonGuidedSACluster::confirmStructureChange()
 bool NonGuidedSACluster::checkBestClusterStructure_DataCentric(int inputRound)
 {
 //    bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
+//    bool curAllServe = (find(prevAllSupStru, prevAllSupStru + totalNodes, false) == prevAllSupStru + totalNodes);
+  /* new constraint */
   bool sizeFeasible = true;
-  bool curAllServe = ((curJEntropy>fidelityRatio*wholeSystemEntopy?true:false) && CheckAllFeasible()); 
+  bool curAllServe = ((curJEntropy>fidelityRatio*wholeSystemEntopy?true:false) && CheckTier2Feasible()); 
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
     if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
       curAllServe = false;
-      sizeFeasible = false;
     }
   }
-#ifdef DEBUG
+//#ifdef DEBUG
   cout << "IterSA: " << inputRound << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
     cout << cSystem->vecClusterSize.at(i) << ' ';
@@ -1932,7 +1912,7 @@ bool NonGuidedSACluster::checkBestClusterStructure_DataCentric(int inputRound)
   cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
   cout << "min payoff: " << bestFeasiblePayoff << ", ";
   cout << "curr Payoff: " << m_curPayoff << endl;
-#endif
+//#endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)
