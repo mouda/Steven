@@ -39,7 +39,8 @@ NonGuidedSACluster::NonGuidedSACluster(
   m_ptrMap(myPtrMap),
   m_tier1TxTime(tier1TxTime),
   m_tier2NumSlot(tier2NumSlot),
-  matrixComputer(myPtrGField)
+  matrixComputer(myPtrGField),
+  m_logFlag(logFlag)
 {
   sysComputing = new SimSystem;
   terminated=false;
@@ -150,6 +151,7 @@ NonGuidedSACluster::NonGuidedSACluster(
 NonGuidedSACluster::~NonGuidedSACluster()
 {
     if(!terminated)releaseMemory();
+    if(m_logFlag) m_logFile.close();
 }
 
 std::vector<int>
@@ -716,6 +718,7 @@ bool NonGuidedSACluster::startCool()
   m_prevVecHeadName.assign(cSystem->vecHeadName.begin(), cSystem->vecHeadName.end());
   cur2nd_Joule    = returnTransientJoule();
   cur1st_Joule    = power1st*cur1st_ms/1000.0;
+  if (m_logFlag) m_logFile.open("SA_log.out",std::ios::out);
 
   cout << "m_curPayoff: " << m_curPayoff << endl;
   bestAllServeFound = false;
@@ -726,6 +729,15 @@ bool NonGuidedSACluster::startCool()
   for(int i = 1; i < SAIter; ++i)
   {
     coolOnce_minResors(i);
+    bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible() ; 
+    for (int m = 0; m < m_prevVecClusterSize.size(); ++m) {
+      if (m_prevVecHeadName.at(m) >= 0 && m_prevVecClusterSize.at(m) > m_tier2NumSlot + 1) {
+        curAllServe = false;
+      }
+    }
+    if (m_logFlag) {
+      m_logFile << curAllServe << ' ' << m_curPayoff <<' ' << bestFeasiblePayoff << endl;
+    }
 
     if( targetHeadIndex == -1 || targetHeadIndex == -1 ) {
       if ( nextEventFlag == 4 ) {
