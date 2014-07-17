@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
   string  powerFName; 
   string  strAlgFlag;
   string  CSFormation;
+  bool    imageFlag = false;
   try {
     po::options_description desc("Allowed options");
     desc.add_options()
@@ -144,7 +145,7 @@ int main(int argc, char *argv[])
 
       Map* myMap = 0;
       CORRE_MA_OPE* myMatComputer  = 0;
-      myMap = myMapFactory.CreateMap();
+      myMap = myMapFactory.CreateMap(imageFlag);
       myMatComputer = myMapFactory.CreateMatrixComputer();
       if (!myMap ) {
         cerr << "Error: Failed to initialize map" << endl;

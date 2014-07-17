@@ -66,6 +66,8 @@ genCluster_SOURCES = main.cpp \
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minPowerSACluster.h minPowerSACluster.cpp\
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
+		    minPowerImageCluster.h minPowerImageCluster.cpp\
+		    minPowerImageCsFactory.h minPowerImageCsFactory.cpp\
 		    nonGuidedSACluster.cpp nonGuidedSACluster.h\
 		    nonGuidedCsFactory.cpp nonGuidedCsFactory.h\
 		    simulator.h simulator.cpp 
@@ -84,6 +86,7 @@ genCluster_LDADD = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) ../lib/libfileHandler.la \
                   ../lib/libmapFactory.la \
                   ../lib/libcsFactory.la \
                   ../lib/libCORRE_MA_OPE.la \
+		  ../lib/libimageSource.la\
                   ../lib/libULAGENT.la \
                   ../lib/libsimSystem.la \
 		  ../lib/libtimesearch.la\

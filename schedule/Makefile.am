@@ -99,6 +99,7 @@ simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
                   ../lib/libmapFactory.la \
                   ../lib/libcsFactory.la \
                   ../lib/libCORRE_MA_OPE.la \
+		  ../lib/libimageSource.la\
                   ../lib/libULAGENT.la \
                   ../lib/libsimSystem.la \
 		  ../lib/libtimesearch.la\

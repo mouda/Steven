@@ -87,3 +87,8 @@ Map::GetGij()
 }
 
 
+void 
+Map::SetIdtImageCodingBits(const vector<double>& myIdtEntropy)
+{
+  m_vecIdtEntropy.assign(myIdtEntropy.begin(),myIdtEntropy.end());
+}

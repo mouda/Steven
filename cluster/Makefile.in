@@ -95,7 +95,8 @@ PROGRAMS = $(bin_PROGRAMS)
 am_genCluster_OBJECTS = main.$(OBJEXT) myTier1NLP.$(OBJEXT) \
 	ULSA4b7_DC.$(OBJEXT) minResCsFactory.$(OBJEXT) \
 	kmeansCsFactory.$(OBJEXT) minPowerSACluster.$(OBJEXT) \
-	minPowerCsFactory.$(OBJEXT) nonGuidedSACluster.$(OBJEXT) \
+	minPowerCsFactory.$(OBJEXT) minPowerImageCluster.$(OBJEXT) \
+	minPowerImageCsFactory.$(OBJEXT) nonGuidedSACluster.$(OBJEXT) \
 	nonGuidedCsFactory.$(OBJEXT) simulator.$(OBJEXT)
 genCluster_OBJECTS = $(am_genCluster_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -103,9 +104,10 @@ genCluster_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	../lib/libfileHandler.la ../lib/libfileHandler.la \
 	../lib/libutility.la ../lib/libmapFactory.la \
 	../lib/libcsFactory.la ../lib/libCORRE_MA_OPE.la \
-	../lib/libULAGENT.la ../lib/libsimSystem.la \
-	../lib/libtimesearch.la ../lib/libTimeStamp.la \
-	../lib/libULConstraintSolver.la ../lib/libULCS1b.la
+	../lib/libimageSource.la ../lib/libULAGENT.la \
+	../lib/libsimSystem.la ../lib/libtimesearch.la \
+	../lib/libTimeStamp.la ../lib/libULConstraintSolver.la \
+	../lib/libULCS1b.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -381,6 +383,8 @@ genCluster_SOURCES = main.cpp \
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
 		    minPowerSACluster.h minPowerSACluster.cpp\
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
+		    minPowerImageCluster.h minPowerImageCluster.cpp\
+		    minPowerImageCsFactory.h minPowerImageCsFactory.cpp\
 		    nonGuidedSACluster.cpp nonGuidedSACluster.h\
 		    nonGuidedCsFactory.cpp nonGuidedCsFactory.h\
 		    simulator.h simulator.cpp 
@@ -396,6 +400,7 @@ genCluster_LDADD = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) ../lib/libfileHandler.la \
                   ../lib/libmapFactory.la \
                   ../lib/libcsFactory.la \
                   ../lib/libCORRE_MA_OPE.la \
+		  ../lib/libimageSource.la\
                   ../lib/libULAGENT.la \
                   ../lib/libsimSystem.la \
 		  ../lib/libtimesearch.la\
@@ -501,6 +506,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kmeansCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerCsFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerImageCluster.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerImageCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerSACluster.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minResCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myTier1NLP.Po@am__quote@

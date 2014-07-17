@@ -144,6 +144,9 @@ libcsFactory_la_OBJECTS = $(am_libcsFactory_la_OBJECTS)
 libfileHandler_la_DEPENDENCIES =
 am_libfileHandler_la_OBJECTS = fileHandler.lo
 libfileHandler_la_OBJECTS = $(am_libfileHandler_la_OBJECTS)
+libimageSource_la_DEPENDENCIES =
+am_libimageSource_la_OBJECTS = imageSource.lo
+libimageSource_la_OBJECTS = $(am_libimageSource_la_OBJECTS)
 libmapFactory_la_DEPENDENCIES =
 am_libmapFactory_la_OBJECTS = map.lo mapFactory.lo utility.lo
 libmapFactory_la_OBJECTS = $(am_libmapFactory_la_OBJECTS)
@@ -211,15 +214,16 @@ am__v_CCLD_1 =
 SOURCES = $(libCORRE_MA_OPE_la_SOURCES) $(libTimeStamp_la_SOURCES) \
 	$(libULAGENT_la_SOURCES) $(libULCS1b_la_SOURCES) \
 	$(libULConstraintSolver_la_SOURCES) $(libcsFactory_la_SOURCES) \
-	$(libfileHandler_la_SOURCES) $(libmapFactory_la_SOURCES) \
-	$(libsimSystem_la_SOURCES) $(libtimesearch_la_SOURCES) \
-	$(libutility_la_SOURCES)
+	$(libfileHandler_la_SOURCES) $(libimageSource_la_SOURCES) \
+	$(libmapFactory_la_SOURCES) $(libsimSystem_la_SOURCES) \
+	$(libtimesearch_la_SOURCES) $(libutility_la_SOURCES)
 DIST_SOURCES = $(libCORRE_MA_OPE_la_SOURCES) \
 	$(libTimeStamp_la_SOURCES) $(libULAGENT_la_SOURCES) \
 	$(libULCS1b_la_SOURCES) $(libULConstraintSolver_la_SOURCES) \
 	$(libcsFactory_la_SOURCES) $(libfileHandler_la_SOURCES) \
-	$(libmapFactory_la_SOURCES) $(libsimSystem_la_SOURCES) \
-	$(libtimesearch_la_SOURCES) $(libutility_la_SOURCES)
+	$(libimageSource_la_SOURCES) $(libmapFactory_la_SOURCES) \
+	$(libsimSystem_la_SOURCES) $(libtimesearch_la_SOURCES) \
+	$(libutility_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -403,6 +407,7 @@ top_builddir = ..
 top_srcdir = ..
 lib_LTLIBRARIES = libfileHandler.la \
 		  libutility.la \
+		  libimageSource.la\
 		  libmapFactory.la \
 		  libcsFactory.la \
 		  libCORRE_MA_OPE.la \
@@ -460,6 +465,8 @@ libcsFactory_la_SOURCES = clusterStructure.h clusterStructure.cpp csFactory.h cs
 libcsFactory_la_LIBADD = $(DEPS_LIBS)
 libCORRE_MA_OPE_la_SOURCES = CORRE_MA_OPE.h CORRE_MA_OPE.cpp
 libCORRE_MA_OPE_la_LIBADD = $(DEPS_LIBS)
+libimageSource_la_SOURCES = imageSource.h imageSource.cpp
+libimageSource_la_LIBADD = $(DEPS_LIBS) 
 libtimesearch_la_SOURCES = timesearch.h timesearch.cpp
 libtimesearch_la_LIBADD = $(DEPS_LIBS)
 libTimeStamp_la_SOURCES = TimeStamp.h TimeStamp.cpp
@@ -563,6 +570,9 @@ libcsFactory.la: $(libcsFactory_la_OBJECTS) $(libcsFactory_la_DEPENDENCIES) $(EX
 libfileHandler.la: $(libfileHandler_la_OBJECTS) $(libfileHandler_la_DEPENDENCIES) $(EXTRA_libfileHandler_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libfileHandler_la_OBJECTS) $(libfileHandler_la_LIBADD) $(LIBS)
 
+libimageSource.la: $(libimageSource_la_OBJECTS) $(libimageSource_la_DEPENDENCIES) $(EXTRA_libimageSource_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libimageSource_la_OBJECTS) $(libimageSource_la_LIBADD) $(LIBS)
+
 libmapFactory.la: $(libmapFactory_la_OBJECTS) $(libmapFactory_la_DEPENDENCIES) $(EXTRA_libmapFactory_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libmapFactory_la_OBJECTS) $(libmapFactory_la_LIBADD) $(LIBS)
 
@@ -589,6 +599,7 @@ include ./$(DEPDIR)/ULConstraintSolver.Plo
 include ./$(DEPDIR)/clusterStructure.Plo
 include ./$(DEPDIR)/csFactory.Plo
 include ./$(DEPDIR)/fileHandler.Plo
+include ./$(DEPDIR)/imageSource.Plo
 include ./$(DEPDIR)/map.Plo
 include ./$(DEPDIR)/mapFactory.Plo
 include ./$(DEPDIR)/simSystem.Plo

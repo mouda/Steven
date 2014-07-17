@@ -6,6 +6,7 @@
 #include <sstream>
 #include "map.h"
 #include "CORRE_MA_OPE.h"
+#include "imageSource.h"
 
 using std::string;
 using std::pair;
@@ -31,8 +32,9 @@ class MapFactory
         const int numNodes
         );
     ~MapFactory();
-    Map* CreateMap();
+    Map* CreateMap( bool myImageFlag );
     CORRE_MA_OPE* CreateMatrixComputer();
+    ImageSource* CreateImageSource();
 
   private:
     string                        m_mapFileName;
@@ -47,6 +49,7 @@ class MapFactory
     Map*                          m_ptrMap;
     vector<pair<double, double> > m_vecPairPos;
     CORRE_MA_OPE*                 m_ptrMatComputer;
+    ImageSource*                  m_ptrImageSource;
 
 };
 #endif

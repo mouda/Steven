@@ -16,6 +16,7 @@
 #include "map.h"
 #include "ULCS1b.h"
 #include "CORRE_MA_OPE.h"
+#include "imageSource.h"
 
 using namespace Ipopt;
 
@@ -40,6 +41,13 @@ public:
     CORRE_MA_OPE const * const ptrGField,  
     double tier1TxTime
     );
+
+  MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
+      Map const * const ptrMap,
+      ULCS1b const * const cSystem,  
+      ImageSource const * const myImageSource,  
+      double tier1TxTime
+      );
 
   /** default destructor */
   virtual ~MyTier1NLP();
@@ -131,6 +139,7 @@ private:
   Map const * const           m_ptrMap;
   ULCS1b const * const        m_cSystem;   // system cluseter structure
   CORRE_MA_OPE const * const  m_ptrGField;
+  ImageSource const * const   m_ptrImageSource;
 
   double                      m_tier1TxTime;
   double                      m_obj;

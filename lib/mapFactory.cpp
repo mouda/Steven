@@ -39,7 +39,7 @@ MapFactory::~MapFactory()
 }
 
 Map*
-MapFactory::CreateMap()
+MapFactory::CreateMap(bool myImageFlag)
 {
   fstream mapFile;
   mapFile.open(m_mapFileName.c_str(), fstream::in);
@@ -67,6 +67,10 @@ MapFactory::CreateMap()
   mapFile.close();
   m_ptrMap = new Map(numNodes, m_maxNumHead, m_maxPower, m_spatialCorrFactor, m_quantizationBits, m_bandwidthKhz, m_mapId);
   m_ptrMap->SetChannelByXYPair(m_vecPairPos);
+  if (myImageFlag) {
+    vector<double> vecIdtCodingBits(m_numNodes);
+    m_ptrMap->SetIdtImageCodingBits(vecIdtCodingBits);
+  }
   return m_ptrMap;
 }
 
@@ -75,4 +79,12 @@ MapFactory::CreateMatrixComputer()
 {
   m_ptrMatComputer = new CORRE_MA_OPE(m_numNodes, m_spatialCorrFactor, m_temporalCorrFactor, m_ptrMap->GetMatDistance(), m_quantizationBits);
   return m_ptrMatComputer;
+}
+
+ImageSource*
+MapFactory::CreateImageSource()
+{
+  m_ptrImageSource = new ImageSource(m_numNodes, m_spatialCorrFactor, m_temporalCorrFactor, m_ptrMap->GetMatDistance(), m_quantizationBits);
+  return m_ptrImageSource;
+
 }

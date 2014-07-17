@@ -27,6 +27,8 @@ class Map
         const double bandwidthKhz, const int mapId);
     ~Map();
     void SetChannelByXYPair(const vector<pair<double,double> >& );
+    void SetIdtImageCodingBits(const vector<double>& );
+    void SetIdtImageFlag(){ m_imageFlag = true;}
     const vector<vector<double> >& GetGij();
     double** const GetMatDistance(){ return m_matDistance;}
     int GetMapId() const { return m_mapId; }
@@ -39,6 +41,9 @@ class Map
     double GetGi0ByNode( const int idx ) const {return m_vecGi0.at(idx); } 
     double GetMaxPower() const {return m_maxPower; }
     double GetIdtEntropy() const { return m_idtEntropy; }
+    double GetIdtEntropy(const int idx ) const { if (m_imageFlag) {
+      return m_vecIdtEntropy.at(idx);
+    } else return m_idtEntropy; }
     double GetNoise() const { return m_realNoise; } 
     double GetBandwidth() const { return m_bandwidthKhz; }
 
@@ -59,6 +64,8 @@ class Map
     vector<double>                m_vecPower;
     SimSystem*                    m_systemComputer;
     vector<int>                   m_vecHeadName;
+    vector<double>                m_vecIdtEntropy;
+    bool                          m_imageFlag;
 
 };
 #endif

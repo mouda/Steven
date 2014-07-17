@@ -11,6 +11,7 @@
 #include "clusterStructure.h"
 #include "csFactory.h"
 #include "minPowerCsFactory.h"
+#include "minPowerImageCsFactory.h"
 #include "kmeansCsFactory.h"
 #include "simulator.h"
 #include "fileHandler.h"
@@ -49,6 +50,7 @@ int main(int argc, char *argv[])
   string  CSFormation;
   string  labelFName;
   string  WeightMatrixFName;
+  bool    imageFlag = false;
   try {
     po::options_description desc("Allowed options");
     desc.add_options()
@@ -67,8 +69,6 @@ int main(int argc, char *argv[])
       ("temporalCorrelation,T",   po::value<double>(),  "Temproal Correlation factor")
       ("tier2NumSlot,N",          po::value<int>(),     "Number of tier-2 slots")
       ("ClusterStructureOutput,C",po::value<string>(),  "Cluster structure output file name")
-      ("MetisGraph,M",            po::value<string>(),  "MetisGraph format output")
-      ("Label,L",                 po::value<string>(),  "Label output")
       ("WeightedMatrix,W",        po::value<string>(),  "Matrix form of Weght matrix")
       ("ClusterFormation,F",      po::value<string>(),  "Cluster Formation Algorithm")
       ("iterationlog,l",          "Iteration log");
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 14  || vm.size() == 15 || vm.size() == 16) {
+    } else if(vm.size() == 14  || vm.size() == 15 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -115,7 +115,8 @@ int main(int argc, char *argv[])
 
       Map* myMap = 0;
       CORRE_MA_OPE* myMatComputer  = 0;
-      myMap = myMapFactory.CreateMap();
+      ImageSource*  myImageSource = 0;
+      myMap = myMapFactory.CreateMap(imageFlag);
       myMatComputer = myMapFactory.CreateMatrixComputer();
       if (!myMap ) {
         cerr << "Error: Failed to initialize map" << endl;
@@ -156,6 +157,17 @@ int main(int argc, char *argv[])
           if (vm.count("iterationlog")) {
             (dynamic_cast<NonGuidedCsFactory*>(myCsFactory)->SetIterationLog(true));
           }
+        } else if (CSFormation == "ImageSource") {
+          myImageSource = myMapFactory.CreateImageSource();
+          myCsFactory = new MinPowerImageCsFactory(myMap, myImageSource);
+          (dynamic_cast<MinPowerImageCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
+          (dynamic_cast<MinPowerImageCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
+          (dynamic_cast<MinPowerImageCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
+          (dynamic_cast<MinPowerImageCsFactory*>(myCsFactory))->SetTier2NumSlot(tier2NumSlot);
+          (dynamic_cast<MinPowerImageCsFactory*>(myCsFactory))->SetTier1TxTime(tier1TxTime);
+          if (vm.count("iterationlog")) {
+            (dynamic_cast<MinPowerImageCsFactory*>(myCsFactory)->SetIterationLog(true));
+          }
         }
         if (!myCsFactory) {
           cerr << "Error: Failed to initalize cluster structure factory" << endl;
@@ -179,30 +191,6 @@ int main(int argc, char *argv[])
         mySimulator.WriteCS( CSFName );
       }
 
-      if (vm.count("MetisGraph") && vm.count("Label")){
-        MetisFName = vm["MetisGraph"].as<string>();
-        labelFName = vm["Label"].as<string>();
-        myCsFactory = new KmeansCsFactory(myMap, myMatComputer);
-        myCS = myCsFactory->CreateClusterStructure();
-        Simulator mySimulator(
-            myMap, 
-            myCS, 
-            myMatComputer
-            );
-        mySimulator.WriteMetis(MetisFName);
-        mySimulator.WriteLabel(labelFName);
-      }
-      if(vm.count("WeightedMatrix")) {
-        WeightMatrixFName = vm["WeightedMatrix"].as<string>();
-        myCsFactory = new KmeansCsFactory(myMap, myMatComputer);
-        myCS = myCsFactory->CreateClusterStructure();
-        Simulator mySimulator(
-            myMap, 
-            myCS, 
-            myMatComputer
-            );
-        mySimulator.WriteWeightedMatrix(WeightMatrixFName);
-      }
 
       delete myCsFactory;
     }

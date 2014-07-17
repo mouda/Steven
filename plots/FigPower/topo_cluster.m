@@ -10,10 +10,10 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-path = {'data/testCS.out'};
+path = {'data/CS_N50_H13_7_F0.8.out'};
 
 strtitle2={'SA'};
-mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_2.txt'];
+mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_7.txt'];
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
 for ii=1:length(path)
@@ -129,9 +129,9 @@ axis([-(radius+10) (radius+10) -(radius+10) (radius+10)]);
 
 %str = sprintf('UL Structure(N%d-HN%d-Served:%d-RT%.3f(bps/Hz)-Density(%.3f/km^2)-PowerMax %.3f(W/Hz). SAloop %d in %.2f seconds)',totalNodes, maxChNum,payoffs, C2W, density, powerBound,SAFac,computingTime);
 strtitle2{ii};
-str = sprintf('Machines=50, \\lambda=0.8 \\eta=0.477:%s ',strtitle2{ii});
+str = sprintf('Machines=50, \lambda=0.8 \eta=0.477:%s ',strtitle2{ii});
 
-title(str);
+title('Machines=50, \lambda=0.8 \eta=0.477 CSA');
 %plot X-Y Axis
 temp = -(radius+10):0.01:(radius+10);
 %plot (temp,zeros(1,length(temp)),'k');     

@@ -11,9 +11,9 @@ figure;
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
 
-CSPath = ['data/test_CS_N50_H5_new_1.out'];
-SchedulePath = ['data/test_solution_N50_H5_new_1.out'];
-mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_1.txt'];
+CSPath = ['data/CS_N50_H13_7_F0.8.out'];
+SchedulePath = ['data/Solution_N50_H13_7_F0.8.out'];
+mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_7.txt'];
 matSolution = dlmread(SchedulePath);
 
 [totalNodes radius x y Gij Gib]= parse_Map_v1(mapString);
@@ -23,7 +23,7 @@ matSolution = dlmread(SchedulePath);
 
 nodeIdx = 1:totalNodes;
 
-for ii=1:1
+for ii=1:3
 % 
     hFig = figure(ii);
     set(hFig, 'Position', [1 1 550 500 ]);
@@ -120,7 +120,7 @@ plot(x(index_unsupset),y(index_unsupset),...
     'MarkerSize',10,...
     'Marker','X',...
     'LineStyle','none', ...
-    'DisplayName','Unselected Machine');
+    'DisplayName','Unselected');
 
 plot(x(inactiveSet),y(inactiveSet), ...
     'MarkerFaceColor', [0 0.7 1], ...
@@ -128,7 +128,7 @@ plot(x(inactiveSet),y(inactiveSet), ...
     'Marker', 'o',...
     'LineStyle','none', ...
     'MarkerSize', 5, ...
-    'DisplayName','Inactive Member');
+    'DisplayName','Inactive');
 
 
 plot(x(activeSet),y(activeSet), ...
@@ -137,7 +137,7 @@ plot(x(activeSet),y(activeSet), ...
     'Marker', 'o',...
     'LineStyle','none', ...
     'MarkerSize', 5, ...
-    'DisplayName','Active Member');
+    'DisplayName','Active');
 
 plot(x(headList(find(headList>0))),y(headList(find(headList>0))), ... 
     'MarkerFaceColor',[0.3 1 0.3], ...
@@ -161,7 +161,7 @@ axis([-(radius+10) (radius+10) -(radius+10) (radius+10)]);
 
 str = sprintf('Machines=%d, \\eta=0.48',totalNodes);
 
-title(str);
+title('Machines=50, \eta=0.477');
 %plot X-Y Axis
 temp = -(radius+10):0.01:(radius+10);
 %plot (temp,zeros(1,length(temp)),'k');     

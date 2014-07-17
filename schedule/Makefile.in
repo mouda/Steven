@@ -108,9 +108,10 @@ simulator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	../lib/libfileHandler.la ../lib/libfileHandler.la \
 	../lib/libutility.la ../lib/libmapFactory.la \
 	../lib/libcsFactory.la ../lib/libCORRE_MA_OPE.la \
-	../lib/libULAGENT.la ../lib/libsimSystem.la \
-	../lib/libtimesearch.la ../lib/libTimeStamp.la \
-	../lib/libULConstraintSolver.la ../lib/libULCS1b.la
+	../lib/libimageSource.la ../lib/libULAGENT.la \
+	../lib/libsimSystem.la ../lib/libtimesearch.la \
+	../lib/libTimeStamp.la ../lib/libULConstraintSolver.la \
+	../lib/libULCS1b.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -416,6 +417,7 @@ simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
                   ../lib/libmapFactory.la \
                   ../lib/libcsFactory.la \
                   ../lib/libCORRE_MA_OPE.la \
+		  ../lib/libimageSource.la\
                   ../lib/libULAGENT.la \
                   ../lib/libsimSystem.la \
 		  ../lib/libtimesearch.la\

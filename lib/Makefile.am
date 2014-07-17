@@ -1,5 +1,6 @@
 lib_LTLIBRARIES = libfileHandler.la \
 		  libutility.la \
+		  libimageSource.la\
 		  libmapFactory.la \
 		  libcsFactory.la \
 		  libCORRE_MA_OPE.la \
@@ -87,6 +88,8 @@ libcsFactory_la_SOURCES = clusterStructure.h clusterStructure.cpp csFactory.h cs
 libcsFactory_la_LIBADD = $(DEPS_LIBS)
 libCORRE_MA_OPE_la_SOURCES = CORRE_MA_OPE.h CORRE_MA_OPE.cpp
 libCORRE_MA_OPE_la_LIBADD = $(DEPS_LIBS)
+libimageSource_la_SOURCES = imageSource.h imageSource.cpp
+libimageSource_la_LIBADD = $(DEPS_LIBS) 
 libtimesearch_la_SOURCES = timesearch.h timesearch.cpp
 libtimesearch_la_LIBADD = $(DEPS_LIBS)
 libTimeStamp_la_SOURCES = TimeStamp.h TimeStamp.cpp
