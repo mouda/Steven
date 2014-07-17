@@ -98,7 +98,7 @@ MyTier1NLP::MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
       for (; iterCol != iterRow->end(); ++iterCol) {
         tmpIndicator.at(*iterCol) = 1;
       }
-      m_vecClusterEntropy.push_back(m_ptrGField->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits()));
+      m_vecClusterEntropy.push_back(m_ptrImageSource->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits()));
     }
     std::fill(tmpIndicator.begin(), tmpIndicator.end(), 0);
   }

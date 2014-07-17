@@ -1,13 +1,12 @@
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <cfloat>
 #include <cassert>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
-#include <armadillo>
 
 #include "imageSource.h"
-#include "../lib/cholesky.hpp"
 using namespace std;
 //using namespace boost::numeric;
 
@@ -20,11 +19,25 @@ ImageSource::ImageSource(int inTotalNodes, double spatialCorrFactor,
   DijSQ(inDijSQ),
   m_totalEntropyPerSlot(0)
 {
-  double idtEntropy = 0.5*log2(2*3.1415*exp(1)) + qBits;
-  returnNSetCorrelationFactorByCompressionRatio(spatialCorrFactor, idtEntropy, static_cast<double>(m_numNodes) );
-  Eigen::MatrixXd covMat(m_numNodes, m_numNodes);
-  GetCovMaVariance(covMat);
-  m_totalEntropyPerSlot = covMat.determinant();
+//  double idtEntropy = 0.5*log2(2*3.1415*exp(1)) + qBits;
+//  returnNSetCorrelationFactorByCompressionRatio(spatialCorrFactor, idtEntropy, static_cast<double>(m_numNodes) );
+//  Eigen::MatrixXd covMat(m_numNodes, m_numNodes);
+//  GetCovMaVariance(covMat);
+//  m_totalEntropyPerSlot = covMat.determinant();
+  fstream myImageCovFile("paper720_corrMatrix.txt", std::ios::in) ; 
+  double tmp = 0;
+  if (myImageCovFile.good()) {
+    while(myImageCovFile.good()) {
+      for (int i = 0; i < inTotalNodes; ++i) {
+        myImageCovFile >> tmp;
+        cout << tmp << ' ';
+      }
+      cout << endl;
+    }
+  }
+
+
+  myImageCovFile.close();
 }
 
 ImageSource::ImageSource(int inTotalNodes, double spatialCorrFactor, 
@@ -35,6 +48,7 @@ ImageSource::ImageSource(int inTotalNodes, double spatialCorrFactor,
   DijSQ(inDijSQ),
   m_totalEntropyPerSlot(0)
 {
+
   double idtEntropy = 0.5*log2(2*3.1415*exp(1)) + qBits;
   returnNSetCorrelationFactorByCompressionRatio(spatialCorrFactor, idtEntropy, static_cast<double>(m_numNodes) );
   Eigen::MatrixXd covMat(m_numNodes, m_numNodes);
@@ -140,27 +154,6 @@ double ImageSource::computeLog2Det( double inVariance, const vector<int>& vecClu
   return matEigenCholeskyLogDet(covMat, covMaSize);
 }
 
-void
-ImageSource::UpdateVariance(const vector<double>& curVecVariance, vector<double>& nextVecVariance, const vector<int>& vecSupport, vector<int>& vecSlots, const double timeDiff) const
-{
-  for (int i = 0; i < m_numNodes; ++i) {
-    if (vecSupport[i] == 1) {
-      vecSlots.at(i) = 1;
-      ///nextVecVariance.at(i) = 1.0 * (1 - pow(exp(-1*timeDiff/m_temporalCorrFac),2)) ;
-      nextVecVariance.at(i) = curVecVariance.at(i);
-    }
-    else{
-      if (vecSlots.at(i) == 0) {
-        nextVecVariance.at(i) = 1.0 ;
-      }
-      else {
-        vecSlots.at(i) += 1;
-        //nextVecVariance.at(i) = 1.0 * (1 - pow(exp(-1*timeDiff*static_cast<double>(vecSlots[i])/m_temporalCorrFac),2));
-        nextVecVariance.at(i) = curVecVariance.at(i);
-      }
-    }
-  }
-}
 
 double 
 ImageSource::GetJointEntropy(const vector<int>& vecClusterStru, const vector<double>& vecVariance, const double currTime, const double qBits) const
@@ -336,16 +329,6 @@ ImageSource::GetCovMaVariance(Eigen::MatrixXd& covMat) const
   }
 }
 
-double ImageSource::armaLogDet( double const * const aryCovariance, const int& dimSize)
-{
-  arma::Mat<double> covMatrix(dimSize, dimSize);
-  for (int i = 0; i < dimSize; ++i) {
-    for (int j = 0; j < dimSize; ++j) {
-      covMatrix(i,j) = aryCovariance[ i * dimSize + j ];  
-    }
-  }
-  return log2(arma::det(covMatrix));
-}
 
 double ImageSource::eigenCholeskyLogDet( double const * const aryCovariance, const int& dimSize) const
 {

@@ -22,9 +22,9 @@ MapFactory::MapFactory(
   cout << mapFileName << endl;
 #endif
   m_mapFileName = mapFileName;
-  vector<string> macroTokens = split(mapFileName,'_'); 
-  vector<string> microTokens = split(macroTokens[6], '.');
-  m_mapId = atoi(microTokens[0].c_str());
+//  vector<string> macroTokens = split(mapFileName,'_'); 
+//  vector<string> microTokens = split(macroTokens[6], '.');
+  m_mapId = 0;
 
 }
 

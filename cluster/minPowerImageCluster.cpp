@@ -423,7 +423,7 @@ bool MinPowerImageCluster::setIniStruDistanceKmedoids()
         tempGroup[closetHeadIndex].push_back(i);
       }
       convergedFlag = true;
-//#ifdef DEBUG
+#ifdef DEBUG
       //find the k-means coordinate of each cluster
       for (int i = 0; i < tempGroup.size(); i++) {
         cout << "cluster: " << i <<"-th ";
@@ -432,7 +432,7 @@ bool MinPowerImageCluster::setIniStruDistanceKmedoids()
         }
         cout << endl;
       }
-//#endif
+#endif
       for(int i=0; i<maxChNum; i++)
       {
         float newHx = 0;

@@ -117,12 +117,14 @@ int main(int argc, char *argv[])
       CORRE_MA_OPE* myMatComputer  = 0;
       ImageSource*  myImageSource = 0;
       myMap = myMapFactory.CreateMap(imageFlag);
-      myMatComputer = myMapFactory.CreateMatrixComputer();
+      if (CSFormation != "ImageSource") {
+        myMatComputer = myMapFactory.CreateMatrixComputer();
+      }
       if (!myMap ) {
         cerr << "Error: Failed to initialize map" << endl;
         return 1;
       }
-      if (!myMatComputer) {
+      if (CSFormation != "ImageSource" && !myMatComputer) {
         cerr << "Error: Failed to initialize correlation comulter" << endl;
         return 1;
       }
