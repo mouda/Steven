@@ -265,8 +265,8 @@ bool MinPowerImageCluster::setInitialStucture(char* iniFlag)
 bool MinPowerImageCluster::setIniStruKmeans()
 {
   int retryTimes = 0;
-  float tempHeadX [maxChNum];
-  float tempHeadY [maxChNum];
+  double tempHeadX [maxChNum];
+  double tempHeadY [maxChNum];
   int tempHeadList [maxChNum];
   std::vector <std::vector <int> > tempGroup;
   bool convergedFlag = false;
@@ -300,11 +300,11 @@ bool MinPowerImageCluster::setIniStruKmeans()
       for (unsigned int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
       for (int i=0; i<totalNodes; i++)
       {
-        float closetDistance = numeric_limits<float>::max( );
+        double closetDistance = numeric_limits<double>::max( );
         int closetHeadIndex = -1;
         for(int j=0; j<maxChNum; j++)
         {
-          float tempDistance = (tempHeadX[j] - nodes[i].locX)*(tempHeadX[j] - nodes[i].locX)\
+          double tempDistance = (tempHeadX[j] - nodes[i].locX)*(tempHeadX[j] - nodes[i].locX)\
                                +(tempHeadY[j] - nodes[i].locY)*(tempHeadY[j] - nodes[i].locY);
           if (closetDistance > tempDistance )
           {
@@ -318,8 +318,8 @@ bool MinPowerImageCluster::setIniStruKmeans()
       //find the k-means coordinate of each cluster
       for(int i=0; i<maxChNum; i++)
       {
-        float newHx = 0;
-        float newHy = 0;
+        double newHx = 0;
+        double newHy = 0;
         for(unsigned int j=0; j<tempGroup[i].size(); j++)
         {
           newHx += nodes[tempGroup[i][j]].locX;
@@ -395,9 +395,9 @@ bool MinPowerImageCluster::setIniStruDistanceKmedoids()
     {
       std::vector <int> tempV;
       tempGroup.push_back(tempV);
-      tempHeadX[i] = nodes[i+retryTimes].locX;
-      tempHeadY[i] = nodes[i+retryTimes].locY;
-      tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
+      tempHeadX[i] = nodes[3*i+retryTimes].locX;
+      tempHeadY[i] = nodes[3*i+retryTimes].locY;
+      tempHeadList[i]= nodes[3*i+retryTimes].nodeIndex;
     }
     while(!convergedFlag) // This loop want to find a new K-means coordinate
     {
@@ -408,12 +408,16 @@ bool MinPowerImageCluster::setIniStruDistanceKmedoids()
       for (unsigned int i=0 ; i<tempGroup.size(); i++) tempGroup[i].clear(); //clear all the eixsted group members
       for (int i=0; i<totalNodes; i++)
       {
-        float closetDistance = numeric_limits<float>::max( );
+        double closetDistance = numeric_limits<double>::max( );
         int closetHeadIndex = -1;
         for(int j=0; j<maxChNum; j++)
         {
-          float tempDistance = (tempHeadX[j] - nodes[i].locX)*(tempHeadX[j] - nodes[i].locX)
+          double tempDistance = (tempHeadX[j] - nodes[i].locX)*(tempHeadX[j] - nodes[i].locX)
                                +(tempHeadY[j] - nodes[i].locY)*(tempHeadY[j] - nodes[i].locY);
+          /* for image case */
+          if (tempHeadList[j] != i && tempDistance < 10e-6) {
+            tempDistance = 0.01;
+          }
           if (closetDistance > tempDistance )
           {
             closetDistance = tempDistance;
@@ -423,7 +427,7 @@ bool MinPowerImageCluster::setIniStruDistanceKmedoids()
         tempGroup[closetHeadIndex].push_back(i);
       }
       convergedFlag = true;
-#ifdef DEBUG
+//#ifdef DEBUG
       //find the k-means coordinate of each cluster
       for (int i = 0; i < tempGroup.size(); i++) {
         cout << "cluster: " << i <<"-th ";
@@ -432,7 +436,7 @@ bool MinPowerImageCluster::setIniStruDistanceKmedoids()
         }
         cout << endl;
       }
-#endif
+//#endif
       for(int i=0; i<maxChNum; i++)
       {
         float newHx = 0;
@@ -678,6 +682,20 @@ MinPowerImageCluster::GetNodeDistance( const int lName, const int rName)
       );
 }
 
+int
+MinPowerImageCluster::GetSupportNodes()
+{
+  int support = 0;
+  std::list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();
+  for (;iterRow != cSystem->listCluMember->end(); ++iterRow) {
+    std::list<int>::const_iterator  iterCol = iterRow->begin();
+    if (*iterCol >= 0 ) {
+      support += iterRow->size();
+    }
+  }
+  return support;
+}
+
 double 
 MinPowerImageCluster::returnComprRatio()
 {
@@ -711,13 +729,13 @@ bool MinPowerImageCluster::startCool()
   curSupNum     =   cSystem->calSupNodes();
   curChNum      =   maxChNum;
   nextChNum     =   curChNum;
-  curJEntropy   =   curSupNum*indEntropy + m_ptrImageSource->computeLog2Det(1.0,cSystem->allSupStru);
+  curJEntropy   =   curSupNum*indEntropy;
 
   m_cur1st_watt   = OptimalRateControl();
 
-  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
-  vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 10.0);
-  double          entropyPenalty = 10.0;
+  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 100.0);
+  vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 1.0);
+  double          entropyPenalty = 100.0;
   vector<double>  tmpSizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
   vector<double>  tmpTier2Penalty(m_ptrMap->GetNumNodes(), 10.0);
   double          tmpEntropyPenalty = 10.0;
@@ -773,8 +791,9 @@ bool MinPowerImageCluster::startCool()
       break;
     }
     int tempche = (signed)cSystem->listUnSupport->size();
+    curSupNum = GetSupportNodes();
 
-    assert(( curSupNum + tempche) <= totalNodes);
+    assert(( curSupNum + tempche) == totalNodes);
     temparature*=alpha;
 
   }
@@ -943,7 +962,8 @@ void MinPowerImageCluster::GetNeighbor1( const int iterSA)
     else
     {
       //decideAdd3i_DC_HeadDetMemRan();
-      decideAddRandSelectCluster();
+      //decideAddRandSelectCluster();
+      decideAddClosetAddableNode();
       if(targetHeadIndex!=-1&&targetNode!=-1){
         addMemberSA(targetHeadIndex,targetNode);
       }
@@ -953,8 +973,8 @@ void MinPowerImageCluster::GetNeighbor1( const int iterSA)
   }
   else if (nextEventFlag ==2)
   {
-    //decideDiscard3b();
-    decideDiscard3o();
+    decideDiscard3b();
+    //decideDiscard3o();
     discardMemberSA(targetHeadIndex,targetNode);
     nextChNum=curChNum;
   }
@@ -1057,7 +1077,7 @@ MinPowerImageCluster::GetNeighbor2( const int iterSA,
   }
 
   /* Neighbor of Entropy */
-  double tmpJEntropy = nextSupNum*indEntropy + m_ptrImageSource->computeLog2Det(1.0, cSystem->allSupStru);
+  double tmpJEntropy = nextSupNum*indEntropy;
   if (fidelityRatio*wholeSystemEntopy - tmpJEntropy > 0) {
     if (entropyPenalty > 0 ) {
       if (rand()%2  == 1) {
@@ -1090,7 +1110,7 @@ MinPowerImageCluster::GetPayOff(
   }
   cout << endl;
 #endif
-  return OptimalRateControl()+GetSizePenalty(sizePenalty) + GetTier2Penalty(tier2Penalty) + GetEntropyPenalty(entropyPenalty);
+  return OptimalRateControl()+GetSizePenalty(sizePenalty)  +GetEntropyPenalty(entropyPenalty);
 }
 
 
@@ -1207,19 +1227,24 @@ MinPowerImageCluster::decideAddRandSelectCluster()
   targetNode = -1;
   list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
   int addableSize=0;
-  for(; itli1 != cSystem->listCluMember->end(); itli1++) if(itli1->size()> 1 && itli1->size() < m_tier2NumSlot + 1)addableSize++;
+  for(; itli1 != cSystem->listCluMember->end(); itli1++) {
+    list<int>::const_iterator iterCol = itli1->begin();
+    if(*iterCol >= 0 && itli1->size() < m_tier2NumSlot + 1) addableSize++;
+  }
 
   if (addableSize == 0) {
     return;
   }
   //Randomly choose a cluster
   itli1 = cSystem->listCluMember->begin();
-  int chooseCursor = (int) ((double)rand() / ((double)RAND_MAX + 1) * addableSize)+1;//+1 Becasue the intial might
+  int chooseCursor = rand()%addableSize+1;//+1 Becasue the intial might
   assert(chooseCursor <= maxChNum && chooseCursor >=0 );
   itli1 = cSystem->listCluMember->begin();
   targetHeadIndex=0;
+  int chIdx =0;
   for(int i=0; i<chooseCursor; itli1++,targetHeadIndex++) {
-    if(itli1->size()> 1  && itli1->size() < m_tier2NumSlot + 1) ++i;
+    list<int>::const_iterator iterCol = itli1->begin();
+    if(*iterCol >=0  && itli1->size() < m_tier2NumSlot + 1){++i; ++chIdx;}
     if(i==chooseCursor)break;
   }
   double maxGain = -DBL_MAX;
@@ -1239,6 +1264,7 @@ MinPowerImageCluster::decideAddRandSelectCluster()
 //    targetHeadIndex = -1;
 //  }
 
+  cout << chIdx << endl; 
   targetNode = maxGainName;
 
 }
@@ -1289,12 +1315,14 @@ MinPowerImageCluster::decideDiscard3o()
     assert(chooseCursor<=maxChNum&&chooseCursor>=0);
 
     itli1 = cSystem->listCluMember->begin();
-    targetHeadIndex=0;
-    for(int i=0; i<chooseCursor; itli1++,targetHeadIndex++)
+    int tmpHeadIdx = 0;
+    for(int i=0; i<chooseCursor; itli1++,tmpHeadIdx++)
     {
         if(itli1->size()>1)i++;
         if(i==chooseCursor)break;
     }
+      targetHeadIndex = tmpHeadIdx;
+    assert(targetHeadIndex != -1);
 
     assert(cSystem->vecHeadName[targetHeadIndex]!=-1);
     assert(cSystem->vecClusterSize[targetHeadIndex]==itli1->size());
@@ -1633,7 +1661,7 @@ MinPowerImageCluster::GetSizePenalty( const vector<double>& sizePenalty)
     if (cSystem->vecClusterSize.at(k) != 0
         && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
       tmpSizePenalty += sizePenalty.at(k) *
-        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
+        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,6); 
     }
   }
   return tmpSizePenalty;
@@ -1651,6 +1679,8 @@ MinPowerImageCluster::GetTier2Penalty( const vector<double>& tier2Penalty )
       if ( GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) > m_ptrMap->GetMaxPower()) {
         penalty += tier2Penalty.at(*iterCol) * 
           GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) - m_ptrMap->GetMaxPower();
+//        cout << "Penalty: " << penalty <<' ' << GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) - m_ptrMap->GetMaxPower() 
+//          <<' '<<*iterCol<<' ' <<cSystem->vecHeadName.at(chIdx) <<endl;
       }
     }
   }
@@ -1660,7 +1690,7 @@ MinPowerImageCluster::GetTier2Penalty( const vector<double>& tier2Penalty )
 double
 MinPowerImageCluster::GetEntropyPenalty(const double entropyPenalty)
 {
-  double tmpJEntropy = nextSupNum*indEntropy + m_ptrImageSource->computeLog2Det(1.0, cSystem->allSupStru);
+  double tmpJEntropy = nextSupNum*indEntropy;
   if (fidelityRatio*wholeSystemEntopy - tmpJEntropy < 0) {
     return 0.0;
   }
@@ -1804,12 +1834,12 @@ void MinPowerImageCluster::calculateMatrics_minResors(//Calculate next performan
   if (nextEventFlag==1)
   {
     nextSupNum = curSupNum + 1;//Serve one more node
-    nextJEntropy = nextSupNum*indEntropy + m_ptrImageSource->computeLog2Det(1.0, cSystem->allSupStru);
+    nextJEntropy = nextSupNum*indEntropy;
   }
   else if(nextEventFlag==2)
   {
     nextSupNum = curSupNum -1;
-    nextJEntropy = nextSupNum * indEntropy + m_ptrImageSource->computeLog2Det(1.0, cSystem->allSupStru);
+    nextJEntropy = nextSupNum * indEntropy;
   }
   else if (nextEventFlag==3)  //Do Nothing
   {
@@ -1877,7 +1907,7 @@ void MinPowerImageCluster::ConfirmNeighbor1()
   else if( 
        ( nextPayoff > m_curPayoff )  )
   {
-    double probAnnealing = exp (-1.0*abs(nextPayoff-m_curPayoff)/temparature);
+    double probAnnealing = exp (-20.0*abs(nextPayoff-m_curPayoff)/temparature);
     //cout<<"Show Payoff "<<nextPayoff<<"  "<<m_curPayoff<<endl;
     //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
@@ -2052,7 +2082,7 @@ bool MinPowerImageCluster::checkBestClusterStructure_DataCentric(int inputRound)
 {
 //    bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
   /* new constraint */
-  bool curAllServe = ((curJEntropy >= fidelityRatio*wholeSystemEntopy?true:false) && CheckTier2Feasible()); 
+  bool curAllServe = ((curJEntropy >= fidelityRatio*wholeSystemEntopy?true:false) ); 
   bool sizeFeasible = true;
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
     if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
@@ -2060,7 +2090,7 @@ bool MinPowerImageCluster::checkBestClusterStructure_DataCentric(int inputRound)
       sizeFeasible = false;
     }
   }
-#ifdef DEBUG
+//#ifdef DEBUG
   cout << "IterSA: " << inputRound << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
     cout << cSystem->vecClusterSize.at(i) << ' ';
@@ -2069,7 +2099,7 @@ bool MinPowerImageCluster::checkBestClusterStructure_DataCentric(int inputRound)
   cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
   cout << "min payoff: " << bestFeasiblePayoff << ", ";
   cout << "curr Payoff: " << m_curPayoff << endl;
-#endif
+//#endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)

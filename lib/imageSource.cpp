@@ -24,19 +24,30 @@ ImageSource::ImageSource(int inTotalNodes, double spatialCorrFactor,
 //  Eigen::MatrixXd covMat(m_numNodes, m_numNodes);
 //  GetCovMaVariance(covMat);
 //  m_totalEntropyPerSlot = covMat.determinant();
-  fstream myImageCovFile("paper720_corrMatrix.txt", std::ios::in) ; 
+  m_matImageCovariance = Eigen::MatrixXd::Zero(inTotalNodes, inTotalNodes); 
+  m_vecImageIndependent = Eigen::MatrixXd::Zero(inTotalNodes, 1);
+  fstream myImageCovFile("paper720_30cam_corrMatrix.txt", std::ios::in) ; 
+  fstream myImageIdtFile("paper720_30cam_indepByte.txt",std::ios::in);
   double tmp = 0;
   if (myImageCovFile.good()) {
-    while(myImageCovFile.good()) {
-      for (int i = 0; i < inTotalNodes; ++i) {
+    for (int i = 0; i < inTotalNodes; ++i) {
+      for (int j = 0; j < inTotalNodes; ++j) {
         myImageCovFile >> tmp;
-        cout << tmp << ' ';
+        m_matImageCovariance(i,j) = tmp;
       }
-      cout << endl;
+    }
+    for (int i = 0; i < inTotalNodes; ++i) {
+      myImageIdtFile >> tmp;
+      m_vecImageIndependent(i) = tmp;
     }
   }
-
-
+  else {
+    cerr << "Error: Cannot read image source" << endl;
+    myImageCovFile.close();
+    myImageIdtFile.close();
+    assert(0);
+  }
+  myImageIdtFile.close();
   myImageCovFile.close();
 }
 
@@ -154,37 +165,74 @@ double ImageSource::computeLog2Det( double inVariance, const vector<int>& vecClu
   return matEigenCholeskyLogDet(covMat, covMaSize);
 }
 
+/* @brief    given the subset of machine to report the joint entropy
+ * @param   support set vecClusterStru 
+ * @retval  entropy 
+ */
+
 
 double 
 ImageSource::GetJointEntropy(const vector<int>& vecClusterStru, const vector<double>& vecVariance, const double currTime, const double qBits) const
 {
-  double idtEntropy = 0.0;
-  for (int i = 0; i < m_numNodes; ++i) {
-    if (vecClusterStru[i] == 1) {
-      idtEntropy += 0.5*log2(2*3.1415*exp(1)) + log2(vecVariance[i]) + qBits;
+//  double idtEntropy = 0.0;
+//  for (int j = 0; j < m_numNodes; ++j) {
+//    if (vecClusterStru[j] == 1) {
+//      idtEntropy += 0.5*log2(2*3.1415*exp(1)) + log2(vecVariance[j]) + qBits;
+//    }
+//  }
+//
+//  int covMaSize = 0;
+//  for(int j = 0; j < m_numNodes; ++j) {
+//    if(vecClusterStru[j] == 1) ++covMaSize;
+//  }
+//  int* supSet= new int [covMaSize];
+//  int cursor = 0;
+//  for(int j=0;j<m_numNodes;j++)
+//  {
+//    if (vecClusterStru[j]== 1 )
+//    {
+//      supSet[cursor]=j;
+//      cursor++;
+//    }
+//  }
+//  vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
+//  ComputeCovMaDiffVariance(covMat, covMaSize, supSet, vecVariance);
+//  double redundancy = matEigenCholeskyLogDet(covMat, covMaSize);
+//  delete [] supSet;
+  
+  int     minIframeIdx = -1;
+  int     mySupportCount = 0;
+  double  minIframeBytes = DBL_MAX;
+  for (int i = 0; i < vecClusterStru.size(); ++i) {
+    if (vecClusterStru.at(i) && m_vecImageIndependent(i) < minIframeBytes ) {
+      minIframeIdx = i;
+      minIframeBytes = m_vecImageIndependent(i);
     }
+    if (vecClusterStru.at(i)) ++mySupportCount;
   }
-
-  int covMaSize = 0;
-  for(int i = 0; i < m_numNodes; ++i) {
-    if(vecClusterStru[i] == 1) ++covMaSize;
-  }
-  int* supSet= new int [covMaSize];
-  int cursor = 0;
-  for(int i=0;i<m_numNodes;i++)
-  {
-    if (vecClusterStru[i]== 1 )
-    {
-      supSet[cursor]=i;
-      cursor++;
+  std::vector<int> myDeterminedNode;
+  myDeterminedNode.push_back(minIframeIdx);
+  double totalBytes = minIframeBytes;
+  while (myDeterminedNode.size() < mySupportCount) {
+    int minPframeIdx = -1;
+    int minPframeBytes = DBL_MAX;
+    for (int i = 0; i < myDeterminedNode.size(); ++i) {
+      for (int j = 0; j < m_numNodes; ++j) {
+        if (vecClusterStru.at(j) && 
+            std::find(myDeterminedNode.begin(), myDeterminedNode.end(), j) == myDeterminedNode.end() &&
+            m_matImageCovariance(myDeterminedNode.at(i),j) < minPframeBytes
+            ) {
+          minPframeIdx = j;
+          minPframeBytes = m_matImageCovariance(myDeterminedNode.at(i),j);
+        }
+      }
     }
+    totalBytes += minPframeBytes;
+    myDeterminedNode.push_back(minPframeIdx);
   }
-  vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
-  ComputeCovMaDiffVariance(covMat, covMaSize, supSet, vecVariance);
-  double redundancy = matEigenCholeskyLogDet(covMat, covMaSize);
-
-  delete [] supSet;
-  return idtEntropy + redundancy;
+  
+  
+  return totalBytes;
 }
 
 double

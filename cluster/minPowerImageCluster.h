@@ -91,6 +91,7 @@ public:
   double                    GetSizePenalty(const vector<double>& );  
   double                    GetTier2Penalty(const vector<double>& );
   double                    GetEntropyPenalty( const double );
+  int                       GetSupportNodes();
 
   /* For Integrate */
   const std::vector<int>&         GetVecHeadName() const { return vecHeadNameBest; }

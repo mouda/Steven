@@ -43,7 +43,8 @@ private:
   void constComputeCovMa(double* inCovAry, int inCovMaSize, int* inSupSet, const double variance) const;
   double eigenCholeskyLogDet( double const * const aryCovariance, const int& dimSize) const;
 
-  Eigen::MatrixXd      m_matImageCovariance;
+  Eigen::MatrixXd       m_matImageCovariance;
+  Eigen::MatrixXd       m_vecImageIndependent;
 
 };
 
