@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() > 13 && vm.size() <= 24 ) {
+    } else if(vm.size() > 13 && vm.size() <= 25 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -144,14 +144,21 @@ int main(int argc, char *argv[])
           );
 
       Map* myMap = 0;
+
+      if (strAlgFlag == "ImageSource") {
+        imageFlag=true;
+      }
       CORRE_MA_OPE* myMatComputer  = 0;
       myMap = myMapFactory.CreateMap(imageFlag);
-      myMatComputer = myMapFactory.CreateMatrixComputer();
+
+      if (strAlgFlag != "ImageSource") {
+        myMatComputer = myMapFactory.CreateMatrixComputer();
+      }
       if (!myMap ) {
         cerr << "Error: Failed to initialize map" << endl;
         return 1;
       }
-      if (!myMatComputer) {
+      if (strAlgFlag != "ImageSource" && !myMatComputer) {
         cerr << "Error: Failed to initialize correlation comulter" << endl;
         return 1;
       }

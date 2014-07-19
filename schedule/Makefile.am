@@ -79,6 +79,8 @@ simulator_SOURCES = main.cpp \
 		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
 		    minPowerScheduler.h minPowerScheduler.cpp\
 		    minPowerMILP.h minPowerMILP.cpp\
+		    minPowerImageScheduler.h minPowerImageScheduler.cpp\
+		    minPowerImageMILP.hpp minPowerImageMILP.cpp\
 		    SASolver.h SASolver.cpp\
 		    powerUpdater.h powerUpdater.cpp\
 		    schedFactory.h schedFactory.cpp \

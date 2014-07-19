@@ -58,6 +58,11 @@ SchedulerFactory::CreateScheduler( const string& scheduleType)
         m_ptrMap, m_ptrMatComputer, m_ptrCS);
     return m_ptrSched;
   }
+  else if (scheduleType == "ImageSource") {
+    m_ptrSched = new MinPowerImageScheduler(m_txTimePerSlot, m_tier2NumSlot, m_bandwidthKhz,
+        m_ptrMap, m_ptrMatComputer, m_ptrCS);
+    return m_ptrSched;
+  }
   else{
     return NULL;
   }

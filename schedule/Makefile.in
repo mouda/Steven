@@ -100,6 +100,7 @@ am_simulator_OBJECTS = main.$(OBJEXT) csPowerUpdater.$(OBJEXT) \
 	maxSNRScheduler.$(OBJEXT) greedyPhysical.$(OBJEXT) \
 	bruteForceScheduler.$(OBJEXT) nonSimplifiedScheduler.$(OBJEXT) \
 	minPowerScheduler.$(OBJEXT) minPowerMILP.$(OBJEXT) \
+	minPowerImageScheduler.$(OBJEXT) minPowerImageMILP.$(OBJEXT) \
 	SASolver.$(OBJEXT) powerUpdater.$(OBJEXT) \
 	schedFactory.$(OBJEXT) slot.$(OBJEXT) simulator.$(OBJEXT)
 simulator_OBJECTS = $(am_simulator_OBJECTS)
@@ -400,6 +401,8 @@ simulator_SOURCES = main.cpp \
 		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
 		    minPowerScheduler.h minPowerScheduler.cpp\
 		    minPowerMILP.h minPowerMILP.cpp\
+		    minPowerImageScheduler.h minPowerImageScheduler.cpp\
+		    minPowerImageMILP.hpp minPowerImageMILP.cpp\
 		    SASolver.h SASolver.cpp\
 		    powerUpdater.h powerUpdater.cpp\
 		    schedFactory.h schedFactory.cpp \
@@ -530,6 +533,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kmeansCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxSNRScheduler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerImageMILP.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerImageScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerMILP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minResCsFactory.Po@am__quote@

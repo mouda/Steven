@@ -395,9 +395,9 @@ bool MinPowerImageCluster::setIniStruDistanceKmedoids()
     {
       std::vector <int> tempV;
       tempGroup.push_back(tempV);
-      tempHeadX[i] = nodes[3*i+retryTimes].locX;
-      tempHeadY[i] = nodes[3*i+retryTimes].locY;
-      tempHeadList[i]= nodes[3*i+retryTimes].nodeIndex;
+      tempHeadX[i] = nodes[6*i+retryTimes].locX;
+      tempHeadY[i] = nodes[6*i+retryTimes].locY;
+      tempHeadList[i]= nodes[6*i+retryTimes].nodeIndex;
     }
     while(!convergedFlag) // This loop want to find a new K-means coordinate
     {

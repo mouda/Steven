@@ -56,16 +56,21 @@ Simulator::SequentialRun(int tier2NumSlot)
   fill(vecPower.begin(), vecPower.end(), 0.0);
   std::vector<int> vecSlots(m_ptrMap->GetNumNodes());
   fill(vecSlots.begin(), vecSlots.end(), 0);
-
-  double currPower    = m_ptrSched->ScheduleOneSlot(vecSupport, vecPower, currVecVariance);
-  double entropy      = m_ptrGField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
-  double MSE          = m_ptrGField->GetRateDistortion(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
-  double totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, currVecVariance, 0.0, m_ptrMap->GetQBits());
+  double currPower   = 0; 
+  double entropy     = 0;
+  double MSE         = 0;  
+  double totalEntropy= 0;
+  currPower    = m_ptrSched->ScheduleOneSlot(vecSupport, vecPower, currVecVariance);
+  if (m_ptrGField) {
+    entropy      = m_ptrGField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
+    MSE          = m_ptrGField->GetRateDistortion(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
+    totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, currVecVariance, 0.0, m_ptrMap->GetQBits());
+    m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, vecSlots ,m_ptrSched->GetTxTimePerSlot());
+  }
   cout << "Entropy: " << entropy << " MSE: " << MSE << " Total: " << totalEntropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
   cout << "Power: " << VecToString(vecPower) << endl;
 //  cout << "Variance: " << VecToString(currVecVariance) << endl;
-  m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, vecSlots ,m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, vecPower, entropy, totalEntropy, MSE, currPower);
   Slot* ptrNextSlot = 0;
@@ -88,16 +93,22 @@ Simulator::GetNextSlot(Slot* mySlot, std::vector<int>& vecSlots)
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
   std::vector<double> vecPower(m_ptrMap->GetNumNodes());
   fill(vecPower.begin(), vecPower.end(), 0.0);
+  double currPower   = 0; 
+  double entropy     = 0;
+  double MSE         = 0;  
+  double totalEntropy= 0;
+  currPower    = m_ptrSched->ScheduleOneSlot(vecSupport, vecPower, mySlot->GetVariance());
+  if (m_ptrGField) {
+    entropy      = m_ptrGField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
+    MSE          = m_ptrGField->GetRateDistortion(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
+    totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
+    m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, vecSlots, m_ptrSched->GetTxTimePerSlot());
+  }
   
-  double currPower    = m_ptrSched->ScheduleOneSlot(vecSupport, vecPower, mySlot->GetVariance());
-  double entropy      = m_ptrGField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
-  double MSE          = m_ptrGField->GetRateDistortion(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
-  double totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
   cout << "Entropy: " << entropy << " MSE: " << MSE << " Total: " << totalEntropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
   cout << "Power: " << VecToString(vecPower) << endl;
 //  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
-  m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, vecSlots, m_ptrSched->GetTxTimePerSlot());
 
   Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, vecPower, entropy, totalEntropy, MSE, currPower);
   return ptrSlot;
@@ -137,11 +148,13 @@ Simulator::SelfCheck()
   cout << setw(20) << "Noise:" << setw(10) << m_ptrMap->GetNoise() << endl;
   cout << setw(20) << "IdtEntropy:" << setw(10) << m_ptrMap->GetIdtEntropy() << endl;
   cout << endl;
-  cout << "================= Gaussian Field =================" << endl;
-  cout << setw(20) << "Variance: " << setw(10) << m_ptrGField->GetVariance() << endl;
-  cout << setw(20) << "Spatial Correlation Factor: " << setw(10) << m_ptrGField->GetSpatialCorrelationFactor() << endl;
-  cout << setw(20) << "Temporal Correlation Factor: " << setw(10) << m_ptrGField->GetTemporalCorrelationFactor() << endl;
-  cout << endl;
+  if (m_ptrGField) {
+    cout << "================= Gaussian Field =================" << endl;
+    cout << setw(20) << "Variance: " << setw(10) << m_ptrGField->GetVariance() << endl;
+    cout << setw(20) << "Spatial Correlation Factor: " << setw(10) << m_ptrGField->GetSpatialCorrelationFactor() << endl;
+    cout << setw(20) << "Temporal Correlation Factor: " << setw(10) << m_ptrGField->GetTemporalCorrelationFactor() << endl;
+    cout << endl;
+  }
   cout << "=============== Cluster Structure  ===============" << endl;
   /* print cluster structure */
   m_ptrCS->Print();

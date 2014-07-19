@@ -93,7 +93,7 @@ double ImageSource::computeLog2Det( double inVariance, bool * inClusterStru) con
   //-----------------------------------------------
   int matrixLength = covMaSize * covMaSize;
   double *covAry = new double [matrixLength];
-  vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
+  std::vector<std::vector<double> > covMat(covMaSize,std::vector<double>(covMaSize));
   //computeCovMa(covAry,covMaSize ,supSet);
   matConstComputeCovMa(covMat, covMaSize ,supSet, inVariance);
 
@@ -128,7 +128,7 @@ double ImageSource::computeLog2Det( double inVariance, bool * inClusterStru)
   //-----------------------------------------------
   int matrixLength = covMaSize * covMaSize;
   double *covAry = new double [matrixLength];
-  vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
+  std::vector<std::vector<double> > covMat(covMaSize,std::vector<double>(covMaSize));
   //computeCovMa(covAry,covMaSize ,supSet);
   matConstComputeCovMa(covMat, covMaSize ,supSet, inVariance);
 
@@ -142,7 +142,7 @@ double ImageSource::computeLog2Det( double inVariance, bool * inClusterStru)
     return matEigenCholeskyLogDet(covMat, covMaSize);
 }
 
-double ImageSource::computeLog2Det( double inVariance, const vector<int>& vecClusterStru) const
+double ImageSource::computeLog2Det( double inVariance, const std::vector<int>& vecClusterStru) const
 {
   int covMaSize = 0;
   for(int i = 0; i < m_numNodes; ++i) {
@@ -158,7 +158,7 @@ double ImageSource::computeLog2Det( double inVariance, const vector<int>& vecClu
       cursor++;
     }
   }
-  vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
+  std::vector<std::vector<double> > covMat(covMaSize,std::vector<double>(covMaSize));
   matConstComputeCovMa(covMat, covMaSize ,supSet, inVariance);
   delete [] supSet;
 
@@ -172,7 +172,7 @@ double ImageSource::computeLog2Det( double inVariance, const vector<int>& vecClu
 
 
 double 
-ImageSource::GetJointEntropy(const vector<int>& vecClusterStru, const vector<double>& vecVariance, const double currTime, const double qBits) const
+ImageSource::GetJointEntropy(const std::vector<int>& vecClusterStru, const std::vector<double>& vecVariance, const double currTime, const double qBits) const
 {
 //  double idtEntropy = 0.0;
 //  for (int j = 0; j < m_numNodes; ++j) {
@@ -195,7 +195,7 @@ ImageSource::GetJointEntropy(const vector<int>& vecClusterStru, const vector<dou
 //      cursor++;
 //    }
 //  }
-//  vector<vector<double> > covMat(covMaSize,vector<double>(covMaSize));
+//  std::vector<std::vector<double> > covMat(covMaSize,std::vector<double>(covMaSize));
 //  ComputeCovMaDiffVariance(covMat, covMaSize, supSet, vecVariance);
 //  double redundancy = matEigenCholeskyLogDet(covMat, covMaSize);
 //  delete [] supSet;
@@ -232,11 +232,11 @@ ImageSource::GetJointEntropy(const vector<int>& vecClusterStru, const vector<dou
   }
   
   
-  return totalBytes;
+  return totalBytes*8;
 }
 
 double
-ImageSource::GetRateDistortion(const vector<int>& vecClusterStru, const vector<double>& vecVariance, const double currTime, const double qBits) const
+ImageSource::GetRateDistortion(const std::vector<int>& vecClusterStru, const std::vector<double>& vecVariance, const double currTime, const double qBits) const
 {
   double entropy = GetJointEntropy(vecClusterStru, vecVariance, currTime, qBits);
   int* supSet = new int [m_numNodes];
@@ -318,7 +318,7 @@ void ImageSource::constComputeCovMa(double* covAry,int covMaSize, int* supSet, c
   }
 }
 
-void ImageSource::matConstComputeCovMa(vector<vector<double> >& covMat, int covMaSize ,int* supSet, const double inVariance) const
+void ImageSource::matConstComputeCovMa(std::vector<std::vector<double> >& covMat, int covMaSize ,int* supSet, const double inVariance) const
 {
   for(int i=0;i<covMaSize;i++)
   {
@@ -338,7 +338,7 @@ void ImageSource::matConstComputeCovMa(vector<vector<double> >& covMat, int covM
 }
 
 void 
-ImageSource::ComputeCovMaDiffVariance(vector<vector<double> >& covMat, int covMaSize ,int* supSet, const vector<double>& vecVariance) const
+ImageSource::ComputeCovMaDiffVariance(std::vector<std::vector<double> >& covMat, int covMaSize ,int* supSet, const std::vector<double>& vecVariance) const
 {
   for(int i=0;i<covMaSize;i++)
   {
@@ -401,7 +401,7 @@ double ImageSource::eigenCholeskyLogDet( double const * const aryCovariance, con
   return 2*logDet;
 }
 
-double ImageSource::matEigenCholeskyLogDet( const vector<vector<double> >& covMat, const int& dimSize) const
+double ImageSource::matEigenCholeskyLogDet( const std::vector<std::vector<double> >& covMat, const int& dimSize) const
 {
   Eigen::MatrixXd covMatrix(dimSize,dimSize);
   for (int i = 0; i < dimSize; ++i) {

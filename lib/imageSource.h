@@ -6,7 +6,6 @@
 #include <eigen3/Eigen/LU>
 
 #include <vector>
-using std::vector;
 class ImageSource
 {
 public:
@@ -27,17 +26,17 @@ public:
   double GetCorrationFactor() const { return m_spatialCorrFac; }
   double GetSpatialCorrelationFactor() const { return m_spatialCorrFac; }
 
-  double GetJointEntropy(const vector<int>& vecClusterStru, const vector<double>& vecVariance, const double currTime, const double qBits) const;
-  double GetRateDistortion(const vector<int>& vecClusterStru, const vector<double>& vecVariance, const double currTime, const double qBits) const;
+  double GetJointEntropy(const std::vector<int>& vecClusterStru, const std::vector<double>& vecVariance, const double currTime, const double qBits) const;
+  double GetRateDistortion(const std::vector<int>& vecClusterStru, const std::vector<double>& vecVariance, const double currTime, const double qBits) const;
   double computeLog2Det(double inVariance, bool* inClusterStru ) const;
   double computeLog2Det(double inVariance, bool* inClusterStru ) ;
-  double computeLog2Det(double inVariance, const vector<int>& vecClusterStru) const;
+  double computeLog2Det(double inVariance, const std::vector<int>& vecClusterStru) const;
   double returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int numNodes);
 
 private:
-  double matEigenCholeskyLogDet(const vector<vector<double> >&  covMat , const int& dimSize) const;
-  void matConstComputeCovMa(vector<vector<double> >& covMat, int covMaSize ,int* supSet, const double inVariance) const;
-  void ComputeCovMaDiffVariance(vector<vector<double> >& covMat, int covMaSize ,int* supSet, const vector<double>& vecVariance) const;
+  double matEigenCholeskyLogDet(const std::vector<std::vector<double> >&  covMat , const int& dimSize) const;
+  void matConstComputeCovMa(std::vector<std::vector<double> >& covMat, int covMaSize ,int* supSet, const double inVariance) const;
+  void ComputeCovMaDiffVariance(std::vector<std::vector<double> >& covMat, int covMaSize ,int* supSet, const std::vector<double>& vecVariance) const;
   void GetCovMaVariance(Eigen::MatrixXd& covMat) const; 
   void computeCovMa(double* inCovAry, int inCovMaSize, int* inSupSet) const ;//inCovAry is output of function
   void constComputeCovMa(double* inCovAry, int inCovMaSize, int* inSupSet, const double variance) const;

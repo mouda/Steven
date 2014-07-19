@@ -102,6 +102,10 @@ MyTier1NLP::MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
     }
     std::fill(tmpIndicator.begin(), tmpIndicator.end(), 0);
   }
+//  for (int i = 0; i < m_vecClusterEntropy.size(); i++) {
+//    std::cout << i << ':' <<m_vecClusterEntropy.at(i) << ' ';
+//  }
+//  std::cout << endl;
 
   assert ( m_vecClusterEntropy.size() == m_numVariables);
 }

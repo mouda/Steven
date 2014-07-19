@@ -68,8 +68,16 @@ MapFactory::CreateMap(bool myImageFlag)
   m_ptrMap = new Map(numNodes, m_maxNumHead, m_maxPower, m_spatialCorrFactor, m_quantizationBits, m_bandwidthKhz, m_mapId);
   m_ptrMap->SetChannelByXYPair(m_vecPairPos);
   if (myImageFlag) {
-    vector<double> vecIdtCodingBits(m_numNodes);
+    fstream myImageIdtFile("paper720_30cam_indepByte.txt",std::ios::in);
+    vector<double> vecIdtCodingBits;
+    for (int i = 0; i < m_numNodes; ++i) {
+      double tmp = 0;
+      myImageIdtFile >> tmp;
+      vecIdtCodingBits.push_back(tmp*8);
+    }
     m_ptrMap->SetIdtImageCodingBits(vecIdtCodingBits);
+
+    myImageIdtFile.close();
   }
   return m_ptrMap;
 }
