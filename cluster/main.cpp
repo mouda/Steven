@@ -12,6 +12,7 @@
 #include "csFactory.h"
 #include "minPowerCsFactory.h"
 #include "minPowerImageCsFactory.h"
+#include "baselineImageCsFactory.h"
 #include "kmeansCsFactory.h"
 #include "simulator.h"
 #include "fileHandler.h"
@@ -117,14 +118,14 @@ int main(int argc, char *argv[])
       CORRE_MA_OPE* myMatComputer  = 0;
       ImageSource*  myImageSource = 0;
       myMap = myMapFactory.CreateMap(imageFlag);
-      if (CSFormation != "ImageSource") {
+      if (CSFormation != "ImageSource" && CSFormation != "ImageBaseline" ) {
         myMatComputer = myMapFactory.CreateMatrixComputer();
       }
       if (!myMap ) {
         cerr << "Error: Failed to initialize map" << endl;
         return 1;
       }
-      if (CSFormation != "ImageSource" && !myMatComputer) {
+      if (CSFormation != "ImageSource" && CSFormation != "ImageBaseline" && !myMatComputer) {
         cerr << "Error: Failed to initialize correlation comulter" << endl;
         return 1;
       }
@@ -169,6 +170,17 @@ int main(int argc, char *argv[])
           (dynamic_cast<MinPowerImageCsFactory*>(myCsFactory))->SetTier1TxTime(tier1TxTime);
           if (vm.count("iterationlog")) {
             (dynamic_cast<MinPowerImageCsFactory*>(myCsFactory)->SetIterationLog(true));
+          }
+        } else if (CSFormation == "ImageBaseline") {
+          myImageSource = myMapFactory.CreateImageSource();
+          myCsFactory = new BaselineImageCsFactory(myMap, myImageSource);
+          (dynamic_cast<BaselineImageCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
+          (dynamic_cast<BaselineImageCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
+          (dynamic_cast<BaselineImageCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
+          (dynamic_cast<BaselineImageCsFactory*>(myCsFactory))->SetTier2NumSlot(tier2NumSlot);
+          (dynamic_cast<BaselineImageCsFactory*>(myCsFactory))->SetTier1TxTime(tier1TxTime);
+          if (vm.count("iterationlog")) {
+            (dynamic_cast<BaselineImageCsFactory*>(myCsFactory)->SetIterationLog(true));
           }
         }
         if (!myCsFactory) {

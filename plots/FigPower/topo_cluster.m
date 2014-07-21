@@ -10,10 +10,10 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-path = {'/home/mouda/Work/Research/src/runSimulation/runTest/testImageClustering/testCS.out'};
+path = {'data/CS_N50_H13_7_F0.8.out'};
 
 strtitle2={'SA'};
-mapString = ['/home/mouda/Work/Research/src/runSimulation/runTest/testImageClustering/paper720_30cam_pos.txt'];
+mapString = ['../../runSimulation/mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_7.txt'];
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
 for ii=1:length(path)

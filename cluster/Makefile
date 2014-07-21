@@ -96,7 +96,9 @@ am_genCluster_OBJECTS = main.$(OBJEXT) myTier1NLP.$(OBJEXT) \
 	ULSA4b7_DC.$(OBJEXT) minResCsFactory.$(OBJEXT) \
 	kmeansCsFactory.$(OBJEXT) minPowerSACluster.$(OBJEXT) \
 	minPowerCsFactory.$(OBJEXT) minPowerImageCluster.$(OBJEXT) \
-	minPowerImageCsFactory.$(OBJEXT) nonGuidedSACluster.$(OBJEXT) \
+	minPowerImageCsFactory.$(OBJEXT) \
+	baselineImageCluster.$(OBJEXT) \
+	baselineImageCsFactory.$(OBJEXT) nonGuidedSACluster.$(OBJEXT) \
 	nonGuidedCsFactory.$(OBJEXT) simulator.$(OBJEXT)
 genCluster_OBJECTS = $(am_genCluster_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -385,6 +387,8 @@ genCluster_SOURCES = main.cpp \
 		    minPowerCsFactory.h minPowerCsFactory.cpp\
 		    minPowerImageCluster.h minPowerImageCluster.cpp\
 		    minPowerImageCsFactory.h minPowerImageCsFactory.cpp\
+		    baselineImageCluster.h baselineImageCluster.cpp\
+		    baselineImageCsFactory.h baselineImageCsFactory.cpp\
 		    nonGuidedSACluster.cpp nonGuidedSACluster.h\
 		    nonGuidedCsFactory.cpp nonGuidedCsFactory.h\
 		    simulator.h simulator.cpp 
@@ -503,6 +507,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/ULSA4b7_DC.Po
+include ./$(DEPDIR)/baselineImageCluster.Po
+include ./$(DEPDIR)/baselineImageCsFactory.Po
 include ./$(DEPDIR)/kmeansCsFactory.Po
 include ./$(DEPDIR)/main.Po
 include ./$(DEPDIR)/minPowerCsFactory.Po
