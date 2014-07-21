@@ -391,13 +391,20 @@ bool BaselineImageCluster::setIniStruDistanceKmedoids()
     for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
     tempGroup.clear();
 
+    std::vector<int> vecRandHead;
+    while(vecRandHead.size() < maxChNum) {
+      int randIdx = rand()%totalNodes;
+      if (std::find(vecRandHead.begin(), vecRandHead.end(), randIdx) == vecRandHead.end()) {
+        vecRandHead.push_back(randIdx);
+      }
+    }
     for (int i=0; i<maxChNum; i++)
     {
       std::vector <int> tempV;
       tempGroup.push_back(tempV);
-      tempHeadX[i] = nodes[6*i+retryTimes].locX;
-      tempHeadY[i] = nodes[6*i+retryTimes].locY;
-      tempHeadList[i]= nodes[6*i+retryTimes].nodeIndex;
+      tempHeadX[i] = nodes[vecRandHead.at(i)+retryTimes].locX;
+      tempHeadY[i] = nodes[vecRandHead.at(i)+retryTimes].locY;
+      tempHeadList[i]= nodes[vecRandHead.at(i)+retryTimes].nodeIndex;
     }
     while(!convergedFlag) // This loop want to find a new K-means coordinate
     {

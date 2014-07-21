@@ -226,15 +226,12 @@ ImageSource::GetJointEntropy(const std::vector<int>& vecClusterStru, const std::
           minPframeBytes = m_matImageCovariance(myDeterminedNode.at(i),j);
         }
         if (vecClusterStru.at(j)) {
-          cout << j << endl;
         }
       }
     }
-    cout << minPframeBytes << endl;
     totalBytes += minPframeBytes;
     myDeterminedNode.push_back(minPframeIdx);
   }
-  cout << endl;
   
   
   return totalBytes*8;

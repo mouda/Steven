@@ -1,4 +1,7 @@
 #include "baselineImageCsFactory.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #define SA_INI_TEMP 3.0
 #define SA_FIN_TEMP 10e-6
 
@@ -22,6 +25,7 @@ BaselineImageCsFactory::BaselineImageCsFactory(Map const * const myMap,
   m_logFlag(false),
   m_ptrImageSource(myImageSource)
 {
+  srand(time(NULL));
 
 }
 
