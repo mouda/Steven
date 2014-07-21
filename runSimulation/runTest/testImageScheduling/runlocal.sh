@@ -1,0 +1,1 @@
+../../../schedule/simulator -n 24 -H 8 -q 32 -p 0 -b 180.0 -t 20.0 -I 10.0 -m paper720_30cam_pos.txt -f 0.9 -c 0.477 -A ImageSource  -T 1.0 -F CSFile -N 2 -P imagePower.out -S  imageSolution.out -s ../testImageClustering/testCS.out
