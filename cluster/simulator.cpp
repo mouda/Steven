@@ -1,7 +1,8 @@
 #include "simulator.h"
-#include "ULConstraintSolver.h"
+#include "imagePowerUpdater.h"
 #include <cstdio>
 #include <sstream>
+#include <numeric>
 
 
 
@@ -121,23 +122,19 @@ Simulator::WriteWorseCaseTier2Power( const string& fileName,
     const double maxPower) 
 {
   std::list<list<int> >::const_iterator iterRow = m_ptrCS->GetListCluMemeber().begin();
+  std::vector<int> vecSolution(m_ptrMap->GetNumNodes(), 0);
   for (; iterRow != m_ptrCS->GetListCluMemeber().end(); ++iterRow) {
-    cout << iterRow->size() << endl;
+    std::list<int>::const_iterator iterCol = iterRow->begin();
+    for (; iterCol != iterRow->end(); ++iterCol) {
+      vecSolution.at(*iterCol) = 1;
+    }
   }
 
-  double* nodePower = new double [m_ptrMap->GetNumNodes()];
-//  ULConstraintSolver = myPowerUpdate(
-//      m_ptrMap->GetNumInitHeads(),
-//      totalNodes,
-//      m_ptrMap->GetMaxPower(),
-//      m_ptrMap->GetNoise(),
-//      m_ptrMap->GetBandwidth(),
-//      indEntropy,
-//      m_ptrCS->GetVecHeadName(),
-//      m_ptrMap->, 
-//      nodePower,
-//      m_ptrCS->GetListCluMember(),
-//      );
+  std::vector<double> myVecPower(m_ptrMap->GetNumNodes());
+  ImagePowerUpdater myImagePowerUpdater(m_ptrMap, m_ptrCS,  TxTimePerSlot);
+  myImagePowerUpdater.Solve(myVecPower, vecSolution);
+  double totalPower = std::accumulate(myVecPower.begin(), myVecPower.end(), 0.0);
+  cout << totalPower << endl;
   return;
 }
 

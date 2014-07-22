@@ -125,6 +125,10 @@ AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libImagePowerUpdater_la_DEPENDENCIES =
+am_libImagePowerUpdater_la_OBJECTS = imagePowerUpdater.lo
+libImagePowerUpdater_la_OBJECTS =  \
+	$(am_libImagePowerUpdater_la_OBJECTS)
 libPowerUpdater_la_DEPENDENCIES =
 am_libPowerUpdater_la_OBJECTS = powerUpdater.lo
 libPowerUpdater_la_OBJECTS = $(am_libPowerUpdater_la_OBJECTS)
@@ -214,14 +218,16 @@ AM_V_CCLD = $(am__v_CCLD_$(V))
 am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libCORRE_MA_OPE_la_SOURCES) $(libPowerUpdater_la_SOURCES) \
-	$(libTimeStamp_la_SOURCES) $(libULAGENT_la_SOURCES) \
-	$(libULCS1b_la_SOURCES) $(libULConstraintSolver_la_SOURCES) \
-	$(libcsFactory_la_SOURCES) $(libfileHandler_la_SOURCES) \
-	$(libimageSource_la_SOURCES) $(libmapFactory_la_SOURCES) \
-	$(libsimSystem_la_SOURCES) $(libtimesearch_la_SOURCES) \
-	$(libutility_la_SOURCES)
+SOURCES = $(libCORRE_MA_OPE_la_SOURCES) \
+	$(libImagePowerUpdater_la_SOURCES) \
+	$(libPowerUpdater_la_SOURCES) $(libTimeStamp_la_SOURCES) \
+	$(libULAGENT_la_SOURCES) $(libULCS1b_la_SOURCES) \
+	$(libULConstraintSolver_la_SOURCES) $(libcsFactory_la_SOURCES) \
+	$(libfileHandler_la_SOURCES) $(libimageSource_la_SOURCES) \
+	$(libmapFactory_la_SOURCES) $(libsimSystem_la_SOURCES) \
+	$(libtimesearch_la_SOURCES) $(libutility_la_SOURCES)
 DIST_SOURCES = $(libCORRE_MA_OPE_la_SOURCES) \
+	$(libImagePowerUpdater_la_SOURCES) \
 	$(libPowerUpdater_la_SOURCES) $(libTimeStamp_la_SOURCES) \
 	$(libULAGENT_la_SOURCES) $(libULCS1b_la_SOURCES) \
 	$(libULConstraintSolver_la_SOURCES) $(libcsFactory_la_SOURCES) \
@@ -421,6 +427,7 @@ lib_LTLIBRARIES = libfileHandler.la \
 		  libTimeStamp.la \
 		  libULConstraintSolver.la\
 		  libPowerUpdater.la\
+		  libImagePowerUpdater.la\
 		  libULCS1b.la
 
 INCLUDES = -I../lib
@@ -480,6 +487,8 @@ libULConstraintSolver_la_SOURCES = ULConstraintSolver.h ULConstraintSolver.cpp
 libULConstraintSolver_la_LIBADD = $(DEPS_LIBS)
 libPowerUpdater_la_SOURCES = powerUpdater.h powerUpdater.cpp
 libPowerUpdater_la_LIBADD = $(DEPS_LIBS)
+libImagePowerUpdater_la_SOURCES = imagePowerUpdater.h imagePowerUpdater.cpp
+libImagePowerUpdater_la_LIBADD = $(DEPS_LIBS)
 libULCS1b_la_SOURCES = ULCS1b.h ULCS1b.cpp
 libULCS1b_la_LIBADD = $(DEPS_LIBS)
 #AM_CFLAGS = -O2
@@ -559,6 +568,9 @@ clean-libLTLIBRARIES:
 libCORRE_MA_OPE.la: $(libCORRE_MA_OPE_la_OBJECTS) $(libCORRE_MA_OPE_la_DEPENDENCIES) $(EXTRA_libCORRE_MA_OPE_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libCORRE_MA_OPE_la_OBJECTS) $(libCORRE_MA_OPE_la_LIBADD) $(LIBS)
 
+libImagePowerUpdater.la: $(libImagePowerUpdater_la_OBJECTS) $(libImagePowerUpdater_la_DEPENDENCIES) $(EXTRA_libImagePowerUpdater_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libImagePowerUpdater_la_OBJECTS) $(libImagePowerUpdater_la_LIBADD) $(LIBS)
+
 libPowerUpdater.la: $(libPowerUpdater_la_OBJECTS) $(libPowerUpdater_la_DEPENDENCIES) $(EXTRA_libPowerUpdater_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libPowerUpdater_la_OBJECTS) $(libPowerUpdater_la_LIBADD) $(LIBS)
 
@@ -609,6 +621,7 @@ include ./$(DEPDIR)/ULConstraintSolver.Plo
 include ./$(DEPDIR)/clusterStructure.Plo
 include ./$(DEPDIR)/csFactory.Plo
 include ./$(DEPDIR)/fileHandler.Plo
+include ./$(DEPDIR)/imagePowerUpdater.Plo
 include ./$(DEPDIR)/imageSource.Plo
 include ./$(DEPDIR)/map.Plo
 include ./$(DEPDIR)/mapFactory.Plo

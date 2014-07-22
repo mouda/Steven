@@ -10,6 +10,7 @@ lib_LTLIBRARIES = libfileHandler.la \
 		  libTimeStamp.la \
 		  libULConstraintSolver.la\
 		  libPowerUpdater.la\
+		  libImagePowerUpdater.la\
 		  libULCS1b.la
 INCLUDES =-I../lib
 #scheduler_CFLAGS = 
@@ -99,6 +100,8 @@ libULConstraintSolver_la_SOURCES = ULConstraintSolver.h ULConstraintSolver.cpp
 libULConstraintSolver_la_LIBADD = $(DEPS_LIBS)
 libPowerUpdater_la_SOURCES = powerUpdater.h powerUpdater.cpp
 libPowerUpdater_la_LIBADD = $(DEPS_LIBS)
+libImagePowerUpdater_la_SOURCES = imagePowerUpdater.h imagePowerUpdater.cpp
+libImagePowerUpdater_la_LIBADD = $(DEPS_LIBS)
 libULCS1b_la_SOURCES = ULCS1b.h ULCS1b.cpp
 libULCS1b_la_LIBADD = $(DEPS_LIBS)
 
