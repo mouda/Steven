@@ -1,6 +1,8 @@
 #include "simulator.h"
+#include "ULConstraintSolver.h"
 #include <cstdio>
 #include <sstream>
+
 
 
 
@@ -112,6 +114,32 @@ Simulator::VecToString( const vector<T>& vec)
   return ss.str();
 }
 
+
+void
+Simulator::WriteWorseCaseTier2Power( const string& fileName, 
+    const double TxTimePerSlot, 
+    const double maxPower) 
+{
+  std::list<list<int> >::const_iterator iterRow = m_ptrCS->GetListCluMemeber().begin();
+  for (; iterRow != m_ptrCS->GetListCluMemeber().end(); ++iterRow) {
+    cout << iterRow->size() << endl;
+  }
+
+  double* nodePower = new double [m_ptrMap->GetNumNodes()];
+//  ULConstraintSolver = myPowerUpdate(
+//      m_ptrMap->GetNumInitHeads(),
+//      totalNodes,
+//      m_ptrMap->GetMaxPower(),
+//      m_ptrMap->GetNoise(),
+//      m_ptrMap->GetBandwidth(),
+//      indEntropy,
+//      m_ptrCS->GetVecHeadName(),
+//      m_ptrMap->, 
+//      nodePower,
+//      m_ptrCS->GetListCluMember(),
+//      );
+  return;
+}
 
 
 

@@ -101,8 +101,9 @@ am_simulator_OBJECTS = main.$(OBJEXT) csPowerUpdater.$(OBJEXT) \
 	bruteForceScheduler.$(OBJEXT) nonSimplifiedScheduler.$(OBJEXT) \
 	minPowerScheduler.$(OBJEXT) minPowerMILP.$(OBJEXT) \
 	minPowerImageScheduler.$(OBJEXT) minPowerImageMILP.$(OBJEXT) \
-	SASolver.$(OBJEXT) powerUpdater.$(OBJEXT) \
-	schedFactory.$(OBJEXT) slot.$(OBJEXT) simulator.$(OBJEXT)
+	baselineImageScheduler.$(OBJEXT) baselineImageMILP.$(OBJEXT) \
+	SASolver.$(OBJEXT) schedFactory.$(OBJEXT) slot.$(OBJEXT) \
+	simulator.$(OBJEXT)
 simulator_OBJECTS = $(am_simulator_OBJECTS)
 am__DEPENDENCIES_1 =
 simulator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -112,7 +113,7 @@ simulator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	../lib/libimageSource.la ../lib/libULAGENT.la \
 	../lib/libsimSystem.la ../lib/libtimesearch.la \
 	../lib/libTimeStamp.la ../lib/libULConstraintSolver.la \
-	../lib/libULCS1b.la
+	../lib/libPowerUpdater.la ../lib/libULCS1b.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -403,8 +404,9 @@ simulator_SOURCES = main.cpp \
 		    minPowerMILP.h minPowerMILP.cpp\
 		    minPowerImageScheduler.h minPowerImageScheduler.cpp\
 		    minPowerImageMILP.hpp minPowerImageMILP.cpp\
+		    baselineImageScheduler.h baselineImageScheduler.cpp\
+		    baselineImageMILP.hpp baselineImageMILP.cpp\
 		    SASolver.h SASolver.cpp\
-		    powerUpdater.h powerUpdater.cpp\
 		    schedFactory.h schedFactory.cpp \
 		    slot.h slot.cpp \
 		    simulator.h simulator.cpp 
@@ -426,6 +428,7 @@ simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
 		  ../lib/libtimesearch.la\
 		  ../lib/libTimeStamp.la \
 		  ../lib/libULConstraintSolver.la\
+		  ../lib/libPowerUpdater.la\
 		  ../lib/libULCS1b.la
 
 all: all-am
@@ -525,6 +528,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MyTMINLP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SASolver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ULSA4b7_DC.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baselineImageMILP.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baselineImageScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/branchBoundScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bruteForceScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/csPowerUpdater.Po@am__quote@
@@ -539,7 +544,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minPowerScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minResCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nonSimplifiedScheduler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/powerUpdater.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schedFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simulator.Po@am__quote@

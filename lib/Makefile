@@ -125,6 +125,9 @@ AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libPowerUpdater_la_DEPENDENCIES =
+am_libPowerUpdater_la_OBJECTS = powerUpdater.lo
+libPowerUpdater_la_OBJECTS = $(am_libPowerUpdater_la_OBJECTS)
 libTimeStamp_la_DEPENDENCIES =
 am_libTimeStamp_la_OBJECTS = TimeStamp.lo
 libTimeStamp_la_OBJECTS = $(am_libTimeStamp_la_OBJECTS)
@@ -211,19 +214,20 @@ AM_V_CCLD = $(am__v_CCLD_$(V))
 am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libCORRE_MA_OPE_la_SOURCES) $(libTimeStamp_la_SOURCES) \
-	$(libULAGENT_la_SOURCES) $(libULCS1b_la_SOURCES) \
-	$(libULConstraintSolver_la_SOURCES) $(libcsFactory_la_SOURCES) \
-	$(libfileHandler_la_SOURCES) $(libimageSource_la_SOURCES) \
-	$(libmapFactory_la_SOURCES) $(libsimSystem_la_SOURCES) \
-	$(libtimesearch_la_SOURCES) $(libutility_la_SOURCES)
-DIST_SOURCES = $(libCORRE_MA_OPE_la_SOURCES) \
+SOURCES = $(libCORRE_MA_OPE_la_SOURCES) $(libPowerUpdater_la_SOURCES) \
 	$(libTimeStamp_la_SOURCES) $(libULAGENT_la_SOURCES) \
 	$(libULCS1b_la_SOURCES) $(libULConstraintSolver_la_SOURCES) \
 	$(libcsFactory_la_SOURCES) $(libfileHandler_la_SOURCES) \
 	$(libimageSource_la_SOURCES) $(libmapFactory_la_SOURCES) \
 	$(libsimSystem_la_SOURCES) $(libtimesearch_la_SOURCES) \
 	$(libutility_la_SOURCES)
+DIST_SOURCES = $(libCORRE_MA_OPE_la_SOURCES) \
+	$(libPowerUpdater_la_SOURCES) $(libTimeStamp_la_SOURCES) \
+	$(libULAGENT_la_SOURCES) $(libULCS1b_la_SOURCES) \
+	$(libULConstraintSolver_la_SOURCES) $(libcsFactory_la_SOURCES) \
+	$(libfileHandler_la_SOURCES) $(libimageSource_la_SOURCES) \
+	$(libmapFactory_la_SOURCES) $(libsimSystem_la_SOURCES) \
+	$(libtimesearch_la_SOURCES) $(libutility_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -249,21 +253,21 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/mouda/Work/Research/thesis/missing aclocal-1.13
+ACLOCAL = ${SHELL} /home/mouda/Work/Research/src/missing aclocal-1.13
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
 AR = ar
-AUTOCONF = ${SHELL} /home/mouda/Work/Research/thesis/missing autoconf
-AUTOHEADER = ${SHELL} /home/mouda/Work/Research/thesis/missing autoheader
-AUTOMAKE = ${SHELL} /home/mouda/Work/Research/thesis/missing automake-1.13
+AUTOCONF = ${SHELL} /home/mouda/Work/Research/src/missing autoconf
+AUTOHEADER = ${SHELL} /home/mouda/Work/Research/src/missing autoheader
+AUTOMAKE = ${SHELL} /home/mouda/Work/Research/src/missing automake-1.13
 AWK = gawk
-BONMIN_CPPFLAGS = -I/opt/bonmin/include
-BONMIN_LIBS = -L/opt/bonmin/lib
+BONMIN_CPPFLAGS = -I/opt/bonmin174/include
+BONMIN_LIBS = -L/opt/bonmin174/lib
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2 -g
 CPP = gcc -E
-CPPFLAGS = -I/opt/boost/include -I/opt/armadillo/include -I/opt/eigen/include -I/opt/KaHIPv0.62/deploy
+CPPFLAGS = -I/opt/boost1550/include -I/opt/armadillo40002/include -I/opt/eigen320/include
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -289,7 +293,7 @@ INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 IPOPT_CPPFLAGS = -I/opt/ipopt/include
 IPOPT_LIBS = -L/opt/ipopt/lib
 LD = /usr/bin/ld -m elf_x86_64
-LDFLAGS = -L/opt/boost/lib -L/opt/armadillo/lib -L/opt/openblas/lib -L/opt/lapack/lib -L/opt/KaHIPv0.62/deploy -static
+LDFLAGS = -L/opt/boost1550/lib -L/opt/armadillo40002/lib -L/opt/openblas/lib -L/opt/lapack/lib -static
 LIBOBJS = 
 #scheduler_CFLAGS = 
 LIBS = -lopenblas \
@@ -329,7 +333,7 @@ LIPO =
 LN_S = ln -s
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} /home/mouda/Work/Research/thesis/missing makeinfo
+MAKEINFO = ${SHELL} /home/mouda/Work/Research/src/missing makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = /bin/mkdir -p
 NM = /usr/bin/nm -B
@@ -352,10 +356,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = strip
 VERSION = 0.0
-abs_builddir = /home/mouda/Work/Research/thesis/lib
-abs_srcdir = /home/mouda/Work/Research/thesis/lib
-abs_top_builddir = /home/mouda/Work/Research/thesis
-abs_top_srcdir = /home/mouda/Work/Research/thesis
+abs_builddir = /home/mouda/Work/Research/src/lib
+abs_srcdir = /home/mouda/Work/Research/src/lib
+abs_top_builddir = /home/mouda/Work/Research/src
+abs_top_srcdir = /home/mouda/Work/Research/src
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_CXX = g++
@@ -385,7 +389,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/mouda/Work/Research/thesis/install-sh
+install_sh = ${SHELL} /home/mouda/Work/Research/src/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -416,6 +420,7 @@ lib_LTLIBRARIES = libfileHandler.la \
 		  libtimesearch.la\
 		  libTimeStamp.la \
 		  libULConstraintSolver.la\
+		  libPowerUpdater.la\
 		  libULCS1b.la
 
 INCLUDES = -I../lib
@@ -473,6 +478,8 @@ libTimeStamp_la_SOURCES = TimeStamp.h TimeStamp.cpp
 libTimeStamp_la_LIBADD = $(DEPS_LIBS)
 libULConstraintSolver_la_SOURCES = ULConstraintSolver.h ULConstraintSolver.cpp
 libULConstraintSolver_la_LIBADD = $(DEPS_LIBS)
+libPowerUpdater_la_SOURCES = powerUpdater.h powerUpdater.cpp
+libPowerUpdater_la_LIBADD = $(DEPS_LIBS)
 libULCS1b_la_SOURCES = ULCS1b.h ULCS1b.cpp
 libULCS1b_la_LIBADD = $(DEPS_LIBS)
 #AM_CFLAGS = -O2
@@ -552,6 +559,9 @@ clean-libLTLIBRARIES:
 libCORRE_MA_OPE.la: $(libCORRE_MA_OPE_la_OBJECTS) $(libCORRE_MA_OPE_la_DEPENDENCIES) $(EXTRA_libCORRE_MA_OPE_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libCORRE_MA_OPE_la_OBJECTS) $(libCORRE_MA_OPE_la_LIBADD) $(LIBS)
 
+libPowerUpdater.la: $(libPowerUpdater_la_OBJECTS) $(libPowerUpdater_la_DEPENDENCIES) $(EXTRA_libPowerUpdater_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libPowerUpdater_la_OBJECTS) $(libPowerUpdater_la_LIBADD) $(LIBS)
+
 libTimeStamp.la: $(libTimeStamp_la_OBJECTS) $(libTimeStamp_la_DEPENDENCIES) $(EXTRA_libTimeStamp_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libTimeStamp_la_OBJECTS) $(libTimeStamp_la_LIBADD) $(LIBS)
 
@@ -602,6 +612,7 @@ include ./$(DEPDIR)/fileHandler.Plo
 include ./$(DEPDIR)/imageSource.Plo
 include ./$(DEPDIR)/map.Plo
 include ./$(DEPDIR)/mapFactory.Plo
+include ./$(DEPDIR)/powerUpdater.Plo
 include ./$(DEPDIR)/simSystem.Plo
 include ./$(DEPDIR)/timesearch.Plo
 include ./$(DEPDIR)/utility.Plo

@@ -195,6 +195,7 @@ int main(int argc, char *argv[])
           return 1;
         }
 
+
         Simulator mySimulator(
             myMap, 
             myCS, 
@@ -203,6 +204,10 @@ int main(int argc, char *argv[])
 
         /* output control */
         mySimulator.WriteCS( CSFName );
+
+        if (CSFormation == "ImageBaseline") {
+          mySimulator.WriteWorseCaseTier2Power("ImageBaselineTier2Power.out", txTimePerSlot , powerMaxWatt); 
+        }
       }
 
 

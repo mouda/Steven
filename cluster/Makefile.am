@@ -94,4 +94,5 @@ genCluster_LDADD = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) ../lib/libfileHandler.la \
 		  ../lib/libtimesearch.la\
 		  ../lib/libTimeStamp.la \
 		  ../lib/libULConstraintSolver.la\
+		  ../lib/libPowerUpdater.la\
 		  ../lib/libULCS1b.la

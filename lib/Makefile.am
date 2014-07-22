@@ -9,6 +9,7 @@ lib_LTLIBRARIES = libfileHandler.la \
 		  libtimesearch.la\
 		  libTimeStamp.la \
 		  libULConstraintSolver.la\
+		  libPowerUpdater.la\
 		  libULCS1b.la
 INCLUDES =-I../lib
 #scheduler_CFLAGS = 
@@ -96,6 +97,8 @@ libTimeStamp_la_SOURCES = TimeStamp.h TimeStamp.cpp
 libTimeStamp_la_LIBADD = $(DEPS_LIBS)
 libULConstraintSolver_la_SOURCES = ULConstraintSolver.h ULConstraintSolver.cpp
 libULConstraintSolver_la_LIBADD = $(DEPS_LIBS)
+libPowerUpdater_la_SOURCES = powerUpdater.h powerUpdater.cpp
+libPowerUpdater_la_LIBADD = $(DEPS_LIBS)
 libULCS1b_la_SOURCES = ULCS1b.h ULCS1b.cpp
 libULCS1b_la_LIBADD = $(DEPS_LIBS)
 

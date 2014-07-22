@@ -81,8 +81,9 @@ simulator_SOURCES = main.cpp \
 		    minPowerMILP.h minPowerMILP.cpp\
 		    minPowerImageScheduler.h minPowerImageScheduler.cpp\
 		    minPowerImageMILP.hpp minPowerImageMILP.cpp\
+		    baselineImageScheduler.h baselineImageScheduler.cpp\
+		    baselineImageMILP.hpp baselineImageMILP.cpp\
 		    SASolver.h SASolver.cpp\
-		    powerUpdater.h powerUpdater.cpp\
 		    schedFactory.h schedFactory.cpp \
 		    slot.h slot.cpp \
 		    simulator.h simulator.cpp 
@@ -107,4 +108,5 @@ simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
 		  ../lib/libtimesearch.la\
 		  ../lib/libTimeStamp.la \
 		  ../lib/libULConstraintSolver.la\
+		  ../lib/libPowerUpdater.la\
 		  ../lib/libULCS1b.la
