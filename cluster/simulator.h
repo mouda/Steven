@@ -32,7 +32,7 @@ class Simulator
 
 
     void WriteCS( const string& );
-    void WriteWorseCaseTier2Power( const string&, const double, const double);
+    void WriteWorseCaseTier2Power( const string&, const double, const double, const double);
 
     bool SelfCheck();
 

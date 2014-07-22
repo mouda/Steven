@@ -12,7 +12,8 @@ class ImagePowerUpdater
     ImagePowerUpdater(
         Map const * const,
         ClusterStructure const * const,
-        const double txTimeSlot
+        const double txTimeSlot,
+        const double txNumSlot
         ); 
     ~ImagePowerUpdater();
 

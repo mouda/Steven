@@ -117,6 +117,10 @@ int main(int argc, char *argv[])
       Map* myMap = 0;
       CORRE_MA_OPE* myMatComputer  = 0;
       ImageSource*  myImageSource = 0;
+
+      if (CSFormation == "ImageSource" || CSFormation == "ImageBaseline") {
+        imageFlag=true;
+      }
       myMap = myMapFactory.CreateMap(imageFlag);
       if (CSFormation != "ImageSource" && CSFormation != "ImageBaseline" ) {
         myMatComputer = myMapFactory.CreateMatrixComputer();
@@ -206,7 +210,7 @@ int main(int argc, char *argv[])
         mySimulator.WriteCS( CSFName );
 
         if (CSFormation == "ImageBaseline") {
-          mySimulator.WriteWorseCaseTier2Power("ImageBaselineTier2Power.out", txTimePerSlot , powerMaxWatt); 
+          mySimulator.WriteWorseCaseTier2Power("ImageBaselineTier2Power.out", txTimePerSlot , static_cast<double>(tier2NumSlot), powerMaxWatt); 
         }
       }
 

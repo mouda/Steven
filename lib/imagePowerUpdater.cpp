@@ -6,7 +6,8 @@
 ImagePowerUpdater::ImagePowerUpdater(
     Map const * const ptrMap, 
     ClusterStructure const * const ptrCS,
-    const double txTimeSlot
+    const double txTimeSlot,
+    const double txNumSlot
     ):
   m_threshold(1e-12),
   m_ptrMap(ptrMap), 
@@ -24,8 +25,19 @@ ImagePowerUpdater::ImagePowerUpdater(
   m_inBandNoise = m_ptrMap->GetNoise() * m_scale;
   m_C2=m_idtEntropy/m_txTimePerSlot/m_ptrMap->GetBandwidth();
   m_vecC2.resize(m_ptrMap->GetNumNodes());
-  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
-    m_vecC2.at(i) = m_ptrMap->GetIdtEntropy(i)/m_txTimePerSlot/m_ptrMap->GetBandwidth();
+  double totalTier2Time = m_txTimePerSlot*txNumSlot; 
+//  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+//    m_vecC2.at(i) = m_ptrMap->GetIdtEntropy(i)*m_ptrCS->GetChIdxByNamem_ptrCS->GetChIdxByName(i)/totalTier2Time/m_ptrMap->GetBandwidth();
+//    cout << m_ptrMap->GetIdtEntropy(i) << endl;
+//  }
+
+  std::list<std::list<int> >::const_iterator iterRow = m_ptrCS->GetListCluMemeber().begin();
+  for (; iterRow != m_ptrCS->GetListCluMemeber().end(); ++iterRow) {
+    std::list<int>::const_iterator iterCol = iterRow->begin();
+    double txTime = totalTier2Time/(static_cast<double>(iterRow->size())-1);
+    for (; iterCol != iterRow->end(); ++iterCol) {
+      m_vecC2.at(*iterCol) = m_ptrMap->GetIdtEntropy(*iterCol)/txTime/m_ptrMap->GetBandwidth();
+    }
   }
   cout << "********idtEntropy " << m_idtEntropy << endl;
   cout << "********m_txTimePerSlot " << m_txTimePerSlot << endl;
@@ -75,7 +87,7 @@ ImagePowerUpdater::UpdateInterference( std::vector<double>& vecPower, const std:
         double tempInterference = vecPower.at((*itl3)) * m_ptrMap->GetGijByPair(m_ptrCS->GetVecHeadName().at(i), (*itl3));
         if( m_ptrCS->GetVecHeadName().at(i) == (*itl3) )
           continue;//In Downlink Scenario othe head won't transmit power
-        else if (   vecPower.at((*itl3)) > maxInterference ) {
+        else if (   tempInterference > maxInterference ) {
           interferentSource = (*itl3);
           maxInterference = tempInterference;
         }

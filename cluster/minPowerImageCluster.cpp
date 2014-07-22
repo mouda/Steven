@@ -13,7 +13,7 @@
 #include <armadillo>
 #include <iterator>
 
-#define PENALTYSIZE 10e-6
+#define PENALTYSIZE 1 
 using namespace std;
 #include "minPowerImageCluster.h"
 //bool pairCompare(const std::pair<int,double>& lPair, const std::pair<int,double>& rPair)
@@ -390,14 +390,21 @@ bool MinPowerImageCluster::setIniStruDistanceKmedoids()
     }
     for (unsigned  int i=0 ; i<tempGroup.size(); i++)tempGroup[i].clear(); //clear all the eixsted group members
     tempGroup.clear();
+    std::vector<int> vecRandHead;
+    while(vecRandHead.size() < maxChNum) {
+      int randIdx = rand()%totalNodes;
+      if (std::find(vecRandHead.begin(), vecRandHead.end(), randIdx) == vecRandHead.end()) {
+        vecRandHead.push_back(randIdx);
+      }
+    }
 
     for (int i=0; i<maxChNum; i++)
     {
       std::vector <int> tempV;
       tempGroup.push_back(tempV);
-      tempHeadX[i] = nodes[6*i+retryTimes].locX;
-      tempHeadY[i] = nodes[6*i+retryTimes].locY;
-      tempHeadList[i]= nodes[6*i+retryTimes].nodeIndex;
+      tempHeadX[i] = nodes[i+retryTimes].locX;
+      tempHeadY[i] = nodes[i+retryTimes].locY;
+      tempHeadList[i]= nodes[i+retryTimes].nodeIndex;
     }
     while(!convergedFlag) // This loop want to find a new K-means coordinate
     {
@@ -962,8 +969,8 @@ void MinPowerImageCluster::GetNeighbor1( const int iterSA)
     else
     {
       //decideAdd3i_DC_HeadDetMemRan();
-      //decideAddRandSelectCluster();
-      decideAddClosetAddableNode();
+      decideAddRandSelectCluster();
+      //decideAddClosetAddableNode();
       if(targetHeadIndex!=-1&&targetNode!=-1){
         addMemberSA(targetHeadIndex,targetNode);
       }
@@ -973,8 +980,8 @@ void MinPowerImageCluster::GetNeighbor1( const int iterSA)
   }
   else if (nextEventFlag ==2)
   {
-    decideDiscard3b();
-    //decideDiscard3o();
+    //decideDiscard3b();
+    decideDiscard3o();
     discardMemberSA(targetHeadIndex,targetNode);
     nextChNum=curChNum;
   }
@@ -1110,7 +1117,7 @@ MinPowerImageCluster::GetPayOff(
   }
   cout << endl;
 #endif
-  return OptimalRateControl()+GetSizePenalty(sizePenalty)  +GetEntropyPenalty(entropyPenalty);
+  return OptimalRateControl()+GetSizePenalty(sizePenalty)  +GetTier2Penalty(tier2Penalty) + GetEntropyPenalty(entropyPenalty);
 }
 
 
@@ -1615,7 +1622,7 @@ MinPowerImageCluster::GetTier2ExpectPower(const int Name, const int chName)
 {
   double denomiator = m_ptrMap->GetNoise();
   double Gamma = 1.0;
-  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy()/m_tier1TxTime/m_ptrMap->GetBandwidth()) - 1.0);  
+  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy(Name)/m_tier1TxTime/m_ptrMap->GetBandwidth()) - 1.0);  
   list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
   for (int chIdx = 0; iterRow !=cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
     list<int>::const_iterator iterCol = iterRow->begin();
@@ -2082,7 +2089,7 @@ bool MinPowerImageCluster::checkBestClusterStructure_DataCentric(int inputRound)
 {
 //    bool curAllServe = (curJEntropy>fidelityRatio*wholeSystemEntopy?true:false);
   /* new constraint */
-  bool curAllServe = ((curJEntropy >= fidelityRatio*wholeSystemEntopy?true:false) ); 
+  bool curAllServe = ((curJEntropy >= fidelityRatio*wholeSystemEntopy?true:false) ) && CheckTier2Feasible() ; 
   bool sizeFeasible = true;
   for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
     if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {

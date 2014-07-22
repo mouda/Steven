@@ -1,4 +1,7 @@
 #include "minPowerImageCsFactory.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #define SA_INI_TEMP 3.0
 #define SA_FIN_TEMP 10e-6
 
@@ -23,6 +26,7 @@ MinPowerImageCsFactory::MinPowerImageCsFactory(Map const * const myMap,
   m_ptrImageSource(myImageSource)
 {
 
+  srand(time(NULL));
 }
 
 MinPowerImageCsFactory::~MinPowerImageCsFactory()
@@ -36,7 +40,7 @@ MinPowerImageCsFactory::~MinPowerImageCsFactory()
 ClusterStructure*
 MinPowerImageCsFactory::CreateClusterStructure()
 {
-  double SAIter = 2000;
+  double SAIter = 20000;
   double alpha = pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
   m_fid = fopen(m_mapFileName.c_str(), "r");
   if(m_fid == NULL) {

@@ -254,7 +254,7 @@ MinPowerImageMILP::get_bounds_info(Index n, Number* x_l, Number* x_u,
     for (int i_q = 0; i_q < m_numNodes; ++i_q) {
       int index_j = n_q * m_numNodes +  i_q; 
       if ( m_ptrCS->GetChIdxByName(i_q) >= 0 && m_ptrCS->GetChNameByName(i_q) != i_q ) {
-        x_l[index_j] = 0.000001;
+        x_l[index_j] = 10e-30;
         x_u[index_j] = DBL_MAX;
       }
       else {

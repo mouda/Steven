@@ -353,6 +353,7 @@ public:
   int                   m_tier2NumSlot;
   fstream               m_logFile; 
   bool                  m_logFlag;
+  std::vector<double>   m_vecSNR_require;
 
 };
 #endif

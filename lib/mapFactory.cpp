@@ -76,6 +76,7 @@ MapFactory::CreateMap(bool myImageFlag)
       vecIdtCodingBits.push_back(tmp*8);
     }
     m_ptrMap->SetIdtImageCodingBits(vecIdtCodingBits);
+    m_ptrMap->SetIdtImageFlag();
 
     myImageIdtFile.close();
   }

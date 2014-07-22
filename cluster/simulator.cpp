@@ -119,6 +119,7 @@ Simulator::VecToString( const vector<T>& vec)
 void
 Simulator::WriteWorseCaseTier2Power( const string& fileName, 
     const double TxTimePerSlot, 
+    const double TxTimeNumSlot,
     const double maxPower) 
 {
   std::list<list<int> >::const_iterator iterRow = m_ptrCS->GetListCluMemeber().begin();
@@ -131,9 +132,12 @@ Simulator::WriteWorseCaseTier2Power( const string& fileName,
   }
 
   std::vector<double> myVecPower(m_ptrMap->GetNumNodes());
-  ImagePowerUpdater myImagePowerUpdater(m_ptrMap, m_ptrCS,  TxTimePerSlot);
+  ImagePowerUpdater myImagePowerUpdater(m_ptrMap, m_ptrCS,  TxTimePerSlot, TxTimeNumSlot);
   myImagePowerUpdater.Solve(myVecPower, vecSolution);
-  double totalPower = std::accumulate(myVecPower.begin(), myVecPower.end(), 0.0);
+  double totalPower = std::accumulate(myVecPower.begin(), myVecPower.end(), 10e-30);
+  for (int i = 0; i < myVecPower.size(); ++i) {
+    cout << myVecPower.at(i) << endl;
+  }
   cout << totalPower << endl;
   return;
 }
