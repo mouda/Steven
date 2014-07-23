@@ -14,6 +14,7 @@ path = {'data/CS_baseline_90000.0_1.out'};
 
 strtitle2={'SA'};
 mapString = ['../../runSimulation/runTest/testImageClustering/paper720_30cam_pos.txt'];
+vecDirection = dlmread('direction.out');
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
 for ii=1:length(path)
@@ -67,6 +68,12 @@ for i=1:maxChNum
      Y(1) = y(headName(i));
      X(2) = x(j)
      Y(2) = y(j)
+     theta = vecDirection(j)+pi;
+     r = 30;
+     u = x(j) + r * cos(theta); % convert polar (theta,r) to cartesian
+     v = y(j) + r * sin(theta);
+     
+     arrow([x(j) y(j)],[u v],'BaseAngle',30);
      hLine = plot(X,Y,'k:','Color',[0.001 0.001 0.001],'LineWidth',1);
      set(get(get(hLine,'Annotation'),'LegendInformation'),...
     'IconDisplayStyle','off');
@@ -107,17 +114,17 @@ for i=1:maxChNum
     end
   end
 end
-plot(x(index_unsupset),y(index_unsupset),'LineWidth',3,'MarkerFaceColor',[0.2 1 0],'MarkerEdgeColor',[0 0 0],...
+aa = plot(x(index_unsupset),y(index_unsupset),'LineWidth',3,'MarkerFaceColor',[0.2 1 0],'MarkerEdgeColor',[0 0 0],...
     'MarkerSize',10,...
     'Marker','X',...
     'LineStyle','none', 'DisplayName','Unselected Machine');
-plot(x(supSet),y(supSet),'MarkerFaceColor',[0 0 1],'MarkerEdgeColor',[0 0 1],'Marker','o',...
+bb = plot(x(supSet),y(supSet),'MarkerFaceColor',[0 0 1],'MarkerEdgeColor',[0 0 1],'Marker','o',...
    'LineStyle','none', 'MarkerSize', 5, 'DisplayName','Member');
-plot(x(headList(find(headList>0))),y(headList(find(headList>0))),'MarkerFaceColor',[0.3 1 0.3],'MarkerEdgeColor',[0.3 0.3 0.3],'Marker','s',...
+cc = plot(x(headList(find(headList>0))),y(headList(find(headList>0))),'MarkerFaceColor',[0.3 1 0.3],'MarkerEdgeColor',[0.3 0.3 0.3],'Marker','s',...
    'LineStyle','none','MarkerSize',7, 'DisplayName','Head');
 
 %plot node topology
-plot(0,0,'^','MarkerSize',10,'MarkerFaceColor','r','MarkerEdgeColor','k','DisplayName','BS','LineStyle','none');%Base Station
+dd = plot(0,0,'^','MarkerSize',10,'MarkerFaceColor','r','MarkerEdgeColor','k','DisplayName','BS','LineStyle','none');%Base Station
 
 
 
@@ -145,6 +152,12 @@ set(gca,'YTickLabel',['']);
 % xlabel({'x-axis(m)'});
 % ylabel('y-axis(m)');
 hold off;
-legend('show','Orientation','horizontal');
+legend('show','Orientation','horizontal');legend([aa bb cc dd]);
+legend1 = legend('show');
+set(legend1,...
+    'Position',[0.60590909090909 0.314000000000001 0.164545454545455 0.1025]);
+
+
+
 end
 

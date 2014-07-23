@@ -68,7 +68,7 @@ for i=1:maxChNum
      Y(1) = y(headName(i));
      X(2) = x(j);
      Y(2) = y(j);
-     theta = vecDirection(j);
+     theta = vecDirection(j)+pi;
      r = 30;
      u = x(j) + r * cos(theta); % convert polar (theta,r) to cartesian
      v = y(j) + r * sin(theta);
@@ -159,6 +159,11 @@ set(gca,'YTickLabel',['']);
 % xlabel({'x-axis(m)'});
 % ylabel('y-axis(m)');
 hold off;
-legend('show','Orientation','horizontal'); legend([aa bb cc dd])
+legend('show','Orientation','horizontal'); legend([aa bb cc dd]);
+
+legend('show','Orientation','horizontal');legend([aa bb cc dd]);
+legend1 = legend('show');
+set(legend1,...
+    'Position',[0.60590909090909 0.314000000000001 0.164545454545455 0.1025]);
 end
 
