@@ -16,6 +16,7 @@ strtitle2={'SA'};
 mapString = ['../../runSimulation/runTest/testImageClustering/paper720_30cam_pos.txt'];
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
+vecDirection = dlmread('direction.out');
 for ii=1:length(path)
 % 
 hFig = figure(ii);
@@ -65,8 +66,14 @@ for i=1:maxChNum
   if clusterStru(i,j)==1
      X(1) = x(headName(i));
      Y(1) = y(headName(i));
-     X(2) = x(j)
-     Y(2) = y(j)
+     X(2) = x(j);
+     Y(2) = y(j);
+     theta = vecDirection(j);
+     r = 30;
+     u = x(j) + r * cos(theta); % convert polar (theta,r) to cartesian
+     v = y(j) + r * sin(theta);
+     
+     arrow([x(j) y(j)],[u v],'BaseAngle',30);
      hLine = plot(X,Y,'k:','Color',[0.001 0.001 0.001],'LineWidth',1);
      set(get(get(hLine,'Annotation'),'LegendInformation'),...
     'IconDisplayStyle','off');
@@ -107,21 +114,28 @@ for i=1:maxChNum
     end
   end
 end
-plot(x(index_unsupset),y(index_unsupset),'LineWidth',3,'MarkerFaceColor',[0.2 1 0],'MarkerEdgeColor',[0 0 0],...
+%arrow([1 2 ],[0 0],20,'BaseAngle',60);
+aa = plot(x(index_unsupset),y(index_unsupset),'LineWidth',3,'MarkerFaceColor',[0.2 1 0],'MarkerEdgeColor',[0 0 0],...
     'MarkerSize',10,...
     'Marker','X',...
     'LineStyle','none', 'DisplayName','Unselected Machine');
-plot(x(supSet),y(supSet),'MarkerFaceColor',[0 0 1],'MarkerEdgeColor',[0 0 1],'Marker','o',...
+bb = plot(x(supSet),y(supSet),'MarkerFaceColor',[0 0 1],'MarkerEdgeColor',[0 0 1],'Marker','o',...
    'LineStyle','none', 'MarkerSize', 5, 'DisplayName','Member');
-plot(x(headList(find(headList>0))),y(headList(find(headList>0))),'MarkerFaceColor',[0.3 1 0.3],'MarkerEdgeColor',[0.3 0.3 0.3],'Marker','s',...
+cc = plot(x(headList(find(headList>0))),y(headList(find(headList>0))),'MarkerFaceColor',[0.3 1 0.3],'MarkerEdgeColor',[0.3 0.3 0.3],'Marker','s',...
    'LineStyle','none','MarkerSize',7, 'DisplayName','Head');
 
 %plot node topology
-plot(0,0,'^','MarkerSize',10,'MarkerFaceColor','r','MarkerEdgeColor','k','DisplayName','BS','LineStyle','none');%Base Station
-
-
-
-
+dd = plot(0,0,'^','MarkerSize',10,'MarkerFaceColor','r','MarkerEdgeColor','k','DisplayName','BS','LineStyle','none');%Base Station
+%{
+theta = pi/9;
+r = 100; % magnitude (length) of arrow to plot
+x = -10; y = -10;
+u = r * cos(theta); % convert polar (theta,r) to cartesian
+v = r * sin(theta);
+h = quiver(x,y,u,v);
+arrow([x y], [u v])
+%set(gca, 'XLim', [1 10], 'YLim', [1 10]);
+%}
 
 %format
 axis([-(radius+10) (radius+10) -(radius+10) (radius+10)]);
@@ -145,6 +159,6 @@ set(gca,'YTickLabel',['']);
 % xlabel({'x-axis(m)'});
 % ylabel('y-axis(m)');
 hold off;
-legend('show','Orientation','horizontal');
+legend('show','Orientation','horizontal'); legend([aa bb cc dd])
 end
 
