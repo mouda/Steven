@@ -6,15 +6,53 @@ clear; close all;
 directAccessImagePower = 0.5809;
 clusterTier1Power = [0.0855807 9.628064e-02 1.100387e-01 1.283840e-01 1.540706e-01];
 clusterTier2Power = [0.00936631 0.000495054 0.000399608 0.00036397  0.000347194];
+totalNodes=24;
+N = 5;
+times = 100;
+totalTime = 100000.0;
+
+
+% tier1
+aryStrTier1Time = {'90000.0' '80000.0' '70000.0' '60000.0' '50000.0'};
+tier1Time = [90000.0 80000.0 70000.0 60000.0 50000.0];
+baselineClusterTier1Power = zeros(1,length(aryStrTier1Time));
+for i=1:length(aryStrTier1Time)
+    sumPower = 0;
+    countPower = 0;
+    for j=1:times
+    str = sprintf('data/CS_baseline_%s_%d.out',aryStrTier1Time{i},j);
+    [ maxChNum powerMax C2WT payoff SAFac TimeMs1st TimeMs2nd EnergyJ1st EnergyJ2nd clusterStru headList TxPower  ] = parse_Stru_v2 ...
+    (str,totalNodes);
+        sumPower = sumPower + payoff;
+        countPower = countPower + 1;
+    end
+    baselineClusterTier1Power(i) = sumPower/countPower;
+end
+
+% tier2
+baselineClusterTier2Power = zeros(1,length(aryStrTier1Time));
+for i=1:length(aryStrTier1Time)
+    tier2SlotTime = (totalTime - tier1Time(i))/N;
+    strTier2Time = sprintf('%d', int64(tier2SlotTime));
+    str = sprintf('data/ImageBaseline_%s.out',strTier2Time);
+    tmpAry = dlmread(str);
+    baselineClusterTier2Power(i) = mean(tmpAry(tmpAry<5));
+end
 
 totalVecPowerRatio = (clusterTier1Power+clusterTier2Power)/directAccessImagePower;
+totalVecBaselinePowerRatio = (baselineClusterTier1Power+baselineClusterTier2Power)/directAccessImagePower;
 xaxis = [90.0 80.0 70.0 60.0 50.0 ];
-str_CSA = sprintf('Total Power Ratio');
-plot(xaxis, totalVecPowerRatio, 'o-','LineWidth',2,'Color','b','DisplayName',str_CSA ); hold on;
+
+str_baseline = sprintf('Kmeans clustering algorithm');
+plot(xaxis, totalVecBaselinePowerRatio, 'x-.','LineWidth',2,'Color','b','DisplayName',str_baseline ); hold on;
+str_CSA = sprintf('Propoesd clustering algorithm');
+plot(xaxis, totalVecPowerRatio, 'o-','LineWidth',2,'Color','r','DisplayName',str_CSA ); hold on;
+
+
 %str_CSA = sprintf('Tier1 Power Saving Ratio');
 %plot(xaxis, totalVecPowerRatio, 'o-','LineWidth',2,'Color', 'b', 'DisplayName',str_CSA);
 xlabel('Tier 1 resource (s)');
-ylabel('Total Power ratio');
+ylabel('Power Consumption ratio');
 title('|S|=24, |H|=4, T+N*\tau = 100(s)');
 legend('show');
 grid on;

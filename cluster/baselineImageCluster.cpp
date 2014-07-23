@@ -1117,7 +1117,8 @@ BaselineImageCluster::GetPayOff(
   }
   cout << endl;
 #endif
-  return OptimalRateControl()+GetSizePenalty(sizePenalty)  +GetEntropyPenalty(entropyPenalty);
+//  return OptimalRateControl()+GetSizePenalty(sizePenalty)  +GetEntropyPenalty(entropyPenalty);
+  return OptimalRateControl();
 }
 
 
@@ -2097,6 +2098,7 @@ bool BaselineImageCluster::checkBestClusterStructure_DataCentric(int inputRound)
       sizeFeasible = false;
     }
   }
+  curAllServe = true; //allow the result
 //#ifdef DEBUG
   cout << "IterSA: " << inputRound << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {

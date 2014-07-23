@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
         mySimulator.WriteCS( CSFName );
 
         if (CSFormation == "ImageBaseline") {
-          mySimulator.WriteWorseCaseTier2Power("ImageBaselineTier2Power.out", txTimePerSlot , static_cast<double>(tier2NumSlot), powerMaxWatt); 
+          mySimulator.WriteWorseCaseTier2Power(CSFormation, txTimePerSlot , static_cast<double>(tier2NumSlot), powerMaxWatt); 
         }
       }
 

@@ -8,7 +8,7 @@ FileHandler::FileHandler(const std::string fileName)
 FileHandler::FileHandler(const std::string fileName, const std::string option)
 {
   if ( option == "app") {
-    m_file.open(fileName.c_str(), std::fstream::app );
+    m_file.open(fileName.c_str(), std::fstream::out | std::fstream::app );
   }
   else if ( option == "out") {
     m_file.open(fileName.c_str(), std::fstream::out );

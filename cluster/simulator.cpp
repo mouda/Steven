@@ -122,6 +122,9 @@ Simulator::WriteWorseCaseTier2Power( const string& fileName,
     const double TxTimeNumSlot,
     const double maxPower) 
 {
+  stringstream ss1;
+  ss1 << TxTimePerSlot;
+  FileHandler myFile(string("data/")+fileName+string("_")+ss1.str()+string(".out"), "app");
   std::list<list<int> >::const_iterator iterRow = m_ptrCS->GetListCluMemeber().begin();
   std::vector<int> vecSolution(m_ptrMap->GetNumNodes(), 0);
   for (; iterRow != m_ptrCS->GetListCluMemeber().end(); ++iterRow) {
@@ -135,10 +138,13 @@ Simulator::WriteWorseCaseTier2Power( const string& fileName,
   ImagePowerUpdater myImagePowerUpdater(m_ptrMap, m_ptrCS,  TxTimePerSlot, TxTimeNumSlot);
   myImagePowerUpdater.Solve(myVecPower, vecSolution);
   double totalPower = std::accumulate(myVecPower.begin(), myVecPower.end(), 10e-30);
-  for (int i = 0; i < myVecPower.size(); ++i) {
-    cout << myVecPower.at(i) << endl;
-  }
+//  for (int i = 0; i < myVecPower.size(); ++i) {
+//    cout << myVecPower.at(i) << endl;
+//  }
+  stringstream ss2;
+  ss2 << totalPower;
   cout << totalPower << endl;
+  myFile.WriteString(ss2.str());
   return;
 }
 
