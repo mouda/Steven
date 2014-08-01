@@ -13,7 +13,7 @@
 #include <armadillo>
 #include <iterator>
 
-#define PENALTYSIZE 10e-6
+#define PENALTYSIZE 10e-2 
 using namespace std;
 #include "minPowerSACluster.h"
 bool pairCompare(const std::pair<int,double>& lPair, const std::pair<int,double>& rPair)
@@ -965,7 +965,6 @@ void MinPowerSACluster::GetNeighbor1( const int iterSA)
     nextJEntropy = curJEntropy;
     nextSupNum = curSupNum;
     nextChNum=curChNum;
-
   }
   else if (nextEventFlag==4){
     JoiningHeadIndex=-1;
@@ -988,9 +987,8 @@ void MinPowerSACluster::GetNeighbor1( const int iterSA)
     nextSupNum = curSupNum;
   }
   else if ( nextEventFlag == 6) {
-    decideExchangeNode();
-    cout << "Exchane: " << targetNode << endl;
-
+    decideShift();
+    cout << ": " << targetNode << endl;
   }
   else
   {
@@ -1098,9 +1096,9 @@ MinPowerSACluster::GetPayOff(
  * to exchange the node randomly
  */
 void 
-MinPowerSACluster::decideExchangeNode()
+MinPowerSACluster::decideShift()
 {
-  decideDiscard3b();
+  decideDiscard3o();
 
 }
 
@@ -1207,7 +1205,10 @@ MinPowerSACluster::decideAddRandSelectCluster()
   targetNode = -1;
   list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
   int addableSize=0;
-  for(; itli1 != cSystem->listCluMember->end(); itli1++) if(itli1->size()> 1 && itli1->size() < m_tier2NumSlot + 1)addableSize++;
+  for(; itli1 != cSystem->listCluMember->end(); itli1++) {
+    list<int>::const_iterator iterCol = itli1->begin();
+    if(*iterCol >= 0 && itli1->size() < m_tier2NumSlot + 1) addableSize++;
+  }
 
   if (addableSize == 0) {
     return;
@@ -1218,8 +1219,10 @@ MinPowerSACluster::decideAddRandSelectCluster()
   assert(chooseCursor <= maxChNum && chooseCursor >=0 );
   itli1 = cSystem->listCluMember->begin();
   targetHeadIndex=0;
+  int chIdx =0;
   for(int i=0; i<chooseCursor; itli1++,targetHeadIndex++) {
-    if(itli1->size()> 1  && itli1->size() < m_tier2NumSlot + 1) ++i;
+    list<int>::const_iterator iterCol = itli1->begin();
+    if(*iterCol >=0  && itli1->size() < m_tier2NumSlot + 1){++i; ++chIdx;}
     if(i==chooseCursor)break;
   }
   double maxGain = -DBL_MAX;
@@ -2060,7 +2063,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
       sizeFeasible = false;
     }
   }
-#ifdef DEBUG
+//#ifdef DEBUG
   cout << "IterSA: " << inputRound << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
     cout << cSystem->vecClusterSize.at(i) << ' ';
@@ -2069,7 +2072,7 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
   cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
   cout << "min payoff: " << bestFeasiblePayoff << ", ";
   cout << "curr Payoff: " << m_curPayoff << endl;
-#endif
+//#endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)

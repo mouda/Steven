@@ -266,7 +266,7 @@ public:
   void ConfirmNeighbor1();
   void ConfirmNeighbor2(vector<double>&, vector<double>&, double&, const vector<double>&, const vector<double>&, const double& );
 
-  void decideExchangeNode();
+  void decideShift();
   void decideAddClosetAddableNode();
   void decideAdd3i_DC_HeadDetMemRan();
   void decideAddSmallestSize();
