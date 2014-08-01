@@ -1,1 +1,1 @@
-SUBDIRS = lib cluster schedule 
+SUBDIRS = lib cluster schedule image_cluster image_schedule

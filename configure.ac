@@ -57,5 +57,7 @@ AC_CHECK_FUNCS([floor mkdir pow socket sqrt])
 AC_CONFIG_FILES([Makefile
                  cluster/Makefile
 		 schedule/Makefile
+                 image_cluster/Makefile
+                 image_schedule/Makefile
 		 lib/Makefile])
 AC_OUTPUT
