@@ -90,6 +90,7 @@ public:
   double                    GetSizePenalty(const vector<double>& );  
   double                    GetTier2Penalty(const vector<double>& );
   double                    GetEntropyPenalty( const double );
+  int                       GetSupportNodes();
 
   /* For Integrate */
   const std::vector<int>&         GetVecHeadName() const { return vecHeadNameBest; }
@@ -266,7 +267,7 @@ public:
   void ConfirmNeighbor1();
   void ConfirmNeighbor2(vector<double>&, vector<double>&, double&, const vector<double>&, const vector<double>&, const double& );
 
-  void decideShift();
+  bool decideShift(int& targetChIdx, int& selectedChIdx, int& nodeName);
   void decideAddClosetAddableNode();
   void decideAdd3i_DC_HeadDetMemRan();
   void decideAddSmallestSize();
@@ -350,5 +351,10 @@ public:
   int                   m_tier2NumSlot;
   fstream               m_logFile; 
   bool                  m_logFlag;
+  bool                  m_headShiftFlag;
+  int                   m_lastAddNode;
+  int                   m_lastAddHeadChIdx;
+  int                   m_lastDiscardNode;
+  int                   m_lastDiscardChIdx;
 };
 #endif

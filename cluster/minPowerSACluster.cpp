@@ -772,9 +772,10 @@ bool MinPowerSACluster::startCool()
       cout<<"Congratulation All nodes are served"<<endl;
       break;
     }
+    curSupNum = GetSupportNodes();
     int tempche = (signed)cSystem->listUnSupport->size();
 
-    assert(( curSupNum + tempche) <= totalNodes);
+    assert(( curSupNum + tempche) == totalNodes);
     temparature*=alpha;
 
   }
@@ -877,8 +878,6 @@ void MinPowerSACluster::GetNeighbor1( const int iterSA)
     probAdd = ((curSupNum<(totalNodes)) ?20000 :0);
     probDiscard = ((curSupNum<(maxChNum+1)) ?0:20000);
   }
-//  int probAdd = 0;
-//  int probDiscard = 0;
   int probExchange = 0;
   bool checkRotateble=false;//check if there are rotatableSet;
   for(int i=0; i<maxChNum; i++) {
@@ -888,8 +887,6 @@ void MinPowerSACluster::GetNeighbor1( const int iterSA)
   }
   int probHeadRotate = ((checkRotateble) ?1000:0);//Don't do head rotate if there are only a few nodes
   //int probHeadRotate = 0;
-
-
 
   int tmpJoinCan=0;
   bool chkLessCluster=cSystem->returnIfClusterSmall(thresholdd,tmpJoinCan);
@@ -902,11 +899,11 @@ void MinPowerSACluster::GetNeighbor1( const int iterSA)
   else {
      probJoin = (chkLessCluster)?tmpJoinCan*1250:0;
   } 
-  //int probJoin = 0;
 
   //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
 
   int probIsoltae=((curChNum<maxChNum)?1250:0);
+  int probShift = 0;
   //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
   //int probIsoltae = 0;
 
@@ -915,7 +912,7 @@ void MinPowerSACluster::GetNeighbor1( const int iterSA)
   }
 
 //  int sumProb = probAdd + probDiscard + probExchange + probHeadRotate+probJoin+probIsoltae;
-  int sumProb = probAdd + probDiscard + probHeadRotate+probJoin+probIsoltae;
+  int sumProb = probAdd + probDiscard + probHeadRotate + probJoin + probIsoltae + probShift;
   int eventCursor= (int)((double)rand() / ((double)RAND_MAX + 1) * sumProb);
   nextEventFlag=-1;// this flag tell add or discard or Headrotate
 
@@ -927,7 +924,8 @@ void MinPowerSACluster::GetNeighbor1( const int iterSA)
   else if (eventCursor<(probAdd+probDiscard)) nextEventFlag=2;
   else if (eventCursor<(probAdd+probDiscard+probHeadRotate)) nextEventFlag=3;
   else if (eventCursor<(probAdd+probDiscard+probHeadRotate+probJoin)) nextEventFlag=4;
-  else if (eventCursor<sumProb)nextEventFlag=5;
+  else if (eventCursor<(probAdd+probDiscard+probHeadRotate+probJoin+probIsoltae))nextEventFlag=5;
+  else if (eventCursor<sumProb)nextEventFlag=6;
   else
   {
     cout<<"Failure in the random step"<<endl;
@@ -987,8 +985,27 @@ void MinPowerSACluster::GetNeighbor1( const int iterSA)
     nextSupNum = curSupNum;
   }
   else if ( nextEventFlag == 6) {
-    decideShift();
-    cout << ": " << targetNode << endl;
+    int targetChIdx = -1 ;
+    int selectedChIdx = -1;
+    int nodeName = -1;
+    bool headShiftFlag = decideShift(targetChIdx, selectedChIdx, nodeName);
+    cout << "****************" << targetChIdx << endl;
+    cout << "****************" << selectedChIdx << endl;
+    cout << "****************" << nodeName << endl;
+    if (headShiftFlag) {
+      m_headShiftFlag = headShiftFlag;
+      targetHeadIndex = targetChIdx;
+      join_fromHeadSA(selectedChIdx, targetChIdx);
+    }
+    else {
+      m_headShiftFlag = headShiftFlag;
+      m_lastAddNode = nodeName;
+      m_lastAddHeadChIdx = targetChIdx;
+      m_lastDiscardNode = nodeName;
+      m_lastDiscardChIdx = selectedChIdx;
+      discardMemberSA(selectedChIdx,nodeName);
+      addMemberSA(targetChIdx, nodeName);
+    }
   }
   else
   {
@@ -1095,11 +1112,69 @@ MinPowerSACluster::GetPayOff(
 /*
  * to exchange the node randomly
  */
-void 
-MinPowerSACluster::decideShift()
+bool
+MinPowerSACluster::decideShift( int& targetChIdx, int& selectedChIdx, int& nodeName)
 {
+  bool headShiftFlag = false;
   decideDiscard3o();
+  //Compute the discardable size
+  list<list<int> >::iterator iterRow = cSystem->listCluMember->begin();
+  int discardableSize=0;
+  for(; iterRow!=cSystem->listCluMember->end(); iterRow++)
+    if(*(iterRow->begin()) > 0 ) discardableSize++;
+  assert(discardableSize != 0);
+  //Randomly choose a cluster
+  iterRow = cSystem->listCluMember->begin();
+  targetHeadIndex = -1;
+  int chooseCursor = (int) ((double)rand() / ((double)RAND_MAX + 1) * discardableSize)+1;//+1 Becasue the intial might
+  assert(chooseCursor <= maxChNum && chooseCursor >= 0 );
+  iterRow = cSystem->listCluMember->begin();
+  targetHeadIndex = 0;
+  for(int i=0; i<chooseCursor; iterRow++,targetHeadIndex++) {
+    if(*(iterRow->begin()) > 0 )i++;
+    if(i==chooseCursor)break;
+  }
 
+  assert(cSystem->vecClusterSize[targetHeadIndex]==iterRow->size());
+  if (cSystem->vecClusterSize.at(targetHeadIndex) == 1) { 
+    /* if the cluster size equal to 1, shift cluster head*/
+    headShiftFlag = true;
+    targetNode = cSystem->vecHeadName.at(targetHeadIndex);
+  }
+  else {
+    /* if the cluster size not equal to 1, shift cluster member */
+    double minGain = DBL_MAX;
+    double tempInter = 0;
+    int    minGainName = -1;
+    list<int>::iterator iterCol=iterRow->begin();
+    for(; iterCol!=iterRow->end(); iterCol++) {
+      tempInter = 0;
+      if(cSystem->vecHeadName[targetHeadIndex]==(*iterCol))continue;
+      else {
+        if( m_ptrMap->GetGijByPair(cSystem->vecHeadName[targetHeadIndex], (*iterCol) ) < minGain) {
+          minGain = m_ptrMap->GetGijByPair(cSystem->vecHeadName[targetHeadIndex], (*iterCol) ) ;
+          minGainName = (*iterCol);
+        }
+      }
+    }
+    assert(minGainName!=-1);
+    targetNode = minGainName;
+  }
+
+  selectedChIdx = targetHeadIndex;
+  nodeName = targetNode;
+  int chIdx = 0;
+  double maxGain = -DBL_MAX;
+  int maxGainChIdx = -1;
+  for (int i = 0; i < maxChNum; ++i) {
+    if (i != targetHeadIndex && cSystem->vecHeadName.at(i) >= 0 
+        && m_ptrMap->GetGijByPair(cSystem->vecHeadName.at(i),targetNode) > maxGain){
+      maxGainChIdx = i;
+      maxGain =  m_ptrMap->GetGijByPair(cSystem->vecHeadName.at(i),targetNode);
+    } 
+  }
+  targetChIdx = maxGainChIdx;
+  return headShiftFlag;
 }
 
 /*
@@ -1207,7 +1282,7 @@ MinPowerSACluster::decideAddRandSelectCluster()
   int addableSize=0;
   for(; itli1 != cSystem->listCluMember->end(); itli1++) {
     list<int>::const_iterator iterCol = itli1->begin();
-    if(*iterCol >= 0 && itli1->size() < m_tier2NumSlot + 1) addableSize++;
+    if(*iterCol >= 0 ) addableSize++;
   }
 
   if (addableSize == 0) {
@@ -1222,7 +1297,7 @@ MinPowerSACluster::decideAddRandSelectCluster()
   int chIdx =0;
   for(int i=0; i<chooseCursor; itli1++,targetHeadIndex++) {
     list<int>::const_iterator iterCol = itli1->begin();
-    if(*iterCol >=0  && itli1->size() < m_tier2NumSlot + 1){++i; ++chIdx;}
+    if(*iterCol >=0  ){++i; ++chIdx;}
     if(i==chooseCursor)break;
   }
   double maxGain = -DBL_MAX;
@@ -1462,7 +1537,7 @@ MinPowerSACluster::decideHeadJoining4b(){
     for (int i = 0; i < maxChNum; ++i) {
       for (int j = 0; j < maxChNum; ++j) {
         if ( (i != j) &&
-              ( cSystem->vecClusterSize.at(i) > 0) &&
+              ( cSystem->vecClusterSize.at(i) == 1) &&
               ( cSystem->vecClusterSize.at(j) > 0) &&
               ( cSystem->vecClusterSize.at(i) + cSystem->vecClusterSize.at(j) <= m_tier2NumSlot + 1) 
               ) {
@@ -1636,7 +1711,7 @@ MinPowerSACluster::GetSizePenalty( const vector<double>& sizePenalty)
     if (cSystem->vecClusterSize.at(k) != 0
         && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
       tmpSizePenalty += sizePenalty.at(k) *
-        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
+        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,1); 
     }
   }
   return tmpSizePenalty;
@@ -1670,6 +1745,20 @@ MinPowerSACluster::GetEntropyPenalty(const double entropyPenalty)
   else {
     return entropyPenalty * (fidelityRatio*wholeSystemEntopy - tmpJEntropy);
   }
+}
+
+int
+MinPowerSACluster::GetSupportNodes()
+{
+  int support = 0;
+  std::list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();
+  for (;iterRow != cSystem->listCluMember->end(); ++iterRow) {
+    std::list<int>::const_iterator  iterCol = iterRow->begin();
+    if (*iterCol >= 0 ) {
+      support += iterRow->size();
+    }
+  }
+  return support;
 }
 
 // -------------------------------------------------------------------------- //
@@ -1829,6 +1918,10 @@ void MinPowerSACluster::calculateMatrics_minResors(//Calculate next performance 
     //cout<<"Original Head="<<rotatedHeadNameLast<<endl;
 
   }
+  else if (nextEventFlag==6)
+  {
+
+  }
   else
   {
     cout<<"Error in calculateMatrics_minResors "<<endl;
@@ -1874,7 +1967,7 @@ void MinPowerSACluster::ConfirmNeighbor1()
     passNext2Cur();
     for(int i=0; i<totalNodes; i++)
       nodes[i].power = nextNodePower[i];
-    if( nextEventFlag == 1 || nextEventFlag == 2 )
+    if( nextEventFlag == 1 || nextEventFlag == 2 || nextEventFlag == 6)
       confirmStructureChange();
   }
   else if( 
@@ -1893,7 +1986,7 @@ void MinPowerSACluster::ConfirmNeighbor1()
       passNext2Cur();
       for(int i=0; i<totalNodes; i++)
         nodes[i].power = nextNodePower[i];
-      if(nextEventFlag==1||nextEventFlag==2)
+      if(nextEventFlag==1||nextEventFlag==2 || nextEventFlag == 6)
         confirmStructureChange();
     }
   }
@@ -1914,7 +2007,7 @@ MinPowerSACluster::ConfirmNeighbor2(
   double tmpPayoff = GetPayOff(tmpSizePenalty, tmpTier2Penalty, tmpEntropyPenalty);
 
   if (tmpPayoff < m_curPayoff) {
-    double probAnnealing = exp (-15.0*abs(tmpPayoff-m_curPayoff)/temparature);
+    double probAnnealing = exp (1.0*abs(tmpPayoff-m_curPayoff)/temparature);
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
     if ( annealingChoose < probAnnealing ) {//accept the move
       sizePenalty.assign(tmpSizePenalty.begin(), tmpSizePenalty.end());
@@ -2028,6 +2121,22 @@ void MinPowerSACluster::reverseMoveSA()
         nodes[lastIsolateNodeName].ptrHead=&cSystem->vecHeadName[lastIsolatedClusterIndex];
         --nextChNum ;
     }
+    else if(nextEventFlag == 6){
+      if (m_headShiftFlag) {
+        cSystem->reverseJoin(lastJoiningHeadIndex,lastJoiningHead,targetHeadIndex,lastJoingingMachine);
+        for(unsigned int i;i<lastJoingingMachine.size();i++){
+            nodes[lastJoingingMachine[i]].ptrHead=&cSystem->vecHeadName[lastJoiningHeadIndex];
+        }
+        lastJoingingMachine.clear();
+        --nextChNum = curChNum ;
+      }
+      else {
+        discardMemberSA(m_lastAddHeadChIdx, m_lastAddNode);
+        addMemberSA(m_lastAddHeadChIdx, m_lastDiscardNode);
+
+      }
+
+    }
     else cout<<"Error next flag ="<<nextEventFlag<<"wrong"<<endl;
 }
 
@@ -2057,8 +2166,8 @@ bool MinPowerSACluster::checkBestClusterStructure_DataCentric(int inputRound)
   /* new constraint */
   bool curAllServe = ((curJEntropy >= fidelityRatio*wholeSystemEntopy?true:false) && CheckTier2Feasible()); 
   bool sizeFeasible = true;
-  for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
-    if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
+  for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
+    if ( m_prevVecHeadName.at(i) && cSystem->vecClusterSize.at(i) > m_tier2NumSlot + 1) {
       curAllServe = false;
       sizeFeasible = false;
     }
