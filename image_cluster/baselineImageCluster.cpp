@@ -32,7 +32,7 @@ BaselineImageCluster::BaselineImageCluster(
     double InputSaAlpha, 
     double inCorrelationFactor, 
     std::string ipAddr, 
-    Map const * const myPtrMap,
+    ImageMap const * const myPtrMap,
     ImageSource const * const myPtrGField,
     double tier1TxTime, 
     int tier2NumSlot,

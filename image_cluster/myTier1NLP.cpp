@@ -17,7 +17,7 @@
 using namespace Ipopt;
 
 MyTier1NLP::MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
-    Map const * const ptrMap,
+    ImageMap const * const ptrMap,
     ULCS1b const * const cSystem,  
     CORRE_MA_OPE const * const ptrGField,  
     double tier1TxTime
@@ -62,7 +62,7 @@ MyTier1NLP::MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
 }
 
 MyTier1NLP::MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
-    Map const * const ptrMap,
+    ImageMap const * const ptrMap,
     ULCS1b const * const cSystem,  
     ImageSource const * const myImageSource,  
     double tier1TxTime

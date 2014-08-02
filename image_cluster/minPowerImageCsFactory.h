@@ -2,15 +2,15 @@
 #define _MINPOWERIMAGECSFACTORY_
 
 #include <iostream>
-#include "csFactory.h"
+#include "imageCsFactory.h"
 #include "imageSource.h"
 #include "minPowerImageCluster.h"
 
-class MinPowerImageCsFactory: public CsFactory
+class MinPowerImageCsFactory: public ImageCsFactory
 {
   public:
-    MinPowerImageCsFactory(Map const * const, CORRE_MA_OPE const * const );
-    MinPowerImageCsFactory(Map const * const , ImageSource const * const );
+    MinPowerImageCsFactory(ImageMap const * const, CORRE_MA_OPE const * const );
+    MinPowerImageCsFactory(ImageMap const * const , ImageSource const * const );
     ~MinPowerImageCsFactory();
     void                    SetMapFileName(const std::string& fileName){ m_mapFileName = fileName;}
     void                    SetCompressionRatio( const double compressionRatio){ m_compressionRatio = compressionRatio;}

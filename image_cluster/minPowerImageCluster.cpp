@@ -13,7 +13,7 @@
 #include <armadillo>
 #include <iterator>
 
-#define PENALTYSIZE 1 
+#define PENALTYSIZE 10e-3 
 using namespace std;
 #include "minPowerImageCluster.h"
 bool pairCompare(const std::pair<int,double>& lPair, const std::pair<int,double>& rPair)
@@ -32,7 +32,7 @@ MinPowerImageCluster::MinPowerImageCluster(
     double InputSaAlpha, 
     double inCorrelationFactor, 
     std::string ipAddr, 
-    Map const * const myPtrMap,
+    ImageMap const * const myPtrMap,
     ImageSource const * const myPtrGField,
     double tier1TxTime, 
     int tier2NumSlot,
@@ -740,9 +740,9 @@ bool MinPowerImageCluster::startCool()
 
   m_cur1st_watt   = OptimalRateControl();
 
-  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 100.0);
+  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 1.0);
   vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 1.0);
-  double          entropyPenalty = 100.0;
+  double          entropyPenalty = 1.0;
   vector<double>  tmpSizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
   vector<double>  tmpTier2Penalty(m_ptrMap->GetNumNodes(), 10.0);
   double          tmpEntropyPenalty = 10.0;
@@ -1668,7 +1668,7 @@ MinPowerImageCluster::GetSizePenalty( const vector<double>& sizePenalty)
     if (cSystem->vecClusterSize.at(k) != 0
         && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
       tmpSizePenalty += sizePenalty.at(k) *
-        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,6); 
+        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,1); 
     }
   }
   return tmpSizePenalty;
@@ -2091,8 +2091,8 @@ bool MinPowerImageCluster::checkBestClusterStructure_DataCentric(int inputRound)
   /* new constraint */
   bool curAllServe = ((curJEntropy >= fidelityRatio*wholeSystemEntopy?true:false) ) && CheckTier2Feasible() ; 
   bool sizeFeasible = true;
-  for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
-    if ( m_prevVecHeadName.at(i) && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
+  for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
+    if ( cSystem->vecHeadName.at(i) && cSystem->vecClusterSize.at(i) > m_tier2NumSlot + 1) {
       curAllServe = false;
       sizeFeasible = false;
     }

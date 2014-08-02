@@ -6,10 +6,10 @@
 #include <cstdlib>
 #include <boost/program_options.hpp>
 
-#include "map.h"
-#include "mapFactory.h"
+#include "imageMap.h"
+#include "imageMapFactory.h"
 #include "clusterStructure.h"
-#include "csFactory.h"
+#include "imageCsFactory.h"
 #include "minPowerImageCsFactory.h"
 #include "baselineImageCsFactory.h"
 #include "simulator.h"
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
       ("bandwidth,b",             po::value<double>(),  "Bandwidth (kHz) ")
       ("power,p",                 po::value<double>(),  "Maximum Power (dbm) ")
       ("quantization,q",          po::value<double>(),  "Bits of quantization")
-      ("map,m",                   po::value<string>(),  "Map file name")
+      ("map,m",                   po::value<string>(),  "ImageMap file name")
       ("nodes,n",                 po::value<int>(),     "Initial number of nodes")
       ("heads,H",                 po::value<int>(),     "Initial number of heads")
       ("txTime,t",                po::value<double>(),  "Transmission time per slot (ms) ")
@@ -63,7 +63,6 @@ int main(int argc, char *argv[])
       ("fidelity,f",              po::value<double>(),  "Fidelity ratio")
       ("iteration,i",             po::value<int>(),     "Number of iteration Simulate Annealing")
       ("spatialCorrelation,c",    po::value<double>(),  "Spatial Correlation level")
-      ("temporalCorrelation,T",   po::value<double>(),  "Temproal Correlation factor")
       ("tier2NumSlot,N",          po::value<int>(),     "Number of tier-2 slots")
       ("ClusterStructureOutput,C",po::value<string>(),  "Cluster structure output file name")
       ("WeightedMatrix,W",        po::value<string>(),  "Matrix form of Weght matrix")
@@ -76,7 +75,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 14  || vm.size() == 15 ) {
+    } else if(vm.size() == 13  || vm.size() == 14 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -85,7 +84,6 @@ int main(int argc, char *argv[])
       bandwidthKhz =            vm["bandwidth"].as<double>();
       txTimePerSlot =           vm["txTime"].as<double>();
       spatialCompressionRatio = vm["spatialCorrelation"].as<double>();
-      temporalCorrFactor =      vm["temporalCorrelation"].as<double>();
       fidelityRatio =           vm["fidelity"].as<double>();
       mapFileName =             vm["map"].as<string>();
       tier2NumSlot   =          vm["tier2NumSlot"].as<int>();
@@ -99,7 +97,7 @@ int main(int argc, char *argv[])
 
       double powerMaxWatt = pow(10,(powerMaxDbm)/10) /1000;
 
-      MapFactory myMapFactory(
+      ImageMapFactory myMapFactory(
           mapFileName, 
           powerMaxWatt, 
           spatialCompressionRatio, 
@@ -110,7 +108,7 @@ int main(int argc, char *argv[])
           totalNodes
           );
 
-      Map* myMap = 0;
+      ImageMap* myMap = 0;
       CORRE_MA_OPE* myMatComputer  = 0;
       ImageSource*  myImageSource = 0;
 
@@ -130,7 +128,7 @@ int main(int argc, char *argv[])
         return 1;
       }
       ClusterStructure* myCS = 0;
-      CsFactory* myCsFactory = 0;
+      ImageCsFactory* myCsFactory = 0;
       
       if (vm.count("ClusterStructureOutput")) {
         if (CSFormation == "ImageSource") {

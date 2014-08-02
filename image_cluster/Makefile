@@ -106,7 +106,8 @@ genCluster_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	../lib/libimageSource.la ../lib/libULAGENT.la \
 	../lib/libsimSystem.la ../lib/libtimesearch.la \
 	../lib/libTimeStamp.la ../lib/libULConstraintSolver.la \
-	../lib/libPowerUpdater.la ../lib/libImagePowerUpdater.la \
+	../lib/libPowerUpdater.la ../lib/libimageMapFactory.la \
+	../lib/libnewImagePowerUpdater.la ../lib/libimageCsFactory.la \
 	../lib/libULCS1b.la
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -401,7 +402,9 @@ genCluster_LDADD = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) ../lib/libfileHandler.la \
 		  ../lib/libTimeStamp.la \
 		  ../lib/libULConstraintSolver.la\
 		  ../lib/libPowerUpdater.la\
-		  ../lib/libImagePowerUpdater.la\
+		  ../lib/libimageMapFactory.la\
+		  ../lib/libnewImagePowerUpdater.la\
+		  ../lib/libimageCsFactory.la\
 		  ../lib/libULCS1b.la
 
 all: all-am

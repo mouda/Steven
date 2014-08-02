@@ -19,7 +19,7 @@ MinPowerMILP::MinPowerMILP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
     const int tier2NumSlot,
     const double bandwidthKhz,    
     const ClusterStructure* ptrCS,
-    const Map* ptrMap):
+    const ImageMap* ptrMap):
   m_txTimePerSlot(tau), 
   m_tier2NumSlot(tier2NumSlot),
   m_bandwidthKhz(bandwidthKhz),

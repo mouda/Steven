@@ -714,8 +714,8 @@ main.o: main.cpp /usr/include/stdc-predef.h \
  /opt/boost1550/include/boost/program_options/detail/parsers.hpp \
  /opt/boost1550/include/boost/program_options/detail/convert.hpp \
  /opt/boost1550/include/boost/program_options/variables_map.hpp \
- /opt/boost1550/include/boost/program_options/version.hpp ../lib/map.h \
- /usr/include/c++/4.8/fstream \
+ /opt/boost1550/include/boost/program_options/version.hpp \
+ ../lib/imageMap.h /usr/include/c++/4.8/fstream \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++io.h \
  /usr/include/c++/4.8/bits/fstream.tcc ../lib/simSystem.h \
@@ -964,10 +964,10 @@ main.o: main.cpp /usr/include/stdc-predef.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Determinant.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h \
- ../lib/mapFactory.h ../lib/map.h ../lib/imageSource.h \
+ ../lib/imageMapFactory.h ../lib/imageMap.h ../lib/imageSource.h \
  ../lib/clusterStructure.h /usr/include/c++/4.8/list \
  /usr/include/c++/4.8/bits/stl_list.h /usr/include/c++/4.8/bits/list.tcc \
- ../lib/csFactory.h /opt/armadillo40002/include/armadillo \
+ ../lib/imageCsFactory.h /opt/armadillo40002/include/armadillo \
  /usr/include/x86_64-linux-gnu/sys/time.h \
  /opt/armadillo40002/include/armadillo_bits/config.hpp \
  /opt/armadillo40002/include/armadillo_bits/compiler_setup.hpp \
@@ -2917,7 +2917,7 @@ main.o: main.cpp /usr/include/stdc-predef.h \
 
 /opt/boost1550/include/boost/program_options/version.hpp:
 
-../lib/map.h:
+../lib/imageMap.h:
 
 /usr/include/c++/4.8/fstream:
 
@@ -3429,9 +3429,9 @@ main.o: main.cpp /usr/include/stdc-predef.h \
 
 /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h:
 
-../lib/mapFactory.h:
+../lib/imageMapFactory.h:
 
-../lib/map.h:
+../lib/imageMap.h:
 
 ../lib/imageSource.h:
 
@@ -3443,7 +3443,7 @@ main.o: main.cpp /usr/include/stdc-predef.h \
 
 /usr/include/c++/4.8/bits/list.tcc:
 
-../lib/csFactory.h:
+../lib/imageCsFactory.h:
 
 /opt/armadillo40002/include/armadillo:
 

@@ -151,12 +151,24 @@ libcsFactory_la_OBJECTS = $(am_libcsFactory_la_OBJECTS)
 libfileHandler_la_DEPENDENCIES =
 am_libfileHandler_la_OBJECTS = fileHandler.lo
 libfileHandler_la_OBJECTS = $(am_libfileHandler_la_OBJECTS)
+libimageCsFactory_la_DEPENDENCIES =
+am_libimageCsFactory_la_OBJECTS = clusterStructure.lo \
+	imageCsFactory.lo
+libimageCsFactory_la_OBJECTS = $(am_libimageCsFactory_la_OBJECTS)
+libimageMapFactory_la_DEPENDENCIES =
+am_libimageMapFactory_la_OBJECTS = imageMap.lo imageMapFactory.lo \
+	utility.lo
+libimageMapFactory_la_OBJECTS = $(am_libimageMapFactory_la_OBJECTS)
 libimageSource_la_DEPENDENCIES =
 am_libimageSource_la_OBJECTS = imageSource.lo
 libimageSource_la_OBJECTS = $(am_libimageSource_la_OBJECTS)
 libmapFactory_la_DEPENDENCIES =
 am_libmapFactory_la_OBJECTS = map.lo mapFactory.lo utility.lo
 libmapFactory_la_OBJECTS = $(am_libmapFactory_la_OBJECTS)
+libnewImagePowerUpdater_la_DEPENDENCIES =
+am_libnewImagePowerUpdater_la_OBJECTS = newImagePowerUpdater.lo
+libnewImagePowerUpdater_la_OBJECTS =  \
+	$(am_libnewImagePowerUpdater_la_OBJECTS)
 libsimSystem_la_DEPENDENCIES =
 am_libsimSystem_la_OBJECTS = simSystem.lo
 libsimSystem_la_OBJECTS = $(am_libsimSystem_la_OBJECTS)
@@ -223,17 +235,23 @@ SOURCES = $(libCORRE_MA_OPE_la_SOURCES) \
 	$(libPowerUpdater_la_SOURCES) $(libTimeStamp_la_SOURCES) \
 	$(libULAGENT_la_SOURCES) $(libULCS1b_la_SOURCES) \
 	$(libULConstraintSolver_la_SOURCES) $(libcsFactory_la_SOURCES) \
-	$(libfileHandler_la_SOURCES) $(libimageSource_la_SOURCES) \
-	$(libmapFactory_la_SOURCES) $(libsimSystem_la_SOURCES) \
-	$(libtimesearch_la_SOURCES) $(libutility_la_SOURCES)
+	$(libfileHandler_la_SOURCES) $(libimageCsFactory_la_SOURCES) \
+	$(libimageMapFactory_la_SOURCES) $(libimageSource_la_SOURCES) \
+	$(libmapFactory_la_SOURCES) \
+	$(libnewImagePowerUpdater_la_SOURCES) \
+	$(libsimSystem_la_SOURCES) $(libtimesearch_la_SOURCES) \
+	$(libutility_la_SOURCES)
 DIST_SOURCES = $(libCORRE_MA_OPE_la_SOURCES) \
 	$(libImagePowerUpdater_la_SOURCES) \
 	$(libPowerUpdater_la_SOURCES) $(libTimeStamp_la_SOURCES) \
 	$(libULAGENT_la_SOURCES) $(libULCS1b_la_SOURCES) \
 	$(libULConstraintSolver_la_SOURCES) $(libcsFactory_la_SOURCES) \
-	$(libfileHandler_la_SOURCES) $(libimageSource_la_SOURCES) \
-	$(libmapFactory_la_SOURCES) $(libsimSystem_la_SOURCES) \
-	$(libtimesearch_la_SOURCES) $(libutility_la_SOURCES)
+	$(libfileHandler_la_SOURCES) $(libimageCsFactory_la_SOURCES) \
+	$(libimageMapFactory_la_SOURCES) $(libimageSource_la_SOURCES) \
+	$(libmapFactory_la_SOURCES) \
+	$(libnewImagePowerUpdater_la_SOURCES) \
+	$(libsimSystem_la_SOURCES) $(libtimesearch_la_SOURCES) \
+	$(libutility_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -419,7 +437,9 @@ lib_LTLIBRARIES = libfileHandler.la \
 		  libutility.la \
 		  libimageSource.la\
 		  libmapFactory.la \
+		  libimageMapFactory.la\
 		  libcsFactory.la \
+		  libimageCsFactory.la\
 		  libCORRE_MA_OPE.la \
 		  libULAGENT.la \
 		  libsimSystem.la \
@@ -428,6 +448,7 @@ lib_LTLIBRARIES = libfileHandler.la \
 		  libULConstraintSolver.la\
 		  libPowerUpdater.la\
 		  libImagePowerUpdater.la\
+		  libnewImagePowerUpdater.la\
 		  libULCS1b.la
 
 INCLUDES = -I../lib
@@ -473,8 +494,12 @@ libsimSystem_la_SOURCES = simSystem.h simSystem.cpp
 libsimSystem_la_LIBADD = $(DEPS_LIBS)
 libmapFactory_la_SOURCES = map.h map.cpp mapFactory.h mapFactory.cpp utility.h utility.cpp
 libmapFactory_la_LIBADD = $(DEPS_LIBS)
+libimageMapFactory_la_SOURCES = imageMap.h imageMap.cpp imageMapFactory.h imageMapFactory.cpp utility.h utility.cpp
+libimageMapFactory_la_LIBADD = $(DEPS_LIBS)
 libcsFactory_la_SOURCES = clusterStructure.h clusterStructure.cpp csFactory.h csFactory.cpp
 libcsFactory_la_LIBADD = $(DEPS_LIBS)
+libimageCsFactory_la_SOURCES = clusterStructure.h clusterStructure.cpp imageCsFactory.h imageCsFactory.cpp
+libimageCsFactory_la_LIBADD = $(DEPS_LIBS) 
 libCORRE_MA_OPE_la_SOURCES = CORRE_MA_OPE.h CORRE_MA_OPE.cpp
 libCORRE_MA_OPE_la_LIBADD = $(DEPS_LIBS)
 libimageSource_la_SOURCES = imageSource.h imageSource.cpp
@@ -489,6 +514,8 @@ libPowerUpdater_la_SOURCES = powerUpdater.h powerUpdater.cpp
 libPowerUpdater_la_LIBADD = $(DEPS_LIBS)
 libImagePowerUpdater_la_SOURCES = imagePowerUpdater.h imagePowerUpdater.cpp
 libImagePowerUpdater_la_LIBADD = $(DEPS_LIBS)
+libnewImagePowerUpdater_la_SOURCES = newImagePowerUpdater.h newImagePowerUpdater.cpp
+libnewImagePowerUpdater_la_LIBADD = $(DEPS_LIBS)
 libULCS1b_la_SOURCES = ULCS1b.h ULCS1b.cpp
 libULCS1b_la_LIBADD = $(DEPS_LIBS)
 #AM_CFLAGS = -O2
@@ -592,11 +619,20 @@ libcsFactory.la: $(libcsFactory_la_OBJECTS) $(libcsFactory_la_DEPENDENCIES) $(EX
 libfileHandler.la: $(libfileHandler_la_OBJECTS) $(libfileHandler_la_DEPENDENCIES) $(EXTRA_libfileHandler_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libfileHandler_la_OBJECTS) $(libfileHandler_la_LIBADD) $(LIBS)
 
+libimageCsFactory.la: $(libimageCsFactory_la_OBJECTS) $(libimageCsFactory_la_DEPENDENCIES) $(EXTRA_libimageCsFactory_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libimageCsFactory_la_OBJECTS) $(libimageCsFactory_la_LIBADD) $(LIBS)
+
+libimageMapFactory.la: $(libimageMapFactory_la_OBJECTS) $(libimageMapFactory_la_DEPENDENCIES) $(EXTRA_libimageMapFactory_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libimageMapFactory_la_OBJECTS) $(libimageMapFactory_la_LIBADD) $(LIBS)
+
 libimageSource.la: $(libimageSource_la_OBJECTS) $(libimageSource_la_DEPENDENCIES) $(EXTRA_libimageSource_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libimageSource_la_OBJECTS) $(libimageSource_la_LIBADD) $(LIBS)
 
 libmapFactory.la: $(libmapFactory_la_OBJECTS) $(libmapFactory_la_DEPENDENCIES) $(EXTRA_libmapFactory_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libmapFactory_la_OBJECTS) $(libmapFactory_la_LIBADD) $(LIBS)
+
+libnewImagePowerUpdater.la: $(libnewImagePowerUpdater_la_OBJECTS) $(libnewImagePowerUpdater_la_DEPENDENCIES) $(EXTRA_libnewImagePowerUpdater_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libnewImagePowerUpdater_la_OBJECTS) $(libnewImagePowerUpdater_la_LIBADD) $(LIBS)
 
 libsimSystem.la: $(libsimSystem_la_OBJECTS) $(libsimSystem_la_DEPENDENCIES) $(EXTRA_libsimSystem_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) -rpath $(libdir) $(libsimSystem_la_OBJECTS) $(libsimSystem_la_LIBADD) $(LIBS)
@@ -621,10 +657,14 @@ include ./$(DEPDIR)/ULConstraintSolver.Plo
 include ./$(DEPDIR)/clusterStructure.Plo
 include ./$(DEPDIR)/csFactory.Plo
 include ./$(DEPDIR)/fileHandler.Plo
+include ./$(DEPDIR)/imageCsFactory.Plo
+include ./$(DEPDIR)/imageMap.Plo
+include ./$(DEPDIR)/imageMapFactory.Plo
 include ./$(DEPDIR)/imagePowerUpdater.Plo
 include ./$(DEPDIR)/imageSource.Plo
 include ./$(DEPDIR)/map.Plo
 include ./$(DEPDIR)/mapFactory.Plo
+include ./$(DEPDIR)/newImagePowerUpdater.Plo
 include ./$(DEPDIR)/powerUpdater.Plo
 include ./$(DEPDIR)/simSystem.Plo
 include ./$(DEPDIR)/timesearch.Plo

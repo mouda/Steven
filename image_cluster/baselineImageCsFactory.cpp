@@ -5,9 +5,9 @@
 #define SA_INI_TEMP 3.0
 #define SA_FIN_TEMP 10e-6
 
-BaselineImageCsFactory::BaselineImageCsFactory( Map const * const myMap, 
+BaselineImageCsFactory::BaselineImageCsFactory( ImageMap const * const myMap, 
     CORRE_MA_OPE const * const myMatComputer):
-  CsFactory(myMap, myMatComputer),
+  ImageCsFactory(myMap, myMatComputer),
   m_fid(NULL),
   m_mapFileName(""),
   m_compressionRatio(-1.0),
@@ -16,9 +16,9 @@ BaselineImageCsFactory::BaselineImageCsFactory( Map const * const myMap,
 {
 }
 
-BaselineImageCsFactory::BaselineImageCsFactory(Map const * const myMap, 
+BaselineImageCsFactory::BaselineImageCsFactory(ImageMap const * const myMap, 
     ImageSource const * const myImageSource)
-  :CsFactory(myMap, 0),
+  :ImageCsFactory(myMap, 0),
   m_fid(NULL),
   m_mapFileName(""),
   m_compressionRatio(-1.0),

@@ -1,5 +1,5 @@
 #include "simulator.h"
-#include "imagePowerUpdater.h"
+#include "newImagePowerUpdater.h"
 #include <cstdio>
 #include <sstream>
 #include <numeric>
@@ -7,7 +7,7 @@
 
 
 
-Simulator::Simulator(Map* myMap, 
+Simulator::Simulator(ImageMap* myMap, 
     ClusterStructure* myCS, 
     CORRE_MA_OPE* myField
     ):
@@ -41,7 +41,7 @@ bool
 Simulator::SelfCheck()
 {
   if (!m_ptrMap) {
-    cerr << "Error: Uninitialized Map" << endl;
+    cerr << "Error: Uninitialized ImageMap" << endl;
     return false;
   }
   if (!m_ptrCS) {
@@ -49,8 +49,8 @@ Simulator::SelfCheck()
     return false;
   }
   /* print map */
-  cout << "===================== Map ========================" << endl;
-  cout << setw(20) << "MapId:" << setw(10) << m_ptrMap->GetMapId() << endl;
+  cout << "===================== ImageMap ========================" << endl;
+  cout << setw(20) << "ImageMapId:" << setw(10) << m_ptrMap->GetMapId() << endl;
   cout << setw(20) << "Nodes:" << setw(10) << m_ptrMap->GetNumNodes() << endl;
   cout << setw(20) << "MaxHeads:" << setw(10) << m_ptrMap->GetNumInitHeads() << endl;
   cout << setw(20) << "Noise:" << setw(10) << m_ptrMap->GetNoise() << endl;
@@ -135,8 +135,8 @@ Simulator::WriteWorseCaseTier2Power( const string& fileName,
   }
 
   std::vector<double> myVecPower(m_ptrMap->GetNumNodes());
-  ImagePowerUpdater myImagePowerUpdater(m_ptrMap, m_ptrCS,  TxTimePerSlot, TxTimeNumSlot);
-  myImagePowerUpdater.Solve(myVecPower, vecSolution);
+  NewImagePowerUpdater myNewImagePowerUpdater(m_ptrMap, m_ptrCS,  TxTimePerSlot, TxTimeNumSlot);
+  myNewImagePowerUpdater.Solve(myVecPower, vecSolution);
   double totalPower = std::accumulate(myVecPower.begin(), myVecPower.end(), 10e-30);
 //  for (int i = 0; i < myVecPower.size(); ++i) {
 //    cout << myVecPower.at(i) << endl;

@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define SA_INI_TEMP 3.0
+#define SA_INI_TEMP 10.0
 #define SA_FIN_TEMP 10e-6
 
-MinPowerImageCsFactory::MinPowerImageCsFactory( Map const * const myMap, 
+MinPowerImageCsFactory::MinPowerImageCsFactory( ImageMap const * const myMap, 
     CORRE_MA_OPE const * const myMatComputer):
-  CsFactory(myMap, myMatComputer),
+  ImageCsFactory(myMap, myMatComputer),
   m_fid(NULL),
   m_mapFileName(""),
   m_compressionRatio(-1.0),
@@ -16,9 +16,9 @@ MinPowerImageCsFactory::MinPowerImageCsFactory( Map const * const myMap,
 {
 }
 
-MinPowerImageCsFactory::MinPowerImageCsFactory(Map const * const myMap, 
+MinPowerImageCsFactory::MinPowerImageCsFactory(ImageMap const * const myMap, 
     ImageSource const * const myImageSource)
-  :CsFactory(myMap, 0),
+  :ImageCsFactory(myMap, 0),
   m_fid(NULL),
   m_mapFileName(""),
   m_compressionRatio(-1.0),

@@ -12,8 +12,7 @@
 #include <coin/IpTNLP.hpp>
 #include <vector>
 #include "clusterStructure.h"
-#include "map.h"
-#include "map.h"
+#include "imageMap.h"
 #include "ULCS1b.h"
 #include "CORRE_MA_OPE.h"
 #include "imageSource.h"
@@ -36,14 +35,14 @@ class MyTier1NLP : public TNLP
 {
 public:
   MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
-    Map const * const ptrMap,
+    ImageMap const * const ptrMap,
     ULCS1b const * const cSystem,  
     CORRE_MA_OPE const * const ptrGField,  
     double tier1TxTime
     );
 
   MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
-      Map const * const ptrMap,
+      ImageMap const * const ptrMap,
       ULCS1b const * const cSystem,  
       ImageSource const * const myImageSource,  
       double tier1TxTime
@@ -136,7 +135,7 @@ private:
   TNLP::IndexStyleEnum        m_index_style;
   Eigen::MatrixXd             m_Signma;
   Eigen::MatrixXd             m_Constriants;
-  Map const * const           m_ptrMap;
+  ImageMap const * const           m_ptrMap;
   ULCS1b const * const        m_cSystem;   // system cluseter structure
   CORRE_MA_OPE const * const  m_ptrGField;
   ImageSource const * const   m_ptrImageSource;

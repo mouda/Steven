@@ -1132,7 +1132,7 @@ minPowerImageCluster.o: minPowerImageCluster.cpp \
  ../lib/TimeStamp.h ../lib/SA/SABASE.h \
  ../lib/SA/../../commonLibrary/SimSystem.h myTier1NLP.h \
  /opt/ipopt/include/coin/IpTNLP.hpp ../lib/clusterStructure.h \
- ../lib/map.h ../lib/simSystem.h ../lib/CORRE_MA_OPE.h
+ ../lib/imageMap.h ../lib/simSystem.h ../lib/CORRE_MA_OPE.h
 
 /usr/include/stdc-predef.h:
 
@@ -3512,7 +3512,7 @@ myTier1NLP.h:
 
 ../lib/clusterStructure.h:
 
-../lib/map.h:
+../lib/imageMap.h:
 
 ../lib/simSystem.h:
 

@@ -88,8 +88,8 @@ simulator.o: simulator.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
  /usr/include/c++/4.8/bits/stl_bvector.h \
- /usr/include/c++/4.8/bits/vector.tcc ../lib/map.h ../lib/simSystem.h \
- /usr/include/c++/4.8/cmath /usr/include/math.h \
+ /usr/include/c++/4.8/bits/vector.tcc ../lib/imageMap.h \
+ ../lib/simSystem.h /usr/include/c++/4.8/cmath /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/huge_val.h \
  /usr/include/x86_64-linux-gnu/bits/huge_valf.h \
  /usr/include/x86_64-linux-gnu/bits/huge_vall.h \
@@ -700,8 +700,8 @@ simulator.o: simulator.cpp /usr/include/stdc-predef.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h \
  ../lib/clusterStructure.h /usr/include/c++/4.8/list \
  /usr/include/c++/4.8/bits/stl_list.h /usr/include/c++/4.8/bits/list.tcc \
- ../lib/CORRE_MA_OPE.h ../lib/fileHandler.h ../lib/imagePowerUpdater.h \
- ../lib/map.h ../lib/clusterStructure.h /usr/include/c++/4.8/numeric \
+ ../lib/CORRE_MA_OPE.h ../lib/fileHandler.h ../lib/newImagePowerUpdater.h \
+ ../lib/imageMap.h ../lib/clusterStructure.h /usr/include/c++/4.8/numeric \
  /usr/include/c++/4.8/bits/stl_numeric.h
 
 /usr/include/stdc-predef.h:
@@ -934,7 +934,7 @@ simulator.h:
 
 /usr/include/c++/4.8/bits/vector.tcc:
 
-../lib/map.h:
+../lib/imageMap.h:
 
 ../lib/simSystem.h:
 
@@ -2202,9 +2202,9 @@ simulator.h:
 
 ../lib/fileHandler.h:
 
-../lib/imagePowerUpdater.h:
+../lib/newImagePowerUpdater.h:
 
-../lib/map.h:
+../lib/imageMap.h:
 
 ../lib/clusterStructure.h:
 

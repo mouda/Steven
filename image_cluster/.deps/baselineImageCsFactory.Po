@@ -73,7 +73,7 @@ baselineImageCsFactory.o: baselineImageCsFactory.cpp \
  /usr/include/c++/4.8/bits/locale_facets.tcc \
  /usr/include/c++/4.8/bits/basic_ios.tcc \
  /usr/include/c++/4.8/bits/ostream.tcc /usr/include/c++/4.8/istream \
- /usr/include/c++/4.8/bits/istream.tcc ../lib/csFactory.h \
+ /usr/include/c++/4.8/bits/istream.tcc ../lib/imageCsFactory.h \
  /usr/include/c++/4.8/limits /opt/armadillo40002/include/armadillo \
  /usr/include/c++/4.8/cstdlib /usr/include/stdlib.h \
  /usr/include/x86_64-linux-gnu/bits/waitflags.h \
@@ -1103,8 +1103,8 @@ baselineImageCsFactory.o: baselineImageCsFactory.cpp \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Determinant.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h \
- ../lib/map.h ../lib/simSystem.h ../lib/ULAGENT.h ../lib/imageSource.h \
- baselineImageCluster.h /usr/include/c++/4.8/map \
+ ../lib/imageMap.h ../lib/simSystem.h ../lib/ULAGENT.h \
+ ../lib/imageSource.h baselineImageCluster.h /usr/include/c++/4.8/map \
  /usr/include/c++/4.8/bits/stl_tree.h /usr/include/c++/4.8/bits/stl_map.h \
  /usr/include/c++/4.8/bits/stl_multimap.h \
  /opt/ipopt/include/coin/IpIpoptApplication.hpp \
@@ -1132,7 +1132,7 @@ baselineImageCsFactory.o: baselineImageCsFactory.cpp \
  ../lib/TimeStamp.h ../lib/SA/SABASE.h \
  ../lib/SA/../../commonLibrary/SimSystem.h myTier1NLP.h \
  /opt/ipopt/include/coin/IpTNLP.hpp ../lib/clusterStructure.h \
- ../lib/map.h
+ ../lib/imageMap.h
 
 /usr/include/stdc-predef.h:
 
@@ -1324,7 +1324,7 @@ baselineImageCsFactory.h:
 
 /usr/include/c++/4.8/bits/istream.tcc:
 
-../lib/csFactory.h:
+../lib/imageCsFactory.h:
 
 /usr/include/c++/4.8/limits:
 
@@ -3432,7 +3432,7 @@ baselineImageCsFactory.h:
 
 /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h:
 
-../lib/map.h:
+../lib/imageMap.h:
 
 ../lib/simSystem.h:
 
@@ -3518,4 +3518,4 @@ myTier1NLP.h:
 
 ../lib/clusterStructure.h:
 
-../lib/map.h:
+../lib/imageMap.h:

@@ -1,7 +1,7 @@
 /*
   File: MinPowerImageCluster.h
   Brief: Simulated anealing Solver. The purpose is to do the SA to solve the clustering problem with input
-        "Mapfile position cursor" "Total nodes number" "Max number of CH allowed" "Power Max"
+        "ImageMapfile position cursor" "Total nodes number" "Max number of CH allowed" "Power Max"
         Deal with Gaussian Random Source:
         1.C2 from float to double
   Author: Steven
@@ -34,7 +34,7 @@
 #include "TimeStamp.h"
 #include "../lib/SA/SABASE.h"
 #include "myTier1NLP.h"
-#include "map.h"
+#include "imageMap.h"
 
 
 bool pairCompare(const std::pair<int,double>& lPair, const std::pair<int,double>& rPair);
@@ -56,7 +56,7 @@ public:
       double InputSaAlpha, 
       double inCorrelationFactor, 
       string ipAddr, 
-      Map const * const myPtrMap,
+      ImageMap const * const myPtrMap,
       ImageSource const * const,
       double tier1TxTime,
       int tier2NumSlot,
@@ -348,7 +348,7 @@ public:
 
   std::vector<int>             m_vecHeadName;
 
-  Map const * const       m_ptrMap;
+  ImageMap const * const       m_ptrMap;
   const double            m_tier1TxTime; 
   int                   m_tier2NumSlot;
   fstream               m_logFile; 

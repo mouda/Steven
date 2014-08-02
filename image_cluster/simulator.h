@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
-#include "map.h"
+#include "imageMap.h"
 #include "clusterStructure.h"
 #include "CORRE_MA_OPE.h"
 #include "fileHandler.h"
@@ -26,7 +26,7 @@ using std::make_pair;
 class Simulator
 {
   public:
-    Simulator(Map* myMap,ClusterStructure* myCS, CORRE_MA_OPE* myField
+    Simulator(ImageMap* myMap,ClusterStructure* myCS, CORRE_MA_OPE* myField
         );
     ~Simulator();
 
@@ -42,7 +42,7 @@ class Simulator
     template < class T>
     string VecToString( const std::vector<T>& );
 
-    Map*                m_ptrMap;
+    ImageMap*                m_ptrMap;
     ClusterStructure*   m_ptrCS;
     CORRE_MA_OPE*       m_ptrGField;
     std::vector<int>*   m_vecSupport;

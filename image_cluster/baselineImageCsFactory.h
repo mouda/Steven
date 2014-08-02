@@ -2,15 +2,15 @@
 #define _BASELINEIMAGECSFACTORY_
 
 #include <iostream>
-#include "csFactory.h"
+#include "imageCsFactory.h"
 #include "imageSource.h"
 #include "baselineImageCluster.h"
 
-class BaselineImageCsFactory: public CsFactory
+class BaselineImageCsFactory: public ImageCsFactory
 {
   public:
-    BaselineImageCsFactory(Map const * const, CORRE_MA_OPE const * const );
-    BaselineImageCsFactory(Map const * const , ImageSource const * const );
+    BaselineImageCsFactory(ImageMap const * const, CORRE_MA_OPE const * const );
+    BaselineImageCsFactory(ImageMap const * const , ImageSource const * const );
     ~BaselineImageCsFactory();
     void                    SetMapFileName(const std::string& fileName){ m_mapFileName = fileName;}
     void                    SetCompressionRatio( const double compressionRatio){ m_compressionRatio = compressionRatio;}
