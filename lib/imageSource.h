@@ -6,11 +6,13 @@
 #include <eigen3/Eigen/LU>
 
 #include <vector>
+#include <string>
+
 class ImageSource
 {
 public:
   ImageSource(int inm_numNodes, double spatialCorrFactor, double temporalCorrFactor, double ** inDijSQ, double qBits);
-  ImageSource(int inm_numNodes, double spatialCorrFactor,  double ** inDijSQ, double qBits);
+  ImageSource(int inm_numNodes, const std::string& idtFName, const std::string& corrFName, double ** inDijSQ);
   ~ImageSource();
   int m_numNodes;
   double m_qBits;

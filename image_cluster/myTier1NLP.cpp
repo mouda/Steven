@@ -58,8 +58,13 @@ MyTier1NLP::MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
     }
     std::fill(tmpIndicator.begin(), tmpIndicator.end(), 0);
   }
+  cout << m_numVariables << endl;
   for (int i = 0; i < m_vecClusterEntropy.size(); i++) {
-    std::cout << i << ':' <<m_vecClusterEntropy.at(i) << ' ';
+    std::cout <<m_vecClusterEntropy.at(i) << ' ';
+  }
+  std::cout << endl;
+  for (int i = 0; i < m_vecClusterEntropy.size(); i++) {
+    std::cout <<m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)) << ' ';
   }
   std::cout << endl;
 
@@ -129,7 +134,7 @@ bool MyTier1NLP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
   assert(n==m_numVariables);
   obj_value = 0.0;
   for (int i = 0; i < m_numVariables; ++i) {
-    obj_value += (pow(2.0, x[i]/ KSCALE/m_ptrMap->GetBandwidth()) - 1.0 ) * m_ptrMap->GetNoise() / 
+    obj_value += (pow(2.0, x[i]/ KSCALE/m_ptrMap->GetBandwidth()) - 1.0 )* m_ptrMap->GetNoise() / 
       m_ptrMap->GetGi0ByNode(m_vecHeadTable.at(i)); 
   }
   return true;
@@ -218,9 +223,9 @@ void MyTier1NLP::finalize_solution(SolverReturn status,
 			      const IpoptData* ip_data,
 			      IpoptCalculatedQuantities* ip_cq)
 {
-#ifdef DEBUG
   std::cout<<"Problem status: "<<status<<std::endl;
   std::cout<<"Objective value: "<<obj_value<<std::endl;
+#ifdef DEBUG
   if(printSol_ && x != NULL){
     std::cout<<"Solution:"<<std::endl;
     for(int i = 0 ; i < n ; i++){

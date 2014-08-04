@@ -56,7 +56,6 @@ int main(int argc, char *argv[])
       ("help,h", "Produce help message")
       ("bandwidth,b",             po::value<double>(),  "Bandwidth (kHz) ")
       ("power,p",                 po::value<double>(),  "Maximum Power (dbm) ")
-      ("quantization,q",          po::value<double>(),  "Bits of quantization")
       ("map,m",                   po::value<string>(),  "ImageMap file name")
       ("nodes,n",                 po::value<int>(),     "Initial number of nodes")
       ("heads,H",                 po::value<int>(),     "Initial number of heads")
@@ -77,11 +76,10 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 13  || vm.size() == 14 ) {
+    } else if(vm.size() == 12  || vm.size() == 13 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
-      quantizationBits =        vm["quantization"].as<double>();
       powerMaxDbm =             vm["power"].as<double>();
       bandwidthKhz =            vm["bandwidth"].as<double>();
       txTimePerSlot =           vm["txTime"].as<double>();

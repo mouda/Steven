@@ -532,9 +532,127 @@ minPowerImageCluster.o: minPowerImageCluster.cpp \
  /opt/armadillo40002/include/armadillo_bits/spglue_times_meat.hpp \
  /opt/armadillo40002/include/armadillo_bits/compiler_setup_post.hpp \
  /usr/include/c++/4.8/iterator \
- /usr/include/c++/4.8/bits/stream_iterator.h minPowerImageCluster.h \
- /usr/include/c++/4.8/map /usr/include/c++/4.8/bits/stl_tree.h \
- /usr/include/c++/4.8/bits/stl_map.h \
+ /usr/include/c++/4.8/bits/stream_iterator.h \
+ /opt/eigen320/include/eigen3/Eigen/Core \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/Macros.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/MKL_support.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/include/emmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/include/xmmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/include/mmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/4.8/include/mm_malloc.h \
+ /usr/include/c++/4.8/cerrno /usr/include/errno.h \
+ /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
+ /usr/include/x86_64-linux-gnu/asm/errno.h \
+ /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+ /usr/include/c++/4.8/cstddef /usr/include/c++/4.8/functional \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/Constants.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/ForwardDeclarations.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/Meta.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/StaticAssert.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/XprHelper.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/Memory.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/NumTraits.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/MathFunctions.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/GenericPacketMath.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/PacketMath.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/MathFunctions.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/Complex.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/arch/Default/Settings.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Functors.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/DenseCoeffsBase.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/DenseBase.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/BlockMethods.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/MatrixBase.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/CommonCwiseUnaryOps.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/CommonCwiseBinaryOps.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/MatrixCwiseBinaryOps.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/EigenBase.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Assign.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/BlasUtil.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/DenseStorage.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/NestByValue.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/ForceAlignedAccess.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/ReturnByValue.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/NoAlias.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/PlainObjectBase.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Matrix.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Array.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/CwiseBinaryOp.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/CwiseUnaryOp.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/CwiseNullaryOp.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/CwiseUnaryView.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/SelfCwiseBinaryOp.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Dot.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/StableNorm.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/MapBase.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Stride.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Map.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Block.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/VectorBlock.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Ref.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Transpose.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/DiagonalMatrix.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Diagonal.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/DiagonalProduct.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/PermutationMatrix.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Transpositions.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Redux.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Visitor.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Fuzzy.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/IO.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Swap.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/CommaInitializer.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Flagged.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/ProductBase.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/GeneralProduct.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/TriangularMatrix.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/SelfAdjointView.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralBlockPanelKernel.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/Parallelizer.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/CoeffBasedProduct.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixVector.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrix.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/SolveTriangular.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrixTriangular.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixVector.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixMatrix.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointProduct.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointRank2Update.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularMatrixVector.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularMatrixMatrix.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularSolverMatrix.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularSolverVector.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/BandMatrix.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/CoreIterators.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/BooleanRedux.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Select.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/VectorwiseOp.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Random.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Replicate.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/Reverse.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/ArrayBase.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/ArrayCwiseBinaryOps.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/ArrayWrapper.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/GlobalFunctions.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Core/util/ReenableStupidWarnings.h \
+ /opt/eigen320/include/eigen3/Eigen/Cholesky \
+ /opt/eigen320/include/eigen3/Eigen/Core \
+ /opt/eigen320/include/eigen3/Eigen/src/misc/Solve.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Cholesky/LLT.h \
+ /opt/eigen320/include/eigen3/Eigen/src/Cholesky/LDLT.h \
+ /opt/eigen320/include/eigen3/Eigen/LU \
+ /opt/eigen320/include/eigen3/Eigen/src/misc/Kernel.h \
+ /opt/eigen320/include/eigen3/Eigen/src/misc/Image.h \
+ /opt/eigen320/include/eigen3/Eigen/src/LU/FullPivLU.h \
+ /opt/eigen320/include/eigen3/Eigen/src/LU/PartialPivLU.h \
+ /opt/eigen320/include/eigen3/Eigen/src/LU/Determinant.h \
+ /opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h \
+ /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h \
+ minPowerImageCluster.h /usr/include/c++/4.8/map \
+ /usr/include/c++/4.8/bits/stl_tree.h /usr/include/c++/4.8/bits/stl_map.h \
  /usr/include/c++/4.8/bits/stl_multimap.h \
  /opt/ipopt/include/coin/IpIpoptApplication.hpp \
  /opt/ipopt/include/coin/IpJournalist.hpp \
@@ -557,8 +675,7 @@ minPowerImageCluster.o: minPowerImageCluster.cpp \
  /opt/ipopt/include/coin/IpOptionsList.hpp \
  /opt/ipopt/include/coin/IpRegOptions.hpp \
  /opt/ipopt/include/coin/IpSolveStatistics.hpp ../lib/ULAGENT.h \
- /usr/include/c++/4.8/cstddef ../lib/ULCS1b.h ../lib/CORRE_MA_OPE.h \
- ../lib/../lib/cholesky.hpp \
+ ../lib/ULCS1b.h ../lib/CORRE_MA_OPE.h ../lib/../lib/cholesky.hpp \
  /opt/boost1550/include/boost/numeric/ublas/vector.hpp \
  /opt/boost1550/include/boost/numeric/ublas/storage.hpp \
  /opt/boost1550/include/boost/serialization/array.hpp \
@@ -1002,7 +1119,6 @@ minPowerImageCluster.o: minPowerImageCluster.cpp \
  /opt/boost1550/include/boost/numeric/ublas/vector_expression.hpp \
  /opt/boost1550/include/boost/numeric/ublas/expression_types.hpp \
  /opt/boost1550/include/boost/numeric/ublas/functional.hpp \
- /usr/include/c++/4.8/functional \
  /opt/boost1550/include/boost/numeric/ublas/detail/vector_assign.hpp \
  /opt/boost1550/include/boost/numeric/ublas/vector_proxy.hpp \
  /opt/boost1550/include/boost/numeric/ublas/detail/temporary.hpp \
@@ -1011,123 +1127,6 @@ minPowerImageCluster.o: minPowerImageCluster.cpp \
  /opt/boost1550/include/boost/numeric/ublas/detail/matrix_assign.hpp \
  /opt/boost1550/include/boost/numeric/ublas/matrix_proxy.hpp \
  /opt/boost1550/include/boost/numeric/ublas/triangular.hpp \
- /opt/eigen320/include/eigen3/Eigen/Core \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/Macros.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/MKL_support.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/emmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/xmmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/4.8/include/mm_malloc.h \
- /usr/include/c++/4.8/cerrno /usr/include/errno.h \
- /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
- /usr/include/x86_64-linux-gnu/asm/errno.h \
- /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/Constants.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/ForwardDeclarations.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/Meta.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/StaticAssert.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/XprHelper.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/Memory.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/NumTraits.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/MathFunctions.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/GenericPacketMath.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/PacketMath.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/MathFunctions.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/Complex.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/arch/Default/Settings.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Functors.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/DenseCoeffsBase.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/DenseBase.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/BlockMethods.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/MatrixBase.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/CommonCwiseUnaryOps.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/CommonCwiseBinaryOps.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/MatrixCwiseBinaryOps.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/EigenBase.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Assign.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/BlasUtil.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/DenseStorage.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/NestByValue.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/ForceAlignedAccess.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/ReturnByValue.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/NoAlias.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/PlainObjectBase.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Matrix.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Array.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/CwiseBinaryOp.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/CwiseUnaryOp.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/CwiseNullaryOp.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/CwiseUnaryView.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/SelfCwiseBinaryOp.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Dot.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/StableNorm.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/MapBase.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Stride.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Map.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Block.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/VectorBlock.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Ref.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Transpose.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/DiagonalMatrix.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Diagonal.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/DiagonalProduct.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/PermutationMatrix.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Transpositions.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Redux.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Visitor.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Fuzzy.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/IO.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Swap.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/CommaInitializer.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Flagged.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/ProductBase.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/GeneralProduct.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/TriangularMatrix.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/SelfAdjointView.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralBlockPanelKernel.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/Parallelizer.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/CoeffBasedProduct.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixVector.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrix.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/SolveTriangular.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrixTriangular.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixVector.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixMatrix.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointProduct.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointRank2Update.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularMatrixVector.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularMatrixMatrix.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularSolverMatrix.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularSolverVector.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/BandMatrix.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/CoreIterators.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/BooleanRedux.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Select.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/VectorwiseOp.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Random.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Replicate.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/Reverse.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/ArrayBase.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/ArrayCwiseBinaryOps.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/ArrayWrapper.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/GlobalFunctions.h \
- /opt/eigen320/include/eigen3/Eigen/src/Core/util/ReenableStupidWarnings.h \
- /opt/eigen320/include/eigen3/Eigen/Cholesky \
- /opt/eigen320/include/eigen3/Eigen/Core \
- /opt/eigen320/include/eigen3/Eigen/src/misc/Solve.h \
- /opt/eigen320/include/eigen3/Eigen/src/Cholesky/LLT.h \
- /opt/eigen320/include/eigen3/Eigen/src/Cholesky/LDLT.h \
- /opt/eigen320/include/eigen3/Eigen/LU \
- /opt/eigen320/include/eigen3/Eigen/src/misc/Kernel.h \
- /opt/eigen320/include/eigen3/Eigen/src/misc/Image.h \
- /opt/eigen320/include/eigen3/Eigen/src/LU/FullPivLU.h \
- /opt/eigen320/include/eigen3/Eigen/src/LU/PartialPivLU.h \
- /opt/eigen320/include/eigen3/Eigen/src/LU/Determinant.h \
- /opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h \
- /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h \
  ../lib/imageSource.h ../lib/simSystem.h ../lib/ULAGENT.h \
  ../lib/TimeStamp.h ../lib/SA/SABASE.h \
  ../lib/SA/../../commonLibrary/SimSystem.h myTier1NLP.h \
@@ -2282,6 +2281,250 @@ minPowerImageCluster.o: minPowerImageCluster.cpp \
 
 /usr/include/c++/4.8/bits/stream_iterator.h:
 
+/opt/eigen320/include/eigen3/Eigen/Core:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/Macros.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/MKL_support.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/emmintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/xmmintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/mmintrin.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/4.8/include/mm_malloc.h:
+
+/usr/include/c++/4.8/cerrno:
+
+/usr/include/errno.h:
+
+/usr/include/x86_64-linux-gnu/bits/errno.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/x86_64-linux-gnu/asm/errno.h:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/asm-generic/errno-base.h:
+
+/usr/include/c++/4.8/cstddef:
+
+/usr/include/c++/4.8/functional:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/Constants.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/ForwardDeclarations.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/Meta.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/StaticAssert.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/XprHelper.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/Memory.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/NumTraits.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/MathFunctions.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/GenericPacketMath.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/PacketMath.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/MathFunctions.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/Complex.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/arch/Default/Settings.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Functors.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/DenseCoeffsBase.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/DenseBase.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/BlockMethods.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/MatrixBase.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/CommonCwiseUnaryOps.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/CommonCwiseBinaryOps.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/MatrixCwiseBinaryOps.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/EigenBase.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Assign.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/BlasUtil.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/DenseStorage.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/NestByValue.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/ForceAlignedAccess.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/ReturnByValue.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/NoAlias.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/PlainObjectBase.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Matrix.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Array.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/CwiseBinaryOp.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/CwiseUnaryOp.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/CwiseNullaryOp.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/CwiseUnaryView.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/SelfCwiseBinaryOp.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Dot.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/StableNorm.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/MapBase.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Stride.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Map.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Block.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/VectorBlock.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Ref.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Transpose.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/DiagonalMatrix.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Diagonal.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/DiagonalProduct.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/PermutationMatrix.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Transpositions.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Redux.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Visitor.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Fuzzy.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/IO.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Swap.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/CommaInitializer.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Flagged.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/ProductBase.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/GeneralProduct.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/TriangularMatrix.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/SelfAdjointView.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralBlockPanelKernel.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/Parallelizer.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/CoeffBasedProduct.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixVector.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrix.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/SolveTriangular.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrixTriangular.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixVector.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixMatrix.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointProduct.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointRank2Update.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularMatrixVector.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularMatrixMatrix.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularSolverMatrix.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularSolverVector.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/BandMatrix.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/CoreIterators.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/BooleanRedux.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Select.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/VectorwiseOp.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Random.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Replicate.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/Reverse.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/ArrayBase.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/ArrayCwiseBinaryOps.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/ArrayWrapper.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/GlobalFunctions.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Core/util/ReenableStupidWarnings.h:
+
+/opt/eigen320/include/eigen3/Eigen/Cholesky:
+
+/opt/eigen320/include/eigen3/Eigen/Core:
+
+/opt/eigen320/include/eigen3/Eigen/src/misc/Solve.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Cholesky/LLT.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/Cholesky/LDLT.h:
+
+/opt/eigen320/include/eigen3/Eigen/LU:
+
+/opt/eigen320/include/eigen3/Eigen/src/misc/Kernel.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/misc/Image.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/LU/FullPivLU.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/LU/PartialPivLU.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/LU/Determinant.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h:
+
+/opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h:
+
 minPowerImageCluster.h:
 
 /usr/include/c++/4.8/map:
@@ -2341,8 +2584,6 @@ minPowerImageCluster.h:
 /opt/ipopt/include/coin/IpSolveStatistics.hpp:
 
 ../lib/ULAGENT.h:
-
-/usr/include/c++/4.8/cstddef:
 
 ../lib/ULCS1b.h:
 
@@ -3236,8 +3477,6 @@ minPowerImageCluster.h:
 
 /opt/boost1550/include/boost/numeric/ublas/functional.hpp:
 
-/usr/include/c++/4.8/functional:
-
 /opt/boost1550/include/boost/numeric/ublas/detail/vector_assign.hpp:
 
 /opt/boost1550/include/boost/numeric/ublas/vector_proxy.hpp:
@@ -3253,246 +3492,6 @@ minPowerImageCluster.h:
 /opt/boost1550/include/boost/numeric/ublas/matrix_proxy.hpp:
 
 /opt/boost1550/include/boost/numeric/ublas/triangular.hpp:
-
-/opt/eigen320/include/eigen3/Eigen/Core:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/Macros.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/MKL_support.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/4.8/include/emmintrin.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/4.8/include/xmmintrin.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/4.8/include/mmintrin.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/4.8/include/mm_malloc.h:
-
-/usr/include/c++/4.8/cerrno:
-
-/usr/include/errno.h:
-
-/usr/include/x86_64-linux-gnu/bits/errno.h:
-
-/usr/include/linux/errno.h:
-
-/usr/include/x86_64-linux-gnu/asm/errno.h:
-
-/usr/include/asm-generic/errno.h:
-
-/usr/include/asm-generic/errno-base.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/Constants.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/ForwardDeclarations.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/Meta.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/StaticAssert.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/XprHelper.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/Memory.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/NumTraits.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/MathFunctions.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/GenericPacketMath.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/PacketMath.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/MathFunctions.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/arch/SSE/Complex.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/arch/Default/Settings.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Functors.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/DenseCoeffsBase.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/DenseBase.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/BlockMethods.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/MatrixBase.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/CommonCwiseUnaryOps.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/CommonCwiseBinaryOps.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/MatrixCwiseBinaryOps.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/EigenBase.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Assign.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/BlasUtil.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/DenseStorage.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/NestByValue.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/ForceAlignedAccess.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/ReturnByValue.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/NoAlias.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/PlainObjectBase.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Matrix.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Array.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/CwiseBinaryOp.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/CwiseUnaryOp.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/CwiseNullaryOp.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/CwiseUnaryView.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/SelfCwiseBinaryOp.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Dot.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/StableNorm.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/MapBase.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Stride.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Map.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Block.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/VectorBlock.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Ref.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Transpose.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/DiagonalMatrix.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Diagonal.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/DiagonalProduct.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/PermutationMatrix.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Transpositions.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Redux.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Visitor.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Fuzzy.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/IO.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Swap.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/CommaInitializer.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Flagged.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/ProductBase.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/GeneralProduct.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/TriangularMatrix.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/SelfAdjointView.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralBlockPanelKernel.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/Parallelizer.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/CoeffBasedProduct.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixVector.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrix.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/SolveTriangular.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrixTriangular.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixVector.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixMatrix.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointProduct.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/SelfadjointRank2Update.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularMatrixVector.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularMatrixMatrix.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularSolverMatrix.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/products/TriangularSolverVector.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/BandMatrix.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/CoreIterators.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/BooleanRedux.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Select.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/VectorwiseOp.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Random.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Replicate.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/Reverse.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/ArrayBase.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/../plugins/ArrayCwiseBinaryOps.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/ArrayWrapper.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/GlobalFunctions.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Core/util/ReenableStupidWarnings.h:
-
-/opt/eigen320/include/eigen3/Eigen/Cholesky:
-
-/opt/eigen320/include/eigen3/Eigen/Core:
-
-/opt/eigen320/include/eigen3/Eigen/src/misc/Solve.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Cholesky/LLT.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/Cholesky/LDLT.h:
-
-/opt/eigen320/include/eigen3/Eigen/LU:
-
-/opt/eigen320/include/eigen3/Eigen/src/misc/Kernel.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/misc/Image.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/LU/FullPivLU.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/LU/PartialPivLU.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/LU/Determinant.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h:
-
-/opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h:
 
 ../lib/imageSource.h:
 

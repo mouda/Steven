@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define SA_INI_TEMP 10.0
+#define SA_INI_TEMP 20.0
 #define SA_FIN_TEMP 10e-6
 
 MinPowerImageCsFactory::MinPowerImageCsFactory( ImageMap const * const myMap, 
@@ -40,7 +40,7 @@ MinPowerImageCsFactory::~MinPowerImageCsFactory()
 ClusterStructure*
 MinPowerImageCsFactory::CreateClusterStructure()
 {
-  double SAIter = 20000;
+  double SAIter = 50000;
   double alpha = pow (10, -log10(SA_INI_TEMP/SA_FIN_TEMP)/SAIter);
   m_fid = fopen(m_mapFileName.c_str(), "r");
   if(m_fid == NULL) {

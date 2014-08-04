@@ -97,6 +97,7 @@ public:
   double                          GetBestPayoff() const { return bestFeasiblePayoff;}
 
   double                          OptimalRateControl() const;
+  double                          OptimalRateControl_v2() const;
   
   double returnComprRatio();
 

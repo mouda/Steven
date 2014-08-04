@@ -19,11 +19,6 @@ ImageSource::ImageSource(int inTotalNodes, double spatialCorrFactor,
   DijSQ(inDijSQ),
   m_totalEntropyPerSlot(0)
 {
-//  double idtEntropy = 0.5*log2(2*3.1415*exp(1)) + qBits;
-//  returnNSetCorrelationFactorByCompressionRatio(spatialCorrFactor, idtEntropy, static_cast<double>(m_numNodes) );
-//  Eigen::MatrixXd covMat(m_numNodes, m_numNodes);
-//  GetCovMaVariance(covMat);
-//  m_totalEntropyPerSlot = covMat.determinant();
   m_matImageCovariance = Eigen::MatrixXd::Zero(inTotalNodes, inTotalNodes); 
   m_vecImageIndependent = Eigen::MatrixXd::Zero(inTotalNodes, 1);
   fstream myImageCovFile("paper720_30cam_corrMatrix.txt", std::ios::in) ; 
@@ -51,20 +46,39 @@ ImageSource::ImageSource(int inTotalNodes, double spatialCorrFactor,
   myImageCovFile.close();
 }
 
-ImageSource::ImageSource(int inTotalNodes, double spatialCorrFactor, 
-    double **inDijSQ, double qBits):
-  m_qBits(qBits),
-  m_temporalCorrFac(0),
+ImageSource::ImageSource(int inTotalNodes, const std::string& idtFName, const std::string& corrFName, double ** inDijSQ):
   m_numNodes(inTotalNodes),
+  m_qBits(0.0),
+  m_temporalCorrFac(0.0),
   DijSQ(inDijSQ),
   m_totalEntropyPerSlot(0)
 {
+  m_matImageCovariance = Eigen::MatrixXd::Zero(inTotalNodes, inTotalNodes); 
+  m_vecImageIndependent = Eigen::MatrixXd::Zero(inTotalNodes, 1);
+  fstream myImageCovFile(corrFName.c_str(), std::ios::in) ; 
+  fstream myImageIdtFile(idtFName.c_str(),std::ios::in);
+  double tmp = 0;
+  if (myImageCovFile.good() && myImageIdtFile.good()) {
+    for (int i = 0; i < inTotalNodes; ++i) {
+      for (int j = 0; j < inTotalNodes; ++j) {
+        myImageCovFile >> tmp;
+        m_matImageCovariance(i,j) = tmp;
+      }
+    }
+    for (int i = 0; i < inTotalNodes; ++i) {
+      myImageIdtFile >> tmp;
+      m_vecImageIndependent(i) = tmp;
+    }
+  }
+  else {
+    cerr << "Error: Cannot read image source" << endl;
+    myImageCovFile.close();
+    myImageIdtFile.close();
+    assert(0);
+  }
+  myImageIdtFile.close();
+  myImageCovFile.close();
 
-  double idtEntropy = 0.5*log2(2*3.1415*exp(1)) + qBits;
-  returnNSetCorrelationFactorByCompressionRatio(spatialCorrFactor, idtEntropy, static_cast<double>(m_numNodes) );
-  Eigen::MatrixXd covMat(m_numNodes, m_numNodes);
-  GetCovMaVariance(covMat);
-  m_totalEntropyPerSlot = covMat.determinant();
 }
 
 ImageSource::~ImageSource()

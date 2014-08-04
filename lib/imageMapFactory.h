@@ -43,6 +43,7 @@ class ImageMapFactory
     ImageMap*                          m_ptrMap;
     vector<pair<double, double> > m_vecPairPos;
     ImageSource*                  m_ptrImageSource;
-
+    const string                  m_strIdtFName;
+    const string                  m_strCorrFName;
 };
 #endif

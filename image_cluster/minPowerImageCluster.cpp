@@ -12,6 +12,9 @@
 #include <cassert>
 #include <armadillo>
 #include <iterator>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Cholesky>
+#include <eigen3/Eigen/LU>
 
 #define PENALTYSIZE 10e-3 
 using namespace std;
@@ -734,13 +737,15 @@ bool MinPowerImageCluster::startCool()
   //-----------------------------//
 
   curSupNum     =   cSystem->calSupNodes();
+  nextSupNum = curSupNum;
   curChNum      =   maxChNum;
   nextChNum     =   curChNum;
   curJEntropy   =   curSupNum*indEntropy;
 
   m_cur1st_watt   = OptimalRateControl();
+  cout <<"**********" <<OptimalRateControl_v2() << endl;
 
-  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 1.0);
+  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
   vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 1.0);
   double          entropyPenalty = 1.0;
   vector<double>  tmpSizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
@@ -875,6 +880,46 @@ OptimalRateControl() const
   }
   return rawPtr->GetMinimalPower();
 }
+double
+MinPowerImageCluster::
+OptimalRateControl_v2() const
+{
+  Eigen::MatrixXd HC = Eigen::MatrixXd::Zero(nextChNum,1);
+  Eigen::MatrixXd Gj0 = Eigen::MatrixXd::Zero(nextChNum,1);  
+  Eigen::MatrixXd base2 = Eigen::MatrixXd::Zero(nextChNum,1);
+  std::vector<int> myVecHeadTable;
+  for (int i = 0; i < m_ptrMap->GetNumInitHeads(); ++i) {
+    if (cSystem->vecHeadName.at(i) >= 0) {
+      myVecHeadTable.push_back(cSystem->vecHeadName.at(i)); 
+    }
+  }
+  /* construct the std::vector of cluster entropy */
+  std::list<std::list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();
+  std::vector<int> tmpIndicator(m_ptrMap->GetNumNodes(), 0);
+  std::vector<double> tmpVariance(m_ptrMap->GetNumNodes(), 1.0);
+
+  for (int i = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++i) {
+    std::list<int>::const_iterator iterCol = iterRow->begin();
+    if ( *iterCol >= 0) {
+      for (; iterCol != iterRow->end(); ++iterCol) {
+        tmpIndicator.at(*iterCol) = 1;
+      }
+      HC(i) = m_ptrImageSource->GetJointEntropy(tmpIndicator, tmpVariance, 0, 0);
+    }
+    std::fill(tmpIndicator.begin(), tmpIndicator.end(), 0);
+  }
+  for (int i = 0; i < nextChNum; i++) {
+    Gj0(i) = m_ptrMap->GetGi0ByNode(myVecHeadTable.at(i));
+  }
+  double sum = (HC.array() / Gj0.array()).pow(0.5).sum()/m_tier1TxTime;
+  Eigen::MatrixXd rj = sum * (HC.array() * Gj0.array()).pow(0.5);
+  double tier1Power = 0;
+  for (int i = 0; i < nextChNum; ++i) {
+    tier1Power += m_ptrMap->GetNoise()*(pow(2.0, rj(i)/m_ptrMap->GetBandwidth())-1.0)/Gj0(i); 
+  }
+  return tier1Power;
+}
+
 
 
 /*
@@ -1109,14 +1154,12 @@ MinPowerImageCluster::GetPayOff(
     const vector<double>& tier2Penalty, 
     const double& entropyPenalty)
 {
-#ifdef DEBUG
-  cout << "S: " << GetSizePenalty(sizePenalty) << ", T: " << 
-    GetTier2Penalty(tier2Penalty) << ", E: " << GetEntropyPenalty(entropyPenalty) << endl;
-  for (int i = 0; i < sizePenalty.size(); ++i) {
-    cout << sizePenalty.at(i) << ' ';
-  }
-  cout << endl;
-#endif
+//  cout << "S: " << GetSizePenalty(sizePenalty) << ", T: " << 
+//    GetTier2Penalty(tier2Penalty) << ", E: " << GetEntropyPenalty(entropyPenalty) << endl;
+//  for (int i = 0; i < sizePenalty.size(); ++i) {
+//    cout << sizePenalty.at(i) << ' ';
+//  }
+//  cout << endl;
   return OptimalRateControl()+GetSizePenalty(sizePenalty)  +GetTier2Penalty(tier2Penalty) + GetEntropyPenalty(entropyPenalty);
 }
 
@@ -1270,8 +1313,6 @@ MinPowerImageCluster::decideAddRandSelectCluster()
 //    maxGainName = -1;
 //    targetHeadIndex = -1;
 //  }
-
-  cout << chIdx << endl; 
   targetNode = maxGainName;
 
 }
@@ -1569,7 +1610,7 @@ MinPowerImageCluster::GetSizePenalty( const vector<double>& sizePenalty)
     if (cSystem->vecClusterSize.at(k) != 0
         && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
       tmpSizePenalty += sizePenalty.at(k) *
-        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,1); 
+        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
     }
   }
   return tmpSizePenalty;
@@ -1781,19 +1822,8 @@ void MinPowerImageCluster::calculateMatrics_minResors(//Calculate next performan
 void MinPowerImageCluster::ConfirmNeighbor1()
 {
   //constraint: the all the machine must be supported
-  bool nextAllServe = (nextJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible();
-  for (int i = 0; i < cSystem->vecHeadName.size(); ++i) {
-    if (cSystem->vecHeadName.at(i) >= 0 && cSystem->vecClusterSize.at(i) > m_tier2NumSlot + 1) {
-      nextAllServe = false;
-    }
-  }
-  bool curAllServe = (curJEntropy>(fidelityRatio*wholeSystemEntopy)?true:false) && CheckTier2Feasible() ; 
-
-  for (int i = 0; i < m_prevVecClusterSize.size(); ++i) {
-    if (m_prevVecHeadName.at(i) >= 0 && m_prevVecClusterSize.at(i) > m_tier2NumSlot + 1) {
-      curAllServe = false;
-    }
-  }
+  bool nextAllServe;
+  bool curAllServe; 
   nextAllServe = true;
   curAllServe = true;
   /* decision flow */
@@ -1998,7 +2028,6 @@ bool MinPowerImageCluster::checkBestClusterStructure_DataCentric(int inputRound)
       sizeFeasible = false;
     }
   }
-//#ifdef DEBUG
   cout << "IterSA: " << inputRound << endl;
   for (int i = 0; i < cSystem->vecClusterSize.size(); ++i) {
     cout << cSystem->vecClusterSize.at(i) << ' ';
@@ -2007,7 +2036,6 @@ bool MinPowerImageCluster::checkBestClusterStructure_DataCentric(int inputRound)
   cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
   cout << "min payoff: " << bestFeasiblePayoff << ", ";
   cout << "curr Payoff: " << m_curPayoff << endl;
-//#endif
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)

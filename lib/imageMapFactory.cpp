@@ -9,9 +9,14 @@ ImageMapFactory::ImageMapFactory(
     const double maxPower, 
     const double bandwidthKhz,  
     const int maxNumHead, const int numNodes):
-  m_ptrMap(0),  m_ptrImageSource(0), m_maxPower(maxPower), 
+  m_ptrMap(0),  
+  m_ptrImageSource(0), 
+  m_maxPower(maxPower), 
   m_bandwidthKhz(bandwidthKhz), 
-  m_maxNumHead(maxNumHead), m_numNodes(numNodes)
+  m_maxNumHead(maxNumHead), 
+  m_numNodes(numNodes),
+  m_strIdtFName(idtFileName),
+  m_strCorrFName(corrFileName)
 {
   
 #ifdef DEBUG
@@ -20,8 +25,8 @@ ImageMapFactory::ImageMapFactory(
   m_mapFileName = mapFileName;
 //  vector<string> macroTokens = split(mapFileName,'_'); 
 //  vector<string> microTokens = split(macroTokens[6], '.');
+  
   m_mapId = 0;
-
 }
 
 ImageMapFactory::~ImageMapFactory()
@@ -64,7 +69,7 @@ ImageMapFactory::CreateMap(bool myImageFlag)
   m_ptrMap = new ImageMap(numNodes, m_maxNumHead, m_maxPower, m_bandwidthKhz, m_mapId);
   m_ptrMap->SetChannelByXYPair(m_vecPairPos);
   if (myImageFlag) {
-    fstream myImageIdtFile("paper720_30cam_indepByte.txt",std::ios::in);
+    fstream myImageIdtFile(m_strIdtFName.c_str(),std::ios::in);
     vector<double> vecIdtCodingBits;
     for (int i = 0; i < m_numNodes; ++i) {
       double tmp = 0;
@@ -83,10 +88,6 @@ ImageMapFactory::CreateMap(bool myImageFlag)
 ImageSource*
 ImageMapFactory::CreateImageSource()
 {
-  double dummy = 0;
-  double dummySCorr = 0;
-  int dummyQBits = 0;
-  m_ptrImageSource = new ImageSource(m_numNodes, dummySCorr, dummy, m_ptrMap->GetMatDistance(), dummyQBits);
+  m_ptrImageSource = new ImageSource(m_numNodes, m_strIdtFName, m_strCorrFName, m_ptrMap->GetMatDistance());
   return m_ptrImageSource;
-
 }
