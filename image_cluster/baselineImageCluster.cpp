@@ -209,10 +209,9 @@ void BaselineImageCluster::releaseMemory()
 // @Purpose: Read Topology File and Calculate Gij,distanceOf2Nodes
 // @Called: by main
 //-------------------------------------------------------------------//
-bool BaselineImageCluster::setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double inFidelity)
+bool BaselineImageCluster::setSystem(float inPowerMaxWatt, double inBandwidthKhz, double inFidelity)
 {
     powerMax = inPowerMaxWatt;
-    quantizationBits = inQuantizationBits;
     bandwidthKhz = inBandwidthKhz;
     realNoise = sysComputing->returnInBandThermalNoise(bandwidthKhz);
     fidelityRatio=inFidelity;
@@ -719,7 +718,8 @@ BaselineImageCluster::returnComprRatio()
 bool BaselineImageCluster::startCool()
 {
   begin = clock();
-  indEntropy = m_ptrMap->GetIdtEntropy();
+//  indEntropy = m_ptrMap->GetIdtEntropy();
+  indEntropy = 40.0;
   tempAddT=0;
   tempDisT=0;
   tempHRT=0;
@@ -1354,50 +1354,6 @@ BaselineImageCluster::decideDiscard3o()
     targetNode = minGainName;
 }
 
-void
-BaselineImageCluster::decideDiscard3f()
-{
-    //Compute the discardable size
-    list<list<int> >::iterator itli1 = cSystem->listCluMember->begin();
-    int discardableSize=0;
-    for(; itli1!=cSystem->listCluMember->end(); itli1++)if(itli1->size()>1)discardableSize++;
-    assert(discardableSize!=0);
-    //Randomly choose a cluster
-    itli1 = cSystem->listCluMember->begin();
-    targetHeadIndex = -1;
-    int chooseCursor = (int) ((double)rand() / ((double)RAND_MAX + 1) * discardableSize)+1;//+1 Becasue the intial might
-    assert(chooseCursor<=maxChNum&&chooseCursor>=0);
-
-    itli1 = cSystem->listCluMember->begin();
-    targetHeadIndex=0;
-    for(int i=0; i<chooseCursor; itli1++,targetHeadIndex++)
-    {
-        if(itli1->size()>1)i++;
-        if(i==chooseCursor)break;
-    }
-
-    assert(cSystem->vecHeadName[targetHeadIndex]!=-1);
-    assert(cSystem->vecClusterSize[targetHeadIndex]==itli1->size());
-    assert(cSystem->vecClusterSize[targetHeadIndex]>1);
-    double minGain = DBL_MAX;
-    double tempInter = 0;
-    int    minGainName = -1;
-    list<int>::iterator it2=itli1->begin();
-    for(; it2!=itli1->end(); it2++) {
-        tempInter = 0;
-        if(cSystem->vecHeadName[targetHeadIndex]==(*it2))continue;
-        else {
-          if (!CheckLinkFeasible(cSystem->vecHeadName.at(targetHeadIndex), *it2)) {
-            minGainName = *it2;
-            break;
-          }
-        }
-    }
-    assert(minGainName!=-1);
-
-    targetNode = minGainName;
-
-}
 
 void
 BaselineImageCluster::decideDiscardMinGain()
@@ -1530,7 +1486,7 @@ BaselineImageCluster::GetClusterEntropy(const int chIdx)
       tmpIndicator.at(*iterCol) = 1;
     }
   }
-  return m_ptrImageSource->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits());
+  return m_ptrImageSource->GetJointEntropy(tmpIndicator, tmpVariance, 0, 0);
 }
 
 double
@@ -1558,72 +1514,16 @@ BaselineImageCluster::GetJoinHeadEntropy(const int lChIdx, const int rChIdx)
       tmpIndicator.at(*iterCol) = 1;
     }
   }
-  return m_ptrImageSource->GetJointEntropy(tmpIndicator, tmpVariance, 0, m_ptrMap->GetQBits());
+  return m_ptrImageSource->GetJointEntropy(tmpIndicator, tmpVariance, 0, 0);
 }
 
-bool
-BaselineImageCluster::CheckTwoLinkFeasible(const int lChName, const int lMemberName, const int rChName, const int rMemberName)
-{
-  double Gamma = 1.0;
-  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy()/m_tier1TxTime/m_ptrMap->GetBandwidth()) - 1.0);  
-  double lDecisionValue = (snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(lMemberName, lChName) + 
-      snr_require * snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(lMemberName,rChName)) /
-    (m_ptrMap->GetGijByPair(lMemberName, lChName)* m_ptrMap->GetGijByPair(rMemberName, rChName) - 
-     snr_require * snr_require  * m_ptrMap->GetGijByPair(lMemberName, rChName) * m_ptrMap->GetGijByPair(rMemberName, lChName));
-  double rDecisionValue = (snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(rMemberName, rChName) + 
-      snr_require * snr_require * m_ptrMap->GetNoise() * m_ptrMap->GetGijByPair(rMemberName,lChName)) /
-    (m_ptrMap->GetGijByPair(lMemberName, lChName)* m_ptrMap->GetGijByPair(rMemberName, rChName) - 
-     snr_require * snr_require * m_ptrMap->GetGijByPair(lMemberName, rChName) * m_ptrMap->GetGijByPair(rMemberName, lChName));
-//  cout <<m_ptrMap->GetMaxPower()<<' ' << lDecisionValue << ' ' << rDecisionValue << endl;
-  if (lDecisionValue > 0 && lDecisionValue < m_ptrMap->GetMaxPower() && rDecisionValue > 0 && rDecisionValue < m_ptrMap->GetMaxPower()) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-bool
-BaselineImageCluster::CheckLinkFeasible(const int chName, const int name)
-{
-  std::list<std::list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();
-  for (int idx = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++idx) {
-    std::list<int>::const_iterator iterCol = iterRow->begin();
-    for (; iterCol != iterRow->end(); ++iterCol) {
-      if ((*iterCol) != name && *iterCol != cSystem->vecHeadName.at(idx) && cSystem->vecHeadName.at(idx) != chName) {
-        if(!CheckTwoLinkFeasible(chName, name, cSystem->vecHeadName.at(idx), *iterCol))
-            return false;
-      }
-    }
-  }
-  return true;
-
-}
-
-bool
-BaselineImageCluster::CheckAllFeasible()
-{
-  std::list<std::list<int> >::const_iterator iterRow =  cSystem->listCluMember->begin();
-  for (int idx = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++idx) {
-    std::list<int>::const_iterator iterCol = iterRow->begin();
-    for (; iterCol != iterRow->end(); ++iterCol) {
-      if (cSystem->vecHeadName.at(idx) != *iterCol) {
-        if (!CheckLinkFeasible(cSystem->vecHeadName.at(idx), *iterCol)) {
-          return false;
-        }
-      }
-    }
-  }
-  return true;
-
-}
 
 double
 BaselineImageCluster::GetTier2ExpectPower(const int Name, const int chName)
 {
   double denomiator = m_ptrMap->GetNoise();
   double Gamma = 1.0;
-  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy()/m_tier1TxTime/m_ptrMap->GetBandwidth()) - 1.0);  
+  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy(Name)/m_tier1TxTime/m_ptrMap->GetBandwidth()) - 1.0);  
   list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
   for (int chIdx = 0; iterRow !=cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
     list<int>::const_iterator iterCol = iterRow->begin();

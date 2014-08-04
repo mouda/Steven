@@ -14,7 +14,6 @@
 #include "clusterStructure.h"
 #include "imageMap.h"
 #include "ULCS1b.h"
-#include "CORRE_MA_OPE.h"
 #include "imageSource.h"
 
 using namespace Ipopt;
@@ -34,12 +33,6 @@ using namespace Ipopt;
 class MyTier1NLP : public TNLP
 {
 public:
-  MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
-    ImageMap const * const ptrMap,
-    ULCS1b const * const cSystem,  
-    CORRE_MA_OPE const * const ptrGField,  
-    double tier1TxTime
-    );
 
   MyTier1NLP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
       ImageMap const * const ptrMap,

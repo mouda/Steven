@@ -711,8 +711,7 @@ myTier1NLP.o: myTier1NLP.cpp /usr/include/stdc-predef.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Determinant.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h \
- ../lib/ULCS1b.h ../lib/CORRE_MA_OPE.h ../lib/imageSource.h \
- /usr/include/c++/4.8/cfloat \
+ ../lib/ULCS1b.h ../lib/imageSource.h /usr/include/c++/4.8/cfloat \
  /usr/lib/gcc/x86_64-linux-gnu/4.8/include/float.h
 
 /usr/include/stdc-predef.h:
@@ -2242,8 +2241,6 @@ myTier1NLP.h:
 /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h:
 
 ../lib/ULCS1b.h:
-
-../lib/CORRE_MA_OPE.h:
 
 ../lib/imageSource.h:
 

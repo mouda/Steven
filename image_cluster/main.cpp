@@ -42,6 +42,8 @@ int main(int argc, char *argv[])
   double  fidelityRatio;
   string  mapFileName;
   /* output file name string */
+  string  CorrFName;
+  string  IdtFName;
   string  CSFName;
   string  MetisFName;
   string  CSFormation;
@@ -75,7 +77,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 13  || vm.size() == 14 ) {
+    } else if(vm.size() == 12  || vm.size() == 13 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -101,8 +103,6 @@ int main(int argc, char *argv[])
           mapFileName, 
           powerMaxWatt, 
           spatialCompressionRatio, 
-          temporalCorrFactor,
-          quantizationBits, 
           bandwidthKhz, 
           maxChNum, 
           totalNodes
@@ -116,9 +116,9 @@ int main(int argc, char *argv[])
         imageFlag=true;
       }
       myMap = myMapFactory.CreateMap(imageFlag);
-      if (CSFormation != "ImageSource" && CSFormation != "ImageBaseline" ) {
-        myMatComputer = myMapFactory.CreateMatrixComputer();
-      }
+//      if (CSFormation != "ImageSource" && CSFormation != "ImageBaseline" ) {
+//        myMatComputer = myMapFactory.CreateMatrixComputer();
+//      }
       if (!myMap ) {
         cerr << "Error: Failed to initialize map" << endl;
         return 1;
@@ -167,11 +167,7 @@ int main(int argc, char *argv[])
         }
 
 
-        Simulator mySimulator(
-            myMap, 
-            myCS, 
-            myMatComputer
-            );
+        Simulator mySimulator(myMap, myCS);
 
         /* output control */
         mySimulator.WriteCS( CSFName );

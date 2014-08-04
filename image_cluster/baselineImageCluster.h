@@ -75,7 +75,7 @@ public:
 // @Purpose: Public Function
 // @Called: by main
 //-------------------------------------------------------------------//
-  bool                      setSystem(float inPowerMaxWatt, int inQuantizationBits,double inBandwidthKhz, double fidelity);
+  bool                      setSystem(float inPowerMaxWatt, double inBandwidthKhz, double fidelity);
   bool                      setInitialStucture(char* inputFlag);
   bool                      setIniStruKmeans();//not public but related to setIniStrucKmeans
   bool                      setIniStruDistanceKmedoids();
@@ -115,7 +115,6 @@ public:
   double bandwidthKhz;
   float powerMax;
   double power1st;
-  int quantizationBits;
   double dataBits;
   double virtualCompression;
   int headCandidatesNum;
@@ -276,7 +275,6 @@ public:
   void decideAddRandSelectCluster();
   void decideDiscard3b();
   void decideDiscard3o();
-  void decideDiscard3f();
   void decideDiscardMinGain();
   void decideHeadRotate2i_DC_HeadRanMemDet();
 

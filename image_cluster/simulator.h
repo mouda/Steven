@@ -26,8 +26,7 @@ using std::make_pair;
 class Simulator
 {
   public:
-    Simulator(ImageMap* myMap,ClusterStructure* myCS, CORRE_MA_OPE* myField
-        );
+    Simulator(ImageMap* myMap, ClusterStructure* myCS);
     ~Simulator();
 
 
@@ -37,14 +36,12 @@ class Simulator
     bool SelfCheck();
 
   private:
-    bool CheckFeasible(const std::vector<int>& supStru, double txTime2nd);
     void Print(const std::vector<int>& );
     template < class T>
     string VecToString( const std::vector<T>& );
 
     ImageMap*                m_ptrMap;
     ClusterStructure*   m_ptrCS;
-    CORRE_MA_OPE*       m_ptrGField;
     std::vector<int>*   m_vecSupport;
     std::vector<int>    m_vecTotal;
 

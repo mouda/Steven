@@ -32,7 +32,6 @@ class NewImagePowerUpdater
     double              m_avgRatio;
     double              m_C2;
     std::vector<double> m_vecC2;
-    double              m_idtEntropy;
     double              m_txTimePerSlot;
     bool                m_exceedPc;
     static const double m_scale = 1; //This scale is for avoiding computation error.

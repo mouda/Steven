@@ -12,7 +12,6 @@ NewImagePowerUpdater::NewImagePowerUpdater(
   m_threshold(1e-12),
   m_ptrMap(ptrMap), 
   m_ptrCS(ptrCS), 
-  m_idtEntropy(ptrMap->GetIdtEntropy()),
   m_txTimePerSlot(txTimeSlot)
 {
   m_maIndexInterference = new int* [m_ptrMap->GetNumInitHeads()];
@@ -23,7 +22,6 @@ NewImagePowerUpdater::NewImagePowerUpdater(
   for (int i=0; i < m_ptrMap->GetNumInitHeads(); i++) 
     m_maStrengthInterference[i] = new double [m_ptrMap->GetNumInitHeads()];
   m_inBandNoise = m_ptrMap->GetNoise() * m_scale;
-  m_C2=m_idtEntropy/m_txTimePerSlot/m_ptrMap->GetBandwidth();
   m_vecC2.resize(m_ptrMap->GetNumNodes());
   double totalTier2Time = m_txTimePerSlot*txNumSlot; 
 //  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
@@ -39,7 +37,6 @@ NewImagePowerUpdater::NewImagePowerUpdater(
       m_vecC2.at(*iterCol) = m_ptrMap->GetIdtEntropy(*iterCol)/txTime/m_ptrMap->GetBandwidth();
     }
   }
-  cout << "********idtEntropy " << m_idtEntropy << endl;
   cout << "********m_txTimePerSlot " << m_txTimePerSlot << endl;
   cout << "********bandwidth " << m_ptrMap->GetBandwidth() << endl;
 }

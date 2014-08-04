@@ -4,17 +4,12 @@ ImageMap::ImageMap(
     const int numNodes, 
     const int numHeads, 
     const double maxPower, 
-    const double corrFactor, 
-    const double quantizationBits, 
     const double bandwidthKhz, 
     const int mapId):
   m_numNodes(numNodes), m_numInitHeads(numHeads), m_maxPower(maxPower), m_mapId(mapId),
-  m_corrFactor(corrFactor), m_quantizationBits(quantizationBits), 
-  m_bandwidthKhz(bandwidthKhz), m_systemComputer(0),
-  m_idtEntropy(numNodes)
+  m_bandwidthKhz(bandwidthKhz), m_systemComputer(0)
 {
   m_systemComputer = new SimSystem;
-  m_idtEntropy = 0.5*log2(2*PI*exp(1)) + quantizationBits;
   m_realNoise = m_systemComputer->returnInBandThermalNoise(bandwidthKhz);
 }
 

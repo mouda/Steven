@@ -27,7 +27,6 @@ public:
   double GetSpatialCorrelationFactor() const { return m_spatialCorrFac; }
 
   double GetJointEntropy(const std::vector<int>& vecClusterStru, const std::vector<double>& vecVariance, const double currTime, const double qBits) const;
-  double GetRateDistortion(const std::vector<int>& vecClusterStru, const std::vector<double>& vecVariance, const double currTime, const double qBits) const;
   double computeLog2Det(double inVariance, bool* inClusterStru ) const;
   double computeLog2Det(double inVariance, bool* inClusterStru ) ;
   double computeLog2Det(double inVariance, const std::vector<int>& vecClusterStru) const;

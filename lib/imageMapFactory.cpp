@@ -6,14 +6,10 @@ ImageMapFactory::ImageMapFactory(
     const string& mapFileName, 
     const double maxPower, 
     const double spatialCorrFactor, 
-    const double temporalCorrFactor,
-    const double quantizationBits,
     const double bandwidthKhz,  
     const int maxNumHead, const int numNodes):
-  m_ptrMap(0), m_ptrMatComputer(0), m_maxPower(maxPower), 
+  m_ptrMap(0),  m_ptrImageSource(0), m_maxPower(maxPower), 
   m_spatialCorrFactor(spatialCorrFactor), 
-  m_temporalCorrFactor(temporalCorrFactor),
-  m_quantizationBits(quantizationBits),
   m_bandwidthKhz(bandwidthKhz), 
   m_maxNumHead(maxNumHead), m_numNodes(numNodes)
 {
@@ -33,8 +29,8 @@ ImageMapFactory::~ImageMapFactory()
   if (m_ptrMap != 0) {
     delete m_ptrMap;
   }
-  if (m_ptrMatComputer != 0) {
-    delete m_ptrMatComputer;
+  if (m_ptrImageSource != 0) {
+    delete m_ptrImageSource;
   }
 }
 
@@ -65,7 +61,7 @@ ImageMapFactory::CreateMap(bool myImageFlag)
     return NULL;
   }
   mapFile.close();
-  m_ptrMap = new ImageMap(numNodes, m_maxNumHead, m_maxPower, m_spatialCorrFactor, m_quantizationBits, m_bandwidthKhz, m_mapId);
+  m_ptrMap = new ImageMap(numNodes, m_maxNumHead, m_maxPower, m_bandwidthKhz, m_mapId);
   m_ptrMap->SetChannelByXYPair(m_vecPairPos);
   if (myImageFlag) {
     fstream myImageIdtFile("paper720_30cam_indepByte.txt",std::ios::in);
@@ -83,17 +79,14 @@ ImageMapFactory::CreateMap(bool myImageFlag)
   return m_ptrMap;
 }
 
-CORRE_MA_OPE*
-ImageMapFactory::CreateMatrixComputer()
-{
-  m_ptrMatComputer = new CORRE_MA_OPE(m_numNodes, m_spatialCorrFactor, m_temporalCorrFactor, m_ptrMap->GetMatDistance(), m_quantizationBits);
-  return m_ptrMatComputer;
-}
 
 ImageSource*
 ImageMapFactory::CreateImageSource()
 {
-  m_ptrImageSource = new ImageSource(m_numNodes, m_spatialCorrFactor, m_temporalCorrFactor, m_ptrMap->GetMatDistance(), m_quantizationBits);
+  double dummy = 0;
+  double dummySCorr = 0;
+  int dummyQBits = 0;
+  m_ptrImageSource = new ImageSource(m_numNodes, dummySCorr, dummy, m_ptrMap->GetMatDistance(), dummyQBits);
   return m_ptrImageSource;
 
 }

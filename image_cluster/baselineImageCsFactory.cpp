@@ -70,7 +70,6 @@ BaselineImageCsFactory::CreateClusterStructure()
       m_logFlag
       );
   if(!m_ptrToolSA->setSystem(m_ptrMap->GetMaxPower(), 
-        (int)m_ptrMap->GetQBits(), 
         m_ptrMap->GetBandwidth(), 
         m_fidelityRatio)
       ) {

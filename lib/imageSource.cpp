@@ -174,32 +174,6 @@ double ImageSource::computeLog2Det( double inVariance, const std::vector<int>& v
 double 
 ImageSource::GetJointEntropy(const std::vector<int>& vecClusterStru, const std::vector<double>& vecVariance, const double currTime, const double qBits) const
 {
-//  double idtEntropy = 0.0;
-//  for (int j = 0; j < m_numNodes; ++j) {
-//    if (vecClusterStru[j] == 1) {
-//      idtEntropy += 0.5*log2(2*3.1415*exp(1)) + log2(vecVariance[j]) + qBits;
-//    }
-//  }
-//
-//  int covMaSize = 0;
-//  for(int j = 0; j < m_numNodes; ++j) {
-//    if(vecClusterStru[j] == 1) ++covMaSize;
-//  }
-//  int* supSet= new int [covMaSize];
-//  int cursor = 0;
-//  for(int j=0;j<m_numNodes;j++)
-//  {
-//    if (vecClusterStru[j]== 1 )
-//    {
-//      supSet[cursor]=j;
-//      cursor++;
-//    }
-//  }
-//  std::vector<std::vector<double> > covMat(covMaSize,std::vector<double>(covMaSize));
-//  ComputeCovMaDiffVariance(covMat, covMaSize, supSet, vecVariance);
-//  double redundancy = matEigenCholeskyLogDet(covMat, covMaSize);
-//  delete [] supSet;
-  
   int     minIframeIdx = -1;
   int     mySupportCount = 0;
   double  minIframeBytes = DBL_MAX;
@@ -235,18 +209,6 @@ ImageSource::GetJointEntropy(const std::vector<int>& vecClusterStru, const std::
   
   
   return totalBytes*8;
-}
-
-double
-ImageSource::GetRateDistortion(const std::vector<int>& vecClusterStru, const std::vector<double>& vecVariance, const double currTime, const double qBits) const
-{
-  double entropy = GetJointEntropy(vecClusterStru, vecVariance, currTime, qBits);
-  int* supSet = new int [m_numNodes];
-  for (int i = 0; i < m_numNodes; ++i) {
-    supSet[i] = i;
-  }
-  delete [] supSet;
-  return pow( m_totalEntropyPerSlot / pow(2,2*entropy), 1.0/static_cast<double>(m_numNodes));
 }
 
 double ImageSource::returnNSetCorrelationFactorByCompressionRatio(double compressionRatio,double indEntropy, int numNodes)
