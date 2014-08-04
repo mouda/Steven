@@ -63,8 +63,8 @@ int main(int argc, char *argv[])
       ("txTime,t",                po::value<double>(),  "Transmission time per slot (ms) ")
       ("tier1TxTime,I",           po::value<double>(),  "Tier 1 tx time (ms)")
       ("fidelity,f",              po::value<double>(),  "Fidelity ratio")
-      ("iteration,i",             po::value<int>(),     "Number of iteration Simulate Annealing")
-      ("spatialCorrelation,c",    po::value<double>(),  "Spatial Correlation level")
+      ("spatialCorrelation,c",    po::value<string>(),  "Spatial correlation file name")
+      ("independentBits,i",       po::value<string>(),  "Independent coding file name")
       ("tier2NumSlot,N",          po::value<int>(),     "Number of tier-2 slots")
       ("ClusterStructureOutput,C",po::value<string>(),  "Cluster structure output file name")
       ("WeightedMatrix,W",        po::value<string>(),  "Matrix form of Weght matrix")
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() == 12  || vm.size() == 13 ) {
+    } else if(vm.size() == 13  || vm.size() == 14 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
@@ -85,7 +85,8 @@ int main(int argc, char *argv[])
       powerMaxDbm =             vm["power"].as<double>();
       bandwidthKhz =            vm["bandwidth"].as<double>();
       txTimePerSlot =           vm["txTime"].as<double>();
-      spatialCompressionRatio = vm["spatialCorrelation"].as<double>();
+      CorrFName =               vm["spatialCorrelation"].as<string>();
+      IdtFName  =               vm["independentBits"].as<string>();
       fidelityRatio =           vm["fidelity"].as<double>();
       mapFileName =             vm["map"].as<string>();
       tier2NumSlot   =          vm["tier2NumSlot"].as<int>();
@@ -101,8 +102,9 @@ int main(int argc, char *argv[])
 
       ImageMapFactory myMapFactory(
           mapFileName, 
+          CorrFName,
+          IdtFName,
           powerMaxWatt, 
-          spatialCompressionRatio, 
           bandwidthKhz, 
           maxChNum, 
           totalNodes

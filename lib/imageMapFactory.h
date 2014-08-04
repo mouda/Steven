@@ -22,8 +22,9 @@ class ImageMapFactory
   public:
     ImageMapFactory(
         const string& mapFileName,
+        const string& corrFileName,
+        const string& idtFileName,
         const double maxPower, 
-        const double spatialCorrFactor, 
         const double bandwidthKhz,  
         const int maxNumHead, 
         const int numNodes
@@ -37,7 +38,6 @@ class ImageMapFactory
     const double                  m_maxPower;
     const int                     m_maxNumHead;
     const int                     m_numNodes;
-    const double                  m_spatialCorrFactor;
     const double                  m_bandwidthKhz;
     int                           m_mapId;
     ImageMap*                          m_ptrMap;

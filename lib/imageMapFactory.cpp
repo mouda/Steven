@@ -4,12 +4,12 @@
 
 ImageMapFactory::ImageMapFactory(
     const string& mapFileName, 
+    const string& corrFileName,
+    const string& idtFileName,
     const double maxPower, 
-    const double spatialCorrFactor, 
     const double bandwidthKhz,  
     const int maxNumHead, const int numNodes):
   m_ptrMap(0),  m_ptrImageSource(0), m_maxPower(maxPower), 
-  m_spatialCorrFactor(spatialCorrFactor), 
   m_bandwidthKhz(bandwidthKhz), 
   m_maxNumHead(maxNumHead), m_numNodes(numNodes)
 {
