@@ -16,6 +16,7 @@
 #include <eigen3/Eigen/Cholesky>
 #include <eigen3/Eigen/LU>
 
+#define KSCALE 1000.0
 #define PENALTYSIZE 10e-3 
 using namespace std;
 #include "minPowerImageCluster.h"
@@ -436,7 +437,7 @@ bool MinPowerImageCluster::setIniStruDistanceKmedoids()
         tempGroup[closetHeadIndex].push_back(i);
       }
       convergedFlag = true;
-//#ifdef DEBUG
+#ifdef DEBUG
       //find the k-means coordinate of each cluster
       for (int i = 0; i < tempGroup.size(); i++) {
         cout << "cluster: " << i <<"-th ";
@@ -445,7 +446,7 @@ bool MinPowerImageCluster::setIniStruDistanceKmedoids()
         }
         cout << endl;
       }
-//#endif
+#endif
       for(int i=0; i<maxChNum; i++)
       {
         float newHx = 0;
@@ -722,14 +723,14 @@ bool MinPowerImageCluster::startCool()
 {
   begin = clock();
 //  indEntropy = m_ptrMap->GetIdtEntropy();
-  indEntropy = 40.0;
+  indEntropy = 1.0;
   tempAddT=0;
   tempDisT=0;
   tempHRT=0;
   bool inClu[totalNodes];
   for(int i=0; i<totalNodes; i++)inClu[i]=true;
   double sysRedundancy =m_ptrImageSource->computeLog2Det(1.0, inClu);
-  wholeSystemEntopy = totalNodes*indEntropy+sysRedundancy;
+  wholeSystemEntopy = totalNodes*indEntropy;
 
   flagAnsFound  =  false;
   //-----------------------------//
@@ -742,11 +743,10 @@ bool MinPowerImageCluster::startCool()
   nextChNum     =   curChNum;
   curJEntropy   =   curSupNum*indEntropy;
 
-  m_cur1st_watt   = OptimalRateControl();
-  cout <<"**********" <<OptimalRateControl_v2() << endl;
+  m_cur1st_watt   = OptimalRateControl_v2();
 
-  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
-  vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 1.0);
+  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 1.0);
+  vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 5.0);
   double          entropyPenalty = 1.0;
   vector<double>  tmpSizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
   vector<double>  tmpTier2Penalty(m_ptrMap->GetNumNodes(), 10.0);
@@ -898,13 +898,14 @@ OptimalRateControl_v2() const
   std::vector<int> tmpIndicator(m_ptrMap->GetNumNodes(), 0);
   std::vector<double> tmpVariance(m_ptrMap->GetNumNodes(), 1.0);
 
-  for (int i = 0; iterRow != cSystem->listCluMember->end(); ++iterRow, ++i) {
+  for (int i = 0; iterRow != cSystem->listCluMember->end(); ++iterRow) {
     std::list<int>::const_iterator iterCol = iterRow->begin();
     if ( *iterCol >= 0) {
       for (; iterCol != iterRow->end(); ++iterCol) {
         tmpIndicator.at(*iterCol) = 1;
       }
       HC(i) = m_ptrImageSource->GetJointEntropy(tmpIndicator, tmpVariance, 0, 0);
+      ++i;
     }
     std::fill(tmpIndicator.begin(), tmpIndicator.end(), 0);
   }
@@ -915,7 +916,7 @@ OptimalRateControl_v2() const
   Eigen::MatrixXd rj = sum * (HC.array() * Gj0.array()).pow(0.5);
   double tier1Power = 0;
   for (int i = 0; i < nextChNum; ++i) {
-    tier1Power += m_ptrMap->GetNoise()*(pow(2.0, rj(i)/m_ptrMap->GetBandwidth())-1.0)/Gj0(i); 
+    tier1Power += m_ptrMap->GetNoise()*(pow(2.0, rj(i)/KSCALE/m_ptrMap->GetBandwidth())-1.0)/Gj0(i); 
   }
   return tier1Power;
 }
@@ -1087,7 +1088,7 @@ MinPowerImageCluster::GetNeighbor2( const int iterSA,
   for (int k = 0; k < cSystem->vecClusterSize.size(); ++k) {
     if (cSystem->vecClusterSize.at(k) != 0
         && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
-      if (sizePenalty.at(k) > 0 ) {
+      if (sizePenalty.at(k) > 2*PENALTYSIZE ) {
         if (rand()%2  == 1) {
           tmpSizePenalty.at(k) = sizePenalty.at(k) + 1 * PENALTYSIZE; 
         }
@@ -1110,7 +1111,7 @@ MinPowerImageCluster::GetNeighbor2( const int iterSA,
     list<int>::const_iterator iterCol = iterRow->begin();
     for (; iterCol != iterRow->end(); ++iterCol) {
       if ( GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) > m_ptrMap->GetMaxPower()) {
-        if (tier2Penalty.at(*iterCol) > 0 ) {
+        if (tier2Penalty.at(*iterCol) > 2*PENALTYSIZE ) {
           if (rand()%2  == 1) {
             tmpTier2Penalty.at(*iterCol) = tier2Penalty.at(*iterCol) + 1 * PENALTYSIZE; 
           }
@@ -1131,7 +1132,7 @@ MinPowerImageCluster::GetNeighbor2( const int iterSA,
   /* Neighbor of Entropy */
   double tmpJEntropy = nextSupNum*indEntropy;
   if (fidelityRatio*wholeSystemEntopy - tmpJEntropy > 0) {
-    if (entropyPenalty > 0 ) {
+    if (entropyPenalty > 2*PENALTYSIZE ) {
       if (rand()%2  == 1) {
         tmpEntropyPenalty = entropyPenalty + 1 * PENALTYSIZE; 
       }
@@ -1154,13 +1155,13 @@ MinPowerImageCluster::GetPayOff(
     const vector<double>& tier2Penalty, 
     const double& entropyPenalty)
 {
-//  cout << "S: " << GetSizePenalty(sizePenalty) << ", T: " << 
-//    GetTier2Penalty(tier2Penalty) << ", E: " << GetEntropyPenalty(entropyPenalty) << endl;
-//  for (int i = 0; i < sizePenalty.size(); ++i) {
-//    cout << sizePenalty.at(i) << ' ';
-//  }
-//  cout << endl;
-  return OptimalRateControl()+GetSizePenalty(sizePenalty)  +GetTier2Penalty(tier2Penalty) + GetEntropyPenalty(entropyPenalty);
+  cout << "S: " << GetSizePenalty(sizePenalty) << ", T: " << 
+    GetTier2Penalty(tier2Penalty) << ", E: " << GetEntropyPenalty(entropyPenalty) << endl;
+  for (int i = 0; i < sizePenalty.size(); ++i) {
+    cout << sizePenalty.at(i) << ' ';
+  }
+  cout << endl;
+  return OptimalRateControl_v2()+GetSizePenalty(sizePenalty)  +GetTier2Penalty(tier2Penalty) + GetEntropyPenalty(entropyPenalty);
 }
 
 
@@ -1564,7 +1565,7 @@ MinPowerImageCluster::GetTier2ExpectPower(const int Name, const int chName)
 {
   double denomiator = m_ptrMap->GetNoise();
   double Gamma = 1.0;
-  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy(Name)/m_tier1TxTime/m_ptrMap->GetBandwidth()) - 1.0);  
+  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy(Name)/2100000.0/m_ptrMap->GetBandwidth()) - 1.0);  
   list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
   for (int chIdx = 0; iterRow !=cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
     list<int>::const_iterator iterCol = iterRow->begin();
@@ -1627,7 +1628,7 @@ MinPowerImageCluster::GetTier2Penalty( const vector<double>& tier2Penalty )
     for (; iterCol != iterRow->end(); ++iterCol) {
       if ( GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) > m_ptrMap->GetMaxPower()) {
         penalty += tier2Penalty.at(*iterCol) * 
-          GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) - m_ptrMap->GetMaxPower();
+          abs(GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) - m_ptrMap->GetMaxPower());
 //        cout << "Penalty: " << penalty <<' ' << GetTier2ExpectPower(*iterCol, cSystem->vecHeadName.at(chIdx)) - m_ptrMap->GetMaxPower() 
 //          <<' '<<*iterCol<<' ' <<cSystem->vecHeadName.at(chIdx) <<endl;
       }
@@ -1640,7 +1641,7 @@ double
 MinPowerImageCluster::GetEntropyPenalty(const double entropyPenalty)
 {
   double tmpJEntropy = nextSupNum*indEntropy;
-  if (fidelityRatio*wholeSystemEntopy - tmpJEntropy < 0) {
+  if (fidelityRatio*wholeSystemEntopy - tmpJEntropy < 10e-6) {
     return 0.0;
   }
   else {
@@ -1845,7 +1846,7 @@ void MinPowerImageCluster::ConfirmNeighbor1()
   else if( 
        ( nextPayoff > m_curPayoff )  )
   {
-    double probAnnealing = exp (-20.0*abs(nextPayoff-m_curPayoff)/temparature);
+    double probAnnealing = exp (-1.0*abs(nextPayoff-m_curPayoff)/temparature);
     //cout<<"Show Payoff "<<nextPayoff<<"  "<<m_curPayoff<<endl;
     //cout<<"  Prob Annealing:  "<<probAnnealing<<endl;
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
@@ -1877,9 +1878,18 @@ MinPowerImageCluster::ConfirmNeighbor2(
     const double& tmpEntropyPenalty)
 {
   double tmpPayoff = GetPayOff(tmpSizePenalty, tmpTier2Penalty, tmpEntropyPenalty);
+  for (int i = 0; i < tmpSizePenalty.size(); ++i) {
+    if (tmpSizePenalty.at(i) < 0) return;
+  }
+  for (int i = 0; i < tmpTier2Penalty.size(); ++i) {
+    if (tmpTier2Penalty.at(i) < 0) return;
+  }
+  if (tmpEntropyPenalty < 0 ) {
+    return;
+  }
 
   if (tmpPayoff < m_curPayoff) {
-    double probAnnealing = exp (-15.0*abs(tmpPayoff-m_curPayoff)/temparature);
+    double probAnnealing = exp (-1.0*abs(tmpPayoff-m_curPayoff)/temparature);
     double annealingChoose = (double)rand()/((double)RAND_MAX+1);
     if ( annealingChoose < probAnnealing ) {//accept the move
       sizePenalty.assign(tmpSizePenalty.begin(), tmpSizePenalty.end());

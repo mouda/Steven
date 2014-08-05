@@ -10,13 +10,13 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-path = {'../../runSimulation/runTest/testImageClustering/CS_90000.0.out'};
+path = {'../../runSimulation/runTest/testImageClustering/CS_test_CSA.out'};
 
 strtitle2={'SA'};
-mapString = ['../../runSimulation/runTest/testImageClustering/paper720_30cam_pos.txt'];
+mapString = ['../../runSimulation/runTest/testImageClustering/source/100cam_r2000_map.out'];
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
-vecDirection = dlmread('direction.out');
+vecDirection = dlmread('../../runSimulation/runTest/testImageClustering/source/100cam_r2000_dir.out');
 for ii=1:length(path)
 % 
 hFig = figure(ii);
@@ -69,11 +69,11 @@ for i=1:maxChNum
      X(2) = x(j);
      Y(2) = y(j);
      theta = vecDirection(j)+pi;
-     r = 30;
+     r = 3;
      u = x(j) + r * cos(theta); % convert polar (theta,r) to cartesian
      v = y(j) + r * sin(theta);
      
-     arrow([x(j) y(j)],[u v],'BaseAngle',30);
+     %arrow([x(j) y(j)],[u v],'BaseAngle',60);
      hLine = plot(X,Y,'k:','Color',[0.001 0.001 0.001],'LineWidth',1);
      set(get(get(hLine,'Annotation'),'LegendInformation'),...
     'IconDisplayStyle','off');
