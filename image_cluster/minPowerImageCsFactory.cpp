@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define SA_INI_TEMP 20.0
+#define SA_INI_TEMP 50.0
 #define SA_FIN_TEMP 10e-6
 
 MinPowerImageCsFactory::MinPowerImageCsFactory( ImageMap const * const myMap, 
@@ -25,7 +25,6 @@ MinPowerImageCsFactory::MinPowerImageCsFactory(ImageMap const * const myMap,
   m_logFlag(false),
   m_ptrImageSource(myImageSource)
 {
-
   srand(time(NULL));
 }
 

@@ -1565,7 +1565,7 @@ MinPowerImageCluster::GetTier2ExpectPower(const int Name, const int chName)
 {
   double denomiator = m_ptrMap->GetNoise();
   double Gamma = 1.0;
-  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy(Name)/2100000.0/m_ptrMap->GetBandwidth()) - 1.0);  
+  double snr_require = Gamma * (pow(2, m_ptrMap->GetIdtEntropy(Name)/170000.0/m_ptrMap->GetBandwidth()) - 1.0);  
   list<list<int> >::const_iterator iterRow = cSystem->listCluMember->begin();  
   for (int chIdx = 0; iterRow !=cSystem->listCluMember->end(); ++iterRow, ++chIdx) {
     list<int>::const_iterator iterCol = iterRow->begin();
@@ -1611,7 +1611,7 @@ MinPowerImageCluster::GetSizePenalty( const vector<double>& sizePenalty)
     if (cSystem->vecClusterSize.at(k) != 0
         && (static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0) > 0.0 ) {
       tmpSizePenalty += sizePenalty.at(k) *
-        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,5); 
+        pow(static_cast<double>(cSystem->vecClusterSize.at(k)) - static_cast<double>(m_tier2NumSlot) - 1.0,1); 
     }
   }
   return tmpSizePenalty;
