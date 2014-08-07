@@ -2,7 +2,6 @@
 #define _SLOT_
 
 #include <vector>
-#include "map.h"
 #include "scheduler.h"
 
 class Slot

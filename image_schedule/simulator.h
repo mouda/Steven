@@ -6,12 +6,11 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
-#include "map.h"
+#include "imageMap.h"
 #include "slot.h"
 #include "clusterStructure.h"
 #include "scheduler.h"
-#include "maxSNRScheduler.h"
-#include "CORRE_MA_OPE.h"
+#include "imageSource.h"
 #include "../lib/fileHandler.h"
 
 using std::string;
@@ -29,7 +28,7 @@ using std::make_pair;
 class Simulator
 {
   public:
-    Simulator(Map* myMap,ClusterStructure* myCS, Scheduler* myScheduler, CORRE_MA_OPE* myField, 
+    Simulator(ImageMap* myMap,ClusterStructure* myCS, Scheduler* myScheduler, ImageSource* myField, 
         const string&,
         const string&,
         const string&,
@@ -52,10 +51,8 @@ class Simulator
 
 
     bool SelfCheck();
-    std::vector<int>  CheckConnection(const std::vector<int>& );
 
   private:
-    bool CheckFeasible(const std::vector<int>& supStru, double txTime2nd);
     double GetTotalEntropy(const std::vector<int>& vecSupport) const;
     double Get1stSlotEntropy(const std::vector<int>& vecSupport) const;
     void Print(const std::vector<int>& );
@@ -63,10 +60,10 @@ class Simulator
     string VecToString( const std::vector<T>& );
     Slot* GetNextSlot(Slot*, std::vector<int>& );
 
-    Map*                m_ptrMap;
+    ImageMap*                m_ptrImageMap;
     ClusterStructure*   m_ptrCS;
     Scheduler*          m_ptrSched;
-    CORRE_MA_OPE*       m_ptrGField;
+    ImageSource*       m_ptrImageSource;
     std::vector<int>*   m_vecSupport;
 
     std::vector<int>    m_vecTotal;

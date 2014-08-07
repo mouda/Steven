@@ -19,7 +19,7 @@ MinPowerImageMILP::MinPowerImageMILP(Index n, Index m, Index nnz_jac_g, Index nn
     const int tier2NumSlot,
     const double bandwidthKhz,    
     const ClusterStructure* ptrCS,
-    const Map* ptrMap):
+    const ImageMap* ptrMap):
   m_txTimePerSlot(tau), 
   m_tier2NumSlot(tier2NumSlot),
   m_bandwidthKhz(bandwidthKhz),
@@ -254,7 +254,7 @@ MinPowerImageMILP::get_bounds_info(Index n, Number* x_l, Number* x_u,
     for (int i_q = 0; i_q < m_numNodes; ++i_q) {
       int index_j = n_q * m_numNodes +  i_q; 
       if ( m_ptrCS->GetChIdxByName(i_q) >= 0 && m_ptrCS->GetChNameByName(i_q) != i_q ) {
-        x_l[index_j] = 10e-30;
+        x_l[index_j] = 10e-6;
         x_u[index_j] = DBL_MAX;
       }
       else {

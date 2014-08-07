@@ -1,6 +1,6 @@
 kmeansCsFactory.o: kmeansCsFactory.cpp /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/predefs.h kmeansCsFactory.h \
- ../lib/csFactory.h /usr/include/c++/4.8/limits \
+ ../lib/imageCsFactory.h /usr/include/c++/4.8/limits \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/4.8/bits/os_defines.h \
  /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
@@ -1101,7 +1101,8 @@ kmeansCsFactory.o: kmeansCsFactory.cpp /usr/include/stdc-predef.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Determinant.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h \
- ../lib/map.h ../lib/simSystem.h ../lib/ULAGENT.h
+ ../lib/imageSource.h ../lib/imageMap.h ../lib/simSystem.h \
+ ../lib/ULAGENT.h ../lib/imageSource.h
 
 /usr/include/stdc-predef.h:
 
@@ -1109,7 +1110,7 @@ kmeansCsFactory.o: kmeansCsFactory.cpp /usr/include/stdc-predef.h \
 
 kmeansCsFactory.h:
 
-../lib/csFactory.h:
+../lib/imageCsFactory.h:
 
 /usr/include/c++/4.8/limits:
 
@@ -3401,8 +3402,12 @@ kmeansCsFactory.h:
 
 /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h:
 
-../lib/map.h:
+../lib/imageSource.h:
+
+../lib/imageMap.h:
 
 ../lib/simSystem.h:
 
 ../lib/ULAGENT.h:
+
+../lib/imageSource.h:

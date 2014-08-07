@@ -1,12 +1,6 @@
 #ifndef _SCHEDULERFACTORY_
 #define _SCHEDULERFACTORY_ 
 #include "scheduler.h"
-#include "branchBoundScheduler.h"
-#include "maxSNRScheduler.h"
-#include "greedyPhysical.h"
-#include "bruteForceScheduler.h"
-#include "nonSimplifiedScheduler.h"
-#include "minPowerScheduler.h"
 #include "minPowerImageScheduler.h"
 
 #include <string>
@@ -31,8 +25,8 @@ class SchedulerFactory
     SchedulerFactory(const double txTime, 
         const int tier2NumSlot,
         const double bandwidthKhz, 
-        Map const * const, 
-        CORRE_MA_OPE* , 
+        ImageMap const * const, 
+        ImageSource* , 
         ClusterStructure const * const);
 
     ~SchedulerFactory();
@@ -43,8 +37,8 @@ class SchedulerFactory
     const double                    m_bandwidthKhz;
     const double                    m_maxPower;
     const int                       m_tier2NumSlot;
-    Map const * const               m_ptrMap;
+    ImageMap const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;
-    CORRE_MA_OPE*       m_ptrMatComputer;
+    ImageSource*                    m_ptrImageSource;
 };
 #endif

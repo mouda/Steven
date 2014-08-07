@@ -95,11 +95,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_simulator_OBJECTS = main.$(OBJEXT) csPowerUpdater.$(OBJEXT) \
 	ULSA4b7_DC.$(OBJEXT) tier1NLP.$(OBJEXT) \
 	fileCSFactory.$(OBJEXT) kmeansCsFactory.$(OBJEXT) \
-	minResCsFactory.$(OBJEXT) scheduler.$(OBJEXT) \
-	MyTMINLP.$(OBJEXT) branchBoundScheduler.$(OBJEXT) \
-	maxSNRScheduler.$(OBJEXT) greedyPhysical.$(OBJEXT) \
-	bruteForceScheduler.$(OBJEXT) nonSimplifiedScheduler.$(OBJEXT) \
-	minPowerScheduler.$(OBJEXT) minPowerMILP.$(OBJEXT) \
+	scheduler.$(OBJEXT) MyTMINLP.$(OBJEXT) minPowerMILP.$(OBJEXT) \
 	minPowerImageScheduler.$(OBJEXT) minPowerImageMILP.$(OBJEXT) \
 	baselineImageScheduler.$(OBJEXT) baselineImageMILP.$(OBJEXT) \
 	SASolver.$(OBJEXT) schedFactory.$(OBJEXT) slot.$(OBJEXT) \
@@ -113,7 +109,8 @@ simulator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	../lib/libimageSource.la ../lib/libULAGENT.la \
 	../lib/libsimSystem.la ../lib/libtimesearch.la \
 	../lib/libTimeStamp.la ../lib/libULConstraintSolver.la \
-	../lib/libPowerUpdater.la ../lib/libULCS1b.la
+	../lib/libPowerUpdater.la ../lib/libimageMapFactory.la \
+	../lib/libimageCsFactory.la ../lib/libULCS1b.la
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
@@ -392,15 +389,8 @@ simulator_SOURCES = main.cpp \
 		    tier1NLP.h tier1NLP.cpp\
 		    fileCSFactory.h fileCSFactory.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
-		    minResCsFactory.h minResCsFactory.cpp\
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \
-		    branchBoundScheduler.h branchBoundScheduler.cpp \
-		    maxSNRScheduler.h maxSNRScheduler.cpp \
-		    greedyPhysical.h greedyPhysical.cpp \
-		    bruteForceScheduler.h bruteForceScheduler.cpp\
-		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
-		    minPowerScheduler.h minPowerScheduler.cpp\
 		    minPowerMILP.h minPowerMILP.cpp\
 		    minPowerImageScheduler.h minPowerImageScheduler.cpp\
 		    minPowerImageMILP.hpp minPowerImageMILP.cpp\
@@ -429,6 +419,8 @@ simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
 		  ../lib/libTimeStamp.la \
 		  ../lib/libULConstraintSolver.la\
 		  ../lib/libPowerUpdater.la\
+		  ../lib/libimageMapFactory.la\
+		  ../lib/libimageCsFactory.la\
 		  ../lib/libULCS1b.la
 
 all: all-am
@@ -530,20 +522,13 @@ include ./$(DEPDIR)/SASolver.Po
 include ./$(DEPDIR)/ULSA4b7_DC.Po
 include ./$(DEPDIR)/baselineImageMILP.Po
 include ./$(DEPDIR)/baselineImageScheduler.Po
-include ./$(DEPDIR)/branchBoundScheduler.Po
-include ./$(DEPDIR)/bruteForceScheduler.Po
 include ./$(DEPDIR)/csPowerUpdater.Po
 include ./$(DEPDIR)/fileCSFactory.Po
-include ./$(DEPDIR)/greedyPhysical.Po
 include ./$(DEPDIR)/kmeansCsFactory.Po
 include ./$(DEPDIR)/main.Po
-include ./$(DEPDIR)/maxSNRScheduler.Po
 include ./$(DEPDIR)/minPowerImageMILP.Po
 include ./$(DEPDIR)/minPowerImageScheduler.Po
 include ./$(DEPDIR)/minPowerMILP.Po
-include ./$(DEPDIR)/minPowerScheduler.Po
-include ./$(DEPDIR)/minResCsFactory.Po
-include ./$(DEPDIR)/nonSimplifiedScheduler.Po
 include ./$(DEPDIR)/schedFactory.Po
 include ./$(DEPDIR)/scheduler.Po
 include ./$(DEPDIR)/simulator.Po

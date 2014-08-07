@@ -1,12 +1,14 @@
 #ifndef _KMEANSCSFACTORY_
 #define _KMEANSCSFACTORY_
 
-#include "csFactory.h"
+#include "imageCsFactory.h"
+#include "imageSource.h"
 
-class KmeansCsFactory: public CsFactory
+class KmeansCsFactory: public ImageCsFactory
 {
   public:
-    KmeansCsFactory(Map const * const, CORRE_MA_OPE const * const );
+    KmeansCsFactory(ImageMap const * const, CORRE_MA_OPE const * const );
+    KmeansCsFactory(ImageMap const * const, ImageSource const * const );
     ~KmeansCsFactory();
     ClusterStructure * CreateClusterStructure();
   private:

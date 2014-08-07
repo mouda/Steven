@@ -69,15 +69,8 @@ simulator_SOURCES = main.cpp \
 		    tier1NLP.h tier1NLP.cpp\
 		    fileCSFactory.h fileCSFactory.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
-		    minResCsFactory.h minResCsFactory.cpp\
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \
-		    branchBoundScheduler.h branchBoundScheduler.cpp \
-		    maxSNRScheduler.h maxSNRScheduler.cpp \
-		    greedyPhysical.h greedyPhysical.cpp \
-		    bruteForceScheduler.h bruteForceScheduler.cpp\
-		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
-		    minPowerScheduler.h minPowerScheduler.cpp\
 		    minPowerMILP.h minPowerMILP.cpp\
 		    minPowerImageScheduler.h minPowerImageScheduler.cpp\
 		    minPowerImageMILP.hpp minPowerImageMILP.cpp\
@@ -109,4 +102,6 @@ simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
 		  ../lib/libTimeStamp.la \
 		  ../lib/libULConstraintSolver.la\
 		  ../lib/libPowerUpdater.la\
+		  ../lib/libimageMapFactory.la\
+		  ../lib/libimageCsFactory.la\
 		  ../lib/libULCS1b.la

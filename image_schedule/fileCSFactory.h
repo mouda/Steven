@@ -1,12 +1,13 @@
 #ifndef _FILECSFACTORY_
 #define _FILECSFACTORY_
 
-#include "csFactory.h"
+#include "imageCsFactory.h"
 
-class FileCSFactory: public CsFactory
+class FileCSFactory: public ImageCsFactory
 {
   public:
-    FileCSFactory(Map const * const, CORRE_MA_OPE const * const );
+    FileCSFactory(ImageMap const * const, CORRE_MA_OPE const * const );
+    FileCSFactory(ImageMap const * const, ImageSource const * const );
     ~FileCSFactory();
     ClusterStructure * CreateClusterStructure();
     void                SetFileName( const std::string& FName){ m_CSFName = FName; }

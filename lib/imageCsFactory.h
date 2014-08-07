@@ -7,6 +7,7 @@
 
 #include "clusterStructure.h"
 #include "CORRE_MA_OPE.h"
+#include "imageSource.h"
 #include "imageMap.h"
 
 using std::vector;
@@ -34,6 +35,5 @@ class ImageCsFactory
     ClusterStructure*   m_ptrCS;
     ImageMap const * const   m_ptrMap;
     CORRE_MA_OPE const * const  m_ptrMatComputer;
-
 };
 #endif

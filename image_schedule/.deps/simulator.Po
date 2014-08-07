@@ -88,8 +88,8 @@ simulator.o: simulator.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
  /usr/include/c++/4.8/bits/stl_bvector.h \
- /usr/include/c++/4.8/bits/vector.tcc ../lib/map.h ../lib/simSystem.h \
- /usr/include/c++/4.8/cmath /usr/include/math.h \
+ /usr/include/c++/4.8/bits/vector.tcc ../lib/imageMap.h \
+ ../lib/simSystem.h /usr/include/c++/4.8/cmath /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/huge_val.h \
  /usr/include/x86_64-linux-gnu/bits/huge_valf.h \
  /usr/include/x86_64-linux-gnu/bits/huge_vall.h \
@@ -698,10 +698,9 @@ simulator.o: simulator.cpp /usr/include/stdc-predef.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Determinant.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h slot.h \
- scheduler.h ../lib/CORRE_MA_OPE.h ../lib/clusterStructure.h \
+ scheduler.h ../lib/imageSource.h ../lib/clusterStructure.h \
  /usr/include/c++/4.8/list /usr/include/c++/4.8/bits/stl_list.h \
- /usr/include/c++/4.8/bits/list.tcc maxSNRScheduler.h \
- ../lib/fileHandler.h
+ /usr/include/c++/4.8/bits/list.tcc ../lib/fileHandler.h
 
 /usr/include/stdc-predef.h:
 
@@ -933,7 +932,7 @@ simulator.h:
 
 /usr/include/c++/4.8/bits/vector.tcc:
 
-../lib/map.h:
+../lib/imageMap.h:
 
 ../lib/simSystem.h:
 
@@ -2193,7 +2192,7 @@ slot.h:
 
 scheduler.h:
 
-../lib/CORRE_MA_OPE.h:
+../lib/imageSource.h:
 
 ../lib/clusterStructure.h:
 
@@ -2202,7 +2201,5 @@ scheduler.h:
 /usr/include/c++/4.8/bits/stl_list.h:
 
 /usr/include/c++/4.8/bits/list.tcc:
-
-maxSNRScheduler.h:
 
 ../lib/fileHandler.h:

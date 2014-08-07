@@ -14,7 +14,7 @@
 #include <eigen3/Eigen/LU>
 #include <vector>
 #include "clusterStructure.h"
-#include "map.h"
+#include "imageMap.h"
 using namespace  Ipopt;
 using namespace Bonmin;
     
@@ -25,7 +25,7 @@ public:
       const double tau,
       const int tier2NumSlot,
       const double bandwidthKhz,    
-      const ClusterStructure* ptrCS, const Map* ptrMap);
+      const ClusterStructure* ptrCS, const ImageMap* ptrMap);
   
   /// virtual destructor.
   virtual ~MinPowerImageMILP(){}
@@ -185,7 +185,7 @@ public:
     Eigen::MatrixXd             m_Signma;
     Eigen::MatrixXd             m_Constriants;
     const ClusterStructure*     m_ptrCS;
-    const Map*                  m_ptrMap;
+    const ImageMap*                  m_ptrMap;
 
     std::vector<double>               m_vecSolution;
     Eigen::MatrixXd                   m_matConstraints;

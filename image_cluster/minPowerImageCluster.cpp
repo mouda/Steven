@@ -745,9 +745,9 @@ bool MinPowerImageCluster::startCool()
 
   m_cur1st_watt   = OptimalRateControl_v2();
 
-  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 1.0);
-  vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 5.0);
-  double          entropyPenalty = 1.0;
+  vector<double>  sizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
+  vector<double>  tier2Penalty(m_ptrMap->GetNumNodes(), 10.0);
+  double          entropyPenalty = 10.0;
   vector<double>  tmpSizePenalty(m_ptrMap->GetNumInitHeads(), 10.0);
   vector<double>  tmpTier2Penalty(m_ptrMap->GetNumNodes(), 10.0);
   double          tmpEntropyPenalty = 10.0;
@@ -788,6 +788,10 @@ bool MinPowerImageCluster::startCool()
 
       calculateMatrics_minResors(sizePenalty, tier2Penalty, entropyPenalty);
       ConfirmNeighbor1();
+      if(checkBestClusterStructure_DataCentric(i)) {
+        cout<<"Congratulation All nodes are served"<<endl;
+        break;
+      }
     }
     else {
       GetNeighbor2(i, sizePenalty, tier2Penalty, entropyPenalty, tmpSizePenalty, tmpTier2Penalty, tmpEntropyPenalty );
@@ -798,10 +802,6 @@ bool MinPowerImageCluster::startCool()
       flagAnsFound=true;
     }
     assert(curSupNum>=0);
-    if(checkBestClusterStructure_DataCentric(i)) {
-      cout<<"Congratulation All nodes are served"<<endl;
-      break;
-    }
     int tempche = (signed)cSystem->listUnSupport->size();
     curSupNum = GetSupportNodes();
 
@@ -972,13 +972,13 @@ void MinPowerImageCluster::GetNeighbor1( const int iterSA)
      probJoin = (chkLessCluster)?tmpJoinCan*125:0;
   }
   else {
-     probJoin = (chkLessCluster)?tmpJoinCan*1250:0;
+     probJoin = (chkLessCluster)?tmpJoinCan*2500:0;
   } 
   //int probJoin = 0;
 
   //probJoin=((lastJoinPassAccu>thres2-400)?probJoin:0);
 
-  int probIsoltae=((curChNum<maxChNum)?1250:0);
+  int probIsoltae=((curChNum<maxChNum)?2500:0);
   //probIsoltae=((lastJoinPassAccu>thres2)?probIsoltae:0);
   //int probIsoltae = 0;
 
@@ -2045,7 +2045,8 @@ bool MinPowerImageCluster::checkBestClusterStructure_DataCentric(int inputRound)
   cout << endl;
   cout << "E L S: " << (curJEntropy >= fidelityRatio*wholeSystemEntopy) <<' '<<CheckTier2Feasible() <<' ' <<sizeFeasible << ", ";
   cout << "min payoff: " << bestFeasiblePayoff << ", ";
-  cout << "curr Payoff: " << m_curPayoff << endl;
+  cout << "curr Payoff: " << m_curPayoff << ", "; 
+  cout << "next Payoff: " << nextPayoff << endl;
   if(curAllServe)bestAllServeFound=true;
   //cout<<"In check Best"<<endl;
   if ((curJEntropy>bestFeasibleJEntropy) && !curAllServe && !bestAllServeFound)

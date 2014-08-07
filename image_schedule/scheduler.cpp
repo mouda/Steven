@@ -1,8 +1,8 @@
 #include "scheduler.h"
 
 
-Scheduler::Scheduler(const double txTime, Map const * const ptrMap, 
-    CORRE_MA_OPE const * const ptrMatComputer, 
+Scheduler::Scheduler(const double txTime, ImageMap const * const ptrMap, 
+    ImageSource const * const ptrMatComputer, 
     ClusterStructure const * const ptrCS)
 {
 

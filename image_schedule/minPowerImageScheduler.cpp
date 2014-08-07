@@ -5,14 +5,14 @@ using Ipopt::Index;
 MinPowerImageScheduler::MinPowerImageScheduler( const double txTime, 
     const int tier2NumSlot,
     const double bandwidthKhz, 
-    Map const * const ptrMap, 
-    CORRE_MA_OPE* ptrMatComputer, 
+    ImageMap const * const ptrMap, 
+    ImageSource* ptrMatComputer, 
     ClusterStructure const * const ptrCS): 
     m_txTimePerSlot(txTime), 
     m_tier2NumSlot(tier2NumSlot),
     m_bandwidthKhz(bandwidthKhz),
     m_ptrMap(ptrMap), 
-    m_ptrCS(ptrCS), m_ptrMatComputer(ptrMatComputer),
+    m_ptrCS(ptrCS), m_ptrImageSource(ptrMatComputer),
     m_type("ImageSource"),
     m_slotCounter(0)
 {

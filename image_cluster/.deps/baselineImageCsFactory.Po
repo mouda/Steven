@@ -1103,9 +1103,10 @@ baselineImageCsFactory.o: baselineImageCsFactory.cpp \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Determinant.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h \
  /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h \
- ../lib/imageMap.h ../lib/simSystem.h ../lib/ULAGENT.h \
- ../lib/imageSource.h baselineImageCluster.h /usr/include/c++/4.8/map \
- /usr/include/c++/4.8/bits/stl_tree.h /usr/include/c++/4.8/bits/stl_map.h \
+ ../lib/imageSource.h ../lib/imageMap.h ../lib/simSystem.h \
+ ../lib/ULAGENT.h ../lib/imageSource.h baselineImageCluster.h \
+ /usr/include/c++/4.8/map /usr/include/c++/4.8/bits/stl_tree.h \
+ /usr/include/c++/4.8/bits/stl_map.h \
  /usr/include/c++/4.8/bits/stl_multimap.h \
  /opt/ipopt/include/coin/IpIpoptApplication.hpp \
  /opt/ipopt/include/coin/IpJournalist.hpp \
@@ -3431,6 +3432,8 @@ baselineImageCsFactory.h:
 /opt/eigen320/include/eigen3/Eigen/src/LU/Inverse.h:
 
 /opt/eigen320/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h:
+
+../lib/imageSource.h:
 
 ../lib/imageMap.h:
 

@@ -3,20 +3,20 @@
 
 
 
-Simulator::Simulator(Map* myMap, 
+Simulator::Simulator(ImageMap* myMap, 
     ClusterStructure* myCS, 
     Scheduler* myScheduler, 
-    CORRE_MA_OPE* myField,
+    ImageSource* ptrImageSource,
     const string& entropyFName,
     const string& MSEFName,
     const string& solutionFName,
     const string& supportNumFName,
     const string& totalEntropyFName,
     const string& powerFName):
-  m_ptrMap(myMap), 
+  m_ptrImageMap(myMap), 
   m_ptrCS(myCS), 
   m_ptrSched(myScheduler),
-  m_ptrGField(myField),
+  m_ptrImageSource(ptrImageSource),
   m_entropyFHandler(entropyFName),
   m_MSEFHandler(MSEFName),
   m_solutionFHandler(solutionFName),
@@ -24,9 +24,9 @@ Simulator::Simulator(Map* myMap,
   m_totalEntropyFHandler(totalEntropyFName),
   m_vecPowerFHandler(powerFName)
 {
-  m_vecSupport = new vector<int>(m_ptrMap->GetNumNodes());
-  m_vecTotal.resize(m_ptrMap->GetNumNodes());
-  for (int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+  m_vecSupport = new vector<int>(m_ptrImageMap->GetNumNodes());
+  m_vecTotal.resize(m_ptrImageMap->GetNumNodes());
+  for (int i = 0; i < m_ptrImageMap->GetNumNodes(); ++i) {
     if (m_ptrCS->GetChNameByName(i) != i) {
       m_vecTotal.at(i) = 1;
     }
@@ -46,26 +46,24 @@ Simulator::~Simulator()
 void
 Simulator::SequentialRun(int tier2NumSlot)
 {
-  std::vector<int> vecSupport(m_ptrMap->GetNumNodes());
+  std::vector<int> vecSupport(m_ptrImageMap->GetNumNodes());
   fill(vecSupport.begin(), vecSupport.end(), 0);
-  std::vector<double> currVecVariance(m_ptrMap->GetNumNodes());
+  std::vector<double> currVecVariance(m_ptrImageMap->GetNumNodes());
   fill(currVecVariance.begin(), currVecVariance.end(), 1.0);
-  std::vector<double> nextVecVariance(m_ptrMap->GetNumNodes());
+  std::vector<double> nextVecVariance(m_ptrImageMap->GetNumNodes());
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
-  std::vector<double> vecPower(m_ptrMap->GetNumNodes());
+  std::vector<double> vecPower(m_ptrImageMap->GetNumNodes());
   fill(vecPower.begin(), vecPower.end(), 0.0);
-  std::vector<int> vecSlots(m_ptrMap->GetNumNodes());
+  std::vector<int> vecSlots(m_ptrImageMap->GetNumNodes());
   fill(vecSlots.begin(), vecSlots.end(), 0);
   double currPower   = 0; 
   double entropy     = 0;
   double MSE         = 0;  
   double totalEntropy= 0;
   currPower    = m_ptrSched->ScheduleOneSlot(vecSupport, vecPower, currVecVariance);
-  if (m_ptrGField) {
-    entropy      = m_ptrGField->GetJointEntropy(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
-    MSE          = m_ptrGField->GetRateDistortion(vecSupport, currVecVariance, 0.0, m_ptrMap->GetQBits());
-    totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, currVecVariance, 0.0, m_ptrMap->GetQBits());
-    m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, vecSlots ,m_ptrSched->GetTxTimePerSlot());
+  if (m_ptrImageSource) {
+    entropy      = m_ptrImageSource->GetJointEntropy(vecSupport, currVecVariance, 0.0, 0.0);
+    totalEntropy = m_ptrImageSource->GetJointEntropy(m_vecTotal, currVecVariance, 0.0, 0.0);
   }
   cout << "Entropy: " << entropy << " MSE: " << MSE << " Total: " << totalEntropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
@@ -87,22 +85,20 @@ Simulator::SequentialRun(int tier2NumSlot)
 Slot*
 Simulator::GetNextSlot(Slot* mySlot, std::vector<int>& vecSlots)
 {
-  std::vector<int> vecSupport(m_ptrMap->GetNumNodes());
+  std::vector<int> vecSupport(m_ptrImageMap->GetNumNodes());
   fill(vecSupport.begin(), vecSupport.end(), 0);
-  std::vector<double> nextVecVariance(m_ptrMap->GetNumNodes());
+  std::vector<double> nextVecVariance(m_ptrImageMap->GetNumNodes());
   fill(nextVecVariance.begin(), nextVecVariance.end(), 1.0);
-  std::vector<double> vecPower(m_ptrMap->GetNumNodes());
+  std::vector<double> vecPower(m_ptrImageMap->GetNumNodes());
   fill(vecPower.begin(), vecPower.end(), 0.0);
   double currPower   = 0; 
   double entropy     = 0;
   double MSE         = 0;  
   double totalEntropy= 0;
   currPower    = m_ptrSched->ScheduleOneSlot(vecSupport, vecPower, mySlot->GetVariance());
-  if (m_ptrGField) {
-    entropy      = m_ptrGField->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
-    MSE          = m_ptrGField->GetRateDistortion(vecSupport, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
-    totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, mySlot->GetVariance(), 0.0, m_ptrMap->GetQBits());
-    m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, vecSlots, m_ptrSched->GetTxTimePerSlot());
+  if (m_ptrImageSource) {
+    entropy      = m_ptrImageSource->GetJointEntropy(vecSupport, mySlot->GetVariance(), 0.0, 0.0);
+    totalEntropy = m_ptrImageSource->GetJointEntropy(m_vecTotal, mySlot->GetVariance(), 0.0, 0.0);
   }
   
   cout << "Entropy: " << entropy << " MSE: " << MSE << " Total: " << totalEntropy << ' ';  
@@ -128,8 +124,8 @@ Simulator::SequentialFree()
 bool
 Simulator::SelfCheck()
 {
-  if (!m_ptrMap) {
-    cerr << "Error: Uninitialized Map" << endl;
+  if (!m_ptrImageMap) {
+    cerr << "Error: Uninitialized ImageMap" << endl;
     return false;
   }
   if (!m_ptrCS) {
@@ -141,20 +137,12 @@ Simulator::SelfCheck()
     return false;
   }
   /* print map */
-  cout << "===================== Map ========================" << endl;
-  cout << setw(20) << "MapId:" << setw(10) << m_ptrMap->GetMapId() << endl;
-  cout << setw(20) << "Nodes:" << setw(10) << m_ptrMap->GetNumNodes() << endl;
-  cout << setw(20) << "MaxHeads:" << setw(10) << m_ptrMap->GetNumInitHeads() << endl;
-  cout << setw(20) << "Noise:" << setw(10) << m_ptrMap->GetNoise() << endl;
-  cout << setw(20) << "IdtEntropy:" << setw(10) << m_ptrMap->GetIdtEntropy() << endl;
+  cout << "===================== ImageMap ========================" << endl;
+  cout << setw(20) << "ImageMapId:" << setw(10) << m_ptrImageMap->GetMapId() << endl;
+  cout << setw(20) << "Nodes:" << setw(10) << m_ptrImageMap->GetNumNodes() << endl;
+  cout << setw(20) << "MaxHeads:" << setw(10) << m_ptrImageMap->GetNumInitHeads() << endl;
+  cout << setw(20) << "Noise:" << setw(10) << m_ptrImageMap->GetNoise() << endl;
   cout << endl;
-  if (m_ptrGField) {
-    cout << "================= Gaussian Field =================" << endl;
-    cout << setw(20) << "Variance: " << setw(10) << m_ptrGField->GetVariance() << endl;
-    cout << setw(20) << "Spatial Correlation Factor: " << setw(10) << m_ptrGField->GetSpatialCorrelationFactor() << endl;
-    cout << setw(20) << "Temporal Correlation Factor: " << setw(10) << m_ptrGField->GetTemporalCorrelationFactor() << endl;
-    cout << endl;
-  }
   cout << "=============== Cluster Structure  ===============" << endl;
   /* print cluster structure */
   m_ptrCS->Print();
@@ -167,51 +155,12 @@ Simulator::SelfCheck()
 void
 Simulator::Run()
 {
-  vector<int> vecSupport(m_ptrMap->GetNumNodes());
+  vector<int> vecSupport(m_ptrImageMap->GetNumNodes());
   fill(vecSupport.begin(), vecSupport.end(), 0);
 //  cout << m_ptrSched->PrintSelf() << endl;
 //  cout << m_ptrSched->ScheduleOneSlot(vecSupport) << endl;
 }
 
-vector<int>
-Simulator::CheckConnection( const vector<int>& vecSupport )
-{
-  vector<int> returnVector = vecSupport;
-  while(!CheckFeasible(vecSupport, m_ptrSched->GetTxTimePerSlot() )){
-    for (int i = 0; i < m_ptrMap->GetNumNodes(); i++) {
-      if (vecSupport[i] == 1) {
-        returnVector[i] = 0;
-        break;
-      }
-    }
-  }
-  return returnVector;
-}
-
-bool
-Simulator::CheckFeasible(const vector<int>& supStru, double txTime2nd)
-{
-  for (int i = 0; i < m_ptrMap->GetNumInitHeads() ; i++) {
-    int headName = m_ptrCS->GetVecHeadName()[i];
-    int member = -1;
-    double interference = 0.0;
-    for (int j = 0; j < m_ptrMap->GetNumNodes(); j++) {
-      if (supStru[j] == 1 && headName != m_ptrCS->GetChNameByName(j) ) {
-        interference += m_ptrMap->GetGijByPair(headName,j) * m_ptrMap->GetMaxPower();
-      }
-      else if(supStru[j] == 1 && headName == m_ptrCS->GetChNameByName(j) ){
-        member = j;
-      }
-    }
-    if (member == -1) continue; 
-    if (m_ptrMap->GetIdtEntropy() > m_ptrMap->GetBandwidth() * 
-        txTime2nd*log2(1.0 + m_ptrMap->GetMaxPower() * m_ptrMap->GetGijByPair(headName,member)
-          / (m_ptrMap->GetNoise() + interference))) {
-      return false;
-    }
-  }
-  return true;
-}
 
 void
 Simulator::Print( const vector<int>& vec)
@@ -256,10 +205,10 @@ Simulator::WriteCS( const string& fileName )
 {
     FILE  *fid; 
     fid = fopen(fileName.c_str(), "a");
-    fprintf( fid,"%d\n", m_ptrMap->GetNumNodes()   );
+    fprintf( fid,"%d\n", m_ptrImageMap->GetNumNodes()   );
     fprintf( fid,"%d\n", m_ptrCS->GetNumHeads()    );
-    fprintf( fid,"%e\n", m_ptrMap->GetMaxPower()   );
-    fprintf( fid,"%e\n", m_ptrMap->GetIdtEntropy() );
+    fprintf( fid,"%e\n", m_ptrImageMap->GetMaxPower()   );
+    fprintf( fid,"%e\n", 0.0                       );
     fprintf( fid,"%d\n", 0                         );  // Payoff (objective)
     fprintf( fid,"%d\n", 0                         );  // SA iteration
     fprintf( fid,"%5e\n", 0.0                      );  // 1st tier tx time (ms)
@@ -269,7 +218,7 @@ Simulator::WriteCS( const string& fileName )
 
 
     for ( int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {
-        for( int j = 0; j < m_ptrMap->GetNumNodes(); ++j) {
+        for( int j = 0; j < m_ptrImageMap->GetNumNodes(); ++j) {
           if (m_ptrCS->GetChIdxByName(j) == i ) 
             fprintf(fid,"%d ", 1);
           else 
@@ -284,7 +233,7 @@ Simulator::WriteCS( const string& fileName )
     fprintf(fid,"\n");
 
     /* updated power for each node */
-    for ( int i = 0; i < m_ptrMap->GetNumNodes(); ++i) {
+    for ( int i = 0; i < m_ptrImageMap->GetNumNodes(); ++i) {
         fprintf(fid,"%E ", 0);
     }
     fprintf(fid,"\n");

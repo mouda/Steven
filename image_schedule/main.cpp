@@ -7,14 +7,12 @@
 #include <config.h>
 #include <boost/program_options.hpp>
 
-#include "map.h"
-#include "mapFactory.h"
+#include "imageMap.h"
+#include "imageMapFactory.h"
 #include "clusterStructure.h"
-#include "csFactory.h"
+#include "imageCsFactory.h"
 #include "kmeansCsFactory.h"
-#include "minResCsFactory.h"
 #include "scheduler.h"
-#include "maxSNRScheduler.h"
 #include "schedFactory.h"
 #include "simulator.h"
 #include "fileCSFactory.h"
@@ -55,6 +53,8 @@ int main(int argc, char *argv[])
   string  powerFName; 
   string  strAlgFlag;
   string  CSFormation;
+  string  CorrFName;
+  string  IdtFName;
   bool    imageFlag = false;
   try {
     po::options_description desc("Allowed options");
@@ -62,7 +62,6 @@ int main(int argc, char *argv[])
       ("help,h", "Produce help message")
       ("bandwidth,b",             po::value<double>(),  "Bandwidth (kHz) ")
       ("power,p",                 po::value<double>(),  "Maximum Power (dbm) ")
-      ("quantization,q",          po::value<double>(),  "Bits of quantization")
       ("map,m",                   po::value<string>(),  "Map file name")
       ("algorithm,A",             po::value<string>(),  "Scheduling algorithm Baseline|Algorithm ")
       ("nodes,n",                 po::value<int>(),     "Initial number of nodes")
@@ -70,10 +69,9 @@ int main(int argc, char *argv[])
       ("txTime,t",                po::value<double>(),  "Transmission time per slot (ms) ")
       ("tier1TxTime,I",           po::value<double>(),  "Tier 1 tx time (ms)")
       ("fidelity,f",              po::value<double>(),  "Fidelity ratio")
-      ("iteration,i",             po::value<int>(),     "Number of iteration Simulate Annealing")
-      ("spatialCorrelation,c",    po::value<double>(),  "Spatial Correlation level")
-      ("temporalCorrelation,T",   po::value<double>(),  "Temproal Correlation factor")
       ("tier2NumSlot,N",          po::value<int>(),     "Number of tier-2 slots")
+      ("spatialCorrelation,c",    po::value<string>(),  "Spatial correlation file name")
+      ("independentBits,i",       po::value<string>(),  "Independent coding file name")
       ("ClusterStructureOutput,C",po::value<string>(),  "Cluster structure output file name")
       ("TotalEntropy,O",          po::value<string>(),  "Total entropy per slot")
       ("EntropyOutput,E",         po::value<string>(),  "Entropy output file name")
@@ -90,22 +88,21 @@ int main(int argc, char *argv[])
     if (vm.size() == 0 || vm.count("help")) {
       cout << desc << "\n";
       return 0;
-    } else if(vm.size() > 13 && vm.size() <= 25 ) {
+    } else if(vm.size() > 10 && vm.size() <= 22 ) {
 
       totalNodes =              vm["nodes"].as<int>();
       maxChNum =                vm["heads"].as<int>();
-      quantizationBits =        vm["quantization"].as<double>();
       powerMaxDbm =             vm["power"].as<double>();
       bandwidthKhz =            vm["bandwidth"].as<double>();
       txTimePerSlot =           vm["txTime"].as<double>();
-      spatialCompressionRatio = vm["spatialCorrelation"].as<double>();
-      temporalCorrFactor =      vm["temporalCorrelation"].as<double>();
       fidelityRatio =           vm["fidelity"].as<double>();
       mapFileName =             vm["map"].as<string>();
       strAlgFlag =              vm["algorithm"].as<string>();
       tier2NumSlot   =          vm["tier2NumSlot"].as<int>();
       tier1TxTime    =          vm["tier1TxTime"].as<double>();
       CSFormation =             vm["ClusterFormation"].as<string>();
+      CorrFName =               vm["spatialCorrelation"].as<string>();
+      IdtFName  =               vm["independentBits"].as<string>();
 
       /* output control */
       if (vm.count("ClusterStructureOutput")) {
@@ -132,51 +129,39 @@ int main(int argc, char *argv[])
 
       double powerMaxWatt = pow(10,(powerMaxDbm)/10) /1000;
 
-      MapFactory myMapFactory(
+      ImageMapFactory myMapFactory(
           mapFileName, 
+          CorrFName,
+          IdtFName,
           powerMaxWatt, 
-          spatialCompressionRatio, 
-          temporalCorrFactor,
-          quantizationBits, 
           bandwidthKhz, 
           maxChNum, 
           totalNodes
           );
 
-      Map* myMap = 0;
+      ImageMap* myMap = 0;
 
       if (strAlgFlag == "ImageSource") {
         imageFlag=true;
       }
-      CORRE_MA_OPE* myMatComputer  = 0;
+      ImageSource* myImageSource = 0;
       myMap = myMapFactory.CreateMap(imageFlag);
+      myImageSource = myMapFactory.CreateImageSource();
 
-      if (strAlgFlag != "ImageSource") {
-        myMatComputer = myMapFactory.CreateMatrixComputer();
-      }
       if (!myMap ) {
         cerr << "Error: Failed to initialize map" << endl;
         return 1;
       }
-      if (strAlgFlag != "ImageSource" && !myMatComputer) {
-        cerr << "Error: Failed to initialize correlation comulter" << endl;
+      if (strAlgFlag != "ImageSource") {
+        cerr << "Error: Failed to initialize image correlation caluculator" << endl;
         return 1;
       }
       ClusterStructure* myCS = 0;
-      CsFactory* myCsFactory = 0;
+      ImageCsFactory* myCsFactory = 0;
       
-      if (CSFormation == "Kmeans") {
-        myCsFactory = new KmeansCsFactory(myMap, myMatComputer);
-      }
-      else if (CSFormation == "MinRes"){
-        myCsFactory = new MinResCsFactory(myMap, myMatComputer); 
-        (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
-        (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
-        (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
-      }
-      else if (CSFormation == "CSFile") {
+      if (CSFormation == "CSFile") {
         if (vm.count("ClusterStructureFile")) {
-          myCsFactory = new FileCSFactory(myMap, myMatComputer);
+          myCsFactory = new FileCSFactory(myMap, myImageSource);
           (dynamic_cast<FileCSFactory*>(myCsFactory)->SetFileName(vm["ClusterStructureFile"].as<string>()));
         }
         else {
@@ -192,7 +177,7 @@ int main(int argc, char *argv[])
         return 1;
       }
 
-      SchedulerFactory mySchedFactory(txTimePerSlot, tier2NumSlot, bandwidthKhz, myMap, myMatComputer, myCS);
+      SchedulerFactory mySchedFactory(txTimePerSlot, tier2NumSlot, bandwidthKhz, myMap, myImageSource, myCS);
       Scheduler* myScheduler = 0;
       myScheduler = mySchedFactory.CreateScheduler(strAlgFlag);
       if (!myScheduler) {
@@ -203,7 +188,7 @@ int main(int argc, char *argv[])
           myMap, 
           myCS, 
           myScheduler, 
-          myMatComputer, 
+          myImageSource, 
           entropyFName, 
           MSEFName, 
           solutionFName, 

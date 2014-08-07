@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
   //we don't need to divide the BW(bandwidthKhz*1000);//Unit := Watt
   double  bandwidthKhz;
   double  spatialCompressionRatio;
-  double  temporalCorrFactor;
   double  txTimePerSlot;
   double  tier1TxTime;
   //double  endTime;

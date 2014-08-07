@@ -28,12 +28,12 @@ class MinPowerImageScheduler: public Scheduler
         const double txTime, 
         const int tier2NumSlot,
         const double bandwidthKhz, 
-        Map const * const, 
-        CORRE_MA_OPE* , 
+        ImageMap const * const, 
+        ImageSource* , 
         ClusterStructure const * const);
     ~MinPowerImageScheduler();
 
-    void SetGaussianField(CORRE_MA_OPE* myGField) { m_ptrMatComputer = myGField;}
+    void SetGaussianField(ImageSource* myGField) { m_ptrImageSource = myGField;}
     double ScheduleOneSlot( std::vector<int>& );
     double ScheduleOneSlot( std::vector<int>& , std::vector<double>&, const std::vector<double>& );
     string PrintSelf(){ return m_type; }
@@ -48,9 +48,9 @@ class MinPowerImageScheduler: public Scheduler
     const double                      m_bandwidthKhz;
     double                            m_maxPower;
     const int                         m_tier2NumSlot;
-    Map const * const                 m_ptrMap;
+    ImageMap const * const                 m_ptrMap;
     ClusterStructure const * const    m_ptrCS;
-    CORRE_MA_OPE*                     m_ptrMatComputer;
+    ImageSource*                     m_ptrImageSource;
     std::vector<double>               m_vecNodePower;
     const string                      m_type;
 

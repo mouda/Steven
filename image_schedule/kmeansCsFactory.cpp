@@ -1,8 +1,15 @@
 #include "kmeansCsFactory.h"
 
-KmeansCsFactory::KmeansCsFactory( Map const * const myMap, 
-    CORRE_MA_OPE const * const myMatComputer):
-  CsFactory(myMap, myMatComputer)
+KmeansCsFactory::KmeansCsFactory( ImageMap const * const myMap, 
+    ImageSource const * const myImageSource):
+  ImageCsFactory(myMap, 0)
+{
+
+}
+
+KmeansCsFactory::KmeansCsFactory( ImageMap const * const myMap, 
+    CORRE_MA_OPE const * const ptrMatComputer):
+  ImageCsFactory(myMap, ptrMatComputer)
 {
 
 }

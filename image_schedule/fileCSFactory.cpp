@@ -1,9 +1,15 @@
 #include "fileCSFactory.h"
 #include <fstream>
 
-FileCSFactory::FileCSFactory( Map const * const myMap, 
-    CORRE_MA_OPE const * const myMatComputer):
-  CsFactory(myMap, myMatComputer)
+FileCSFactory::FileCSFactory( ImageMap const * const myMap, 
+    CORRE_MA_OPE const * const ptrMatComputer):
+  ImageCsFactory(myMap, ptrMatComputer)
+{
+
+}
+FileCSFactory::FileCSFactory( ImageMap const * const myMap, 
+    ImageSource const * const myImageSource):
+  ImageCsFactory(myMap, 0)
 {
 
 }

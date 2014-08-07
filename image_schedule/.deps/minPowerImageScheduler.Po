@@ -352,9 +352,9 @@ minPowerImageScheduler.o: minPowerImageScheduler.cpp \
  /opt/bonmin174/include/coin/BonBabInfos.hpp \
  /opt/bonmin174/include/coin/BonAuxInfos.hpp \
  /opt/bonmin174/include/coin/BonEcpCuts.hpp \
- /opt/bonmin174/include/coin/BonOaNlpOptim.hpp scheduler.h ../lib/map.h \
- ../lib/simSystem.h ../lib/ULAGENT.h ../lib/CORRE_MA_OPE.h \
- ../lib/../lib/cholesky.hpp \
+ /opt/bonmin174/include/coin/BonOaNlpOptim.hpp scheduler.h \
+ ../lib/imageMap.h ../lib/simSystem.h ../lib/ULAGENT.h \
+ ../lib/CORRE_MA_OPE.h ../lib/../lib/cholesky.hpp \
  /opt/boost1550/include/boost/numeric/ublas/vector.hpp \
  /opt/boost1550/include/boost/numeric/ublas/storage.hpp \
  /opt/boost1550/include/boost/serialization/array.hpp \
@@ -806,8 +806,8 @@ minPowerImageScheduler.o: minPowerImageScheduler.cpp \
  /opt/boost1550/include/boost/numeric/ublas/detail/matrix_assign.hpp \
  /opt/boost1550/include/boost/numeric/ublas/matrix_proxy.hpp \
  /opt/boost1550/include/boost/numeric/ublas/triangular.hpp \
- ../lib/CORRE_MA_OPE.h ../lib/clusterStructure.h ../lib/imageSource.h \
- minPowerImageMILP.hpp /opt/bonmin174/include/coin/BonTMINLP.hpp
+ ../lib/imageSource.h ../lib/clusterStructure.h minPowerImageMILP.hpp \
+ /opt/bonmin174/include/coin/BonTMINLP.hpp
 
 /usr/include/stdc-predef.h:
 
@@ -1613,7 +1613,7 @@ minPowerImageScheduler.h:
 
 scheduler.h:
 
-../lib/map.h:
+../lib/imageMap.h:
 
 ../lib/simSystem.h:
 
@@ -2527,11 +2527,9 @@ scheduler.h:
 
 /opt/boost1550/include/boost/numeric/ublas/triangular.hpp:
 
-../lib/CORRE_MA_OPE.h:
+../lib/imageSource.h:
 
 ../lib/clusterStructure.h:
-
-../lib/imageSource.h:
 
 minPowerImageMILP.hpp:
 
