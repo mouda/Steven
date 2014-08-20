@@ -10,13 +10,13 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-path = {'../../runSimulation/runTest/testImageClustering/CS_test_CSA.out'};
+path = {'../../runSimulation/runTest/testImageClustering/CS_9000.0.out'};
 
 strtitle2={'SA'};
-mapString = ['../../runSimulation/runTest/testImageClustering/source/100cam_r2000_map.out'];
+mapString = ['../../runSimulation/runTest/testImageClustering/source/paper720_30cam_pos.txt'];
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
-vecDirection = dlmread('../../runSimulation/runTest/testImageClustering/source/100cam_r2000_dir.out');
+vecDirection = dlmread('direction.out');
 for ii=1:length(path)
 % 
 hFig = figure(ii);
