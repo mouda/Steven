@@ -6,8 +6,6 @@
 #include "greedyPhysical.h"
 #include "bruteForceScheduler.h"
 #include "nonSimplifiedScheduler.h"
-#include "minPowerScheduler.h"
-#include "minPowerImageScheduler.h"
 
 #include <string>
 #include <iostream>

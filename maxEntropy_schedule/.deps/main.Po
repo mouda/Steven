@@ -1671,9 +1671,7 @@ main.o: main.cpp \
  /home/share/boost1550/include/boost/bind/placeholders.hpp \
  /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/queue \
  /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_queue.h \
- bruteForceScheduler.h nonSimplifiedScheduler.h minPowerScheduler.h \
- minPowerMILP.hpp minPowerImageScheduler.h ../lib/imageSource.h \
- minPowerImageMILP.hpp simulator.h \
+ bruteForceScheduler.h nonSimplifiedScheduler.h simulator.h \
  /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iomanip \
  slot.h ../lib/fileHandler.h fileCSFactory.h
 
@@ -5170,16 +5168,6 @@ greedyPhysical.h:
 bruteForceScheduler.h:
 
 nonSimplifiedScheduler.h:
-
-minPowerScheduler.h:
-
-minPowerMILP.hpp:
-
-minPowerImageScheduler.h:
-
-../lib/imageSource.h:
-
-minPowerImageMILP.hpp:
 
 simulator.h:
 

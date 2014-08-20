@@ -47,28 +47,22 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_simulator_OBJECTS = main.$(OBJEXT) csPowerUpdater.$(OBJEXT) \
-	ULSA4b7_DC.$(OBJEXT) tier1NLP.$(OBJEXT) \
-	fileCSFactory.$(OBJEXT) kmeansCsFactory.$(OBJEXT) \
-	minResCsFactory.$(OBJEXT) scheduler.$(OBJEXT) \
+am_simulator_OBJECTS = main.$(OBJEXT) fileCSFactory.$(OBJEXT) \
+	kmeansCsFactory.$(OBJEXT) scheduler.$(OBJEXT) \
 	MyTMINLP.$(OBJEXT) branchBoundScheduler.$(OBJEXT) \
 	maxSNRScheduler.$(OBJEXT) greedyPhysical.$(OBJEXT) \
 	bruteForceScheduler.$(OBJEXT) nonSimplifiedScheduler.$(OBJEXT) \
-	minPowerScheduler.$(OBJEXT) minPowerMILP.$(OBJEXT) \
-	minPowerImageScheduler.$(OBJEXT) minPowerImageMILP.$(OBJEXT) \
-	baselineImageScheduler.$(OBJEXT) baselineImageMILP.$(OBJEXT) \
-	SASolver.$(OBJEXT) schedFactory.$(OBJEXT) slot.$(OBJEXT) \
-	simulator.$(OBJEXT)
+	schedFactory.$(OBJEXT) slot.$(OBJEXT) simulator.$(OBJEXT)
 simulator_OBJECTS = $(am_simulator_OBJECTS)
 am__DEPENDENCIES_1 =
 simulator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	../lib/libfileHandler.la ../lib/libfileHandler.la \
 	../lib/libutility.la ../lib/libmapFactory.la \
 	../lib/libcsFactory.la ../lib/libCORRE_MA_OPE.la \
-	../lib/libimageSource.la ../lib/libULAGENT.la \
-	../lib/libsimSystem.la ../lib/libtimesearch.la \
-	../lib/libTimeStamp.la ../lib/libULConstraintSolver.la \
-	../lib/libPowerUpdater.la ../lib/libULCS1b.la
+	../lib/libULAGENT.la ../lib/libsimSystem.la \
+	../lib/libtimesearch.la ../lib/libTimeStamp.la \
+	../lib/libULConstraintSolver.la ../lib/libPowerUpdater.la \
+	../lib/libULCS1b.la
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -282,12 +276,8 @@ AM_LDFLAGS = -lopenblas \
 	     -lbz2
 
 simulator_SOURCES = main.cpp \
-		    csPowerUpdater.h csPowerUpdater.cpp\
-		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
-		    tier1NLP.h tier1NLP.cpp\
 		    fileCSFactory.h fileCSFactory.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
-		    minResCsFactory.h minResCsFactory.cpp\
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \
 		    branchBoundScheduler.h branchBoundScheduler.cpp \
@@ -295,13 +285,6 @@ simulator_SOURCES = main.cpp \
 		    greedyPhysical.h greedyPhysical.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\
 		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
-		    minPowerScheduler.h minPowerScheduler.cpp\
-		    minPowerMILP.h minPowerMILP.cpp\
-		    minPowerImageScheduler.h minPowerImageScheduler.cpp\
-		    minPowerImageMILP.hpp minPowerImageMILP.cpp\
-		    baselineImageScheduler.h baselineImageScheduler.cpp\
-		    baselineImageMILP.hpp baselineImageMILP.cpp\
-		    SASolver.h SASolver.cpp\
 		    schedFactory.h schedFactory.cpp \
 		    slot.h slot.cpp \
 		    simulator.h simulator.cpp 
@@ -317,7 +300,6 @@ simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
                   ../lib/libmapFactory.la \
                   ../lib/libcsFactory.la \
                   ../lib/libCORRE_MA_OPE.la \
-		  ../lib/libimageSource.la\
                   ../lib/libULAGENT.la \
                   ../lib/libsimSystem.la \
 		  ../lib/libtimesearch.la\
@@ -414,29 +396,18 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/MyTMINLP.Po
-include ./$(DEPDIR)/SASolver.Po
-include ./$(DEPDIR)/ULSA4b7_DC.Po
-include ./$(DEPDIR)/baselineImageMILP.Po
-include ./$(DEPDIR)/baselineImageScheduler.Po
 include ./$(DEPDIR)/branchBoundScheduler.Po
 include ./$(DEPDIR)/bruteForceScheduler.Po
-include ./$(DEPDIR)/csPowerUpdater.Po
 include ./$(DEPDIR)/fileCSFactory.Po
 include ./$(DEPDIR)/greedyPhysical.Po
 include ./$(DEPDIR)/kmeansCsFactory.Po
 include ./$(DEPDIR)/main.Po
 include ./$(DEPDIR)/maxSNRScheduler.Po
-include ./$(DEPDIR)/minPowerImageMILP.Po
-include ./$(DEPDIR)/minPowerImageScheduler.Po
-include ./$(DEPDIR)/minPowerMILP.Po
-include ./$(DEPDIR)/minPowerScheduler.Po
-include ./$(DEPDIR)/minResCsFactory.Po
 include ./$(DEPDIR)/nonSimplifiedScheduler.Po
 include ./$(DEPDIR)/schedFactory.Po
 include ./$(DEPDIR)/scheduler.Po
 include ./$(DEPDIR)/simulator.Po
 include ./$(DEPDIR)/slot.Po
-include ./$(DEPDIR)/tier1NLP.Po
 
 .cpp.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

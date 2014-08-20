@@ -1145,9 +1145,7 @@ schedFactory.o: schedFactory.cpp schedFactory.h scheduler.h \
  /home/share/boost1550/include/boost/bind/placeholders.hpp \
  /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/queue \
  /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_queue.h \
- bruteForceScheduler.h nonSimplifiedScheduler.h minPowerScheduler.h \
- minPowerMILP.hpp minPowerImageScheduler.h ../lib/imageSource.h \
- minPowerImageMILP.hpp
+ bruteForceScheduler.h nonSimplifiedScheduler.h
 
 schedFactory.h:
 
@@ -3526,13 +3524,3 @@ greedyPhysical.h:
 bruteForceScheduler.h:
 
 nonSimplifiedScheduler.h:
-
-minPowerScheduler.h:
-
-minPowerMILP.hpp:
-
-minPowerImageScheduler.h:
-
-../lib/imageSource.h:
-
-minPowerImageMILP.hpp:

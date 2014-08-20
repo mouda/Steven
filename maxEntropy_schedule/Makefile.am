@@ -64,12 +64,8 @@ AM_LDFLAGS = -lopenblas \
 	     -lz\
 	     -lbz2
 simulator_SOURCES = main.cpp \
-		    csPowerUpdater.h csPowerUpdater.cpp\
-		    ULSA4b7_DC.h ULSA4b7_DC.cpp\
-		    tier1NLP.h tier1NLP.cpp\
 		    fileCSFactory.h fileCSFactory.cpp\
 		    kmeansCsFactory.h kmeansCsFactory.cpp\
-		    minResCsFactory.h minResCsFactory.cpp\
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \
 		    branchBoundScheduler.h branchBoundScheduler.cpp \
@@ -77,13 +73,6 @@ simulator_SOURCES = main.cpp \
 		    greedyPhysical.h greedyPhysical.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\
 		    nonSimplifiedScheduler.h nonSimplifiedScheduler.cpp\
-		    minPowerScheduler.h minPowerScheduler.cpp\
-		    minPowerMILP.h minPowerMILP.cpp\
-		    minPowerImageScheduler.h minPowerImageScheduler.cpp\
-		    minPowerImageMILP.hpp minPowerImageMILP.cpp\
-		    baselineImageScheduler.h baselineImageScheduler.cpp\
-		    baselineImageMILP.hpp baselineImageMILP.cpp\
-		    SASolver.h SASolver.cpp\
 		    schedFactory.h schedFactory.cpp \
 		    slot.h slot.cpp \
 		    simulator.h simulator.cpp 
@@ -102,7 +91,6 @@ simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
                   ../lib/libmapFactory.la \
                   ../lib/libcsFactory.la \
                   ../lib/libCORRE_MA_OPE.la \
-		  ../lib/libimageSource.la\
                   ../lib/libULAGENT.la \
                   ../lib/libsimSystem.la \
 		  ../lib/libtimesearch.la\
