@@ -59,5 +59,6 @@ AC_CONFIG_FILES([Makefile
 		 schedule/Makefile
                  image_cluster/Makefile
                  image_schedule/Makefile
+		 maxEntropy_schedule/Makefile
 		 lib/Makefile])
 AC_OUTPUT

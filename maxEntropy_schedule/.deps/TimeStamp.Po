@@ -1,0 +1,52 @@
+TimeStamp.o: TimeStamp.cpp TimeStamp.h \
+ /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ctime \
+ /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstddef \
+ /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/i686-redhat-linux/bits/c++config.h \
+ /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/i686-redhat-linux/bits/os_defines.h \
+ /usr/include/features.h /usr/include/sys/cdefs.h \
+ /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+ /usr/include/gnu/stubs-32.h \
+ /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/i686-redhat-linux/bits/cpu_defines.h \
+ /usr/lib/gcc/i686-redhat-linux/4.4.7/include/stddef.h \
+ /usr/include/time.h /usr/include/bits/time.h /usr/include/bits/types.h \
+ /usr/include/bits/typesizes.h /usr/include/xlocale.h \
+ /usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cassert \
+ /usr/include/assert.h
+
+TimeStamp.h:
+
+/usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ctime:
+
+/usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstddef:
+
+/usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/i686-redhat-linux/bits/c++config.h:
+
+/usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/i686-redhat-linux/bits/os_defines.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/gnu/stubs-32.h:
+
+/usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/i686-redhat-linux/bits/cpu_defines.h:
+
+/usr/lib/gcc/i686-redhat-linux/4.4.7/include/stddef.h:
+
+/usr/include/time.h:
+
+/usr/include/bits/time.h:
+
+/usr/include/bits/types.h:
+
+/usr/include/bits/typesizes.h:
+
+/usr/include/xlocale.h:
+
+/usr/lib/gcc/i686-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cassert:
+
+/usr/include/assert.h:
