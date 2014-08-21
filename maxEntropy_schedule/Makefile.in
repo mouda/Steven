@@ -59,10 +59,10 @@ simulator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	../lib/libfileHandler.la ../lib/libfileHandler.la \
 	../lib/libutility.la ../lib/libmapFactory.la \
 	../lib/libcsFactory.la ../lib/libCORRE_MA_OPE.la \
-	../lib/libULAGENT.la ../lib/libsimSystem.la \
-	../lib/libtimesearch.la ../lib/libTimeStamp.la \
-	../lib/libULConstraintSolver.la ../lib/libPowerUpdater.la \
-	../lib/libULCS1b.la
+	../lib/libimageSource.la ../lib/libULAGENT.la \
+	../lib/libsimSystem.la ../lib/libtimesearch.la \
+	../lib/libTimeStamp.la ../lib/libULConstraintSolver.la \
+	../lib/libPowerUpdater.la ../lib/libULCS1b.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -300,6 +300,7 @@ simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
                   ../lib/libmapFactory.la \
                   ../lib/libcsFactory.la \
                   ../lib/libCORRE_MA_OPE.la \
+		  ../lib/libimageSource.la\
                   ../lib/libULAGENT.la \
                   ../lib/libsimSystem.la \
 		  ../lib/libtimesearch.la\

@@ -1350,34 +1350,9 @@ main.o: main.cpp \
  /home/share/armadillo39202/include/armadillo_bits/spglue_minus_meat.hpp \
  /home/share/armadillo39202/include/armadillo_bits/spglue_times_meat.hpp \
  /home/share/armadillo39202/include/armadillo_bits/compiler_setup_post.hpp \
- ../lib/clusterStructure.h kmeansCsFactory.h minResCsFactory.h \
- ULSA4b7_DC.h ../lib/ULAGENT.h ../lib/ULCS1b.h \
- ../lib/ULConstraintSolver.h ../lib/CORRE_MA_OPE.h ../lib/simSystem.h \
- ../lib/ULSAOutputToolSet.h ../lib/../commonLibrary/ULCS1b.h \
- ../lib/ULSAOutputToolSet.cpp /usr/include/sys/socket.h \
- /usr/include/sys/uio.h /usr/include/bits/uio.h \
- /usr/include/bits/socket.h /usr/include/bits/sockaddr.h \
- /usr/include/asm/socket.h /usr/include/asm-generic/socket.h \
- /usr/include/asm/sockios.h /usr/include/asm-generic/sockios.h \
- /usr/include/sys/ioctl.h /usr/include/bits/ioctls.h \
- /usr/include/asm/ioctls.h /usr/include/asm-generic/ioctls.h \
- /usr/include/linux/ioctl.h /usr/include/asm/ioctl.h \
- /usr/include/asm-generic/ioctl.h /usr/include/bits/ioctl-types.h \
- /usr/include/sys/ttydefaults.h /usr/include/linux/netdevice.h \
- /usr/include/linux/if.h /usr/include/linux/types.h \
- /usr/include/asm/types.h /usr/include/asm-generic/types.h \
- /usr/include/asm-generic/int-ll64.h /usr/include/asm/bitsperlong.h \
- /usr/include/asm-generic/bitsperlong.h /usr/include/linux/posix_types.h \
- /usr/include/linux/stddef.h /usr/include/asm/posix_types.h \
- /usr/include/asm/posix_types_32.h /usr/include/linux/socket.h \
- /usr/include/linux/hdlc/ioctl.h /usr/include/linux/if_ether.h \
- /usr/include/linux/if_packet.h /usr/include/linux/if_link.h \
- /usr/include/linux/netlink.h /usr/include/arpa/inet.h \
- /usr/include/netinet/in.h /usr/include/bits/in.h \
- ../lib/ULSAOutputToolSet.h ../lib/TimeStamp.h ../lib/SA/SABASE.h \
- ../lib/SA/../../commonLibrary/SimSystem.h scheduler.h maxSNRScheduler.h \
- schedFactory.h branchBoundScheduler.h \
- /home/share/bonmin174/include/coin/CoinPragma.hpp \
+ ../lib/clusterStructure.h kmeansCsFactory.h scheduler.h \
+ ../lib/CORRE_MA_OPE.h maxSNRScheduler.h schedFactory.h \
+ branchBoundScheduler.h /home/share/bonmin174/include/coin/CoinPragma.hpp \
  /home/share/bonmin174/include/coin/CoinTime.hpp \
  /usr/include/sys/resource.h /usr/include/bits/resource.h \
  /home/share/bonmin174/include/coin/CoinError.hpp \
@@ -4457,113 +4432,9 @@ main.o: main.cpp \
 
 kmeansCsFactory.h:
 
-minResCsFactory.h:
-
-ULSA4b7_DC.h:
-
-../lib/ULAGENT.h:
-
-../lib/ULCS1b.h:
-
-../lib/ULConstraintSolver.h:
+scheduler.h:
 
 ../lib/CORRE_MA_OPE.h:
-
-../lib/simSystem.h:
-
-../lib/ULSAOutputToolSet.h:
-
-../lib/../commonLibrary/ULCS1b.h:
-
-../lib/ULSAOutputToolSet.cpp:
-
-/usr/include/sys/socket.h:
-
-/usr/include/sys/uio.h:
-
-/usr/include/bits/uio.h:
-
-/usr/include/bits/socket.h:
-
-/usr/include/bits/sockaddr.h:
-
-/usr/include/asm/socket.h:
-
-/usr/include/asm-generic/socket.h:
-
-/usr/include/asm/sockios.h:
-
-/usr/include/asm-generic/sockios.h:
-
-/usr/include/sys/ioctl.h:
-
-/usr/include/bits/ioctls.h:
-
-/usr/include/asm/ioctls.h:
-
-/usr/include/asm-generic/ioctls.h:
-
-/usr/include/linux/ioctl.h:
-
-/usr/include/asm/ioctl.h:
-
-/usr/include/asm-generic/ioctl.h:
-
-/usr/include/bits/ioctl-types.h:
-
-/usr/include/sys/ttydefaults.h:
-
-/usr/include/linux/netdevice.h:
-
-/usr/include/linux/if.h:
-
-/usr/include/linux/types.h:
-
-/usr/include/asm/types.h:
-
-/usr/include/asm-generic/types.h:
-
-/usr/include/asm-generic/int-ll64.h:
-
-/usr/include/asm/bitsperlong.h:
-
-/usr/include/asm-generic/bitsperlong.h:
-
-/usr/include/linux/posix_types.h:
-
-/usr/include/linux/stddef.h:
-
-/usr/include/asm/posix_types.h:
-
-/usr/include/asm/posix_types_32.h:
-
-/usr/include/linux/socket.h:
-
-/usr/include/linux/hdlc/ioctl.h:
-
-/usr/include/linux/if_ether.h:
-
-/usr/include/linux/if_packet.h:
-
-/usr/include/linux/if_link.h:
-
-/usr/include/linux/netlink.h:
-
-/usr/include/arpa/inet.h:
-
-/usr/include/netinet/in.h:
-
-/usr/include/bits/in.h:
-
-../lib/ULSAOutputToolSet.h:
-
-../lib/TimeStamp.h:
-
-../lib/SA/SABASE.h:
-
-../lib/SA/../../commonLibrary/SimSystem.h:
-
-scheduler.h:
 
 maxSNRScheduler.h:
 

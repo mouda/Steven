@@ -12,7 +12,6 @@
 #include "clusterStructure.h"
 #include "csFactory.h"
 #include "kmeansCsFactory.h"
-#include "minResCsFactory.h"
 #include "scheduler.h"
 #include "maxSNRScheduler.h"
 #include "schedFactory.h"
@@ -167,12 +166,6 @@ int main(int argc, char *argv[])
       
       if (CSFormation == "Kmeans") {
         myCsFactory = new KmeansCsFactory(myMap, myMatComputer);
-      }
-      else if (CSFormation == "MinRes"){
-        myCsFactory = new MinResCsFactory(myMap, myMatComputer); 
-        (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetCompressionRatio(spatialCompressionRatio);
-        (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetMapFileName(mapFileName);
-        (dynamic_cast<MinResCsFactory*>(myCsFactory))->SetFidelityRatio(fidelityRatio);
       }
       else if (CSFormation == "CSFile") {
         if (vm.count("ClusterStructureFile")) {

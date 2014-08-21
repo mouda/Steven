@@ -59,10 +59,10 @@ simulator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	../lib/libfileHandler.la ../lib/libfileHandler.la \
 	../lib/libutility.la ../lib/libmapFactory.la \
 	../lib/libcsFactory.la ../lib/libCORRE_MA_OPE.la \
-	../lib/libULAGENT.la ../lib/libsimSystem.la \
-	../lib/libtimesearch.la ../lib/libTimeStamp.la \
-	../lib/libULConstraintSolver.la ../lib/libPowerUpdater.la \
-	../lib/libULCS1b.la
+	../lib/libimageSource.la ../lib/libULAGENT.la \
+	../lib/libsimSystem.la ../lib/libtimesearch.la \
+	../lib/libTimeStamp.la ../lib/libULConstraintSolver.la \
+	../lib/libPowerUpdater.la ../lib/libULCS1b.la
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -128,7 +128,7 @@ INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 IPOPT_CPPFLAGS = -I/home/share/CoinIpopt3117/include
 IPOPT_LIBS = -L/home/share/CoinIpopt3117/lib
 LD = /usr/bin/ld
-LDFLAGS = -L/home/share/boost1550/lib -L/opt/armadillo40002/lib -L/home/share/openblas/lib -L/home/share/lapack/lib -static
+LDFLAGS = -L/home/share/boost1550/lib -L/home/share/armadillo39202/lib -L/home/share/openblas/lib -L/home/share/lapack/lib -static
 LIBOBJS = 
 #scheduler_CFLAGS = 
 LIBS = -lopenblas \
@@ -300,6 +300,7 @@ simulator_LDADD = $(BONMIN_CPPFLAGS) $(BONMIN_LIBS) ../lib/libfileHandler.la \
                   ../lib/libmapFactory.la \
                   ../lib/libcsFactory.la \
                   ../lib/libCORRE_MA_OPE.la \
+		  ../lib/libimageSource.la\
                   ../lib/libULAGENT.la \
                   ../lib/libsimSystem.la \
 		  ../lib/libtimesearch.la\

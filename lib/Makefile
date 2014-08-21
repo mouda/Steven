@@ -208,7 +208,7 @@ INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 IPOPT_CPPFLAGS = -I/home/share/CoinIpopt3117/include
 IPOPT_LIBS = -L/home/share/CoinIpopt3117/lib
 LD = /usr/bin/ld
-LDFLAGS = -L/home/share/boost1550/lib -L/opt/armadillo40002/lib -L/home/share/openblas/lib -L/home/share/lapack/lib -static
+LDFLAGS = -L/home/share/boost1550/lib -L/home/share/armadillo39202/lib -L/home/share/openblas/lib -L/home/share/lapack/lib -static
 LIBOBJS = 
 #scheduler_CFLAGS = 
 LIBS = -lopenblas \
@@ -221,25 +221,6 @@ LIBS = -lopenblas \
        -lboost_filesystem\
        -lboost_math_c99 \
        -lboost_math_tr1 \
-       -lipopt\
-       -lbonmin\
-       -lbonminampl\
-       -lipoptamplinterface\
-       -lCbc\
-       -lCbcSolver\
-       -lCgl\
-       -lClp\
-       -lCoinUtils\
-       -lOsi\
-       -lOsiCbc\
-       -lOsiClp\
-       -lipopt\
-       -lcoinhsl\
-       -lcoinasl\
-       -lcoinmumps\
-       -lcoinmetis\
-       -lcoinblas\
-       -lcoinlapack\
        -lz\
        -lbz2
 
@@ -351,25 +332,6 @@ AM_LDFLAGS = -lopenblas \
 	     -lboost_filesystem\
 	     -lboost_math_c99 \
 	     -lboost_math_tr1 \
-	     -lipopt\
-	     -lbonmin\
-	     -lbonminampl\
-	     -lipoptamplinterface\
-	     -lCbc\
-	     -lCbcSolver\
-	     -lCgl\
-	     -lClp\
-	     -lCoinUtils\
-	     -lOsi\
-	     -lOsiCbc\
-	     -lOsiClp\
-	     -lipopt\
-	     -lcoinhsl\
-	     -lcoinasl\
-	     -lcoinmumps\
-	     -lcoinmetis\
-	     -lcoinblas\
-	     -lcoinlapack\
 	     -lz\
 	     -lbz2
 
