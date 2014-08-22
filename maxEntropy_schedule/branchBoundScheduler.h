@@ -35,10 +35,11 @@ class BranchBoundScheduler: public Scheduler
         ClusterStructure const * const);
     ~BranchBoundScheduler();
 
-    void SetGaussianField(CORRE_MA_OPE* myGField) { m_ptrMatComputer = myGField;}
-    double ScheduleOneSlot( std::vector<int>& );
-    double ScheduleOneSlot( std::vector<int>& , std::vector<double>&, const std::vector<double>& );
-    string PrintSelf(){ return m_type; }
+    void    SetEpsilon(const double epsilon) {m_epsilon = epsilon;}
+    void    SetGaussianField(CORRE_MA_OPE* myGField) { m_ptrMatComputer = myGField;}
+    double  ScheduleOneSlot( std::vector<int>& );
+    double  ScheduleOneSlot( std::vector<int>& , std::vector<double>&, const std::vector<double>& );
+    string  PrintSelf(){ return m_type; }
     double GetTxTimePerSlot() const { return m_txTimePerSlot; }
   private:
     double OmegaValue( const int nodeName );
@@ -48,6 +49,7 @@ class BranchBoundScheduler: public Scheduler
     const double                    m_txTimePerSlot;
     const double                    m_bandwidthKhz;
     double                          m_maxPower;
+    double                          m_epsilon;
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;
     CORRE_MA_OPE*                   m_ptrMatComputer;

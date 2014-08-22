@@ -78,6 +78,7 @@ BranchBoundScheduler::~BranchBoundScheduler()
 
 }
 
+
 double
 BranchBoundScheduler::ScheduleOneSlot( std::vector<int>& vecSupport )
 {
