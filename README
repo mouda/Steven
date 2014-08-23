@@ -1,20 +1,7 @@
-
-
-TODO
-
-
-1. make sure all the figure work correctly.....done; except for the simultion time issue in kmeans simulation
-2. confirm all the io parameters ...TODO
-3. build a new directory to aggregate all the working folder ...on the progress
-4. add all the binary files into the execution path ...discard
-5. let the time stamp file into the sub-folder....TODO
-6. Porting the progect to Torque cluster...done 
-
-
 COMMAND TOOL RMEMIND
 
 
-*** Fastly fork new test version ***
+*** Fastly fork new test version (ULSA steven) ***
 1. cp -r $(OLDVERSION) $(NEWVERSION); cd $(NEWVRSION)
 2. rename $(OLDVERSION) $(NEWVRSION) *
 3. sed -i 's/$(OLDVERSION)/$(NEWVERSION)/gi' * 
@@ -26,15 +13,17 @@ COMMAND TOOL RMEMIND
 5. grep
 6. ctags
 
-NEW PROBLEM
+
+*** README for joint clustering and scheduling ***
+
 
 HOW TO BUILD
-LDFLAGS="-L/opt/boost1550/lib -L/opt/armadillo40002/lib -L/opt/bonmin174/lib -L/opt/openblas/lib -L/opt/lapack/lib" CPPFLAGS="-I/opt/boost1550/include -I/opt/armadillo40002/include -I/opt/eigen320/include -I/opt/bonmin174/include" "CXXFLAGS=-Wl,--no-as-needed"  ./configure
 
-LDFLAGS="-L/home/share/armadillo39202/lib -L/home/share/bonmin174/lib -L/home/share/openblas/lib -L/home/share/lapack/lib"   CPPFLAGS="-I/home/share/boost1550/include -I/home/share/armadillo39202/include -I/home/share/eigen320/include -I/home/share/bonmin174/include" ./configure
- LDFLAGS=-L/home/share/armadillo39202/lib -L/home/share/bonmin174/lib -L/home/share/openblas/lib -L/home/share/lapack/lib -L/home/share/boost1550/lib   CPPFLAGS=-I/home/share/lapack/include/ -I/home/share/boost1550/include -I/home/share/armadillo39202/include -I/home/share/eigen320/include -I/home/share/bonmin174/include ./configure --enable-debug
+1. use configure script to generate Makefile 
+	$ LDFLAGS="-L/opt/boost1550/lib -L/opt/armadillo40002/lib -L/opt/openblas/lib -L/opt/lapack/lib -static" CPPFLAGS="-I/opt/boost1550/include -I/opt/armadillo40002/include -I/opt/eigen320/include" CXXFLAGS="-Wl,--no-as-needed" BONMIN_CPPFLAGS="-I/opt/bonmin174/include" BONMIN_LIBS="-L/opt/bonmin174/lib" IPOPT_CPPFLAGS="-I/opt/ipopt/include" IPOPT_LIBS="-L/opt/ipopt/lib" ./configure --enable-debug
 
+2. compile the source code:
+	$ make
 
- LDFLAGS="-L/opt/boost/lib -L/opt/armadillo/lib -L/opt/openblas/lib -L/opt/lapack/lib" CPPFLAGS="-I/opt/boost/include -I/opt/armadillo/include -I/opt/eigen/include" CXXFLAGS="-Wl,--no-as-needed" BONMIN_CPPFLAGS="-I/opt/bonmin/include" BONMIN_LIBS="-L/opt/ipopt/lib" IPOPT_CPPFLAGS="-I/opt/ipopt/include" IPOPT_LIBS="-L/opt/bonmin/lib"./configure 
-
-LDFLAGS="-L/opt/boost1550/lib -L/opt/armadillo40002/lib -L/opt/openblas/lib -L/opt/lapack/lib -static" CPPFLAGS="-I/opt/boost1550/include -I/opt/armadillo40002/include -I/opt/eigen320/include" CXXFLAGS="-Wl,--no-as-needed" BONMIN_CPPFLAGS="-I/opt/bonmin174/include" BONMIN_LIBS="-L/opt/bonmin174/lib" IPOPT_CPPFLAGS="-I/opt/ipopt/include" IPOPT_LIBS="-L/opt/ipopt/lib" ./configure --enable-debug
+3. Go to runSimulation/ sub-directory to compile the code
+	

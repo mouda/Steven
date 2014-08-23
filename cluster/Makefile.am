@@ -76,13 +76,15 @@ genCluster_SOURCES = main.cpp \
 
 LOCAL_INCLUDE = -I../lib/
 if DEBUG
-AM_CFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -g3 -ggdb -O0
-AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE) -I../ -g3 -ggdb -O0
+AM_CFLAGS = $(IPOPT_CPPFLAGS) $(LOCAL_INCLUDE)  -I../ -g3 -ggdb -O0
+AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(LOCAL_INCLUDE) -I../ -g3 -ggdb -O0
+genCluster_LDFLAGS= $(IPOPT_LIBS) -I../ -g3 -ggdb -O0
 else
-AM_CFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
-AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
+AM_CFLAGS = $(IPOPT_CPPFLAGS) $(LOCAL_INCLUDE)  -I../ -O2
+AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(LOCAL_INCLUDE)  -I../ -O2
+genCluster_LDFLAGS= $(IPOPT_LIBS) -I../ -O2 
 endif
-genCluster_LDADD = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) ../lib/libfileHandler.la \
+genCluster_LDADD =  ../lib/libfileHandler.la \
 		  ../lib/libfileHandler.la \
                   ../lib/libutility.la \
                   ../lib/libmapFactory.la \

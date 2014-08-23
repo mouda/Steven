@@ -56,16 +56,17 @@ am_genCluster_OBJECTS = main.$(OBJEXT) myTier1NLP.$(OBJEXT) \
 	baselineImageCsFactory.$(OBJEXT) nonGuidedSACluster.$(OBJEXT) \
 	nonGuidedCsFactory.$(OBJEXT) simulator.$(OBJEXT)
 genCluster_OBJECTS = $(am_genCluster_OBJECTS)
-am__DEPENDENCIES_1 =
-genCluster_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	../lib/libfileHandler.la ../lib/libfileHandler.la \
-	../lib/libutility.la ../lib/libmapFactory.la \
-	../lib/libcsFactory.la ../lib/libCORRE_MA_OPE.la \
-	../lib/libimageSource.la ../lib/libULAGENT.la \
-	../lib/libsimSystem.la ../lib/libtimesearch.la \
-	../lib/libTimeStamp.la ../lib/libULConstraintSolver.la \
-	../lib/libPowerUpdater.la ../lib/libImagePowerUpdater.la \
-	../lib/libULCS1b.la
+genCluster_DEPENDENCIES = ../lib/libfileHandler.la \
+	../lib/libfileHandler.la ../lib/libutility.la \
+	../lib/libmapFactory.la ../lib/libcsFactory.la \
+	../lib/libCORRE_MA_OPE.la ../lib/libimageSource.la \
+	../lib/libULAGENT.la ../lib/libsimSystem.la \
+	../lib/libtimesearch.la ../lib/libTimeStamp.la \
+	../lib/libULConstraintSolver.la ../lib/libPowerUpdater.la \
+	../lib/libImagePowerUpdater.la ../lib/libULCS1b.la
+genCluster_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(genCluster_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -290,11 +291,13 @@ genCluster_SOURCES = main.cpp \
 		    simulator.h simulator.cpp 
 
 LOCAL_INCLUDE = -I../lib/
-#AM_CFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
-AM_CFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -g3 -ggdb -O0
-#AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE)  -I../ -O2
-AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) $(LOCAL_INCLUDE) -I../ -g3 -ggdb -O0
-genCluster_LDADD = $(IPOPT_CPPFLAGS) $(IPOPT_LIBS) ../lib/libfileHandler.la \
+#AM_CFLAGS = $(IPOPT_CPPFLAGS) $(LOCAL_INCLUDE)  -I../ -O2
+AM_CFLAGS = $(IPOPT_CPPFLAGS) $(LOCAL_INCLUDE)  -I../ -g3 -ggdb -O0
+#AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(LOCAL_INCLUDE)  -I../ -O2
+AM_CXXFLAGS = $(IPOPT_CPPFLAGS) $(LOCAL_INCLUDE) -I../ -g3 -ggdb -O0
+#genCluster_LDFLAGS = $(IPOPT_LIBS) -I../ -O2 
+genCluster_LDFLAGS = $(IPOPT_LIBS) -I../ -g3 -ggdb -O0
+genCluster_LDADD = ../lib/libfileHandler.la \
 		  ../lib/libfileHandler.la \
                   ../lib/libutility.la \
                   ../lib/libmapFactory.la \
@@ -389,7 +392,7 @@ clean-binPROGRAMS:
 	rm -f $$list
 genCluster$(EXEEXT): $(genCluster_OBJECTS) $(genCluster_DEPENDENCIES) 
 	@rm -f genCluster$(EXEEXT)
-	$(CXXLINK) $(genCluster_OBJECTS) $(genCluster_LDADD) $(LIBS)
+	$(genCluster_LINK) $(genCluster_OBJECTS) $(genCluster_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
