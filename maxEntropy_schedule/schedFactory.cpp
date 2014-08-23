@@ -5,7 +5,8 @@ SchedulerFactory::SchedulerFactory(const double txTime,
   const double bandwidthKhz, 
   Map const * const ptrMap, 
   CORRE_MA_OPE* ptrMatComputer, 
-  ClusterStructure const * const ptrCS): 
+  ClusterStructure const * const ptrCS,
+  const double epsilon): 
   m_txTimePerSlot(txTime), 
   m_bandwidthKhz(bandwidthKhz),
   m_tier2NumSlot(tier2NumSlot),
@@ -40,6 +41,12 @@ SchedulerFactory::CreateScheduler( const string& scheduleType)
   else if (scheduleType == "Branchbound") {
     m_ptrSched = new BranchBoundScheduler(m_txTimePerSlot, m_bandwidthKhz, 
         m_ptrMap, m_ptrMatComputer, m_ptrCS); 
+    return m_ptrSched; 
+  }
+  else if (scheduleType == "MaxEntropy") {
+    m_ptrSched = new MaxEntropy(m_txTimePerSlot, m_bandwidthKhz, 
+        m_ptrMap, m_ptrMatComputer, m_ptrCS); 
+    dynamic_cast<MaxEntropy*>(m_ptrSched)->SetEpsilon(0.001);
     return m_ptrSched; 
   }
   else if (scheduleType == "GreedyPhysical") {

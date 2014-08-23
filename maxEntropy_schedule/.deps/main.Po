@@ -1451,7 +1451,8 @@ main.o: main.cpp \
  /home/share/bonmin174/include/coin/BonAuxInfos.hpp \
  /home/share/bonmin174/include/coin/BonEcpCuts.hpp \
  /home/share/bonmin174/include/coin/BonOaNlpOptim.hpp MyTMINLP.hpp \
- /home/share/bonmin174/include/coin/BonTMINLP.hpp greedyPhysical.h \
+ /home/share/bonmin174/include/coin/BonTMINLP.hpp maxEntropy.h myIP.hpp \
+ greedyPhysical.h \
  /home/share/boost1550/include/boost/graph/adjacency_list.hpp \
  /home/share/boost1550/include/boost/unordered_set.hpp \
  /home/share/boost1550/include/boost/unordered/unordered_set.hpp \
@@ -4645,6 +4646,10 @@ branchBoundScheduler.h:
 MyTMINLP.hpp:
 
 /home/share/bonmin174/include/coin/BonTMINLP.hpp:
+
+maxEntropy.h:
+
+myIP.hpp:
 
 greedyPhysical.h:
 

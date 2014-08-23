@@ -69,6 +69,8 @@ simulator_SOURCES = main.cpp \
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \
 		    branchBoundScheduler.h branchBoundScheduler.cpp \
+		    myIP.hpp myIP.cpp\
+		    maxEntropy.h maxEntropy.cpp\
 		    maxSNRScheduler.h maxSNRScheduler.cpp \
 		    greedyPhysical.h greedyPhysical.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\

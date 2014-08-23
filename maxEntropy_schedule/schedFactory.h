@@ -2,6 +2,7 @@
 #define _SCHEDULERFACTORY_ 
 #include "scheduler.h"
 #include "branchBoundScheduler.h"
+#include "maxEntropy.h"
 #include "maxSNRScheduler.h"
 #include "greedyPhysical.h"
 #include "bruteForceScheduler.h"
@@ -31,7 +32,8 @@ class SchedulerFactory
         const double bandwidthKhz, 
         Map const * const, 
         CORRE_MA_OPE* , 
-        ClusterStructure const * const);
+        ClusterStructure const * const,
+        const double epsilon);
 
     ~SchedulerFactory();
     Scheduler* CreateScheduler(const string& );

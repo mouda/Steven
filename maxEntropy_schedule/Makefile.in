@@ -50,9 +50,10 @@ PROGRAMS = $(bin_PROGRAMS)
 am_simulator_OBJECTS = main.$(OBJEXT) fileCSFactory.$(OBJEXT) \
 	kmeansCsFactory.$(OBJEXT) scheduler.$(OBJEXT) \
 	MyTMINLP.$(OBJEXT) branchBoundScheduler.$(OBJEXT) \
-	maxSNRScheduler.$(OBJEXT) greedyPhysical.$(OBJEXT) \
-	bruteForceScheduler.$(OBJEXT) nonSimplifiedScheduler.$(OBJEXT) \
-	schedFactory.$(OBJEXT) slot.$(OBJEXT) simulator.$(OBJEXT)
+	myIP.$(OBJEXT) maxEntropy.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
+	greedyPhysical.$(OBJEXT) bruteForceScheduler.$(OBJEXT) \
+	nonSimplifiedScheduler.$(OBJEXT) schedFactory.$(OBJEXT) \
+	slot.$(OBJEXT) simulator.$(OBJEXT)
 simulator_OBJECTS = $(am_simulator_OBJECTS)
 am__DEPENDENCIES_1 =
 simulator_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -281,6 +282,8 @@ simulator_SOURCES = main.cpp \
 		    scheduler.h scheduler.cpp \
 		    MyTMINLP.hpp MyTMINLP.cpp \
 		    branchBoundScheduler.h branchBoundScheduler.cpp \
+		    myIP.hpp myIP.cpp\
+		    maxEntropy.h maxEntropy.cpp\
 		    maxSNRScheduler.h maxSNRScheduler.cpp \
 		    greedyPhysical.h greedyPhysical.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\
@@ -403,7 +406,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/greedyPhysical.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kmeansCsFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxEntropy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/maxSNRScheduler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/myIP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nonSimplifiedScheduler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/schedFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scheduler.Po@am__quote@
