@@ -10,4 +10,7 @@
 .deps
 Makefile
 Makefile.in
+simulator
+genCluster
+configure
 ULSA_DC_Estimate
