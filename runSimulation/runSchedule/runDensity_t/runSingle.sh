@@ -1,0 +1,1 @@
+../../../maxEntropy_schedule/simulator -n 50 -H 10 -q 16 -p 0 -b 180.0 -t 0.1 -I 10.0 -F Kmeans -m ../../mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_4.txt -f 0.95 -c 0.477 -a 0.01 -A MaxEntropy -T 0.5 -N 1 -E data/GE_Baseline_Q16_N50_SC.47_TC.5.out -O data/TE_Baseline_Q16_N50_SC.47_TC.5.out
