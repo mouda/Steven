@@ -42,6 +42,7 @@ class SchedulerFactory
     const double                    m_txTimePerSlot;
     const double                    m_bandwidthKhz;
     const double                    m_maxPower;
+    const double                    m_epsilon;
     const int                       m_tier2NumSlot;
     Map const * const               m_ptrMap;
     ClusterStructure const * const  m_ptrCS;

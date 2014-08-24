@@ -67,9 +67,8 @@ Simulator::SequentialRun(int tier2NumSlot)
     totalEntropy = m_ptrGField->GetJointEntropy(m_vecTotal, currVecVariance, 0.0, m_ptrMap->GetQBits());
     m_ptrGField->UpdateVariance(currVecVariance, nextVecVariance, vecSupport, vecSlots ,m_ptrSched->GetTxTimePerSlot());
   }
-  cout << "Entropy: " << entropy << " MSE: " << MSE << " Total: " << totalEntropy << ' ';  
+  cout << "Entropy: " << entropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
-  cout << "Power: " << VecToString(vecPower) << endl;
 //  cout << "Variance: " << VecToString(currVecVariance) << endl;
 
   Slot* ptrCurrSlot = new Slot(vecSupport, nextVecVariance, vecPower, entropy, totalEntropy, MSE, currPower);
@@ -105,9 +104,8 @@ Simulator::GetNextSlot(Slot* mySlot, std::vector<int>& vecSlots)
     m_ptrGField->UpdateVariance(mySlot->GetVariance(), nextVecVariance, vecSupport, vecSlots, m_ptrSched->GetTxTimePerSlot());
   }
   
-  cout << "Entropy: " << entropy << " MSE: " << MSE << " Total: " << totalEntropy << ' ';  
+  cout << "Entropy: " << entropy << ' ';  
   cout << "Solution: " << VecToString(vecSupport) << endl;
-  cout << "Power: " << VecToString(vecPower) << endl;
 //  cout << "Variance: " << VecToString(mySlot->GetVariance()) << endl;
 
   Slot* ptrSlot = new Slot(vecSupport, nextVecVariance, vecPower, entropy, totalEntropy, MSE, currPower);

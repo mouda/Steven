@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
   int     tier2NumSlot;
   int     SAIter;
   double  fidelityRatio;
-  double  approximateVale;
+  double  approximateValue;
   string  mapFileName;
   /* output file name string */
   string  CSFName;
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
       spatialCompressionRatio = vm["spatialCorrelation"].as<double>();
       temporalCorrFactor =      vm["temporalCorrelation"].as<double>();
       fidelityRatio =           vm["fidelity"].as<double>();
-      approximateVale =         vm["approximateVale"].as<double>();
+      approximateValue =        vm["approximateValue"].as<double>();
       mapFileName =             vm["map"].as<string>();
       strAlgFlag =              vm["algorithm"].as<string>();
       tier2NumSlot   =          vm["tier2NumSlot"].as<int>();
@@ -180,6 +180,10 @@ int main(int argc, char *argv[])
           return 1;
         }
       }
+      if (!myCsFactory) {
+        cerr << "Error: Failed to initialize cluster factory" << endl;
+        return 1;
+      }
 
       myCS = myCsFactory->CreateClusterStructure();
 
@@ -195,7 +199,7 @@ int main(int argc, char *argv[])
           myMap, 
           myMatComputer, 
           myCS,
-          approximateVale);
+          approximateValue);
       Scheduler* myScheduler = 0;
       myScheduler = mySchedFactory.CreateScheduler(strAlgFlag);
       if (!myScheduler) {

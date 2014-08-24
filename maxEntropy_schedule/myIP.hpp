@@ -22,10 +22,15 @@ class MyIP : public TMINLP
 {
 public:
   /// Default constructor.
-  MyIP():printSol_(false){}
-  MyIP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
-      const Eigen::MatrixXd& m_Signma, const Eigen::MatrixXd m_Constriants,
-      const ClusterStructure* ptrCS, const Map* ptrMap);
+  MyIP(Index n, 
+      Index m, 
+      Index nnz_jac_g, 
+      Index nnz_h_lag,
+      const Eigen::MatrixXd& m_Signma, 
+      const Eigen::MatrixXd m_Constriants,
+      const ClusterStructure* ptrCS, 
+      const Map* ptrMap,
+      const double epsilon);
   
   /// virtual destructor.
   virtual ~MyIP(){}
@@ -36,7 +41,7 @@ public:
   
   const std::vector<int>& GetVecSolution(){ return m_vecSolution;}
   /** Copy constructor.*/   
-  MyIP(const MyIP &other):printSol_(other.printSol_){}
+  //MyIP(const MyIP &other):printSol_(other.printSol_){}
   /** Assignment operator. no data = nothing to assign*/
   //MyIP& operator=(const MyIP&) {}
   /** \name Overloaded functions specific to a TMINLP.*/
@@ -171,6 +176,7 @@ public:
   
   private:
     bool                        printSol_;
+    const double                m_epsilon;
     Index                       m_numVariables;
     Index                       m_numConstraints;
     Index                       m_numNz_jac_g;

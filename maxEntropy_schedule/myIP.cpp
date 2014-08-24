@@ -16,8 +16,11 @@ using std::endl;
 
 MyIP::MyIP(Index n, Index m, Index nnz_jac_g, Index nnz_h_lag,
     const Eigen::MatrixXd& signma, const Eigen::MatrixXd constraints, const ClusterStructure* ptrCS,
-    const Map* ptrMap):
-  m_ptrCS(ptrCS), m_ptrMap(ptrMap), printSol_(true)
+    const Map* ptrMap, const double epsilon):
+  m_ptrCS(ptrCS), 
+  m_ptrMap(ptrMap), 
+  m_epsilon(epsilon),
+  printSol_(true)
 {
   m_numVariables = n;
   m_numConstraints = m;

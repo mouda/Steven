@@ -112,8 +112,17 @@ MaxEntropy::SolverHook(std::vector<int>& vecSupport, Eigen::MatrixXd& matSigma)
   Index numNz_h_lag = 0;
   
   SmartPtr<TMINLP> tminlp = 
-    new MyIP( numVariables, numConstraints, numNz_jac_g, numNz_h_lag, matSigma,
-        (m_A+m_B-m_C), m_ptrCS, m_ptrMap);
+    new MyIP( 
+        numVariables, 
+        numConstraints, 
+        numNz_jac_g, 
+        numNz_h_lag, 
+        matSigma,
+        (m_A+m_B-m_C), 
+        m_ptrCS, 
+        m_ptrMap,
+        m_epsilon
+        );
   MyIP* rawPtr = dynamic_cast<MyIP*>(GetRawPtr(tminlp));
   std::vector<int> tmp(m_ptrMap->GetNumNodes(), 0);
   rawPtr->SetExtraConstraints(tmp);

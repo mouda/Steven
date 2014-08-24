@@ -14,7 +14,8 @@ SchedulerFactory::SchedulerFactory(const double txTime,
   m_maxPower(0),
   m_ptrCS(ptrCS), 
   m_ptrMatComputer(ptrMatComputer),
-  m_ptrSched(0)
+  m_ptrSched(0),
+  m_epsilon(epsilon)
 {
 
 }
@@ -46,7 +47,7 @@ SchedulerFactory::CreateScheduler( const string& scheduleType)
   else if (scheduleType == "MaxEntropy") {
     m_ptrSched = new MaxEntropy(m_txTimePerSlot, m_bandwidthKhz, 
         m_ptrMap, m_ptrMatComputer, m_ptrCS); 
-    dynamic_cast<MaxEntropy*>(m_ptrSched)->SetEpsilon(0.001);
+    dynamic_cast<MaxEntropy*>(m_ptrSched)->SetEpsilon(m_epsilon);
     return m_ptrSched; 
   }
   else if (scheduleType == "GreedyPhysical") {
