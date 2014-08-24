@@ -7,4 +7,7 @@
 *.err
 *.log
 *.a
+.deps
+Makefile
+Makefile.in
 ULSA_DC_Estimate
