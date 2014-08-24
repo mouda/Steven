@@ -151,6 +151,8 @@ MyIP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
 {
   assert(n==m_numVariables);
   Eigen::MatrixXd matX = Eigen::MatrixXd::Zero(m_ptrCS->GetNumNodes(),m_ptrCS->GetNumHeads());
+  Eigen::MatrixXd matI = Eigen::MatrixXd::Identity(m_ptrCS->GetNumNodes(), m_ptrCS->GetNumNodes());
+  Eigen::MatrixXd matEpslionSigma = m_epsilon * m_Signma;
   for (int i = 0; i < m_ptrCS->GetNumNodes(); ++i) {
     for (int j = 0; j < m_ptrCS->GetNumHeads(); ++j) {
       if (m_ptrCS->GetChIdxByName(i) == j) {
@@ -158,7 +160,7 @@ MyIP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
       }
     }
   }
-  Eigen::MatrixXd matC(matX.transpose() * m_Signma * matX);
+  Eigen::MatrixXd matC(matI + matEpslionSigma.llt().matrixL() *  matX * matX.transpose() * matEpslionSigma.llt().matrixL().transpose());
   Eigen::MatrixXd TRM(matC.llt().matrixL());
   double sum = 0.0;
   for (int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {
@@ -171,7 +173,7 @@ MyIP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
   double idtEntropy = 0.0;
   for (int i = 0; i < matC.cols(); ++i) {
     if (matC(i,i) > 0.0) {
-      idtEntropy += 0.5*log2(2*3.1415*exp(1)) + log2(matC(i,i))+ m_ptrMap->GetQBits(); 
+      idtEntropy += 0.5*log2(2*3.1415*exp(1)*m_epsilon) +  m_ptrMap->GetQBits(); 
     }
   }
   obj_value = -1.*(sum + idtEntropy); /* here is the bug!!! */
@@ -184,6 +186,8 @@ MyIP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
   assert(n==m_numVariables);
 
   Eigen::MatrixXd matX = Eigen::MatrixXd::Zero(m_ptrCS->GetNumNodes(),m_ptrCS->GetNumHeads());
+  Eigen::MatrixXd matI = Eigen::MatrixXd::Identity(m_ptrCS->GetNumNodes(), m_ptrCS->GetNumNodes());
+  Eigen::MatrixXd matEpslionSigma = m_epsilon * m_Signma;
   for (int i = 0; i < m_ptrCS->GetNumNodes(); ++i) {
     for (int j = 0; j < m_ptrCS->GetNumHeads(); ++j) {
       if (m_ptrCS->GetChIdxByName(i) == j) {
@@ -191,9 +195,9 @@ MyIP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
       }
     }
   }
-  Eigen::MatrixXd Diagonal((matX.transpose() * m_Signma * matX).inverse().diagonal());
+  Eigen::MatrixXd Diagonal((matI + matEpslionSigma.llt().matrixL() *  matX * matX.transpose() * matEpslionSigma.llt().matrixL().transpose()).inverse().diagonal());
   for (int i = 0; i < m_numVariables; ++i) {
-    grad_f[i] = -1.0*Diagonal.sum();
+    grad_f[i] = Diagonal(i);
   }
   return true;
 }
@@ -213,17 +217,12 @@ MyIP::eval_g(Index n, const Number* x, bool new_x, Index m, Number* g)
   }
   Eigen::MatrixXd matOnes = Eigen::MatrixXd::Ones(m_ptrCS->GetNumHeads(), 1);
   Eigen::MatrixXd result(m_Constriants * matX * matOnes);
-  //cout <<  m_Constriants * matX << endl << endl;
   for (int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {
     g[i] = result(i);
-//    cout << g[i] << ' ';
   }
-//  cout << endl;
   for (int i = m_ptrCS->GetNumHeads(); i < m_numConstraints; ++i) {
     g[i] = matX.col(i-m_ptrCS->GetNumHeads()).sum();
-//    cout << matX.col(i-m_ptrCS->GetNumHeads())   ; 
   }
-//  cout << endl;
   return true;
 }
 
