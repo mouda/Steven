@@ -160,23 +160,13 @@ SumRateIP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
       }
     }
   }
-  Eigen::MatrixXd matC(matI + matEpslionSigma.llt().matrixL() *  matX * matX.transpose() * matEpslionSigma.llt().matrixL().transpose());
-  Eigen::MatrixXd TRM(matC.llt().matrixL());
-  double sum = 0.0;
-  for (int i = 0; i < m_ptrCS->GetNumHeads(); ++i) {
-    for (int j = 0; j < m_ptrCS->GetNumHeads(); ++j) {
-      if (i == j) {
-        sum += TRM(i,j);
-      }
-    }
-  }
   double idtEntropy = 0.0;
-  for (int i = 0; i < matC.cols(); ++i) {
-    if (matC(i,i) > 0.0) {
-      idtEntropy += 0.5*log2(2*3.1415*exp(1)*(1.0/m_epsilon)) +  m_ptrMap->GetQBits(); 
+  for (int i = 0; i < m_numVariables; ++i) {
+    if (x[i] > 0.0) {
+      idtEntropy += 0.5*log2(2*3.1415*exp(1)) +  m_ptrMap->GetQBits(); 
     }
   }
-  obj_value = -1.*(sum); /* here is the bug!!! */
+  obj_value = -1.*(idtEntropy); /* here is the bug!!! */
   return true;
 }
 
@@ -195,9 +185,8 @@ SumRateIP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
       }
     }
   }
-  Eigen::MatrixXd Diagonal((matI + matEpslionSigma.llt().matrixL() *  matX * matX.transpose() * matEpslionSigma.llt().matrixL().transpose()).inverse().diagonal());
   for (int i = 0; i < m_numVariables; ++i) {
-    grad_f[i] = Diagonal(i);
+    grad_f[i] = 0.5*log2(2*3.1415*exp(1)) +  m_ptrMap->GetQBits();
   }
   return true;
 }

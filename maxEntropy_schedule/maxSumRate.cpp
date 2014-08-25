@@ -133,7 +133,7 @@ MaxSumRate::SolverHook(std::vector<int>& vecSupport, Eigen::MatrixXd& matSigma)
   BonminSetup bonmin(&handler);
   bonmin.initializeOptionsAndJournalist();
   // Here we can change the default value of some Bonmin or Ipopt option
-  bonmin.options()->SetNumericValue("bonmin.time_limit", 1000); //changes bonmin's time limit
+  bonmin.options()->SetNumericValue("bonmin.time_limit", 10); //changes bonmin's time limit
   bonmin.options()->SetStringValue("mu_oracle","loqo");
   //Here we read several option files
   bonmin.readOptionsFile("Mybonmin.opt");
