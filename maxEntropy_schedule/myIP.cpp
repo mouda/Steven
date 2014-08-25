@@ -152,7 +152,7 @@ MyIP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
   assert(n==m_numVariables);
   Eigen::MatrixXd matX = Eigen::MatrixXd::Zero(m_ptrCS->GetNumNodes(),m_ptrCS->GetNumHeads());
   Eigen::MatrixXd matI = Eigen::MatrixXd::Identity(m_ptrCS->GetNumNodes(), m_ptrCS->GetNumNodes());
-  Eigen::MatrixXd matEpslionSigma = m_epsilon * m_Signma;
+  Eigen::MatrixXd matEpslionSigma = (1.0/m_epsilon) * m_Signma;
   for (int i = 0; i < m_ptrCS->GetNumNodes(); ++i) {
     for (int j = 0; j < m_ptrCS->GetNumHeads(); ++j) {
       if (m_ptrCS->GetChIdxByName(i) == j) {
@@ -173,10 +173,10 @@ MyIP::eval_f(Index n, const Number* x, bool new_x, Number& obj_value)
   double idtEntropy = 0.0;
   for (int i = 0; i < matC.cols(); ++i) {
     if (matC(i,i) > 0.0) {
-      idtEntropy += 0.5*log2(2*3.1415*exp(1)*m_epsilon) +  m_ptrMap->GetQBits(); 
+      idtEntropy += 0.5*log2(2*3.1415*exp(1)*(1.0/m_epsilon)) +  m_ptrMap->GetQBits(); 
     }
   }
-  obj_value = -1.*(sum + idtEntropy); /* here is the bug!!! */
+  obj_value = -1.*(sum); /* here is the bug!!! */
   return true;
 }
 
@@ -187,7 +187,7 @@ MyIP::eval_grad_f(Index n, const Number* x, bool new_x, Number* grad_f)
 
   Eigen::MatrixXd matX = Eigen::MatrixXd::Zero(m_ptrCS->GetNumNodes(),m_ptrCS->GetNumHeads());
   Eigen::MatrixXd matI = Eigen::MatrixXd::Identity(m_ptrCS->GetNumNodes(), m_ptrCS->GetNumNodes());
-  Eigen::MatrixXd matEpslionSigma = m_epsilon * m_Signma;
+  Eigen::MatrixXd matEpslionSigma = (1.0/m_epsilon) * m_Signma;
   for (int i = 0; i < m_ptrCS->GetNumNodes(); ++i) {
     for (int j = 0; j < m_ptrCS->GetNumHeads(); ++j) {
       if (m_ptrCS->GetChIdxByName(i) == j) {
