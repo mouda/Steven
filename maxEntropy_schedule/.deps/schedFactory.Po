@@ -1143,7 +1143,8 @@ schedFactory.o: schedFactory.cpp /usr/include/stdc-predef.h \
  /opt/boost1550/include/boost/bind/bind_mf2_cc.hpp \
  /opt/boost1550/include/boost/bind/placeholders.hpp \
  /usr/include/c++/4.8/queue /usr/include/c++/4.8/bits/stl_queue.h \
- bruteForceScheduler.h nonSimplifiedScheduler.h
+ bruteForceScheduler.h nonSimplifiedScheduler.h maxSumRate.h \
+ sumRateIP.hpp
 
 /usr/include/stdc-predef.h:
 
@@ -3558,3 +3559,7 @@ greedyPhysical.h:
 bruteForceScheduler.h:
 
 nonSimplifiedScheduler.h:
+
+maxSumRate.h:
+
+sumRateIP.hpp:

@@ -71,6 +71,8 @@ simulator_SOURCES = main.cpp \
 		    branchBoundScheduler.h branchBoundScheduler.cpp \
 		    myIP.hpp myIP.cpp\
 		    maxEntropy.h maxEntropy.cpp\
+		    sumRateIP.hpp sumRateIP.cpp\
+		    maxSumRate.h maxSumRate.cpp\
 		    maxSNRScheduler.h maxSNRScheduler.cpp \
 		    greedyPhysical.h greedyPhysical.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\

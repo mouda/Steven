@@ -1663,8 +1663,9 @@ main.o: main.cpp /usr/include/stdc-predef.h \
  /opt/boost1550/include/boost/bind/bind_mf2_cc.hpp \
  /opt/boost1550/include/boost/bind/placeholders.hpp \
  /usr/include/c++/4.8/queue /usr/include/c++/4.8/bits/stl_queue.h \
- bruteForceScheduler.h nonSimplifiedScheduler.h simulator.h \
- /usr/include/c++/4.8/iomanip slot.h ../lib/fileHandler.h fileCSFactory.h
+ bruteForceScheduler.h nonSimplifiedScheduler.h maxSumRate.h \
+ sumRateIP.hpp simulator.h /usr/include/c++/4.8/iomanip slot.h \
+ ../lib/fileHandler.h fileCSFactory.h
 
 /usr/include/stdc-predef.h:
 
@@ -5137,6 +5138,10 @@ greedyPhysical.h:
 bruteForceScheduler.h:
 
 nonSimplifiedScheduler.h:
+
+maxSumRate.h:
+
+sumRateIP.hpp:
 
 simulator.h:
 

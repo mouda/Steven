@@ -95,7 +95,8 @@ PROGRAMS = $(bin_PROGRAMS)
 am_simulator_OBJECTS = main.$(OBJEXT) fileCSFactory.$(OBJEXT) \
 	kmeansCsFactory.$(OBJEXT) scheduler.$(OBJEXT) \
 	MyTMINLP.$(OBJEXT) branchBoundScheduler.$(OBJEXT) \
-	myIP.$(OBJEXT) maxEntropy.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
+	myIP.$(OBJEXT) maxEntropy.$(OBJEXT) sumRateIP.$(OBJEXT) \
+	maxSumRate.$(OBJEXT) maxSNRScheduler.$(OBJEXT) \
 	greedyPhysical.$(OBJEXT) bruteForceScheduler.$(OBJEXT) \
 	nonSimplifiedScheduler.$(OBJEXT) schedFactory.$(OBJEXT) \
 	slot.$(OBJEXT) simulator.$(OBJEXT)
@@ -389,6 +390,8 @@ simulator_SOURCES = main.cpp \
 		    branchBoundScheduler.h branchBoundScheduler.cpp \
 		    myIP.hpp myIP.cpp\
 		    maxEntropy.h maxEntropy.cpp\
+		    sumRateIP.hpp sumRateIP.cpp\
+		    maxSumRate.h maxSumRate.cpp\
 		    maxSNRScheduler.h maxSNRScheduler.cpp \
 		    greedyPhysical.h greedyPhysical.cpp \
 		    bruteForceScheduler.h bruteForceScheduler.cpp\
@@ -520,12 +523,14 @@ include ./$(DEPDIR)/kmeansCsFactory.Po
 include ./$(DEPDIR)/main.Po
 include ./$(DEPDIR)/maxEntropy.Po
 include ./$(DEPDIR)/maxSNRScheduler.Po
+include ./$(DEPDIR)/maxSumRate.Po
 include ./$(DEPDIR)/myIP.Po
 include ./$(DEPDIR)/nonSimplifiedScheduler.Po
 include ./$(DEPDIR)/schedFactory.Po
 include ./$(DEPDIR)/scheduler.Po
 include ./$(DEPDIR)/simulator.Po
 include ./$(DEPDIR)/slot.Po
+include ./$(DEPDIR)/sumRateIP.Po
 
 .cpp.o:
 	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

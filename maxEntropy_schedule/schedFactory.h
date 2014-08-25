@@ -7,6 +7,7 @@
 #include "greedyPhysical.h"
 #include "bruteForceScheduler.h"
 #include "nonSimplifiedScheduler.h"
+#include "maxSumRate.h"
 
 #include <string>
 #include <iostream>

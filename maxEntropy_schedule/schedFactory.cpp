@@ -50,6 +50,11 @@ SchedulerFactory::CreateScheduler( const string& scheduleType)
     dynamic_cast<MaxEntropy*>(m_ptrSched)->SetEpsilon(m_epsilon);
     return m_ptrSched; 
   }
+  else if (scheduleType == "SumRate") {
+    m_ptrSched = new MaxSumRate(m_txTimePerSlot, m_bandwidthKhz, 
+        m_ptrMap, m_ptrMatComputer, m_ptrCS); 
+    return m_ptrSched; 
+  }
   else if (scheduleType == "GreedyPhysical") {
     m_ptrSched = new GreedyPhysical(m_txTimePerSlot, m_bandwidthKhz,
         m_ptrMap, m_ptrMatComputer, m_ptrCS);
