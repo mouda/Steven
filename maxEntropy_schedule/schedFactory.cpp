@@ -55,6 +55,11 @@ SchedulerFactory::CreateScheduler( const string& scheduleType)
         m_ptrMap, m_ptrMatComputer, m_ptrCS); 
     return m_ptrSched; 
   }
+  else if (scheduleType == "MaxSNR") {
+    m_ptrSched = new MaxSNRScheduler(m_txTimePerSlot, m_bandwidthKhz, 
+        m_ptrMap, m_ptrMatComputer, m_ptrCS); 
+    return m_ptrSched; 
+  }
   else if (scheduleType == "GreedyPhysical") {
     m_ptrSched = new GreedyPhysical(m_txTimePerSlot, m_bandwidthKhz,
         m_ptrMap, m_ptrMatComputer, m_ptrCS);

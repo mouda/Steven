@@ -1,4 +1,4 @@
-algorithm="SumRate"
+algorithm="MaxSNR"
 numNodes="50 100 150 195"
 numHeads=(10 20 30 39)
 qBits="8"
