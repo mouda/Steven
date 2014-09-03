@@ -1,0 +1,29 @@
+COMMAND TOOL RMEMIND
+
+
+*** Fastly fork new test version (ULSA steven) ***
+1. cp -r $(OLDVERSION) $(NEWVERSION); cd $(NEWVRSION)
+2. rename $(OLDVERSION) $(NEWVRSION) *
+3. sed -i 's/$(OLDVERSION)/$(NEWVERSION)/gi' * 
+
+1. cat
+2. sort
+3. rename
+4. sed 
+5. grep
+6. ctags
+
+
+*** README for joint clustering and scheduling ***
+
+
+HOW TO BUILD
+
+1. use configure script to generate Makefile 
+	$ LDFLAGS="-L/opt/boost1550/lib -L/opt/armadillo40002/lib -L/opt/openblas/lib -L/opt/lapack/lib -static" CPPFLAGS="-I/opt/boost1550/include -I/opt/armadillo40002/include -I/opt/eigen320/include" CXXFLAGS="-Wl,--no-as-needed" BONMIN_CPPFLAGS="-I/opt/bonmin174/include" BONMIN_LIBS="-L/opt/bonmin174/lib" IPOPT_CPPFLAGS="-I/opt/ipopt/include" IPOPT_LIBS="-L/opt/ipopt/lib" ./configure --enable-debug
+
+2. compile the source code:
+	$ make
+
+3. Go to runSimulation/ sub-directory to compile the code
+	

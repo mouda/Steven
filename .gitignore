@@ -1,0 +1,17 @@
+*.swn
+*.swp
+*.swo
+*~
+*.o
+*.out
+*.err
+*.log
+*.a
+.deps/
+*.Po
+Makefile
+Makefile.in
+simulator
+genCluster
+configure
+ULSA_DC_Estimate
