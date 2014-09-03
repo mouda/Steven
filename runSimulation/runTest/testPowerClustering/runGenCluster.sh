@@ -1,1 +1,0 @@
-../../../cluster/genCluster -n 50 -H 13 -q 32 -p 0 -b 180.0 -t 0.1 -I 10.0 -m  ../../mapFile/mapFile_uni_50_r150/mapFile_uniR150_N50_1.txt -f 0.95 -c 0.477  -T  1.0 -F MinPower -N 3  -C test_CS_N50_H13_new_1.out

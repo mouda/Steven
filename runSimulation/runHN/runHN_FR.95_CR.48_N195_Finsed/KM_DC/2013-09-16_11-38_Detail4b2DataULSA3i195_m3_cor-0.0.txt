@@ -1,8 +1,0 @@
-------------------
-SupNum 170       Sup Ratio: 0.871795
-Info   973.145775     Sup Info Ratio: 9.503979e-01 CR:4.77365e-01
-total: 14.841387(ms),     1st:6.867755e+00(ms)     2nd:7.973633e+00(ms)
-total: 1.073805e-05(joule),  1st:6.867755e-06(joule)  2nd:3.870293e-06(joule)
-0-th Head 66, DataLoad:376.124449(bits), Power: 1.000000e-03(Watt), Time: 1.505799e+00(ms) Energy: 1.505800e-06(Joule) 
-1-th Head 137, DataLoad:291.175698(bits), Power: 1.000000e-03(Watt), Time: 3.075055e+00(ms) Energy: 3.075055e-06(Joule) 
-2-th Head 7, DataLoad:325.034876(bits), Power: 1.000000e-03(Watt), Time: 2.286900e+00(ms) Energy: 2.286900e-06(Joule) 
